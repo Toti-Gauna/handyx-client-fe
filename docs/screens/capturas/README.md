@@ -40,6 +40,8 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 
 | Pantalla o estado | Captura |
 | --- | --- |
+| handia | [handia-390.jpg](handia-390.jpg) |
+| handia-detectado | [handia-detectado-390.jpg](handia-detectado-390.jpg) |
 | pedir-rubro | [pedir-rubro-390.jpg](pedir-rubro-390.jpg) |
 | pedir-rubro-elegido | [pedir-rubro-elegido-390.jpg](pedir-rubro-elegido-390.jpg) |
 | pedir-tipo | [pedir-tipo-390.jpg](pedir-tipo-390.jpg) |

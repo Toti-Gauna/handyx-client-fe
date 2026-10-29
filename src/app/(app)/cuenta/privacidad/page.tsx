@@ -77,9 +77,10 @@ export default function Privacidad() {
         </details>
       ))}
       <h2 className="subtitulo">HandIA</h2>
-      <Aviso tipo="info" titulo="Desactivada">
-        No enviamos tus datos personales ni documentos a servicios de inteligencia artificial. Si
-        algún día se activa, te pedimos un consentimiento aparte.
+      <Aviso tipo="info" titulo="Sin datos personales">
+        HandIA te ayuda a describir el problema y a elegir el rubro. Antes de enviarle un mensaje
+        sacamos emails, teléfonos y números de documento; no recibe fotos ni los datos de tu cuenta.
+        Usarla es opcional: siempre podés elegir el rubro vos.
       </Aviso>
       <h2 className="subtitulo">Tus derechos</h2>
       <p>

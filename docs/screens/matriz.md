@@ -2,7 +2,7 @@
 
 # Matriz pantalla → acción → estado → API → entidad → prueba
 
-34 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
+35 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
 Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/data-model.md).
 
 ## Acceso
@@ -36,6 +36,7 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | **Pedir un servicio**<br><sub>demo: u-opciones, u-programar, u-describir</sub> | `/pedir/?rubro&paso` | 2.2 | Tipo: urgente / programado / obra<br>Descripción y fotos opcionales<br>Ubicación del pedido<br>Fecha y hora (calendario propio, "Quiero elegir otra fecha")<br>Precio propuesto opcional<br>Autoaceptación solo si la elijo (apagada por defecto)<br>Revisar y enviar | paso_n<br>foto_subiendo / foto_error / tipo_no_permitido / payload_grande<br>ubicacion_denegada → manual<br>fecha_pasada o hora_invalida (bloqueadas)<br>enviando<br>error_reintentable (misma Idempotency-Key)<br>enviado → detalle | `POST /v1/media`<br>`GET /v1/cobertura`<br>`POST /v1/pedidos` | service_requests<br>media_assets | doble tap no crea dos pedidos<br>urgente sin fecha; programado y obra con fecha<br>zona horaria de Buenos Aires |
 | **Mis pedidos** | `/pedidos/?vista` | 2.2 | Activos / historial<br>Abrir un pedido | cargando<br>vacio<br>lista_paginada<br>error_reintentable | `GET /v1/pedidos` | service_requests | paginado en servidor<br>solo pedidos propios |
 | **Tu pedido**<br><sub>demo: u-buscando, u-sin-especialistas</sub> | `/pedidos/detalle/?id` | 2.2 | Ver propuestas<br>Editar mientras se busca<br>Relanzar búsqueda<br>Pedir búsqueda manual<br>Cancelar | buscando (sin ETA)<br>con_propuestas<br>sin_respuesta (urgente 20 min / programado 12 h)<br>busqueda_manual (Operations, sin ETA)<br>contratado → trabajo<br>cancelado<br>vencido<br>no_encontrado (también si es ajeno) | `GET /v1/pedidos/{id}`<br>`PATCH /v1/pedidos/{id}`<br>`POST /v1/pedidos/{id}/relanzar`<br>`POST /v1/pedidos/{id}/busqueda-manual`<br>`POST /v1/pedidos/{id}/cancelar` | service_requests<br>job_events | cambiar el id no muestra pedidos ajenos (404)<br>relanzar tiene intentos limitados<br>no se inventan especialistas disponibles |
+| **HandIA**<br><sub>demo: u-handia</sub> | `/handia/` | 3.1 | Contar el problema (texto o ejemplos)<br>Confirmar o cambiar el rubro sugerido<br>Pedir para hoy o programar turno (arma el pedido) | inicio<br>pensando<br>rubro sugerido<br>rubro dudoso<br>sin rubro<br>aviso de seguridad<br>no disponible | — | borrador del pedido (en memoria) | tacha emails, teléfonos y documentos antes de enviar<br>no recibe fotos<br>solo sugiere: la persona confirma el rubro y revisa el pedido<br>olor a gas o chispas: primero el aviso de seguridad |
 
 ## Propuestas
 
@@ -74,7 +75,7 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | **Reclamos** | `/reclamos/` | 2.4 | Abrir un reclamo<br>Ver un reclamo | cargando<br>vacio<br>lista<br>error_reintentable | `GET /v1/reclamos` | support_cases | solo reclamos propios |
 | **Nuevo reclamo**<br><sub>demo: u-soporte</sub> | `/reclamos/nuevo/?pedido&trabajo` | 2.4 | Categoría<br>Detalle<br>Adjuntar fotos | inicial<br>validacion<br>adjunto_error<br>enviando<br>enviado | `POST /v1/media`<br>`POST /v1/reclamos` | support_cases<br>media_assets | sin plazos de respuesta inventados<br>reintento no duplica |
 | **Reclamo** | `/reclamos/detalle/?id` | 2.4 | Sumar información cuando la piden | abierto<br>en_revision<br>esperando_usuario<br>resuelto<br>cerrado | `GET /v1/reclamos/{id}`<br>`POST /v1/reclamos/{id}/respuestas`<br>`POST /v1/media` | support_cases<br>support_events | historial con actor y fecha |
-| **Ayuda**<br><sub>demo: u-ayuda, u-ayuda-detalle, u-handia</sub> | `/ayuda/` | 2.4 | Preguntas frecuentes<br>Abrir reclamo | normal | — | — | HandIA figura desactivada (sin datos personales a terceros) |
+| **Ayuda**<br><sub>demo: u-ayuda, u-ayuda-detalle, u-handia</sub> | `/ayuda/` | 2.4 | Preguntas frecuentes<br>Abrir reclamo | normal | — | — | HandIA: acceso al asistente (sin datos personales a terceros) |
 
 ## Avisos
 
@@ -90,7 +91,7 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | **Mis datos**<br><sub>demo: u-datos</sub> | `/cuenta/datos/` | 2.1 | Editar perfil operativo | normal<br>guardando<br>validacion<br>conflicto_version | `GET /v1/sesion`<br>`PATCH /v1/cuenta/perfil` | user_profiles | los campos faltantes se muestran vacíos, no inventados |
 | **Tarifa y demo** | `/cuenta/tarifa/` | 2.1 | Ver condiciones y versión aceptada | demo_vigente<br>demo_terminada_sin_tarifa_aprobada<br>sin_dato | `GET /v1/cuenta/fee`<br>`POST /v1/cuenta/fee/aceptacion` | fee_policies<br>fee_acceptances | al vencer el contador no aparece ninguna tarifa no aprobada |
 | **Preferencias de avisos** | `/cuenta/notificaciones/` | 2.5 | Activar o desactivar push | normal<br>permiso_denegado<br>no_soportado | `GET /v1/cuenta/notificaciones`<br>`PATCH /v1/cuenta/notificaciones`<br>`POST /v1/cuenta/push`<br>`DELETE /v1/cuenta/push` | notification_outbox | el permiso se pide solo al tocar, nunca al abrir la app |
-| **Privacidad** | `/cuenta/privacidad/` | 2.1 | Ver textos y versiones aceptadas<br>Aceptar una versión nueva | normal<br>version_nueva_pendiente | `GET /v1/sesion`<br>`POST /v1/cuenta/aceptaciones` | policy_acceptances<br>consents | HandIA desactivada<br>la versión aceptada queda registrada |
+| **Privacidad** | `/cuenta/privacidad/` | 2.1 | Ver textos y versiones aceptadas<br>Aceptar una versión nueva | normal<br>version_nueva_pendiente | `GET /v1/sesion`<br>`POST /v1/cuenta/aceptaciones` | policy_acceptances<br>consents | HandIA explicada (sin datos personales ni fotos)<br>la versión aceptada queda registrada |
 | **Eliminar cuenta** | `/cuenta/baja/` | 2.1 | Solicitar la eliminación real (con contraseña)<br>Ver el estado de la solicitud | sin_solicitud<br>recibida<br>en_proceso<br>completada<br>completada_con_retencion (qué y hasta cuándo) | `POST /v1/cuenta/baja`<br>`GET /v1/cuenta/baja` | account_deletion_requests | muestra el estado verdadero, no un éxito ficticio<br>compatible con la solicitud web de las tiendas |
 
 ## Sistema

@@ -473,3 +473,74 @@ body {
   width: min(2.3em, 8vw);
   height: min(2.3em, 8vw);
 }
+
+/* ── HandIA y chats con el kit ──────────────────────────────────────────────────────────────────────────── */
+.hx .du-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.hx .du-chat__mensajes {
+  flex: 1;
+  min-height: 0;
+}
+.hx h1.hd-chat-cabecera__quien {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: var(--fuente);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+/* El campo de la demo es un dibujo; en la app es un campo de verdad. */
+.hx input.du-escribir__campo {
+  min-height: 44px;
+  border: 0;
+  color: var(--hd-tinta);
+  font: inherit;
+  font-size: 0.8em;
+  white-space: normal;
+}
+.hx input.du-escribir__campo::placeholder {
+  color: var(--hd-suave);
+}
+.hx input.du-escribir__campo:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 1px;
+}
+.hx .du-escribir__enviar {
+  min-width: 44px;
+  min-height: 44px;
+}
+.hx .du-escribir__enviar:disabled {
+  opacity: 0.45;
+}
+.hx .du-rapida {
+  min-height: 44px;
+}
+/* En HandIA las opciones se acomodan en filas (con texto grande no quedan fuera de la pantalla). */
+.hx .du-rapidas--envolver {
+  flex-wrap: wrap;
+}
+.hx .du-rapidas--envolver .du-rapida {
+  max-width: 100%;
+  white-space: normal;
+  text-align: start;
+}
+.du-handia-nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin-top: 0.2em;
+  color: var(--hd-azul-hondo);
+  font-weight: 700;
+}
+.du-handia-nota .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.du-handia-aviso {
+  align-self: stretch;
+}

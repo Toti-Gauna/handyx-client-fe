@@ -131,7 +131,7 @@ export default function Inicio() {
           />
         ) : null}
 
-        <Enlace href={destino({})} className="hd-tarjeta hd-tarjeta--azul du-handia" {...entra(9)}>
+        <Enlace href="/handia/" className="hd-tarjeta hd-tarjeta--azul du-handia" {...entra(9)}>
           <span className="du-handia__luz" aria-hidden="true">
             <i />
             <Image
@@ -144,10 +144,10 @@ export default function Inicio() {
           </span>
           <span className="du-handia__textos">
             <small>¿No sabés qué rubro es?</small>
-            <strong>Mirá qué hace cada uno</strong>
+            <strong>Contale a HandIA</strong>
             <span>
               <Icono nombre="chispas" />
-              Con ejemplos de arreglos
+              Te ayuda a armar el pedido
             </span>
           </span>
           <span className="du-handia__flecha" aria-hidden="true">

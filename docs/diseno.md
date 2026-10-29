@@ -20,12 +20,16 @@ parecido:
   `AvatarHx`, `ChipsVerificacion` (solo datos reales), `ChipEstado` ("Estado: …" para lectores), `Marcado` y `entra(i)`
   (entrada en cascada, como la demo).
 - **Pantalla de carga**: `Splash.tsx` + `splash.css`, HTML y CSS puros en la primera pintura (secuencia en
-  `screens/rediseno-3-1/splash-secuencia.jpg`). Se saltea con un toque, dura 2,7 s, no aparece con "reducir movimiento" ni
-  en navegadores automatizados (salvo `?splash=1`).
+  `screens/rediseno-3-1/splash-secuencia.jpg`): ondas de color desde el centro (amarillo, azul vivo, azul), los Handys
+  entran saltando, las letras de "Handyx" (recortes del logotipo real) caen de a una delante de ellos, que quedan
+  asomados y agarrados de su letra y se balancean; confeti de mosaicos y salida en círculo hacia la app. Dura 2,95 s, se
+  saltea con un toque, no aparece con "reducir movimiento" ni en navegadores automatizados (salvo `?splash=1`).
+- **HandIA** (`/handia/`, como `u-handia`): chat a pantalla completa, sugiere el rubro con "Rubro detectado", la persona
+  confirma y elige "Pedir para hoy" o "Programar turno"; el pedido llega precargado desde un borrador en memoria.
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el
-  10/12, sin HandIA ("Mirá qué hace cada uno"), "Consultar" en lugar de "Ver perfil" hasta que exista el perfil (3.5) y
+  10/12, HandIA sin fotos y con datos personales tachados, "Consultar" en lugar de "Ver perfil" hasta que exista el perfil (3.5) y
   "Comparar" para ver todas las propuestas lado a lado sin destacar ninguna.
 
 Comparaciones demo/app y galería: [`screens/rediseno-3-1/`](screens/rediseno-3-1/).

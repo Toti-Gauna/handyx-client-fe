@@ -171,22 +171,22 @@ escenarios en verde. Modelo recomendado: **Opus 5.5 · high** en todos (es traba
 | 3.5  | Propuestas y decisión         | carrusel y comparación, detalle, perfil e historial del especialista, confirmar turno con forma de pago, contrapropuesta, deslizar para confirmar                                                                | aceptar y rechazar inconfundibles; nada acordado sin confirmar; verificaciones solo reales           |
 | 3.6  | Trabajo en curso y cierre     | seguimiento con mapa y stepper, "Llegué", obra por etapas, "¡Listo, quedó arreglado!", pago (Mercado Pago o efectivo), comprobante, reseña (decisión 2), reclamo                                                 | volver del checkout no confirma nada; reportado ≠ verificado; fee 0 % ≠ gratis                       |
 | 3.7  | Actividad, mensajes y soporte | Actividad (en curso, agenda, historial), turno, cambiar fecha, cancelar, chats con respuestas rápidas, soporte (decisión 5), avisos                                                                              | toda acción de cambio es una propuesta que la otra parte acepta                                      |
-| 3.8  | Cuenta y ayuda                | perfil con avatar, datos, direcciones guardadas, pagos registrados (sin tarjetas), avisos, privacidad, tarifa y demo, centro de ayuda con respuesta y "¿te sirvió?", eliminar cuenta                             | sin "Agregar tarjeta", sin HandIA, baja real                                                         |
+| 3.8  | Cuenta y ayuda                | perfil con avatar, datos, direcciones guardadas, pagos registrados (sin tarjetas), avisos, privacidad, tarifa y demo, centro de ayuda con respuesta y "¿te sirvió?", eliminar cuenta                             | sin "Agregar tarjeta", baja real                                                                     |
 | 3.9  | Pulido premium y QA           | transiciones compartidas, gestos, sin conexión, PWA, accesibilidad, catálogo completo de capturas y comparación lado a lado con la demo                                                                          | 0 fallas de axe, teclado y PWA; todas las pantallas y estados capturados                             |
 
 **Orden y paralelismo:** 3.1 primero (con aprobación), 3.3 temprano porque 3.4–3.6 lo usan, el resto en orden.
 
 ### Adaptaciones obligatorias de la demo (reglas que no cambian)
 
-| En la demo                          | En la app                                                                                |
-| ----------------------------------- | ---------------------------------------------------------------------------------------- |
-| "Tarifa de Handyx · cliente (5 %)"  | "Tarifa de Handyx 0 % · hasta el 10/12" (no se anuncian tarifas no aprobadas)            |
-| "Pagar $ 47.250" dentro de la app   | "Pagarle a Especialista 1" (Mercado Pago directo o efectivo); Handy no cobra el servicio |
-| Tarjetas y pagos, "Agregar tarjeta" | "Pagos registrados" (historial de pagos reportados/verificados), sin tarjetas            |
-| HandIA                              | "Te ayudamos a elegir el rubro" con preguntas guiadas, sin IA ni datos a terceros        |
-| "Verificado por Handyx"             | solo las verificaciones reales del backend ("Identidad verificada", etc.)                |
-| "Cambiar al modo especialista"      | enlace a la app de especialista cuando exista (Fase 4.6)                                 |
-| Contactos                           | decisión 4 (propuesta: "Especialistas guardados", sin números de teléfono)               |
+| En la demo                          | En la app                                                                                                              |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| "Tarifa de Handyx · cliente (5 %)"  | "Tarifa de Handyx 0 % · hasta el 10/12" (no se anuncian tarifas no aprobadas)                                          |
+| "Pagar $ 47.250" dentro de la app   | "Pagarle a Especialista 1" (Mercado Pago directo o efectivo); Handy no cobra el servicio                               |
+| Tarjetas y pagos, "Agregar tarjeta" | "Pagos registrados" (historial de pagos reportados/verificados), sin tarjetas                                          |
+| HandIA                              | **incluida** (Ignacio, 29/10): sugiere el rubro y arma el pedido; sin fotos; datos personales tachados antes de enviar |
+| "Verificado por Handyx"             | solo las verificaciones reales del backend ("Identidad verificada", etc.)                                              |
+| "Cambiar al modo especialista"      | enlace a la app de especialista cuando exista (Fase 4.6)                                                               |
+| Contactos                           | decisión 4 (propuesta: "Especialistas guardados", sin números de teléfono)                                             |
 
 ## 9. Impacto en el backend y el contrato
 
@@ -218,6 +218,8 @@ el contrato; en la Fase 4 se implementa de verdad.
 8. **Deslizar para confirmar** en aceptar y pagar: **sí**, con alternativa accesible.
 9. **Modo oscuro**: **después de la demo** (no entra en esta fase).
 10. **Splash**: confirmar la interpretación de la sección 4.
+11. **HandIA**: incluida (Ignacio, 29/10). En la vista de prueba responde un asistente simulado; en producción requiere
+    el endpoint del backend y una clave del proveedor de IA en su entorno privado (sin compras sin autorización).
 
 ---
 

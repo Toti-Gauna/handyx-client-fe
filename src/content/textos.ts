@@ -14,11 +14,11 @@ export const TEXTOS_LEGALES = {
   },
   privacidad: {
     titulo: 'Política de privacidad',
-    version: 'privacidad-demo-2026-11',
+    version: 'privacidad-demo-2026-11-v2',
     parrafos: [
       'Usamos tus datos para crear tu cuenta, mostrarte propuestas y coordinar el trabajo con el especialista que elijas.',
       'Pedimos tu ubicación solo cuando lo autorizás en ese momento, y nunca la seguimos en segundo plano.',
-      'HandIA (asistente con inteligencia artificial) está desactivada: no enviamos tus datos personales ni documentos a servicios de inteligencia artificial.',
+      'HandIA (asistente con inteligencia artificial) te ayuda a describir el problema y a elegir el rubro. Antes de enviarle un mensaje sacamos emails, teléfonos y números de documento; no recibe fotos, documentos ni los datos de tu cuenta, y lo que le escribís se usa solo para armar tu pedido.',
       'Podés pedir la eliminación real de tu cuenta desde Cuenta › Eliminar cuenta. Te mostramos el estado de la solicitud y qué datos se conservan por obligación legal.',
     ],
   },

@@ -27,10 +27,14 @@ export default function Ayuda() {
         </Enlace>
       </div>
       <h2 className="subtitulo">HandIA</h2>
-      <Aviso tipo="info" titulo="Desactivada por ahora">
-        El asistente con inteligencia artificial no está disponible: no enviamos datos personales a
-        servicios de IA. Para consultas, abrí un reclamo o escribile al equipo que te invitó a la
-        demo.
+      <Aviso tipo="info" titulo="Te ayuda a armar el pedido">
+        <p>
+          Contale qué pasó en tu casa y te dice de qué rubro es. No le pases datos personales: no
+          los necesita.
+        </p>
+        <Enlace className="enlace-tarjeta" href="/handia/">
+          Contale a HandIA
+        </Enlace>
       </Aviso>
     </>
   );

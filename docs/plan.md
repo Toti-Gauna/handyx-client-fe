@@ -76,7 +76,7 @@ Detalle de las pruebas ejecutadas: [`docs/qa.md`](qa.md).
 ## Decisiones vigentes
 
 Las del prompt del bloque (Handyx/handyc.com, MDP, demo 10/11–10/12, fee 0 %, pago directo, propuestas bidireccionales,
-sin asignación obligatoria, sin ETA, urgencias 20/5 min, programados 12 h, antecedentes sin archivos, HandIA apagada, baja
+sin asignación obligatoria, sin ETA, urgencias 20/5 min, programados 12 h, antecedentes sin archivos, baja
 real, tiendas después del 10/12) más:
 
 - Front: **Next.js 16 export estático** (Ignacio, 29/10).
@@ -84,3 +84,5 @@ real, tiendas después del 10/12) más:
 - Fee 0 % avisado **después del registro, en el modal de primer ingreso y con contador en Cuenta**, "hasta el 10/12"
   (Ignacio, 29/10).
 - Ramas: una por fase, PR a `main` (Ignacio, 29/10).
+- **HandIA incluida** (Ignacio, 29/10): asistente que sugiere el rubro y arma el pedido; sin datos personales (se tachan
+  antes de enviar) ni fotos o documentos a la IA; la persona confirma todo.

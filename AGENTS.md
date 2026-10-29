@@ -34,7 +34,8 @@ segmentos dinámicos `[id]`.
   permiso puntual (nunca en segundo plano); fee 0 % hasta el 10/12 avisado después del registro, en el modal de primer
   ingreso y con contador en Cuenta, sin presentarlo como descuento ni anunciar tarifas no aprobadas; pago directo al
   especialista (Mercado Pago o efectivo), reportado ≠ verificado, volver del checkout no confirma nada; sin "Agregar
-  tarjeta"; HandIA desactivada; sin envíos automáticos a terceros.
+  tarjeta"; HandIA incluida como asistente para armar el pedido (sugiere el rubro; tacha datos personales antes de
+  enviar; nunca recibe fotos ni documentos; con API real, inactiva hasta el endpoint del BE); sin envíos automáticos a terceros.
 - **PWA**: `public/sw.js` guarda solo archivos públicos del mismo origen (páginas por ruta, sin query); nunca la API,
   escrituras ni datos, y no encola acciones. Sin conexión nada se da por hecho. Si cambia su lógica, subir `VERSION`; todo
   archivo de la precarga tiene que existir (lo prueba `tests/pwa.test.ts`). Nunca animar botones de aceptar/pagar.

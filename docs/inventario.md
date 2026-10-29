@@ -38,7 +38,7 @@ La demo es referencia visual "no código de producción". Donde contradice las d
 | "Handy retiene solo su tarifa" / cobro vía Handy         | pago **directo** al especialista (MP o efectivo); Handy no recibe fondos |
 | Llegada por geocerca simulada, "sin confirmación manual" | "Llegué" lo marca el especialista; sin seguimiento en segundo plano      |
 | "Agregar tarjeta" con tarjeta de prueba                  | fuera: Handy no recolecta tarjetas                                       |
-| HandIA                                                   | desactivada en v1                                                        |
+| HandIA                                                   | incluida: sugiere el rubro; sin datos personales, fotos ni documentos    |
 | Reseña (`u-resena`) y contactos guardados                | sin decisión de producto: fuera del contrato v1 (pendiente)              |
 
 ## Recursos activos

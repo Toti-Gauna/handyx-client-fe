@@ -17,7 +17,7 @@ export type Grupo =
   | 'cuenta'
   | 'sistema';
 
-export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.3';
+export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3';
 
 export interface Pantalla {
   readonly id: string;
@@ -611,7 +611,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     estados: ['normal'],
     endpoints: [],
     entidades: [],
-    pruebas: ['HandIA figura desactivada (sin datos personales a terceros)'],
+    pruebas: ['HandIA: acceso al asistente (sin datos personales a terceros)'],
     demo: ['u-ayuda', 'u-ayuda-detalle', 'u-handia'],
   }),
   // ── Avisos ──────────────────────────────────────────────────────────────────────────────────────
@@ -709,7 +709,10 @@ export const PANTALLAS: readonly Pantalla[] = [
     estados: ['normal', 'version_nueva_pendiente'],
     endpoints: ['sesion', 'aceptacion'],
     entidades: ['policy_acceptances', 'consents'],
-    pruebas: ['HandIA desactivada', 'la versión aceptada queda registrada'],
+    pruebas: [
+      'HandIA explicada (sin datos personales ni fotos)',
+      'la versión aceptada queda registrada',
+    ],
   }),
   p({
     id: 'cuenta-baja',
@@ -733,7 +736,39 @@ export const PANTALLAS: readonly Pantalla[] = [
       'compatible con la solicitud web de las tiendas',
     ],
   }),
-  // ── Sistema ─────────────────────────────────────────────────────────────────────────────────────
+  p({
+    id: 'handia',
+    ruta: '/handia/',
+    titulo: 'HandIA',
+    grupo: 'pedido',
+    lote: '3.1',
+    acceso: 'sesion',
+    acciones: [
+      'Contar el problema (texto o ejemplos)',
+      'Confirmar o cambiar el rubro sugerido',
+      'Pedir para hoy o programar turno (arma el pedido)',
+    ],
+    estados: [
+      'inicio',
+      'pensando',
+      'rubro sugerido',
+      'rubro dudoso',
+      'sin rubro',
+      'aviso de seguridad',
+      'no disponible',
+    ],
+    endpoints: [],
+    entidades: ['borrador del pedido (en memoria)'],
+    pruebas: [
+      'tacha emails, teléfonos y documentos antes de enviar',
+      'no recibe fotos',
+      'solo sugiere: la persona confirma el rubro y revisa el pedido',
+      'olor a gas o chispas: primero el aviso de seguridad',
+    ],
+    demo: ['u-handia'],
+    nota: 'Con API real necesita el endpoint de HandIA en handyx-client-be (contrato v1.1, Fase 4); hasta entonces avisa que no está disponible.',
+  }),
+
   p({
     id: 'sin-conexion',
     ruta: '/sin-conexion/',

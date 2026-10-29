@@ -99,7 +99,7 @@ const PROP = '/propuestas/detalle/?id=de000000-0000-4000-8000-000000001003&escen
   await p.goto(BASE + '/inicio/?escenario=varias-propuestas&splash=1');
   await p.locator('.splash').waitFor();
   ok(await p.locator('.splash__handy').count() === 5, 'la pantalla de carga muestra los 5 Handys');
-  await p.waitForTimeout(3000);
+  await p.waitForTimeout(3500);
   ok((await p.locator('.splash').evaluate((e) => getComputedStyle(e).visibility)) === 'hidden', 'se oculta sola');
   await p.goto(BASE + '/inicio/?escenario=varias-propuestas&splash=1');
   await p.locator('.splash').waitFor();

@@ -84,6 +84,11 @@ const CAPTURAS = [
   ['Inicio', 'inicio-trabajo-en-curso', E('/inicio/', 'efectivo-reportado')],
   ['Inicio', 'inicio-otra-ciudad', E('/inicio/', 'otra-ciudad')],
   ['Inicio', 'inicio-sin-historial', '/registro/', [registrarse, completarPerfil, tocar('button', 'Entendido')]],
+  ['Pedido', 'handia', E('/handia/', 'varias-propuestas'), [], { vista: true }],
+  ['Pedido', 'handia-detectado', E('/handia/', 'varias-propuestas'), [async (p) => {
+    await p.getByRole('button', { name: /pileta/ }).click();
+    await p.getByText('Rubro detectado: Plomería').waitFor();
+  }], { vista: true }],
   ['Pedido', 'pedir-rubro', E('/pedir/', 'varias-propuestas')],
   ['Pedido', 'pedir-rubro-elegido', E('/pedir/', 'varias-propuestas'), [tocar('button', /Plomería/)]],
   ['Pedido', 'pedir-tipo', E('/pedir/', 'varias-propuestas'), [tocar('button', /Plomería/), tocar('button', 'Seguir')]],

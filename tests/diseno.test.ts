@@ -154,7 +154,7 @@ describe('pantalla de carga', () => {
     expect(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{\s*\.splash\s*\{\s*display: none/);
   });
   it('dura menos de 5 s (como la de la landing)', () => {
-    const fin = /splash-salir ([\d.]+)s ease-in ([\d.]+)s/.exec(css);
+    const fin = /splash-cerrar ([\d.]+)s cubic-bezier\([^)]*\) ([\d.]+)s/.exec(css);
     expect(fin).not.toBeNull();
     expect(Number(fin![1]) + Number(fin![2])).toBeLessThan(5);
   });

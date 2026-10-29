@@ -1,6 +1,7 @@
 'use client';
 
 import { tareaPorId } from '@/content/inicio';
+import { descartarBorrador, verBorrador } from '@/data/borrador';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Calendario } from '@/components/Calendario';
@@ -51,9 +52,11 @@ export default function Pedir() {
   const [paso, setPaso] = useState(rubroInicial ? (tipoInicial ? 3 : 2) : 1);
   const [rubro, setRubro] = useState<Rubro | null>(rubroInicial);
   const [tipo, setTipo] = useState<Tipo | null>(tipoInicial);
-  // Desde "Quiero…" de Inicio llega una tarea conocida (nunca texto libre por la URL).
+  // Desde "Quiero…" llega una tarea conocida; desde HandIA, el borrador en memoria (nunca texto libre por la URL).
   const [descripcion, setDescripcion] = useState(
-    () => tareaPorId(params.get('tarea'))?.problema ?? '',
+    () =>
+      tareaPorId(params.get('tarea'))?.problema ??
+      (params.get('desde') === 'handia' ? (verBorrador()?.descripcion ?? '') : ''),
   );
   const [fotos, setFotos] = useState<string[]>([]);
   const [ubicacion, setUbicacion] = useState<UbicacionForm>(
@@ -146,7 +149,10 @@ export default function Pedir() {
   async function mandar() {
     if (!cuerpo) return;
     const r = await enviar('pedidoCrear', { cuerpo }, JSON.stringify(cuerpo));
-    if (r?.ok) ir(ruta('/pedidos/detalle/', { id: r.datos.id }), { reemplazar: true });
+    if (r?.ok) {
+      descartarBorrador();
+      ir(ruta('/pedidos/detalle/', { id: r.datos.id }), { reemplazar: true });
+    }
   }
 
   if (!activa)

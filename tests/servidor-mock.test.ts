@@ -79,7 +79,7 @@ describe('cuenta y demo cerrada', () => {
       contrasena: 'una-contrasena-larga',
       aceptaciones: [
         { documento: 'terminos' as const, version: 'terminos-demo-2026-11' },
-        { documento: 'privacidad' as const, version: 'privacidad-demo-2026-11' },
+        { documento: 'privacidad' as const, version: 'privacidad-demo-2026-11-v2' },
       ],
     };
     expect(
@@ -109,7 +109,7 @@ describe('cuenta y demo cerrada', () => {
         codigoInvitacion: 'DEMO2026',
         aceptaciones: [
           { documento: 'terminos', version: 'terminos-demo-2026-11' },
-          { documento: 'privacidad', version: 'privacidad-demo-2026-11' },
+          { documento: 'privacidad', version: 'privacidad-demo-2026-11-v2' },
         ],
       },
     });
