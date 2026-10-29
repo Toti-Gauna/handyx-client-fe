@@ -2,7 +2,8 @@ import '@fontsource-variable/archivo/wdth.css';
 import '@fontsource-variable/dm-sans/index.css';
 import '@/styles/app.css';
 import type { Metadata, Viewport } from 'next';
-import { AvisoVistaPrueba } from '@/components/AvisoVistaPrueba';
+import { AvisoVistaPrueba } from '@/components/PanelPrueba';
+import '@/styles/componentes.css';
 
 export const metadata: Metadata = {
   title: { default: 'Handyx', template: '%s · Handyx' },

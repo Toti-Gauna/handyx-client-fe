@@ -103,24 +103,24 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 
 | # | Escenario | Lote | Pantallas | Resultado esperado |
 | --- | --- | --- | --- | --- |
-| 1 | Nuevo usuario (`nuevo-usuario`) | 2.1 | registro, registro-listo, perfil, modal-fee, inicio | Alta con invitación, aviso de fee 0 % hasta el 10/12, perfil por pasos y modal una sola vez. |
-| 2 | Usuario de otra ciudad sin cobertura (`otra-ciudad`) | 2.1 | perfil, inicio | Se registra el interés; no se promete cobertura ni se puede pedir como si la hubiera. |
-| 3 | Ubicación denegada (`ubicacion-denegada`) | 2.2 | perfil, pedir | Sigue con carga manual; nunca se bloquea ni se vuelve a pedir en bucle. |
-| 4 | Ningún especialista (`sin-especialistas`) | 2.2 | pedido | Sin respuesta al vencer la ventana: relanzar, búsqueda manual o cancelar, sin ETA. |
-| 5 | Varias propuestas (`varias-propuestas`) | 2.3 | propuestas, propuesta | Comparación sin ranking; importe del especialista y comisión 0 % separados. |
-| 6 | Contrapropuesta (`contrapropuesta`) | 2.3 | propuesta, contrapropuesta, conversacion | La anterior queda reemplazada; no hay acuerdo hasta que la otra parte acepta. |
-| 7 | Aceptación duplicada rechazada (`aceptacion-duplicada`) | 2.3 | propuesta | El segundo intento recibe 409 ya_resuelta y muestra el trabajo existente. |
-| 8 | Propuesta vencida (`propuesta-vencida`) | 2.3 | propuesta | A los 5 min (urgente) pasa a vencida; aceptar devuelve 409 vencida. |
-| 9 | Urgencia sin respuesta (`urgencia-sin-respuesta`) | 2.2 | pedido | A los 20 min sin propuestas: sin_respuesta con intentos limitados. |
-| 10 | Programado (`programado`) | 2.2 | pedir, pedido, agenda | Fecha/hora como solicitud; a las 12 h sin propuestas ofrece revisar o relanzar. |
-| 11 | Obra por etapa (`obra-por-etapas`) | 2.4 | trabajo, pago | Etapas con monto propio; cada una se confirma y se paga por separado. |
-| 12 | Chat fallido (`chat-fallido`) | 2.4 | conversacion | Mensaje con error y "Reintentar"; reintentar no lo duplica. |
-| 13 | Cancelación (`cancelacion`) | 2.4 | pedido, trabajo | Cancelar pedido o trabajo agendado con motivo; queda en el historial. |
-| 14 | Efectivo reportado (`efectivo-reportado`) | 2.5 | pago | Queda "reportado", nunca "verificado" por el reporte solo. |
-| 15 | Mercado Pago pendiente/fallido (`mp-pendiente-fallido`) | 2.5 | pago, pago-retorno | Volver del checkout consulta el estado; pendiente y fallido se distinguen. |
-| 16 | Reclamo (`reclamo`) | 2.4 | reclamo-nuevo, reclamo | Categoría, detalle, adjuntos y estado con historial; sin plazos inventados. |
-| 17 | Sesión vencida (`sesion-vencida`) | 2.1 | ingresar | Vuelve al ingreso sin perder lo tipeado ni simular la acción. |
-| 18 | Baja solicitada (`baja-solicitada`) | 2.1 | cuenta-baja, cuenta | Estado real de la solicitud y retenciones informadas. |
+| 1 | Nuevo usuario (`nuevo-usuario`) | 2.1 | `/` | registro, registro-listo, perfil, modal-fee, inicio | Alta con invitación, aviso de fee 0 % hasta el 10/12, perfil por pasos y modal una sola vez. |
+| 2 | Usuario de otra ciudad sin cobertura (`otra-ciudad`) | 2.1 | `/inicio/?escenario=otra-ciudad` | perfil, inicio | Se registra el interés; no se promete cobertura ni se puede pedir como si la hubiera. |
+| 3 | Ubicación denegada (`ubicacion-denegada`) | 2.2 | `/perfil/?escenario=ubicacion-denegada` | perfil, pedir | Sigue con carga manual; nunca se bloquea ni se vuelve a pedir en bucle. |
+| 4 | Ningún especialista (`sin-especialistas`) | 2.2 | `/pedidos/?escenario=sin-especialistas` | pedido | Sin respuesta al vencer la ventana: relanzar, búsqueda manual o cancelar, sin ETA. |
+| 5 | Varias propuestas (`varias-propuestas`) | 2.3 | `/pedidos/?escenario=varias-propuestas` | propuestas, propuesta | Comparación sin ranking; importe del especialista y comisión 0 % separados. |
+| 6 | Contrapropuesta (`contrapropuesta`) | 2.3 | `/pedidos/?escenario=contrapropuesta` | propuesta, contrapropuesta, conversacion | La anterior queda reemplazada; no hay acuerdo hasta que la otra parte acepta. |
+| 7 | Aceptación duplicada rechazada (`aceptacion-duplicada`) | 2.3 | `/pedidos/?escenario=aceptacion-duplicada` | propuesta | El segundo intento recibe 409 ya_resuelta y muestra el trabajo existente. |
+| 8 | Propuesta vencida (`propuesta-vencida`) | 2.3 | `/pedidos/?escenario=propuesta-vencida` | propuesta | A los 5 min (urgente) pasa a vencida; aceptar devuelve 409 vencida. |
+| 9 | Urgencia sin respuesta (`urgencia-sin-respuesta`) | 2.2 | `/pedidos/?escenario=urgencia-sin-respuesta` | pedido | A los 20 min sin propuestas: sin_respuesta con intentos limitados. |
+| 10 | Programado (`programado`) | 2.2 | `/pedidos/?escenario=programado` | pedir, pedido, agenda | Fecha/hora como solicitud; a las 12 h sin propuestas ofrece revisar o relanzar. |
+| 11 | Obra por etapa (`obra-por-etapas`) | 2.4 | `/pedidos/?escenario=obra-por-etapas` | trabajo, pago | Etapas con monto propio; cada una se confirma y se paga por separado. |
+| 12 | Chat fallido (`chat-fallido`) | 2.4 | `/chats/?escenario=chat-fallido` | conversacion | Mensaje con error y "Reintentar"; reintentar no lo duplica. |
+| 13 | Cancelación (`cancelacion`) | 2.4 | `/pedidos/?escenario=cancelacion` | pedido, trabajo | Cancelar pedido o trabajo agendado con motivo; queda en el historial. |
+| 14 | Efectivo reportado (`efectivo-reportado`) | 2.5 | `/pedidos/?escenario=efectivo-reportado` | pago | Queda "reportado", nunca "verificado" por el reporte solo. |
+| 15 | Mercado Pago pendiente/fallido (`mp-pendiente-fallido`) | 2.5 | `/pedidos/?escenario=mp-pendiente-fallido` | pago, pago-retorno | Volver del checkout consulta el estado; pendiente y fallido se distinguen. |
+| 16 | Reclamo (`reclamo`) | 2.4 | `/reclamos/?escenario=reclamo` | reclamo-nuevo, reclamo | Categoría, detalle, adjuntos y estado con historial; sin plazos inventados. |
+| 17 | Sesión vencida (`sesion-vencida`) | 2.1 | `/inicio/?escenario=sesion-vencida` | ingresar | Vuelve al ingreso sin perder lo tipeado ni simular la acción. |
+| 18 | Baja solicitada (`baja-solicitada`) | 2.1 | `/cuenta/?escenario=baja-solicitada` | cuenta-baja, cuenta | Estado real de la solicitud y retenciones informadas. |
 
 ## Endpoints sin pantalla
 

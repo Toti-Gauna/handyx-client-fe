@@ -18,7 +18,8 @@
     "contracts:sync": "node scripts/contracts.mjs",
     "contracts:check": "node scripts/contracts.mjs --check",
     "mapa": "node --experimental-strip-types scripts/mapa.ts",
-    "mapa:check": "node --experimental-strip-types scripts/mapa.ts --check"
+    "mapa:check": "node --experimental-strip-types scripts/mapa.ts --check",
+    "e2e": "node tests/e2e/recorrido.cjs capturas-e2e && node tests/e2e/escenarios.cjs capturas-e2e"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "5.3.0",

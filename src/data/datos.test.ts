@@ -110,9 +110,20 @@ describe('adaptador HTTP', () => {
 });
 
 describe('adaptador mock', () => {
-  it('responde con fixtures que cumplen el contrato', async () => {
-    const api = crearClienteMock({ latenciaMs: 0 });
-    const sesion = await api.llamar('sesion');
+  const nuevo = (opciones: Parameters<typeof crearClienteMock>[0] = {}) =>
+    crearClienteMock({ latenciaMs: 0, congelado: true, escenario: 'nuevo-usuario', ...opciones });
+
+  it('sin sesión pide ingresar; con la cuenta de prueba entra y valida contra el contrato', async () => {
+    const api = nuevo();
+    await expect(api.llamar('sesion')).rejects.toMatchObject({ codigo: 'no_autenticado' });
+    await expect(
+      api.llamar('login', {
+        cuerpo: { email: 'usuaria@example.test', contrasena: 'incorrecta-123' },
+      }),
+    ).rejects.toMatchObject({ codigo: 'no_autenticado' });
+    const sesion = await api.llamar('login', {
+      cuerpo: { email: 'usuaria@example.test', contrasena: 'handyx-demo-1234' },
+    });
     expect(sesion.cuenta.roles).toEqual(['usuario']);
     expect((await api.llamar('rubros')).items).toHaveLength(6);
     expect(
@@ -123,19 +134,26 @@ describe('adaptador mock', () => {
     );
   });
 
-  it('simula fallas configurables y lo no implementado no inventa datos', async () => {
-    const api = crearClienteMock({ latenciaMs: 0, fallas: { pedidos: 'no_disponible' } });
+  it('simula fallas configurables y un recurso ajeno es 404', async () => {
+    const api = nuevo({ escenario: 'varias-propuestas', fallas: { pedidos: 'no_disponible' } });
     await expect(api.llamar('pedidos')).rejects.toMatchObject({ codigo: 'no_disponible' });
     await expect(api.llamar('propuesta', { parametros: { id: REQ } })).rejects.toMatchObject({
-      codigo: 'funcion_inactiva',
+      codigo: 'no_encontrado',
     });
   });
 
   it('aceptar el fee registra la versión vigente', async () => {
-    const api = crearClienteMock({ latenciaMs: 0 });
+    const api = nuevo({ escenario: 'otra-ciudad' });
     const antes = await api.llamar('fee');
-    const despues = await api.llamar('feeAceptar', {
-      cuerpo: { politicaId: antes.vigente?.id ?? '', version: antes.vigente?.version ?? '' },
+    expect(antes.aceptada).not.toBeNull();
+    const api2 = nuevo();
+    await api2.llamar('login', {
+      cuerpo: { email: 'usuaria@example.test', contrasena: 'handyx-demo-1234' },
+    });
+    const f = await api2.llamar('fee');
+    expect(f.aceptada).toBeNull();
+    const despues = await api2.llamar('feeAceptar', {
+      cuerpo: { politicaId: f.vigente?.id ?? '', version: f.vigente?.version ?? '' },
     });
     expect(despues.aceptada?.version).toBe('fee-demo-2026-11-10');
   });

@@ -8,3 +8,4 @@ next-env.d.ts
 src/contracts
 # Generado por npm run mapa
 docs/screens/matriz.md
+tests/e2e
