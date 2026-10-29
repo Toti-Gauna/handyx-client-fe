@@ -1,0 +1,31 @@
+name: Frontend checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run mapa:check
+      # El BE es privado: acá no se compara byte a byte (lo hace la prueba local con el BE al lado).
+      - run: npm run contracts:check
+      - run: npm run build
+      # Un build de producción sin API real tiene que fallar.
+      - run: '! NEXT_PUBLIC_ENTORNO=produccion npm run build'

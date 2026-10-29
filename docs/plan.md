@@ -1,0 +1,51 @@
+# Plan · Bloque 3 · App de usuario de Handyx
+
+Cinco fases, ejecutadas por lotes en orden. Una rama por fase (`fase-N-…`) con PR a `main` en `handyx-client-fe` y
+`handyx-client-be`. El modelo/esfuerzo es una **recomendación**: se elige en Claude Code; escribirlo acá no lo cambia.
+
+Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable con datos ficticios) · **conectado**
+(contra el backend real) · **probado** (pruebas ejecutadas con resultado) · **desplegado** (publicado y verificado).
+
+| Fase                     | Lote | Objetivo                                                         | Modelo · esfuerzo | Estado                                   |
+| ------------------------ | ---- | ---------------------------------------------------------------- | ----------------- | ---------------------------------------- |
+| 1 · Bases                | 1.1  | Auditoría y base ejecutable (Next export + Express)              | Opus 5.5 · high   | ✅ listo · probado (local)               |
+|                          | 1.2  | Alcance, pantallas y registro                                    | Opus 5.5 · high   | ✅ listo · decidido                      |
+|                          | 1.3  | Contrato común de integración                                    | Opus 5.5 · high   | ✅ listo · decidido + probado (esquemas) |
+| 2 · Mockup completo      | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida | Sonnet 5.5 · high | pendiente                                |
+|                          | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA              | Sonnet 5.5 · high | pendiente                                |
+|                          | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos | Sonnet 5.5 · high | pendiente                                |
+|                          | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial       | Sonnet 5.5 · high | pendiente                                |
+|                          | 2.5  | Pagos directos, avisos y los 18 escenarios                       | Sonnet 5.5 · high | pendiente                                |
+| 3 · Refinación de diseño | 3.1  | Sistema visual y navegación                                      | Opus 5.5 · high   | pendiente                                |
+|                          | 3.2  | Responsive y accesibilidad                                       | Opus 5.5 · high   | pendiente                                |
+|                          | 3.3  | Motion, PWA (manifest, SW, offline) y capturas                   | Opus 5.5 · high   | pendiente                                |
+| 4 · BE y DB conectados   | 4.1  | Esquema compartido y migraciones (base aislada)                  | Opus 5.5 · high   | pendiente                                |
+|                          | 4.2  | Auth, cuenta y privacidad reales                                 | Opus 5.5 · high   | pendiente                                |
+|                          | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)         | Opus 5.5 · high   | pendiente                                |
+|                          | 4.4  | Chat, agenda, trabajos y reclamos reales                         | Opus 5.5 · high   | pendiente                                |
+|                          | 4.5  | Pago directo, fee y métricas (o gate concreto)                   | Opus 5.5 · high   | pendiente                                |
+|                          | 4.6  | Integración con Especialista y regresión                         | Opus 5.5 · high   | pendiente                                |
+| 5 · Deploy               | 5.1  | Readiness, CI y deploy de prueba                                 | Sonnet 5.5 · high | pendiente                                |
+|                          | 5.2  | Testing integrado en dos celulares                               | Sonnet 5.5 · high | pendiente                                |
+|                          | 5.3  | Deploy web final y rollback                                      | Sonnet 5.5 · high | pendiente                                |
+|                          | 5.4  | Mapa final (PROD-26) y Handy Docs                                | Sonnet 5.5 · high | pendiente                                |
+
+## Comprobaciones de cierre de la Fase 1
+
+| Lote | Comprobación                                                                                | Evidencia                                                                                                                                                                    |
+| ---- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1  | La app arranca con scripts reproducibles sin sobrescribir cambios del usuario               | repos vacíos (solo README, conservado); `npm ci`, `build` (36 páginas estáticas), `preview`, `test` OK en FE y BE; capturas 390/1280 px sin errores ni desborde              |
+| 1.2  | No se añaden documentos de especialista al usuario ni se convierten preregistros en cuentas | perfil sin DNI/CUIT (prueba `mapa.test.ts`), contrato `RegistroEntrada` exige invitación y no acepta campos extra; preregistros fuera (ADR-0001 BE)                          |
+| 1.3  | Las dos apps comparten identidad/pedido/propuesta sin tablas o reglas duplicadas            | ADR-0001 (dueño único + escrituras por dominio), contrato v1 único copiado byte a byte (prueba de sincronía), propuestas bidireccionales (`autorRol`), un acuerdo por pedido |
+
+## Decisiones vigentes
+
+Las del prompt del bloque (Handyx/handyc.com, MDP, demo 10/11–10/12, fee 0 %, pago directo, propuestas bidireccionales,
+sin asignación obligatoria, sin ETA, urgencias 20/5 min, programados 12 h, antecedentes sin archivos, HandIA apagada, baja
+real, tiendas después del 10/12) más:
+
+- Front: **Next.js 16 export estático** (Ignacio, 29/10).
+- Dueño del esquema: **handyx-client-be** (Ignacio, 29/10).
+- Fee 0 % avisado **después del registro, en el modal de primer ingreso y con contador en Cuenta**, "hasta el 10/12"
+  (Ignacio, 29/10).
+- Ramas: una por fase, PR a `main` (Ignacio, 29/10).
