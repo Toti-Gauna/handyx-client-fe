@@ -30,6 +30,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | registro-listo-fee | [registro-listo-fee-390.jpg](registro-listo-fee-390.jpg) |
 | perfil-nombre | [perfil-nombre-390.jpg](perfil-nombre-390.jpg) |
 | perfil-permiso-ubicacion | [perfil-permiso-ubicacion-390.jpg](perfil-permiso-ubicacion-390.jpg) |
+| perfil-direccion-mapa | [perfil-direccion-mapa-390.jpg](perfil-direccion-mapa-390.jpg) |
 | perfil-ubicacion-denegada | [perfil-ubicacion-denegada-390.jpg](perfil-ubicacion-denegada-390.jpg) |
 
 ## Inicio

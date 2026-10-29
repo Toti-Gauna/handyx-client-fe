@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { MapaHx } from '@/components/MapaHx';
 import { Enlace, ruta } from '@/components/nav';
 import { Desglose, PerfilProfesional } from '@/components/Propuesta';
 import { Encabezado } from '@/components/Titulo';
@@ -111,6 +112,16 @@ export default function DetalleTrabajo() {
         }
       />
 
+      {t.estado === 'en_camino' && pedido.datos?.ubicacion.coordenadas ? (
+        // Por ahora, solo tu casa: la posición aproximada del especialista (solo mientras viaja) llega con el contrato
+        // del BE (trabajoUbicacionEspecialista, Fase 4). Nunca un tiempo de llegada.
+        <MapaHx
+          modo="ver"
+          centro={pedido.datos.ubicacion.coordenadas}
+          etiqueta="Mapa: tu casa, donde va el especialista"
+          clase="detalle-mapa"
+        />
+      ) : null}
       {t.estado === 'en_camino' ? (
         <Aviso tipo="info" titulo="El especialista va en camino" rol="status">
           Te avisamos cuando llegue.

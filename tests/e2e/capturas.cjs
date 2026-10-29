@@ -72,6 +72,7 @@ const CAPTURAS = [
   ['Alta', 'registro-listo-fee', '/registro/', [registrarse], { vista: true }],
   ['Alta', 'perfil-nombre', '/registro/', [registrarse, tocar('link', 'Completar mi perfil')], { vista: true }],
   ['Alta', 'perfil-permiso-ubicacion', E('/perfil/', 'ubicacion-denegada'), [tocar('button', 'Seguir', true), tocar('button', 'Seguir', true)], { vista: true }],
+  ['Alta', 'perfil-direccion-mapa', E('/perfil/', 'ubicacion-denegada'), [tocar('button', 'Seguir', true), tocar('button', 'Seguir', true), tocar('button', 'Escribirla a mano')], { vista: true }],
   ['Alta', 'perfil-ubicacion-denegada', E('/perfil/', 'ubicacion-denegada'), [tocar('button', 'Seguir', true), tocar('button', 'Seguir', true), tocar('button', 'Usar mi ubicación')], { vista: true }],
   ['Inicio', 'modal-fee-primer-ingreso', '/registro/', [registrarse, completarPerfil], { fee: false, vista: true }],
   ['Inicio', 'inicio-propuestas', E('/inicio/', 'varias-propuestas')],

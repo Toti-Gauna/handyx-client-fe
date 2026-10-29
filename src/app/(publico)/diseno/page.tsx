@@ -3,8 +3,10 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { AvatarHx, ChipEstado, Marcado, Pantalla } from '@/components/hx';
 import { Icono } from '@/components/Icono';
+import { MapaHx } from '@/components/MapaHx';
 import { TRAZOS, type NombreIcono } from '@/components/trazos';
 import { esVistaDePrueba } from '@/data';
+import { CENTRO_MDP } from '@/geo/mdp';
 import { RUBROS } from '@/contracts/v1/pedidos';
 import {
   RUBROS_INFO,
@@ -162,6 +164,25 @@ export default function Diseno() {
               <Icono nombre="flecha" />
             </button>
           </section>
+        </Seccion>
+
+        <Seccion titulo="Mapa">
+          <div className="galeria__mapas">
+            <MapaHx
+              modo="elegir"
+              centro={CENTRO_MDP}
+              etiqueta="Ejemplo de mapa para elegir la dirección"
+              clase="galeria__mapa"
+            />
+            <MapaHx
+              modo="ver"
+              centro={CENTRO_MDP}
+              zoom={14.5}
+              pulso
+              etiqueta="Ejemplo de mapa de búsqueda"
+              clase="galeria__mapa"
+            />
+          </div>
         </Seccion>
 
         <Seccion titulo="Notas y avisos">

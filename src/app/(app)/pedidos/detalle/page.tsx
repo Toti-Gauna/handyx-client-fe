@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
 import { FotoSubida } from '@/components/FotoSubida';
+import { MapaHx } from '@/components/MapaHx';
 import { Enlace, ruta } from '@/components/nav';
 import { Encabezado } from '@/components/Titulo';
 import {
@@ -128,6 +129,20 @@ export default function DetallePedido() {
         </Aviso>
       ) : null}
 
+      {p.ubicacion.coordenadas ? (
+        <MapaHx
+          modo="ver"
+          centro={p.ubicacion.coordenadas}
+          zoom={p.estado === 'buscando' ? 14.5 : 16}
+          pulso={p.estado === 'buscando'}
+          etiqueta={
+            p.estado === 'buscando'
+              ? `Mapa: buscando especialistas cerca de ${p.ubicacion.barrio ?? 'tu casa'}`
+              : 'Mapa: dónde es el trabajo'
+          }
+          clase="detalle-mapa"
+        />
+      ) : null}
       {p.estado === 'buscando' ? (
         <Aviso tipo="info" titulo="Estamos buscando especialistas" rol="status">
           <p>

@@ -34,6 +34,11 @@ parecido:
   kit (`ajustes.css`), así que una pantalla se rediseña sin tocar su validación.
 - **Bienvenida**: azul con el mosaico de la marca, logo en blanco, 3 tarjetas deslizables (carrusel con
   `role="region"`, puntos de 44 px con `aria-current`) y "Crear cuenta" / "Ya tengo cuenta".
+- **Mapa** (`MapaHx`): `elegir` (la persona mueve el mapa y el pin queda fijo en el centro, como en las apps de
+  delivery; se levanta mientras se mueve) y `ver` (tu casa con el pin rojo de la demo, pulso mientras se busca,
+  especialista aproximado solo si hay dato). Estilo de la demo: tierra gris clara, calles blancas, mar celeste con costa
+  amarilla, plazas verdes, barrios en mayúsculas espaciadas. Sin datos, el SVG de la demo con el rótulo "Mapa
+  ilustrativo". Atribución "© OpenStreetMap" como texto con enlace.
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

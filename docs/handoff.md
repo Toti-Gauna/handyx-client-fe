@@ -1,12 +1,62 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 y 3.2, pantalla de carga mejorada y HandIA. Sigue el lote 3.3**
-(mapa) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1, 3.2 y 3.3 (mapa; faltan generar los datos reales), pantalla de
+carga y HandIA. Sigue el lote 3.4** (Inicio y pedir) ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.3 · Mapa
+
+Pedido de Ignacio: "Vamos con 3.3". Mapa propio de Mar del Plata, sin cuentas, claves ni terceros:
+
+- **MapLibre 6** (6.15: la 5 tenía una vulnerabilidad crítica de XSS) + **`pmtiles`** + capas de
+  **`@protomaps/basemaps`** con el **estilo Handyx** de la demo (`src/geo/estilo.ts`): tierra gris clara, calles
+  blancas, mar celeste con costa amarilla, plazas verdes, barrios en mayúsculas espaciadas. Sin capas de íconos (no hace
+  falta sprite). Fuentes Noto (OFL) en `public/mapa/fuentes/`; el worker de MapLibre se copia a `public/mapa/` en
+  `predev`/`prebuild` (MapLibre 6 lo busca al lado de su módulo, que Next empaqueta).
+- **`MapaHx`**: `elegir` (movés el mapa y el pin queda en el centro; al soltar guarda el punto con su precisión y dice
+  "Estás cerca de {barrio}") y `ver` (tu casa, pulso mientras se busca, especialista aproximado solo si hay dato).
+  Atribución "© OpenStreetMap" visible.
+- **Dónde aparece**: dirección del onboarding y de "Mis datos" (`FormUbicacion`), detalle del pedido (con pulso mientras
+  busca), trabajo en camino (tu casa; la posición del especialista necesita `trabajoUbicacionEspecialista`, Fase
+  4.4/4.6; nunca tiempos de llegada) y la galería `/diseno/`.
+- **Sin el archivo del mapa** (como hoy): el SVG de la demo con el rótulo "Mapa ilustrativo" y "escribí la dirección";
+  el build detecta si el archivo está (`NEXT_PUBLIC_MAPA_DATOS`) y si no, no lo pide.
+- La usuaria ficticia del mock tiene un punto público de La Perla, para ver el mapa de búsqueda.
+- Pruebas: `tests/mapa-geo.test.ts` (13) y `tests/e2e/mapa.cjs`, que prueba el camino de MapLibre con un **mapa
+  sintético** (`tests/fixtures/mapa-prueba.pmtiles`, calles en grilla y un "Barrio de Prueba", generado por
+  `scripts/mapa-prueba.mjs`; nunca se publica). Capturas: `screens/rediseno-3-3/mapa.jpg` (rotuladas).
+
+### Falta: generar el mapa real (necesita internet)
+
+En esta sesión la red no deja llegar a `build.protomaps.com` (de donde se recorta el extracto) ni compilar la
+herramienta `pmtiles`. Dos caminos:
+
+1. **En tu máquina** (con internet): bajá `pmtiles` de https://github.com/protomaps/go-pmtiles/releases (un binario),
+   y en `handyx-client-fe`:
+   ```sh
+   npm run mdp:datos          # recorta Mar del Plata (zoom 0-15) a public/mapa/mdp.pmtiles
+   npm run mdp:verificar      # tipo, zoom, límites, capas y peso
+   npm run build && npm run preview
+   ```
+2. **En esta sesión**: habilitá `build.protomaps.com` (y `github.com`, para la herramienta) en los dominios permitidos del
+   entorno (menú del entorno › Editar › Network access) y lo genero yo.
+
+El archivo no se versiona (`.gitignore`); en la Fase 5 se genera antes del build que se sube a Hostinger. CSP de la
+Fase 5: `worker-src 'self'` y `connect-src 'self'` alcanzan (todo es del mismo origen).
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                               |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                      |
+| `npm test`                                         | **121 pruebas OK** (13 nuevas del mapa)                                                 |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                            |
+| `npm run e2e`                                      | recorrido · 18 escenarios · 209 de accesibilidad · teclado · PWA · HandIA · **mapa OK** |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas       |
 
 ## Rediseño · lote 3.2 · Acceso y onboarding
 
@@ -43,8 +93,7 @@ Pedido de Ignacio: "Seguí con el 3.2". Todo a pantalla completa con el kit de l
 
 ### Próximo paso
 
-Lote 3.3 del rediseño: el mapa (MapLibre + PMTiles autoalojado de Mar del Plata, estilo Handyx), con la dirección en el
-mapa en el onboarding.
+Hecho en el lote 3.3 (arriba).
 
 ## Pantalla de carga mejorada y HandIA incluida
 

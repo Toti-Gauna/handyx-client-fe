@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import type { Ubicacion } from '@/contracts/v1/cuenta';
 import { useConsulta } from '@/data/hooks';
 import { pedirUbicacionUnaVez } from '@/data/geo';
+import { CENTRO_MDP, dentroDeMdp } from '@/geo/mdp';
+import { MapaHx, type EstadoMapa } from './MapaHx';
 import { Aviso, Boton, Campo } from './ui';
 
 export type UbicacionForm = Pick<Ubicacion, 'ciudad' | 'direccion' | 'origen' | 'coordenadas'> & {
@@ -103,8 +105,36 @@ export function FormUbicacion({
   useEffect(() => onCobertura?.(cubierta), [cubierta, onCobertura]);
 
   const set = (campo: keyof UbicacionForm, v: string) => onCambio({ ...valor, [campo]: v });
+  const [mapa, setMapa] = useState<EstadoMapa>('cargando');
+  const [cerca, setCerca] = useState<string | null>(null);
+  const fuera = valor.coordenadas ? !dentroDeMdp(valor.coordenadas) : false;
   return (
     <div className="form-ubicacion">
+      <MapaHx
+        modo="elegir"
+        centro={valor.coordenadas ?? CENTRO_MDP}
+        etiqueta="Mapa para ubicar tu casa: movelo hasta que el pin quede sobre la puerta"
+        clase="form-ubicacion__mapa"
+        onEstado={setMapa}
+        onBarrio={setCerca}
+        onMover={(p) =>
+          onCambio({
+            ...valor,
+            origen: 'manual',
+            coordenadas: p,
+            barrio: valor.barrio || cerca || '',
+          })
+        }
+      />
+      <p className="campo__ayuda" role="status">
+        {mapa === 'ilustrado'
+          ? 'El mapa no está disponible ahora: escribí la dirección y listo.'
+          : fuera
+            ? 'Ese punto queda fuera de Mar del Plata: por ahora no llegamos ahí.'
+            : cerca
+              ? `Mové el mapa hasta tu puerta. Estás cerca de ${cerca}.`
+              : 'Mové el mapa hasta que el pin quede sobre tu puerta.'}
+      </p>
       <Boton variante="claro" icono="pin" cargando={buscando} onClick={() => void usar()}>
         Usar mi ubicación ahora
       </Boton>

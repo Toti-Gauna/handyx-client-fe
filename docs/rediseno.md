@@ -132,6 +132,13 @@ logotipo se arma en SVG con Archivo 900 para que los personajes puedan agarrarse
   mano**. Si se quiere autocompletar, hace falta un proveedor (decisión 6).
 - Plan B si el extracto no se puede generar: capa vectorial simplificada de MDP (GeoJSON) con el mismo estilo.
 
+> **Hecho en el lote 3.3 (29/10).** MapLibre 6 + `pmtiles` + capas de `@protomaps/basemaps` con el estilo Handyx, fuentes
+> Noto servidas por la app y el worker de MapLibre copiado a `public/mapa/`. El extracto real se genera con
+> `npm run mdp:datos` (recorta Mar del Plata de un build público de Protomaps, gratis y sin cuentas) en una máquina con
+> internet: en el entorno de la sesión la red no permite llegar a esos datos. Sin el archivo, el mapa ilustrado de la
+> demo, rotulado. Barrios: el lugar de OpenStreetMap más cercano al pin ("Estás cerca de…"), sin polígonos por ahora.
+> Seguimiento: tu casa, sin la posición del especialista hasta el contrato (`trabajoUbicacionEspecialista`, 4.4/4.6).
+
 ### Dónde aparece
 
 | Pantalla                     | Qué muestra                                                                                   |

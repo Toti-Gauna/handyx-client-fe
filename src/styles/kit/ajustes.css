@@ -1080,3 +1080,178 @@ body {
     height: 5.4em;
   }
 }
+
+/* ── Mapa (lote 3.3) ──────────────────────────────────────────────────────────────────────────────── */
+.mapa-hx {
+  position: relative;
+  overflow: hidden;
+  min-height: 9em;
+  border-radius: 1.2em;
+  background: var(--hd-mosaico);
+  isolation: isolate;
+}
+.mapa-hx__lienzo,
+.mapa-hx__lienzo.maplibregl-map,
+.mapa-hx__ilustrado {
+  position: absolute;
+  inset: 0;
+}
+.mapa-hx__lienzo:focus-visible,
+.mapa-hx .maplibregl-canvas:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: -3px;
+}
+.mapa-hx--cargando .mapa-hx__lienzo {
+  background: linear-gradient(90deg, var(--hd-mosaico), var(--hd-fondo-2), var(--hd-mosaico));
+  background-size: 200% 100%;
+  animation: hx-mapa-cargando 1.4s linear infinite;
+}
+@keyframes hx-mapa-cargando {
+  to {
+    background-position: -200% 0;
+  }
+}
+/* El pin rojo de la demo (casa) en HTML, para el mapa vivo y la mira de "elegir". */
+.mapa-hx__pin {
+  position: relative;
+  display: block;
+  width: 1.7em;
+  height: 1.7em;
+  border: 0.16em solid var(--sup-tarjeta);
+  border-radius: 50% 50% 50% 0;
+  background: var(--hd-error);
+  box-shadow: 0 0.3em 0.7em rgb(14 29 54 / 0.3);
+  transform: rotate(-45deg);
+}
+.mapa-hx__pin::after {
+  content: '';
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  background: var(--sup-tarjeta);
+}
+.mapa-hx__mira {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+.mapa-hx__mira .mapa-hx__pin {
+  transition: transform 0.18s var(--hd-curva);
+}
+.mapa-hx__mira > i {
+  width: 0.5em;
+  height: 0.22em;
+  margin-top: 0.15em;
+  border-radius: 50%;
+  background: rgb(14 29 54 / 0.35);
+}
+.mapa-hx__mira--moviendo .mapa-hx__pin {
+  transform: translateY(-0.5em) rotate(-45deg);
+}
+.mapa-hx__casa {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.mapa-hx__casa > i {
+  display: none;
+}
+.mapa-hx__casa--pulso > i {
+  position: absolute;
+  bottom: -2.6em;
+  display: block;
+  width: 6em;
+  height: 6em;
+  border: 0.1em solid rgb(31 87 168 / 0.45);
+  border-radius: 50%;
+  background: rgb(31 87 168 / 0.1);
+  transform: scale(0);
+  animation: hx-mapa-pulso 2.7s ease-out infinite;
+}
+.mapa-hx__casa--pulso > i:nth-child(2) {
+  animation-delay: 0.9s;
+}
+.mapa-hx__casa--pulso > i:nth-child(3) {
+  animation-delay: 1.8s;
+}
+@keyframes hx-mapa-pulso {
+  70% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+.mapa-hx__esp {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border: 0.18em solid var(--sup-tarjeta);
+  border-radius: 50%;
+  background: var(--hd-azul);
+  color: var(--texto-sobre-marca);
+  font-family: var(--hd-titulos);
+  font-size: 0.8em;
+  font-weight: 900;
+  box-shadow: 0 0 0 0.4em rgb(255 255 255 / 0.55);
+  transition: transform 0.6s var(--hd-curva);
+}
+.mapa-hx__atribucion,
+.mapa-hx__rotulo {
+  position: absolute;
+  z-index: 3;
+  right: 0.5em;
+  bottom: 0.5em;
+  margin: 0;
+  padding: 0.15em 0.55em;
+  border-radius: 0.6em;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--hd-tinta);
+  font-size: 0.6em;
+  font-weight: 700;
+}
+.mapa-hx__atribucion a {
+  color: var(--hd-azul);
+}
+.mapa-hx__rotulo {
+  left: 0.5em;
+  right: auto;
+}
+.mapa-hx--ilustrado .mapa-hx__mira {
+  top: calc(50% + 0.6em);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapa-hx--cargando .mapa-hx__lienzo,
+  .mapa-hx__casa--pulso > i {
+    animation: none;
+  }
+  .mapa-hx__mira .mapa-hx__pin,
+  .mapa-hx__esp {
+    transition: none;
+  }
+}
+.form-ubicacion__mapa {
+  height: 13em;
+}
+.form-ubicacion > .form-ubicacion__mapa + .campo__ayuda {
+  margin-top: -0.6em;
+}
+.detalle-mapa {
+  height: 11em;
+  margin: 12px 0;
+}
+.galeria__mapas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+}
+.galeria__mapa {
+  height: 14em;
+}

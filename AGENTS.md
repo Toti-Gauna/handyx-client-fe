@@ -36,6 +36,11 @@ segmentos dinámicos `[id]`.
   especialista (Mercado Pago o efectivo), reportado ≠ verificado, volver del checkout no confirma nada; sin "Agregar
   tarjeta"; HandIA incluida como asistente para armar el pedido (sugiere el rubro; tacha datos personales antes de
   enviar; nunca recibe fotos ni documentos; con API real, inactiva hasta el endpoint del BE); sin envíos automáticos a terceros.
+- **Mapa** (`src/components/MapaHx.tsx`, `src/geo/`): MapLibre + el extracto de OpenStreetMap de Mar del Plata servido por la
+  propia app (`public/mapa/mdp.pmtiles`, se genera con `npm run mdp:datos`, no se versiona) y fuentes propias en
+  `public/mapa/fuentes/`. **Nada de terceros** (ni teselas, ni claves, ni geocodificadores). Sin el archivo, el mapa
+  ilustrado de la demo rotulado "Mapa ilustrativo": nunca una geografía inventada. Atribución de OpenStreetMap visible.
+  El pin elige un punto solo cuando la persona mueve el mapa; nunca tiempos de llegada.
 - **PWA**: `public/sw.js` guarda solo archivos públicos del mismo origen (páginas por ruta, sin query); nunca la API,
   escrituras ni datos, y no encola acciones. Sin conexión nada se da por hecho. Si cambia su lógica, subir `VERSION`; todo
   archivo de la precarga tiene que existir (lo prueba `tests/pwa.test.ts`). Nunca animar botones de aceptar/pagar.

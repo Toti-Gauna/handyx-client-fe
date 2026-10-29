@@ -10,3 +10,8 @@ next-env.d.ts
 *.log
 .DS_Store
 capturas-e2e/
+
+# Extracto de OpenStreetMap de Mar del Plata (npm run mdp:datos): se genera, no se versiona.
+public/mapa/mdp.pmtiles
+# Copia del worker de MapLibre (scripts/mapa-worker.mjs, en predev/prebuild).
+public/mapa/maplibre-gl-worker.js
