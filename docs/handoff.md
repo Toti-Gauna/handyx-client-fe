@@ -1,11 +1,48 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Refinación de diseño — lotes 3.1 y 3.2 listos.** Próximo: lote 3.3 (motion, PWA y capturas), misma rama.
+**Fase actual: 3 · Refinación de diseño — completa (lotes 3.1, 3.2 y 3.3).** Próxima: Fase 4 · lote 4.1 (esquema y migraciones, base aislada).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Lote 3.3 · Motion, PWA y capturas
+
+- **Movimiento funcional** (pantalla nueva, tarjetas que llegan, hojas, búsqueda en curso, toque): 120–220 ms, nunca en
+  botones de aceptar/pagar, sin sonido ni vibración; `prefers-reduced-motion` lo anula todo (incluido el fondo de las hojas).
+- **PWA instalable**: `manifest.webmanifest` (íconos de la landing, normales y adaptables, atajos), instalación desde
+  Cuenta (el aviso automático se retiene), ayuda para iPhone. Chromium no reporta errores de instalabilidad.
+- **Service worker propio** (`public/sw.js`, sin dependencias, solo en producción): guarda archivos públicos del mismo
+  origen (páginas por ruta sin query, estáticos, ilustraciones); nunca la API, escrituras ni datos; no encola nada.
+  Sin red: página guardada o `/sin-conexion/` (pantalla real, reemplaza al marcador de la Fase 1).
+- **Sin conexión sin éxitos ficticios**: aviso fijo; las acciones fallan a la vista (aceptar no crea el trabajo, el
+  mensaje queda "No se envió"); las pantallas guardadas muestran error, no datos; al volver la red, recargan. El mock
+  también falla con el navegador sin red.
+- **Capturas**: `npm run capturas` genera el catálogo (66 capturas + los 18 escenarios) en
+  [`docs/screens/capturas/`](screens/capturas/README.md). La revisión encontró y corrigió capturas tomadas durante la
+  carga, guiones automáticos que cortaban títulos ("del ho-gar") y "comisión" en la pantalla de pago (ahora "tarifa").
+- Bug encontrado y corregido en el camino: con un archivo mal nombrado en la precarga, el service worker no se instalaba
+  (la precarga es todo o nada); ahora una prueba verifica que cada archivo exista.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                     |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                            |
+| `npm test`                                         | **84 pruebas OK** (8 archivos; nuevo `tests/pwa.test.ts` con 12)              |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · 37 rutas (36 páginas + `manifest.webmanifest`) |
+| `node tests/e2e/pwa.cjs`                           | 22 de 22 OK                                                                   |
+| `node tests/e2e/accesibilidad.cjs` · `teclado.cjs` | 203 de 203 · 13 de 13                                                         |
+| `node tests/e2e/recorrido.cjs` · `escenarios.cjs`  | OK · 18 de 18                                                                 |
+| `npm run capturas`                                 | 66 capturas + 18 escenarios                                                   |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas         |
+
+### Para el despliegue (Fase 5)
+
+`sw.js` con `Cache-Control: no-cache` (si no, las actualizaciones tardan); `manifest.webmanifest` con
+`application/manifest+json`; HTTPS obligatorio para el service worker. Probar instalación y sin conexión en Chrome Android y
+Safari iOS en el lote 5.2.
 
 ## Lote 3.2 · Responsive y accesibilidad
 
@@ -83,9 +120,9 @@ Las pruebas e2e cambiaron solo en los nombres de dos controles: el botón "Acept
 
 ## Próximo paso
 
-Lote 3.3 (Opus 5.5 high) en `fase-3-diseno`: movimiento funcional que respete `prefers-reduced-motion` y nunca empuje a
-aceptar, PWA instalable (manifest e íconos coherentes, service worker, `/sin-conexion/` sin éxitos ficticios) y capturas
-de todas las pantallas y estados. Al cerrarlo, PR de la Fase 3 hacia `fase-2-mockup`.
+Fase 4 · lote 4.1 (Opus 5.5 high), rama `fase-4-backend` en `handyx-client-be` (y en el FE si hace falta): esquema
+compartido con Prisma 7 y migraciones contra una **base aislada local** (nada remoto sin autorización), con las preguntas
+de `docs/contrato-mock.md` resueltas. Antes, mergear los PR de las Fases 1–3 en orden.
 
 ---
 

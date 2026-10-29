@@ -1,6 +1,6 @@
 # QA · App de usuario
 
-Estado: **Fase 3 · lote 3.2 (responsive y accesibilidad)**. Todo corre con el adaptador mock y datos ficticios; nada contra un backend real ni desplegado.
+Estado: **Fase 3 completa (lotes 3.1–3.3)**. Todo corre con el adaptador mock y datos ficticios; nada contra un backend real ni desplegado.
 
 ## Automatizadas (corren en CI)
 
@@ -32,11 +32,14 @@ Requieren Playwright y `npm run build && npm run preview`. `npm run e2e` los cor
 - Desborde horizontal: ninguno en 20 rutas × 360/390/768/1280 px.
 - Lote 3.2: accesibilidad **203 de 203 chequeos OK** (la primera corrida dio 181 con fallas: objetivos chicos, calendario y
   desplegables, orden de títulos, desbordes con texto al 200 %); teclado **13 de 13 OK**; recorrido y 18 escenarios OK.
+- Lote 3.3: PWA **22 de 22 comprobaciones OK** (instalable, caché sin datos, sin conexión sin éxitos ficticios); catálogo de
+  66 capturas + 18 escenarios revisado a ojo (se corrigieron capturas tomadas durante la carga, cortes con guion en títulos
+  y el texto "comisión" que quedaba en Pago).
 
 ## Qué NO se probó todavía
 
 - Dispositivos reales (iOS/Android) y lectores de pantalla reales (VoiceOver, TalkBack): sin acceso en esta sesión; se revisó
   el árbol de accesibilidad de Chromium. Queda para la prueba en dos celulares (Fase 5 · lote 5.2).
 - Zoom de texto real de iOS/Android (se aproximó con `font-size: 200%` en la raíz).
-- Service worker, instalación y modo sin conexión: Fase 3 (lote 3.3).
+- Instalación y modo sin conexión en celulares reales (Chrome Android, Safari iOS): lote 5.2.
 - Cualquier cosa contra `handyx-client-be` con base de datos, la app de especialista y Mercado Pago real: Fases 4 y 5.

@@ -32,6 +32,9 @@ segmentos dinámicos `[id]`.
   ingreso y con contador en Cuenta, sin presentarlo como descuento ni anunciar tarifas no aprobadas; pago directo al
   especialista (Mercado Pago o efectivo), reportado ≠ verificado, volver del checkout no confirma nada; sin "Agregar
   tarjeta"; HandIA desactivada; sin envíos automáticos a terceros.
+- **PWA**: `public/sw.js` guarda solo archivos públicos del mismo origen (páginas por ruta, sin query); nunca la API,
+  escrituras ni datos, y no encola acciones. Sin conexión nada se da por hecho. Si cambia su lógica, subir `VERSION`; todo
+  archivo de la precarga tiene que existir (lo prueba `tests/pwa.test.ts`). Nunca animar botones de aceptar/pagar.
 - **Datos de prueba**: solo ficticios (ids `de000000-…`, `*@example.test`, nombres inventados).
 - **Accesibilidad y responsive**: 360/390, 768/820 y escritorio; foco visible, labels, targets ≥ 44 px, contraste, nada
   que dependa solo del color, `prefers-reduced-motion`. Auditoría: `tests/e2e/accesibilidad.cjs` y `teclado.cjs` (ver `docs/qa.md`).
@@ -44,6 +47,7 @@ npm run dev                 # http://127.0.0.1:5175 (vista de prueba sin .env)
 npm run build && npm run preview   # export estático en out/ servido como Hostinger (127.0.0.1:5176)
 npm run lint | typecheck | test | format:check | mapa:check | contracts:check
 npm run e2e                 # navegador real (requiere Playwright y `npm run preview`); ver docs/qa.md
+npm run capturas            # catálogo de pantallas y estados en docs/screens/capturas/
 ```
 
 Antes de cada PR: `format:check`, `lint`, `typecheck`, `test`, `mapa:check`, `contracts:check`, `build` y `npm audit`.

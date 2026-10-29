@@ -7,7 +7,13 @@ import { useSesion } from '@/components/SesionProvider';
 import { Titulo } from '@/components/Titulo';
 import { Aviso, Boton } from '@/components/ui';
 import type { NombreIcono } from '@/components/trazos';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
+import {
+  instalar,
+  puedeInstalar,
+  puedeInstalarServidor,
+  suscribirInstalacion,
+} from '@/components/red';
 import { resumirFee } from '@/domain/fee';
 
 const MENU: readonly { href: string; icono: NombreIcono; texto: string }[] = [
@@ -24,6 +30,11 @@ export default function Cuenta() {
   const { sesion, fee, cerrarSesion } = useSesion();
   const [saliendo, setSaliendo] = useState(false);
   const resumen = resumirFee(fee);
+  const instalable = useSyncExternalStore(
+    suscribirInstalacion,
+    puedeInstalar,
+    puedeInstalarServidor,
+  );
   const nombre = [sesion.perfil.nombre, sesion.perfil.apellido].filter(Boolean).join(' ');
   return (
     <>
@@ -83,6 +94,22 @@ export default function Cuenta() {
           Ver condiciones
         </Enlace>
       </section>
+
+      {instalable ? (
+        <section className="tarjeta" aria-labelledby="instalar-t">
+          <div className="tarjeta__cuerpo">
+            <h2 id="instalar-t" className="tarjeta__titulo">
+              Instalá Handyx en este celular
+            </h2>
+            <p style={{ margin: '0 0 12px' }}>
+              Queda en la pantalla de inicio y se abre como una app. No ocupa casi espacio.
+            </p>
+            <Boton variante="amarillo" icono="abajo" onClick={() => void instalar()}>
+              Instalar
+            </Boton>
+          </div>
+        </section>
+      ) : null}
 
       <ul className="lista-tarjetas">
         {MENU.map((m) => (

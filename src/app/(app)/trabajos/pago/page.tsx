@@ -126,9 +126,9 @@ function Contenido({
           dinero.
         </p>
         <p>
-          La comisión de Handy es <strong>{pesos(t.acuerdo.comisionHandy.importe.centavos)}</strong>{' '}
-          ({porcentaje(t.acuerdo.comisionHandy.bp)}) durante la demo. Eso no significa que el
-          trabajo sea gratis: el servicio se paga entero.
+          La tarifa de Handy es <strong>{pesos(t.acuerdo.comisionHandy.importe.centavos)}</strong> (
+          {porcentaje(t.acuerdo.comisionHandy.bp)}) durante la demo. Eso no significa que el trabajo
+          sea gratis: el servicio se paga entero.
         </p>
       </Aviso>
       {!puedePagar ? (

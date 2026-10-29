@@ -97,7 +97,7 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 
 | Pantalla | Ruta | Lote | Acciones | Estados | API | Entidades | Pruebas |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Sin conexión** | `/sin-conexion/` | 3.3 | Reintentar | offline | — | — | ninguna acción se da por hecha sin respuesta del servidor |
+| **Sin conexión** | `/sin-conexion/` | 3.3 | Reintentar<br>Ir al inicio | offline (pantalla no guardada) | — | — | ninguna acción se da por hecha sin respuesta del servidor<br>tests/e2e/pwa.cjs: aceptar y mandar mensajes sin conexión fallan a la vista<br>el caché del service worker no guarda API, ids ni datos personales |
 
 ## Escenarios obligatorios del mock
 

@@ -49,4 +49,8 @@ export const PREGUNTAS = [
     p: '¿Puedo borrar mi cuenta?',
     r: 'Sí, de verdad: Cuenta › Eliminar cuenta. Si por obligación legal tenemos que conservar algún dato, te decimos cuál.',
   },
+  {
+    p: '¿Puedo tener Handyx como app en el celular?',
+    r: 'Sí. En Android, entrá a Cuenta y tocá "Instalar" (si tu navegador lo permite). En iPhone, abrí Handyx en Safari, tocá Compartir y después "Agregar a inicio". Sin conexión podés abrirla, pero nada se envía hasta que vuelva la señal.',
+  },
 ] as const;

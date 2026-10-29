@@ -326,7 +326,7 @@ const casos = {
     };
     try {
       await caso({ ir, p, panel });
-      await p.screenshot({ path: `${CARPETA}/esc-${id}.png` });
+      await p.screenshot({ path: `${CARPETA}/esc-${id}.jpg`, type: 'jpeg', quality: 72 });
       const reales = errores.filter((e) => !/status of (4\d\d|5\d\d)/.test(e));
       console.log(
         `✔ ${id}${reales.length ? '  (errores de consola: ' + reales.join(' | ') + ')' : ''}`,

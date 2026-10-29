@@ -9,3 +9,4 @@ src/contracts
 # Generado por npm run mapa
 docs/screens/matriz.md
 tests/e2e
+docs/screens/capturas/README.md

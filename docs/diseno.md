@@ -88,11 +88,47 @@ El compositor del chat se apoya siempre sobre la barra (`--barra-alto`, que vale
 
 Auditoría: `tests/e2e/accesibilidad.cjs` (axe-core + chequeos propios) y `tests/e2e/teclado.cjs`. Resultados en `docs/qa.md`.
 
-## Pendiente para el lote 3.3
+## Movimiento (lote 3.3)
 
-- Movimiento funcional (aparición de propuestas, hoja), manifest e íconos, service worker y `/sin-conexion/`, capturas de
-  todas las pantallas y estados.
-- Lectores de pantalla y zoom reales en iOS/Android: en la prueba con dos celulares (lote 5.2).
+Funcional y corto (120–220 ms, `--dur-*`): orienta, no decora ni apura.
 
-Capturas del lote 3.1 (antes / después, 390 px, datos ficticios): `docs/screens/lote-3-1/`. Lote 3.2 (escritorio, tablet,
-horizontal y hojas): `docs/screens/lote-3-2/`.
+| Qué                              | Movimiento                                     | Para qué                                 |
+| -------------------------------- | ---------------------------------------------- | ---------------------------------------- |
+| Pantalla nueva o datos cargados  | aparece (opacidad, 220 ms)                     | marca que el contenido cambió            |
+| Propuestas y tarjetas que llegan | suben 8 px y aparecen                          | señala lo nuevo en una lista             |
+| Hoja / diálogo                   | sube desde abajo (celular) o aparece (tablet+) | muestra de dónde viene y que es temporal |
+| Búsqueda en curso                | tres puntos que laten junto al texto           | indica actividad, **no** un tiempo       |
+| Botones táctiles y mosaicos      | se hunden al tocar                             | confirma el toque                        |
+
+Reglas (vigiladas en `tests/pwa.test.ts`): nunca se animan botones de aceptar/pagar ni el bloque de decisión; sin sonido
+ni vibración; `prefers-reduced-motion` anula animaciones, transiciones y el fondo de las hojas.
+
+## PWA y sin conexión (lote 3.3)
+
+- **Manifest** (`src/app/manifest.ts` → `/manifest.webmanifest`): Handyx, `standalone`, empieza en `/inicio/`, azul de
+  marca, es-AR, íconos de la landing 192/512 (normales y adaptables: la gota cae dentro de la zona segura), atajos a
+  Pedir y Mis pedidos. Chromium la da por instalable (sin errores de instalabilidad).
+- **Instalar**: el aviso automático del navegador se retiene; la persona instala desde Cuenta ("Instalá Handyx en este
+  celular"). En iPhone, la ayuda explica "Compartir › Agregar a inicio".
+- **Service worker** (`public/sw.js`, sin dependencias, se registra solo en el build de producción):
+  - guarda solo archivos públicos del mismo origen: páginas exportadas (por ruta, **sin la query**, así no quedan ids),
+    JS/CSS con hash, fuentes, imágenes, íconos e ilustraciones de estados;
+  - **nunca** guarda la API, pedidos que no sean GET, respuestas con error ni datos de una persona; no encola ni reenvía
+    nada (sin `sync`);
+  - navegación: primero la red; sin red, la página guardada; si no está, `/sin-conexion/`.
+- **Sin conexión**: aviso fijo "Sin conexión. Lo que intentes hacer no se envía ni se guarda hasta que vuelva." Las
+  pantallas guardadas abren, pero sus datos fallan a la vista (error con Reintentar), y toda acción falla sin dar nada por
+  hecho: aceptar no crea el trabajo, el mensaje queda "No se envió". Al volver la red, las pantallas recargan sus datos.
+  El mock respeta lo mismo (`navigator.onLine === false` → `no_disponible`).
+- **Despliegue** (Fase 5): servir `sw.js` con `Cache-Control: no-cache` y `manifest.webmanifest` como
+  `application/manifest+json`; si cambia la lógica del service worker, subir su `VERSION`.
+
+## Capturas
+
+Catálogo de todas las pantallas y estados (66 capturas + los 18 escenarios): [`docs/screens/capturas/`](screens/capturas/README.md),
+regenerable con `npm run capturas`. Antes/después del lote 3.1 en `docs/screens/lote-3-1/` y responsive del 3.2 en
+`docs/screens/lote-3-2/`.
+
+## Pendiente fuera de la Fase 3
+
+- Lectores de pantalla y zoom reales en iOS/Android, instalación real en los dos celulares: lote 5.2.

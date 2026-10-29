@@ -741,11 +741,15 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'sistema',
     lote: '3.3',
     acceso: 'publica',
-    acciones: ['Reintentar'],
-    estados: ['offline'],
+    acciones: ['Reintentar', 'Ir al inicio'],
+    estados: ['offline (pantalla no guardada)'],
     endpoints: [],
     entidades: [],
-    pruebas: ['ninguna acción se da por hecha sin respuesta del servidor'],
+    pruebas: [
+      'ninguna acción se da por hecha sin respuesta del servidor',
+      'tests/e2e/pwa.cjs: aceptar y mandar mensajes sin conexión fallan a la vista',
+      'el caché del service worker no guarda API, ids ni datos personales',
+    ],
   }),
 ];
 

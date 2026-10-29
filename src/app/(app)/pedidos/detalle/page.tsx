@@ -130,7 +130,14 @@ export default function DetallePedido() {
 
       {p.estado === 'buscando' ? (
         <Aviso tipo="info" titulo="Estamos buscando especialistas" rol="status">
-          <p>Te avisamos cuando lleguen propuestas. No podemos prometer cuándo.</p>
+          <p>
+            Te avisamos cuando lleguen propuestas. No podemos prometer cuándo.
+            <span className="buscando" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+          </p>
           <p>
             Seguimos buscando hasta las {horaDeInstante(p.busqueda.ventanaHasta)} (intento{' '}
             {p.busqueda.intento} de {p.busqueda.maxIntentos}).
