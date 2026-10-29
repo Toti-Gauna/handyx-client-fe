@@ -1,12 +1,45 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1, 3.2 y 3.3 (mapa; faltan generar los datos reales), pantalla de
-carga y HandIA. Sigue el lote 3.4** (Inicio y pedir) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.4 (el mapa todavía sin los datos reales), pantalla de carga y
+HandIA. Sigue el lote 3.5** (propuestas y decisión) ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.4 · Inicio y pedir
+
+Pedido de Ignacio: "Seguí con el lote 3.4".
+
+- **Inicio**: el chip de la dirección abre una hoja con el mini mapa de tu casa, la dirección y "Cambiar la dirección";
+  los rubros muestran su Handy (caño, lamparita, llave, engranaje, gota; albañilería con su ícono hasta tener personaje).
+- **Pedir** (`/pedir/`, sin barra de pestañas), una decisión por pantalla, como la demo:
+  rubro › **para cuándo** (Urgencia · Programado · Obra) › **día y franja** (tira de 7 días, 6 franjas, "otra fecha" en
+  el calendario, "otro horario"; las franjas de hoy que ya pasaron no se pueden elegir) › **contanos** (resumen, texto y
+  fotos) › **dirección** con el mapa › **revisar** con "Cambiar" en cada dato, precio y aceptación automática como
+  opciones y "Pedir presupuestos". Si el servidor rechaza un dato, vuelve al paso de ese dato. Mismo cuerpo de
+  `pedidoCrear` que antes (contrato sin cambios).
+- **Búsqueda** (`PedidoBuscando`, como u-buscando): mapa con tu casa y el pulso, "Buscando en La Perla", hoja azul con
+  el estado, hasta cuándo sigue la búsqueda (nunca cuándo llega alguien), editar y cancelar; **sin respuesta** con el
+  Handy roto, relanzar (respeta el límite de intentos), búsqueda manual y pedido nuevo; **búsqueda manual** con el
+  equipo de Handy buscando.
+- **Arreglado en el camino**: las fotos subidas se perdían al ir y volver entre pasos (`useFotos` guarda su estado en el
+  flujo).
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                            |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                   |
+| `npm test`                                         | **130 pruebas OK** (9 nuevas de pedir)                                               |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                         |
+| `npm run e2e`                                      | recorrido · 18 escenarios · **221** de accesibilidad · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas    |
+
+### Sigue pendiente del 3.3
+
+El extracto real del mapa (`npm run mdp:datos`, necesita internet: ver abajo). Hasta entonces se ve el mapa ilustrado.
 
 ## Rediseño · lote 3.3 · Mapa
 

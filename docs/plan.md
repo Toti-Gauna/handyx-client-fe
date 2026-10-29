@@ -19,7 +19,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 | 3 · Rediseño premium   | 3.1  | Dirección de arte, sistema y 3 pantallas modelo (aprobación)       | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                        | 3.2  | Splash animado, acceso y onboarding                                | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                        | 3.3  | Mapa (MapLibre + PMTiles de MDP, dirección, búsqueda, seguimiento) | Opus 5.5 · high   | ✅ listo · datos reales pendientes       |
-|                        | 3.4  | Inicio y pedir                                                     | Opus 5.5 · high   | propuesto                                |
+|                        | 3.4  | Inicio y pedir                                                     | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                        | 3.5  | Propuestas y decisión                                              | Opus 5.5 · high   | propuesto                                |
 |                        | 3.6  | Trabajo en curso, pago, reseña y reclamo                           | Opus 5.5 · high   | propuesto                                |
 |                        | 3.7  | Actividad, mensajes y soporte                                      | Opus 5.5 · high   | propuesto                                |

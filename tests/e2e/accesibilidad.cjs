@@ -26,6 +26,8 @@ const RUTAS = [
   E('/perfil/', 'ubicacion-denegada'),
   E('/inicio/', 'varias-propuestas'),
   E('/pedir/', 'varias-propuestas'),
+  E('/pedir/?rubro=plomeria', 'varias-propuestas'),
+  E('/pedir/?rubro=plomeria&tipo=urgente', 'varias-propuestas'),
   E('/handia/', 'varias-propuestas'),
   E('/pedidos/', 'varias-propuestas'),
   E(`/pedidos/detalle/?id=${P}01`, 'varias-propuestas'),

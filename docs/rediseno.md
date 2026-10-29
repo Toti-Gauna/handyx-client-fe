@@ -153,6 +153,11 @@ logotipo se arma en SVG con Archivo 900 para que los personajes puedan agarrarse
 Privacidad: tu ubicación precisa solo con permiso puntual (nunca en segundo plano) y solo se comparte con el especialista
 contratado. La del especialista es aproximada y deja de mostrarse al llegar. Lo que exige del backend está en la sección 9.
 
+> **Lote 3.4 hecho (29/10).** Inicio con la dirección en una hoja con el mini mapa y los rubros con su Handy (albañilería
+> todavía no tiene personaje: va su ícono); pedir a pantalla completa (rubro › para cuándo › día y franja › contanos y
+> fotos › dirección › revisar); búsqueda, sin respuesta y búsqueda manual sobre el mapa con la hoja azul. "Sin
+> especialistas" para tareas fuera de los 6 rubros ya lo cubre HandIA ("Es otro rubro").
+
 ## 7. Componentes premium nuevos
 
 - **Hoja arrastrable** (3 alturas, con manija, gesto y teclado) sobre mapa o pantalla.

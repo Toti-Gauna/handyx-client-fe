@@ -1,13 +1,23 @@
 'use client';
 
 import Image from 'next/image';
-import { CabeceraInicio, AvatarHx, Pantalla, Marcado, entra, ChipEstado } from '@/components/hx';
+import { useState } from 'react';
+import {
+  AvatarHx,
+  CabeceraInicio,
+  ChipEstado,
+  HandyRubro,
+  Marcado,
+  Pantalla,
+  entra,
+} from '@/components/hx';
+import { MapaHx } from '@/components/MapaHx';
 import { Icono } from '@/components/Icono';
 import { ModalFee } from '@/components/ModalFee';
 import { Enlace, ruta } from '@/components/nav';
 import { useSesion } from '@/components/SesionProvider';
 import { TituloDocumento } from '@/components/TituloDocumento';
-import { ErrorEstado } from '@/components/ui';
+import { ErrorEstado, Hoja } from '@/components/ui';
 import { RUBROS, type Pedido } from '@/contracts/v1/pedidos';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import { TAREAS } from '@/content/inicio';
@@ -21,6 +31,7 @@ import { cuando, fechaCorta } from '@/domain/fechas';
  */
 export default function Inicio() {
   const { sesion } = useSesion();
+  const [verDireccion, setVerDireccion] = useState(false);
   const trabajos = useConsulta('trabajos', { consulta: { limite: 20 } }, { cada: 12_000 });
   const pedidos = useConsulta(
     'pedidos',
@@ -60,16 +71,47 @@ export default function Inicio() {
       <TituloDocumento texto="Inicio" />
       <ModalFee />
       <div className="du-cuerpo du-inicio">
-        <Enlace
-          href="/cuenta/datos/"
+        <button
+          type="button"
           className="hd-chip hd-chip--tinte du-direccion"
-          aria-label={`Tu dirección: ${direccion}. Cambiarla`}
+          aria-label={`Tu dirección: ${direccion}. Ver en el mapa`}
+          aria-haspopup="dialog"
+          onClick={() => setVerDireccion(true)}
           {...entra(0)}
         >
           <Icono nombre="pin" />
           <span>{direccion}</span>
           <Icono nombre="abajo" />
-        </Enlace>
+        </button>
+        <Hoja abierta={verDireccion} onCerrar={() => setVerDireccion(false)} titulo="Tu dirección">
+          {ubicacion?.coordenadas ? (
+            <MapaHx
+              modo="ver"
+              centro={ubicacion.coordenadas}
+              etiqueta="Mapa: tu casa"
+              clase="du-direccion-mapa"
+            />
+          ) : (
+            <p className="texto-suave">Todavía no marcaste tu casa en el mapa.</p>
+          )}
+          <p>
+            <strong>{ubicacion?.direccion ?? 'Sin dirección'}</strong>
+            {ubicacion ? (
+              <>
+                <br />
+                {[ubicacion.barrio, ubicacion.ciudad].filter(Boolean).join(', ')}
+              </>
+            ) : null}
+          </p>
+          <p className="texto-suave">
+            Solo la ve el especialista que elijas, cuando se acuerda el trabajo.
+          </p>
+          <div className="acciones">
+            <Enlace href="/cuenta/datos/" className="boton">
+              Cambiar la dirección
+            </Enlace>
+          </div>
+        </Hoja>
         <div {...entra(1)}>
           <h1 className="hd-titulo hd-titulo--grande du-inicio__titulo">
             <Marcado texto="¿Qué necesitás ==hoy==?" />
@@ -101,7 +143,7 @@ export default function Inicio() {
               className="hd-mosaico du-rubro"
               {...entra(2 + i, 'pop')}
             >
-              <Icono nombre={RUBROS_INFO[r].icono} />
+              <HandyRubro rubro={r} />
               <span aria-hidden="true">{RUBROS_INFO[r].corto}</span>
               <span className="sr-only">{RUBROS_INFO[r].nombre}</span>
             </Enlace>

@@ -39,6 +39,13 @@ parecido:
   especialista aproximado solo si hay dato). Estilo de la demo: tierra gris clara, calles blancas, mar celeste con costa
   amarilla, plazas verdes, barrios en mayúsculas espaciadas. Sin datos, el SVG de la demo con el rótulo "Mapa
   ilustrativo". Atribución "© OpenStreetMap" como texto con enlace.
+- **Pedir** (lote 3.4, `/pedir/`, sin barra de pestañas): una decisión por pantalla dentro de `Flujo`: rubro con su
+  Handy (`HandyRubro`) › para cuándo (`.du-opcion` de u-opciones) › día en tira y franjas en mosaicos (u-programar; las
+  franjas de hoy que ya pasaron, deshabilitadas) › contanos con los tiles de resumen y fotos (`useFotos` conserva las
+  fotos entre pasos) › dirección con el mapa › revisar con "Cambiar" en cada dato y "Pedir presupuestos".
+- **Búsqueda** (`PedidoBuscando`, como u-buscando): mapa con tu casa y el pulso, botón volver flotante, "Buscando en
+  {barrio}", hoja azul con el estado, las tres tarjetas que esperan propuestas, hasta cuándo sigue la búsqueda (nunca
+  cuándo llega alguien) y las acciones; "Nadie respondió todavía" con el Handy roto y "El equipo de Handy busca por vos".
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

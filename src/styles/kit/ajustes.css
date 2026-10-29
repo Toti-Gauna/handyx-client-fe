@@ -1255,3 +1255,233 @@ body {
 .galeria__mapa {
   height: 14em;
 }
+
+/* ── Lote 3.4 · Inicio y pedir ───────────────────────────────────────────────────────────────────── */
+/* El Handy de cada rubro, en el lugar del ícono de los mosaicos. */
+.hx-handy-rubro {
+  width: auto;
+  height: 3.3em;
+  max-width: 3.8em;
+  object-fit: contain;
+  animation: none;
+  transition: transform 0.35s var(--hd-resorte);
+}
+.hx-handy-rubro--icono {
+  display: grid;
+  place-items: center;
+  width: 2.9em;
+  border-radius: 1em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-azul);
+}
+.hx-handy-rubro--icono .icono {
+  width: 1.8em;
+  height: 1.8em;
+}
+:where(.hx) .hd-mosaico:hover .hx-handy-rubro,
+:where(.hx) .hd-mosaico:focus-visible .hx-handy-rubro {
+  transform: translateY(-0.15em) rotate(-4deg);
+}
+.hx button.du-direccion {
+  font: inherit;
+  cursor: pointer;
+}
+.du-direccion-mapa {
+  height: 12em;
+  margin-bottom: 12px;
+}
+
+/* Pedir (u-opciones, u-programar, u-describir de la demo) dentro de un flujo. */
+.du-flujo .du-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+.du-flujo .du-dias {
+  margin-inline: -1.1em;
+  padding: 0.1em 1.1em 0.4em;
+}
+.hx .du-dia,
+.hx .du-franja,
+.hx .du-opcion,
+.hx .du-otra {
+  min-height: 44px;
+}
+.hx .du-franja:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+.du-pedido-de {
+  vertical-align: middle;
+}
+.du-pedido-de .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-flujo .du-rubros {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.hx .du-rubro[aria-pressed='true'] {
+  background: var(--hd-azul-tinte);
+  box-shadow:
+    inset 0 0 0 0.14em var(--hd-azul),
+    0 0.26em 0 var(--hd-mosaico-hondo);
+}
+.du-revisar {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0.2em 0.9em;
+}
+.du-revisar__fila {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15em 0.6em;
+  padding: 0.65em 0;
+  border-bottom: 1px solid var(--hd-linea);
+}
+.du-revisar__fila:last-child {
+  border-bottom: 0;
+}
+.du-revisar dt {
+  grid-column: 1;
+  color: var(--hd-suave);
+  font-size: 0.68em;
+  font-weight: 800;
+}
+.du-revisar dd {
+  grid-column: 1;
+  margin: 0;
+  color: var(--hd-tinta);
+  font-size: 0.82em;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.du-revisar__cambiar {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.4em;
+  color: var(--hd-azul);
+  font-size: 0.74em;
+  font-weight: 800;
+  text-decoration: underline;
+}
+.du-mas[open] > :not(summary) {
+  margin-top: 0.8em;
+}
+/* Fotos del pedido dentro de las pantallas rediseñadas. */
+.pantalla .fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pantalla .du-bloque > div > .boton {
+  width: 100%;
+}
+
+/* Búsqueda (u-buscando): el mapa llena lo que deja la hoja azul. */
+.hx-cuerpo > .du-buscando {
+  background: var(--hd-mosaico);
+}
+.du-buscando .du-mapa-zona {
+  margin: 0 0 -1.9em;
+  min-height: 9em;
+}
+.du-buscando__mapa {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  border-radius: 0;
+}
+.du-buscando__sin-mapa {
+  position: absolute;
+  inset: 0;
+  background: var(--hd-mosaico);
+}
+.hx .du-buscando .du-flotante {
+  z-index: 4;
+  top: 1em;
+  width: 44px;
+  height: 44px;
+  background: var(--sup-tarjeta);
+}
+.du-buscando .du-mapa-chip {
+  z-index: 4;
+  top: 1.2em;
+  max-width: calc(100% - 6em);
+}
+.du-buscando__hoja {
+  max-height: 72%;
+  overflow-y: auto;
+}
+.du-buscando__titulo {
+  display: block;
+  margin: 0;
+  color: var(--texto-sobre-marca);
+  font-size: min(1.3em, 8vw);
+}
+.du-buscando__titulo mark {
+  color: var(--hd-tinta);
+  background: linear-gradient(transparent 52%, var(--hd-amarillo) 52% 92%, transparent 92%);
+}
+.du-buscando__handy {
+  align-self: center;
+  width: auto;
+  height: 4.6em;
+  margin-top: -0.2em;
+}
+.du-buscando__pedido {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0;
+  color: rgb(255 255 255 / 0.92);
+  font-size: 0.72em;
+  font-weight: 700;
+}
+.du-buscando__pedido .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.du-buscando .du-hoja-azul__nota {
+  margin: 0;
+  font-size: 0.72em;
+  color: rgb(255 255 255 / 0.9);
+}
+.du-buscando__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0.55em 0.75em;
+  border-radius: 0.9em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-error);
+  font-size: 0.74em;
+  font-weight: 700;
+}
+.du-buscando__error .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.du-buscando__acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+}
+.du-buscando__cancelar {
+  min-height: 44px;
+  color: var(--texto-sobre-marca);
+  font-size: 0.78em;
+  font-weight: 800;
+  text-decoration: underline;
+}

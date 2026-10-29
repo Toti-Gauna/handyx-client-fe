@@ -5,7 +5,7 @@
 import Image from 'next/image';
 import { Fragment, type CSSProperties } from 'react';
 import { usePathname } from 'next/navigation';
-import type { EspecialistaResumen } from '@/contracts/v1/pedidos';
+import type { EspecialistaResumen, Rubro } from '@/contracts/v1/pedidos';
 import { RUBROS_INFO, VERIFICACION_TEXTO, type Etiqueta } from '@/domain/etiquetas';
 import { NAVEGACION, pantalla } from '@/mapa/pantallas';
 import { iniciales } from './Propuesta';
@@ -127,6 +127,35 @@ export function Barra({
         ) : null}
       </span>
     </div>
+  );
+}
+
+/**
+ * El Handy de cada rubro (rediseño §2: caño plomería, lamparita electricidad, llave cerrajería, engranaje aire, gota
+ * gas). Albañilería todavía no tiene personaje: va su ícono en el mismo lugar.
+ */
+const HANDYS: Partial<Record<Rubro, { img: string; ancho: number; alto: number }>> = {
+  plomeria: { img: 'handy-cano', ancho: 354, alto: 405 },
+  electricidad: { img: 'handy-lamparita', ancho: 202, alto: 346 },
+  cerrajeria: { img: 'handy-llave', ancho: 581, alto: 547 },
+  aire_acondicionado: { img: 'handy-engranaje', ancho: 338, alto: 339 },
+  gas: { img: 'handy-gota', ancho: 93, alto: 125 },
+};
+
+export function HandyRubro({ rubro, clase = '' }: { rubro: Rubro; clase?: string }) {
+  const h = HANDYS[rubro];
+  return h ? (
+    <Image
+      className={`hd-handy hx-handy-rubro ${clase}`.trim()}
+      src={`/img/${h.img}.webp`}
+      alt=""
+      width={h.ancho}
+      height={h.alto}
+    />
+  ) : (
+    <span className={`hx-handy-rubro hx-handy-rubro--icono ${clase}`.trim()} aria-hidden="true">
+      <Icono nombre={RUBROS_INFO[rubro].icono} />
+    </span>
   );
 }
 

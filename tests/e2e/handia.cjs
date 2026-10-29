@@ -46,7 +46,7 @@ const ok = (cond, msg) => {
   ok(!/canilla|telefono|teléfono/i.test(decodeURIComponent(url.search)), 'el texto no viaja por la URL');
   // Avanza hasta "Qué pasa" y verifica la precarga.
   for (let i = 0; i < 4; i++) {
-    const campo = p.getByRole('textbox', { name: /Contanos|Qué pasa|qué pasó/i });
+    const campo = p.getByRole('textbox', { name: /Contalo|Contanos|Qué pasa|qué pasó/i });
     if (await campo.count()) break;
     const seguir = p.getByRole('button', { name: 'Seguir' });
     if (!(await seguir.count())) break;

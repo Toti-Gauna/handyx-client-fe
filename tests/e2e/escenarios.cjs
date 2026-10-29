@@ -23,7 +23,7 @@ const casos = {
     await ir('/inicio/', 'otra-ciudad');
     await p.getByText('Todavía no llegamos a Rosario').first().waitFor();
     await ir('/pedir/?rubro=plomeria&tipo=urgente', 'otra-ciudad');
-    await p.getByLabel('Contanos qué necesitás').fill('Pierde la canilla de la cocina.');
+    await p.getByLabel('Contalo con tus palabras').fill('Pierde la canilla de la cocina.');
     await p.getByRole('button', { name: 'Seguir' }).click();
     await p.getByText('Todavía no llegamos a Rosario').first().waitFor();
     await p.getByRole('button', { name: 'Seguir' }).click();
@@ -45,21 +45,21 @@ const casos = {
       .getByRole('link', { name: /Plomería/ })
       .first()
       .click();
-    await p.getByText('Estamos buscando especialistas').waitFor();
+    await p.getByRole('heading', { name: /Avisando a especialistas/ }).waitFor();
     await panel('Avanzar 5 min');
-    await p.getByText('Nadie respondió en 20 minutos').waitFor({ timeout: 10000 });
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor({ timeout: 10000 });
     await p.getByRole('button', { name: 'Relanzar la búsqueda' }).click();
-    await p.getByText('Estamos buscando especialistas').waitFor();
+    await p.getByRole('heading', { name: /Avisando a especialistas/ }).waitFor();
     await panel('Avanzar 30 min');
-    await p.getByText('Nadie respondió en 20 minutos').waitFor({ timeout: 10000 });
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor({ timeout: 10000 });
     await p.getByRole('button', { name: 'Relanzar la búsqueda' }).click();
-    await p.getByText('Estamos buscando especialistas').waitFor();
+    await p.getByRole('heading', { name: /Avisando a especialistas/ }).waitFor();
     await panel('Avanzar 30 min');
-    await p.getByText('Nadie respondió en 20 minutos').waitFor({ timeout: 10000 });
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor({ timeout: 10000 });
     if ((await p.getByRole('button', { name: 'Relanzar la búsqueda' }).count()) !== 0)
       throw new Error('permite relanzar sin límite');
     await p.getByRole('button', { name: 'Pedir búsqueda manual' }).click();
-    await p.getByText('El equipo de Handy está buscando por vos').waitFor();
+    await p.getByRole('heading', { name: /El equipo de Handy busca por vos/ }).waitFor();
     if (await p.getByText(/en \d+ minutos|ETA/).count()) throw new Error('hay una ETA inventada');
   },
 
@@ -130,7 +130,7 @@ const casos = {
       .getByRole('link', { name: /Electricidad/ })
       .first()
       .click();
-    await p.getByText('Nadie respondió en 20 minutos').waitFor();
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor();
     await p.getByRole('button', { name: 'Pedir búsqueda manual' }).waitFor();
     await p.getByRole('button', { name: 'Cancelar el pedido' }).waitFor();
   },

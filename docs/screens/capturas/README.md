@@ -51,8 +51,12 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | handia | [handia-390.jpg](handia-390.jpg) |
 | handia-detectado | [handia-detectado-390.jpg](handia-detectado-390.jpg) |
 | pedir-rubro | [pedir-rubro-390.jpg](pedir-rubro-390.jpg) |
-| pedir-rubro-elegido | [pedir-rubro-elegido-390.jpg](pedir-rubro-elegido-390.jpg) |
-| pedir-tipo | [pedir-tipo-390.jpg](pedir-tipo-390.jpg) |
+| pedir-cuando | [pedir-cuando-390.jpg](pedir-cuando-390.jpg) |
+| pedir-programar | [pedir-programar-390.jpg](pedir-programar-390.jpg) |
+| pedir-contanos | [pedir-contanos-390.jpg](pedir-contanos-390.jpg) |
+| pedir-errores | [pedir-errores-390.jpg](pedir-errores-390.jpg) |
+| pedir-direccion | [pedir-direccion-390.jpg](pedir-direccion-390.jpg) |
+| pedir-revisar | [pedir-revisar-390.jpg](pedir-revisar-390.jpg) |
 
 ## Pedidos
 
@@ -64,6 +68,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | pedido-con-propuestas | [pedido-con-propuestas-390.jpg](pedido-con-propuestas-390.jpg) |
 | pedido-buscando | [pedido-buscando-390.jpg](pedido-buscando-390.jpg) |
 | pedido-sin-respuesta | [pedido-sin-respuesta-390.jpg](pedido-sin-respuesta-390.jpg) |
+| pedido-busqueda-manual | [pedido-busqueda-manual-390.jpg](pedido-busqueda-manual-390.jpg) |
 | pedido-programado-sin-propuestas | [pedido-programado-sin-propuestas-390.jpg](pedido-programado-sin-propuestas-390.jpg) |
 
 ## Propuestas
