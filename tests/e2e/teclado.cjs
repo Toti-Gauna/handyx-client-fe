@@ -66,7 +66,7 @@ const enfocado = (p) =>
   ok((await p.title()).includes('Handyx') && (await p.title()) !== 'Handyx', `título de la pestaña: "${await p.title()}"`);
 
   // 4. Navegar por la barra con teclado y verificar el foco en el h1 nuevo.
-  await p.getByRole('link', { name: 'Pedidos' }).focus();
+  await p.getByRole('link', { name: 'Actividad' }).focus();
   f = await enfocado(p);
   ok(f.contorno !== 'none', 'el foco en la barra es visible');
   await p.keyboard.press('Enter');
@@ -79,7 +79,7 @@ const enfocado = (p) =>
   await p.goto(BASE + '/pedidos/propuestas/?pedido=de000000-0000-4000-8000-000000001001&escenario=varias-propuestas', {
     waitUntil: 'networkidle',
   });
-  await p.getByRole('link', { name: /Ver y responder/ }).first().click();
+  await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
   await p.waitForURL('**/propuestas/detalle/**');
   await p.getByRole('button', { name: 'Aceptar', exact: true }).focus();
   await p.keyboard.press('Enter');

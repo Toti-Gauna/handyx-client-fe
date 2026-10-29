@@ -1,0 +1,475 @@
+/* Ajustes propios de la app sobre el kit de la demo (kit/app.css, kit/hd.css y kit/usuario.css se generan con
+   scripts/kit.mjs y no se editan). Acá va lo que la demo no necesita y la app sí: tamaño real, desplazamiento,
+   enlaces en lugar de botones, foco, contraste, objetivos táctiles y convivencia con las pantallas que todavía no se
+   rediseñaron. */
+
+/* ── Escala: el kit está en em y la demo mide 22,5 em de ancho. En la app, el texto base sale del ancho de la
+   pantalla, con piso y techo en rem (respeta el tamaño de letra que elige la persona). ─────────────────────── */
+.hx {
+  --hx-ancho: 480px;
+  font-size: clamp(1.0625rem, 4.444vw, 1.2rem); /* 4,444vw = ancho / 22,5, como la demo */
+}
+
+/* ── Estructura: rótulo de prueba y aviso de red arriba; la app ocupa el resto, como una app nativa. ─────── */
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+.hx {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: var(--hx-ancho);
+  margin-inline: auto;
+  background: var(--sup-base);
+}
+@media (min-width: 768px) {
+  .hx {
+    box-shadow: var(--elev-1);
+  }
+}
+.hx .hx-app {
+  color: var(--hd-tinta);
+}
+
+/* Cuerpo de la app: lo que no tiene cabecera ni barra propias se desplaza solo. */
+.hx-cuerpo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  font-size: 1rem; /* las pantallas sin rediseñar siguen en rem */
+}
+.hx-cuerpo::-webkit-scrollbar {
+  display: none;
+}
+/* Pantallas sin rediseñar (todavía con los componentes de antes): margen y espacio para la barra. */
+.hx-cuerpo:not(:has(> .pantalla)) {
+  padding: 12px 16px 24px;
+}
+/* Pantallas del kit: la propia pantalla reparte arriba / desplazable / pie. */
+.hx-cuerpo:has(> .pantalla) {
+  overflow: hidden;
+  font-size: inherit;
+}
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.pantalla__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.pantalla__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Cabecera de Inicio ─────────────────────────────────────────────────────────────────────────────────── */
+.hx .app-cabecera__fila {
+  padding-top: max(0.7em, env(safe-area-inset-top));
+}
+.hx .app-logo img {
+  height: 2.1em;
+  width: auto;
+}
+/* Los cuadrados de la cabecera: objetivos de 44 px como mínimo y con base táctil. */
+.hx .app-cuadrado {
+  position: relative;
+  min-width: 44px;
+  min-height: 44px;
+  box-shadow: 0 0.22em 0 var(--hd-azul-hondo);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.hx .app-cuadrado:active {
+  transform: translateY(0.22em);
+  box-shadow: 0 0 0 var(--hd-azul-hondo);
+}
+
+/* ── Barra inferior: en la app son enlaces. Contraste del texto inactivo ≥ 4,5:1 (la demo usa 0,6). ──────── */
+.hx .app-nav {
+  padding-bottom: max(0.9em, env(safe-area-inset-bottom));
+}
+.hx .app-nav__item {
+  position: relative;
+  flex: 1;
+  min-height: 48px;
+  justify-content: center;
+  color: rgb(255 255 255 / 0.82);
+  text-decoration: none;
+  border-radius: 0.8em;
+}
+.hx .app-nav__item--activo {
+  color: var(--texto-sobre-marca);
+}
+.hx .app-nav__item--activo::after {
+  content: '';
+  position: absolute;
+  bottom: 0.05em;
+  left: 50%;
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: -0.2em;
+  border-radius: 50%;
+  background: var(--color-amarillo);
+}
+.hx .app-nav__item:focus-visible {
+  outline: 3px solid var(--color-amarillo);
+  outline-offset: 2px;
+}
+
+/* ── Enlaces con aspecto de botón o tarjeta del kit ────────────────────────────────────────────────────── */
+.hx a.hd-boton,
+.hx a.hd-mosaico,
+.hx a.du-quiero,
+.hx a.du-proximo__ticket,
+.hx a.du-oferta__btn,
+.hx a.du-oferta__consultar,
+.hx a.du-handia,
+.hx a.hd-chip,
+.hx a.du-atras {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.hx a.hd-boton {
+  color: var(--b-texto);
+}
+.hx a.hd-boton:active {
+  transform: translateY(0.28em);
+  box-shadow: 0 0 0 var(--b-base);
+}
+.hx a.hd-mosaico:active,
+.hx button.hd-mosaico:active {
+  transform: scale(0.97);
+}
+.hx a:focus-visible,
+.hx button:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 2px;
+}
+.hx .du-hoja-azul a:focus-visible,
+.hx .du-hoja-azul button:focus-visible {
+  outline-color: var(--color-amarillo);
+}
+
+/* Chip de dirección y otros chips tocables: 44 px de alto. */
+.hx .du-direccion {
+  min-height: 44px;
+}
+
+/* Barra "← Título": el botón de volver de la demo mide 2,55 em (≥ 44 px con la escala de la app). */
+.hx .du-atras {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ── Títulos: el h1 de cada pantalla recibe el foco al navegar (sin contorno: no es un control). ───────── */
+.hx h1:focus {
+  outline: none;
+}
+
+/* ── Movimiento reducido: también lo que la app agrega. ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hx .app-cuadrado,
+  .hx a.hd-boton,
+  .hx a.hd-mosaico {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* La barra "← Título" lleva el h1 de la pantalla. */
+.du-barra__textos h1 {
+  margin: 0;
+  font: inherit;
+}
+
+/* Rótulo de la vista de prueba: una sola línea (la explicación completa está en el panel). */
+.aviso-prueba {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 12px;
+  font-weight: 600;
+}
+.aviso-prueba .panel-prueba__abrir {
+  margin: 0;
+}
+
+/* Encabezado de las pantallas todavía sin rediseñar: barra de la demo + bajada alineada con el título. */
+.encabezado-hx {
+  margin: 4px 0 14px;
+  font-size: 1.0625rem;
+}
+.encabezado-hx .encabezado__bajada {
+  margin: 6px 0 0 calc(2.55em + 0.75em);
+  font-size: 1rem;
+}
+
+/* Reglas del kit escritas para <button> que en la app son enlaces. */
+.hx a.du-handia {
+  display: flex;
+  align-items: center;
+  gap: 0.85em;
+  padding: 0.75em 0.85em 0.75em 0.75em;
+  border-radius: 1.35em;
+  color: var(--texto-sobre-marca);
+  overflow: hidden;
+}
+.hx a.hd-tarjeta:active {
+  transform: translateY(0.3em);
+  box-shadow: 0 0 0 var(--hd-azul-hondo);
+}
+.hx a.du-proximo__ticket:active {
+  transform: scale(0.98);
+}
+
+/* Tickets de Inicio: nombre en una línea y acción sin cortes. */
+.hx .du-proximo__quien strong {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hx .du-proximo__ver {
+  white-space: nowrap;
+}
+.hx .du-proximo__abajo strong {
+  min-width: 0;
+}
+.pantalla__resto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+/* La hoja azul que llena la pantalla desplaza su lista por dentro. */
+.hx .du-hoja-azul--llena {
+  color: var(--texto-sobre-marca);
+}
+.hx .du-hoja-azul--llena .du-lista {
+  flex: 1;
+  min-height: 0;
+}
+.du-hoja-azul__titulo h2 {
+  margin: 0;
+  font: inherit;
+}
+
+/* ── Propuestas: selector de vista, comparación y anteriores (no están en la demo) ──────────────────────── */
+.du-vistas {
+  gap: 0.5em;
+}
+.du-vistas .hd-chip {
+  min-height: 44px;
+  padding-inline: 0.9em;
+  font-size: 0.74em;
+  font-weight: 800;
+}
+.du-comparar {
+  overflow-x: auto;
+  border-radius: 1.2em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-tinta);
+  box-shadow: var(--hd-sombra-1);
+}
+.du-comparar table {
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.72em;
+}
+.du-comparar th,
+.du-comparar td {
+  min-width: 9.5em;
+  padding: 0.75em 0.85em;
+  border-bottom: 1px solid var(--hd-linea);
+  text-align: left;
+  vertical-align: top;
+}
+.du-comparar thead th {
+  font-family: var(--hd-titulos);
+  font-weight: 900;
+  font-size: 1.05em;
+}
+.du-comparar tbody th {
+  position: sticky;
+  left: 0;
+  min-width: 7.5em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-suave);
+  font-weight: 700;
+}
+.du-comparar .hd-precio {
+  font-size: 1.2em;
+}
+.du-comparar .hd-chip {
+  margin: 0 0.3em 0.3em 0;
+}
+.du-anteriores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+.du-anteriores > summary {
+  color: var(--texto-sobre-marca);
+  font-size: 0.8em;
+}
+.du-anteriores[open] > summary {
+  margin-bottom: 0.75em;
+}
+.du-anteriores > .du-oferta + .du-oferta {
+  margin-top: 0.75em;
+}
+.du-oferta__sobre .hd-chip {
+  margin-left: auto;
+}
+.hx .du-hoja-azul .du-hoja-azul__nota a {
+  color: var(--color-amarillo);
+  font-weight: 800;
+}
+/* Botones de la franja de la tarjeta: 44 px. */
+.hx .du-oferta__btn {
+  min-height: 44px;
+}
+
+/* ── Base de la landing dentro de las pantallas rediseñadas (las viejas siguen con la suya) ─────────────── */
+.pantalla :where(h1, h2, h3, p, dl, dd, figure),
+.app-cabecera :where(p) {
+  margin: 0;
+}
+.pantalla :where(h1, h2, h3) {
+  font-family: var(--fuente-titulos);
+  color: inherit;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.pantalla :where(p) {
+  text-wrap: pretty;
+}
+.pantalla :where(img, svg) {
+  display: block;
+  max-width: 100%;
+}
+.pantalla {
+  line-height: 1.2;
+}
+/* El kit marca el chip elegido en azul; sobre la hoja azul, el elegido va en amarillo. */
+.du-hoja-azul .du-vistas .hd-chip[aria-pressed='true'] {
+  background: var(--hd-amarillo);
+  color: var(--hd-tinta);
+}
+.hx a.du-oferta__btn--azul {
+  color: var(--texto-sobre-marca);
+}
+
+/* ── Galería /diseno/ (solo vista de prueba) ───────────────────────────────────────────────────────────── */
+.galeria {
+  gap: 1.6em;
+}
+.galeria__seccion {
+  gap: 0.8em;
+}
+.galeria__colores,
+.galeria__iconos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5em, 1fr));
+  gap: 0.8em;
+}
+.galeria__color,
+.galeria__icono {
+  display: grid;
+  justify-items: center;
+  gap: 0.35em;
+  font-size: 0.7em;
+  text-align: center;
+}
+.galeria__color i {
+  width: 3.4em;
+  height: 3.4em;
+  border-radius: 1em;
+  box-shadow: inset 0 0 0 1px rgb(14 29 54 / 0.12);
+}
+.galeria__icono .icono {
+  width: 1.8em;
+  height: 1.8em;
+  color: var(--hd-azul);
+}
+.galeria__fila,
+.galeria__handys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em;
+}
+.galeria__handy {
+  display: flex;
+  gap: 0.4em;
+}
+.galeria__handy img {
+  width: auto;
+  height: 4.5em;
+}
+.galeria__hoja {
+  border-radius: 1.9em;
+}
+
+/* Texto del sistema grande (hasta 200 %): títulos que cortan palabra y filas que se parten en vez de salirse. */
+.pantalla :where(h1, h2, h3, strong),
+.encabezado-hx :where(h1, strong) {
+  overflow-wrap: anywhere;
+}
+.hx .app-cabecera__fila,
+.hx .du-oferta__chips,
+.hx .du-barra {
+  flex-wrap: wrap;
+}
+.hx .du-oferta__chips .hd-chip {
+  white-space: normal;
+}
+.hx .du-direccion {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+}
+.hx .du-direccion span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Techo por ancho de pantalla para lo más grande y para la barra: crecen con el texto del sistema pero sin partir
+   palabras ni pisarse (como el texto dinámico de iOS en títulos y pestañas). En tamaño normal no cambian. */
+.hx .hd-titulo--grande,
+.hx .du-inicio__titulo {
+  font-size: min(1.62em, 10.5vw);
+}
+.hx .du-barra__textos strong {
+  font-size: min(1.14em, 7.5vw);
+}
+.hx .app-nav__item {
+  font-size: min(0.66em, 4vw);
+}
+.hx .app-nav__item .icono {
+  width: min(2.3em, 8vw);
+  height: min(2.3em, 8vw);
+}

@@ -56,6 +56,10 @@ const completarPerfil = async (p) => {
   await p.waitForURL('**/inicio/');
   await p.getByRole('button', { name: 'Entendido' }).waitFor();
 };
+// La app se desplaza por dentro (como una app nativa): para la captura de página completa, se despliega todo.
+const DESPLEGAR = `html,body{height:auto!important;overflow:visible!important}
+.hx,.hx-app,.hx-cuerpo,.pantalla,.pantalla__scroll,.pantalla__resto,.du-lista,.du-hoja-azul--llena{
+position:relative!important;height:auto!important;max-height:none!important;overflow:visible!important;flex:none!important}`;
 const tocar = (rol, nombre, exacto = false) => async (p) => {
   await p.getByRole(rol, { name: nombre, exact: exacto }).first().click();
   await p.waitForTimeout(500);
@@ -91,12 +95,12 @@ const CAPTURAS = [
   ['Pedidos', 'pedido-sin-respuesta', E('/pedidos/', 'urgencia-sin-respuesta'), [clic('.tarjeta--enlace')]],
   ['Pedidos', 'pedido-programado-sin-propuestas', E('/pedidos/', 'programado'), [clic('.tarjeta--enlace')]],
   ['Propuestas', 'propuestas-tarjetas', E(`/pedidos/propuestas/?pedido=${P}01`, 'varias-propuestas')],
-  ['Propuestas', 'propuestas-tabla', E(`/pedidos/propuestas/?pedido=${P}01`, 'varias-propuestas'), [tocar('button', 'Comparar en tabla')]],
+  ['Propuestas', 'propuestas-tabla', E(`/pedidos/propuestas/?pedido=${P}01`, 'varias-propuestas'), [tocar('button', 'Comparar')]],
   ['Propuestas', 'propuesta-detalle', E(`/propuestas/detalle/?id=${P}03`, 'varias-propuestas')],
   ['Propuestas', 'hoja-aceptar', E(`/propuestas/detalle/?id=${P}03`, 'varias-propuestas'), [tocar('button', 'Aceptar', true)], { vista: true }],
   ['Propuestas', 'hoja-rechazar', E(`/propuestas/detalle/?id=${P}03`, 'varias-propuestas'), [tocar('button', 'Rechazar', true)], { vista: true }],
   ['Propuestas', 'aceptacion-ya-resuelta', E(`/propuestas/detalle/?id=${P}03`, 'varias-propuestas'), [panel('Otro dispositivo acepta primero'), tocar('button', 'Aceptar', true), tocar('button', 'Sí, acepto estas condiciones')]],
-  ['Propuestas', 'propuesta-vencida', E('/pedidos/', 'propuesta-vencida'), [clic('.tarjeta--enlace'), tocar('link', /Ver propuestas/), clic('.tarjeta__franja')]],
+  ['Propuestas', 'propuesta-vencida', E('/pedidos/', 'propuesta-vencida'), [clic('.tarjeta--enlace'), tocar('link', /Ver propuestas/), clic('.du-oferta__btn--azul')]],
   ['Propuestas', 'contrapropuesta', E(`/propuestas/contraoferta/?id=${P}03`, 'varias-propuestas')],
   ['Mensajes', 'chats', E('/chats/', 'contrapropuesta')],
   ['Mensajes', 'conversacion', E(`/chats/conversacion/?id=${P}02`, 'contrapropuesta')],
@@ -152,6 +156,7 @@ const ESCRITORIO = ['inicio-propuestas', 'propuestas-tarjetas', 'propuesta-detal
         if (!op.sinEspera)
           await p.waitForFunction(() => !document.querySelector('.esqueleto'), null, { timeout: 8000 });
         await p.waitForTimeout(300);
+        if (!op.vista) await p.addStyleTag({ content: DESPLEGAR });
         await p.screenshot({ path: path.join(CARPETA, archivo), type: 'jpeg', quality: 72, fullPage: !op.vista });
         filas.push({ grupo, nombre, ancho, archivo });
         console.log(`✔ ${archivo}`);

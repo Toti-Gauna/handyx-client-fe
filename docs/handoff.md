@@ -1,11 +1,57 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium — plan propuesto, esperando aprobación** ([`docs/rediseno.md`](rediseno.md)). La versión anterior de la Fase 3 (abajo) no se mergea tal cual: se conserva su infraestructura y se rehace la capa visual.
+**Fase actual: 3 · Rediseño premium — lote 3.1 listo; las 3 pantallas modelo (carga, Inicio, Propuestas) esperan aprobación** antes de escalar al resto ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.1 · Dirección de arte, sistema y pantallas modelo
+
+Ignacio aprobó el plan de rediseño con las decisiones recomendadas ("Vamos con 3.1").
+
+- **Kit de la demo, no uno parecido**: `npm run kit` copia el CSS de la demo de la landing (`.hd-*`, `.app-*`, `.du-*`) a
+  `src/styles/kit/` con cambios mecánicos; lo propio de la app está en `kit/ajustes.css`. Componentes en
+  `src/components/hx.tsx`.
+- **Marco nuevo**: sin cabecera fija; pantalla de app nativa (solo se desplaza el cuerpo); 4 pestañas Inicio · Actividad
+  · Mensajes · Cuenta (Actividad abre Mis pedidos hasta el lote 3.7). Las pantallas sin rediseñar conviven: su
+  encabezado ya usa la barra "← Título" de la demo.
+- **Pantalla de carga**: fondo que cambia de color, los 5 Handys saltan y se agarran de las letras de "Handyx"; 2,7 s,
+  se saltea con un toque, nunca con "reducir movimiento".
+- **Inicio** (como `u-inicio`): dirección, "¿Qué necesitás hoy?", rubros, ticket de lo prioritario (trabajo en curso,
+  propuestas, pedido, próximo turno), "¿No sabés qué rubro es?" (sin IA) y "Quiero…" con las tareas de la demo, que
+  precargan el pedido (`?tarea=`; nunca texto libre por la URL).
+- **Propuestas** (como `u-presupuestos`): hoja azul "Te llegaron N · Ordenadas por llegada" con las tarjetas de la demo,
+  verificaciones reales, tarifa 0 %, "Consultar | Elegir" (elegir lleva al detalle, que pide confirmación) y "Comparar"
+  en tabla.
+- **Galería** `/diseno/` (vista de prueba).
+- **Arreglado en el camino**: la página `/sin-conexion/` guardada por el service worker no tenía sus scripts sin red;
+  ahora la instalación también guarda los archivos que esa página necesita (`VERSION` v2).
+- Comparaciones demo/app, secuencia de la pantalla de carga y galería: `docs/screens/rediseno-3-1/`. Catálogo completo
+  regenerado en `docs/screens/capturas/`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                             |
+| -------------------------------------------------- | --------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                    |
+| `npm test`                                         | **88 pruebas OK** (kit generado sin editar, pantalla de carga)        |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · 38 rutas                               |
+| `node tests/e2e/accesibilidad.cjs`                 | 203 de 203 (la primera corrida del rediseño dio 26 con fallas)        |
+| `node tests/e2e/teclado.cjs` · `pwa.cjs`           | 13 de 13 · 26 de 26 (incluye la pantalla de carga)                    |
+| `node tests/e2e/recorrido.cjs` · `escenarios.cjs`  | OK · 18 de 18                                                         |
+| `npm run capturas`                                 | 66 capturas + 18 escenarios                                           |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas |
+
+### Próximo paso
+
+Con tu aprobación de las 3 pantallas modelo (o tus cambios), lote 3.2 del rediseño: acceso y onboarding a pantalla
+completa (bienvenida, ingreso en 2 pasos, registro en 6, recuperar, pre-permisos, dirección inicial).
+
+---
+
+# Histórico · Fase 3 antes del rediseño
 
 ## Lote 3.3 · Motion, PWA y capturas
 

@@ -1,6 +1,5 @@
 import { Fragment } from 'react';
-import { Icono } from './Icono';
-import { Enlace } from './nav';
+import { Barra } from './hx';
 import { TituloDocumento } from './TituloDocumento';
 
 /** Título con marcador amarillo: `==texto==` se resalta como en la landing. */
@@ -26,8 +25,8 @@ export function Titulo({ texto, nivel = 1 }: { texto: string; nivel?: 1 | 2 }) {
 }
 
 /**
- * Encabezado de pantalla interna (como la demo de la landing): botón de volver con destino explícito, título y bajada.
- * El destino es siempre una ruta conocida, nunca `history.back()`: entrar por un enlace o un aviso no rompe la vuelta.
+ * Encabezado de pantalla interna con el lenguaje de la demo: barra "← Título" (botón de volver con destino fijo, nunca
+ * `history.back()`) y, debajo, la bajada (estado, rubro). Las pantallas rediseñadas usan `Barra` directamente.
  */
 export function Encabezado({
   titulo,
@@ -38,21 +37,17 @@ export function Encabezado({
   volver?: { href: string; etiqueta: string };
   bajada?: React.ReactNode;
 }) {
-  return (
-    <div className="encabezado">
-      {volver ? (
-        <Enlace
-          className="boton-icono boton-icono--claro"
-          href={volver.href}
-          aria-label={volver.etiqueta}
-        >
-          <Icono nombre="atras" />
-        </Enlace>
-      ) : null}
-      <div className="encabezado__textos">
+  if (!volver)
+    return (
+      <>
         <Titulo texto={titulo} />
         {bajada ? <p className="encabezado__bajada">{bajada}</p> : null}
-      </div>
+      </>
+    );
+  return (
+    <div className="encabezado-hx">
+      <Barra titulo={titulo} volver={volver} />
+      {bajada ? <p className="encabezado__bajada">{bajada}</p> : null}
     </div>
   );
 }

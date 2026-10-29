@@ -95,10 +95,25 @@ const PROP = '/propuestas/detalle/?id=de000000-0000-4000-8000-000000001003&escen
   await p.screenshot({ path: `${CARPETA}/pwa-sin-conexion.png` });
   await ctx.setOffline(false);
 
-  // 6. Movimiento reducido: animaciones anuladas.
+  // 6. Pantalla de carga: con ?splash=1 se ve, se oculta sola en menos de 3 s y un toque la saltea.
+  await p.goto(BASE + '/inicio/?escenario=varias-propuestas&splash=1');
+  await p.locator('.splash').waitFor();
+  ok(await p.locator('.splash__handy').count() === 5, 'la pantalla de carga muestra los 5 Handys');
+  await p.waitForTimeout(3000);
+  ok((await p.locator('.splash').evaluate((e) => getComputedStyle(e).visibility)) === 'hidden', 'se oculta sola');
+  await p.goto(BASE + '/inicio/?escenario=varias-propuestas&splash=1');
+  await p.locator('.splash').waitFor();
+  await p.waitForTimeout(400);
+  await p.mouse.click(200, 400);
+  await p.waitForTimeout(300);
+  ok((await p.locator('.splash').evaluate((e) => getComputedStyle(e).visibility)) === 'hidden', 'un toque la saltea');
+  await p.goto(BASE + '/inicio/?escenario=varias-propuestas');
+  ok(!(await p.locator('.splash').isVisible()), 'en navegadores automatizados no aparece (salvo ?splash=1)');
+
+  // 7. Movimiento reducido: animaciones anuladas.
   await p.emulateMedia({ reducedMotion: 'reduce' });
   await p.goto(BASE + '/inicio/?escenario=varias-propuestas', { waitUntil: 'networkidle' });
-  const dur = await p.evaluate(() => getComputedStyle(document.querySelector('.app__cuerpo > *')).animationDuration);
+  const dur = await p.evaluate(() => getComputedStyle(document.querySelector('.hx-cuerpo > *')).animationDuration);
   ok(parseFloat(dur) <= 0.001, `con movimiento reducido no hay animaciones (${dur})`);
 
   const reales = errores.filter((e) => !/Failed to fetch|NetworkError|ERR_INTERNET_DISCONNECTED|Load failed/i.test(e));

@@ -1246,7 +1246,7 @@ details > summary {
 }
 
 /* Pantalla nueva o datos que terminaron de cargar. */
-.app__cuerpo > * {
+.hx-cuerpo > * {
   animation: aparecer var(--dur-media) ease-out both;
 }
 /* Propuestas, pedidos y avisos que llegan a una lista. */

@@ -75,7 +75,7 @@ const casos = {
       .click();
     await p.getByRole('link', { name: /Ver propuestas \(3\)/ }).click();
     await p.getByText('No es una recomendación ni un ranking').waitFor();
-    await p.getByRole('button', { name: 'Comparar en tabla' }).click();
+    await p.getByRole('button', { name: 'Comparar' }).click();
     await p.getByRole('columnheader', { name: 'Especialista 3' }).waitFor();
     await p.getByRole('rowheader', { name: 'Tarifa de Handy' }).waitFor();
   },
@@ -87,7 +87,7 @@ const casos = {
       .first()
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
-    await p.getByRole('link', { name: 'Ver y responder' }).first().click();
+    await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
     await p.getByRole('link', { name: 'Hacer una contrapropuesta' }).click();
     await p.getByLabel('Precio que proponés').fill('40.000');
     await p.getByRole('button', { name: 'Enviar contrapropuesta' }).click();
@@ -104,7 +104,7 @@ const casos = {
       .first()
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
-    await p.getByRole('link', { name: 'Ver y responder' }).first().click();
+    await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
     await p.getByRole('button', { name: 'Aceptar', exact: true }).click();
     await p.getByRole('button', { name: 'Sí, acepto estas condiciones' }).click();
     await p.getByText('Esto ya se resolvió').waitFor();
@@ -123,7 +123,7 @@ const casos = {
       .first()
       .waitFor();
     await panel('Avanzar 5 min');
-    await p.getByText('No hay propuestas vigentes').waitFor({ timeout: 10000 });
+    await p.getByText('Sin propuestas vigentes').waitFor({ timeout: 10000 });
     await p.getByText('Anteriores (1)').waitFor();
   },
 
@@ -259,19 +259,8 @@ const casos = {
   'sesion-vencida': async ({ ir, p }) => {
     await ir('/inicio/', 'sesion-vencida');
     await p.getByRole('button', { name: 'Entendido' }).count();
-    for (const r of ['/pedidos/', '/agenda/', '/chats/', '/cuenta/']) {
-      await p
-        .getByRole('link', {
-          name:
-            r === '/pedidos/'
-              ? 'Pedidos'
-              : r === '/agenda/'
-                ? 'Agenda'
-                : r === '/chats/'
-                  ? 'Mensajes'
-                  : 'Cuenta',
-        })
-        .click();
+    for (const pestana of ['Actividad', 'Mensajes', 'Cuenta']) {
+      await p.getByRole('link', { name: pestana, exact: true }).click();
       await p.waitForTimeout(700);
       if (await p.getByText('Tu sesión venció').count()) break;
     }

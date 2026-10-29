@@ -25,12 +25,24 @@ const interfaz = [
 
 describe('sistema visual', () => {
   it('los colores salen de los tokens: ningún hex fuera de tokens.css', () => {
-    for (const css of archivos('src/styles', /\.css$/).filter((f) => !f.endsWith('tokens.css'))) {
+    // Los archivos del kit los genera scripts/kit.mjs desde la landing (fuente de la marca): traen sus colores.
+    const generado = (f: string) =>
+      readFileSync(f, 'utf8').startsWith('/* GENERADO por scripts/kit.mjs');
+    for (const css of archivos('src/styles', /\.css$/).filter(
+      (f) => !f.endsWith('tokens.css') && !generado(f),
+    )) {
       expect(sinComentarios(readFileSync(css, 'utf8')), css).not.toMatch(/#[0-9a-f]{3,8}\b/i);
     }
     for (const tsx of interfaz.filter((f) => f.endsWith('.tsx'))) {
       expect(readFileSync(tsx, 'utf8'), tsx).not.toMatch(/style=\{\{[^}]*'#[0-9a-f]{3,8}'/i);
     }
+  });
+
+  it('el kit de la demo no se edita a mano: se regenera con scripts/kit.mjs', () => {
+    for (const f of ['app.css', 'hd.css', 'usuario.css'])
+      expect(readFileSync(join('src/styles/kit', f), 'utf8'), f).toMatch(
+        /^\/\* GENERADO por scripts\/kit\.mjs desde Handy-landing-page-fe/,
+      );
   });
 
   it('respeta prefers-reduced-motion', () => {
@@ -128,5 +140,26 @@ describe('accesibilidad (guardas estáticas; la auditoría completa está en tes
     expect(leer('src/components/Calendario.tsx')).toMatch(
       /aria-label=\{`\$\{partes\(f\)\.dia\} · /,
     );
+  });
+});
+
+describe('pantalla de carga', () => {
+  const css = readFileSync('src/styles/splash.css', 'utf8');
+  const tsx = readFileSync('src/components/Splash.tsx', 'utf8');
+  it('es decorativa, saltable y no aparece con "reducir movimiento"', () => {
+    expect(tsx).toMatch(/className="splash" aria-hidden="true"/);
+    expect(readFileSync('src/components/SplashControl.tsx', 'utf8')).toMatch(
+      /pointerdown[\s\S]*keydown/,
+    );
+    expect(css).toMatch(/prefers-reduced-motion: reduce\)\s*\{\s*\.splash\s*\{\s*display: none/);
+  });
+  it('dura menos de 5 s (como la de la landing)', () => {
+    const fin = /splash-salir ([\d.]+)s ease-in ([\d.]+)s/.exec(css);
+    expect(fin).not.toBeNull();
+    expect(Number(fin![1]) + Number(fin![2])).toBeLessThan(5);
+  });
+  it('los 5 Handys se agarran del logotipo', () => {
+    expect([...tsx.matchAll(/img: 'handy-/g)]).toHaveLength(5);
+    expect(readFileSync('src/app/layout.tsx', 'utf8')).toMatch(/<Splash \/>/);
   });
 });

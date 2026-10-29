@@ -13,7 +13,10 @@ segmentos dinámicos `[id]`.
 
 ## Reglas
 
-- **Diseño**: reutilizar marca, tokens, Handys y lenguaje de la landing y su demo (`/demo/`); no inventar otra marca.
+- **Diseño**: el kit visual es el de la demo de la landing, copiado con `npm run kit` a `src/styles/kit/` (no editar
+  esos archivos; lo propio va en `kit/ajustes.css`). Las pantallas rediseñadas usan los componentes de
+  `src/components/hx.tsx` y el markup `.hd-*`/`.du-*` de la demo; guía en `docs/diseno.md`, plan en `docs/rediseno.md`.
+  No inventar otra marca.
   Español rioplatense con voseo, pesos `$ 45.000`, "verificado" solo con dato real, sin "matriculado", sin prometer
   inmediatez ni ETA.
 - **Datos**: la vista de prueba es un servidor simulado completo (`src/data/mock/`, 54 endpoints, 18 escenarios): una regla de negocio nueva va primero en `docs/state-machines.md` y en `tests/servidor-mock.test.ts`. Las pantallas solo usan `cliente` de `src/data` (interfaz `ClienteApi`). Nunca `fetch` directo ni fixtures

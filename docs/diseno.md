@@ -1,5 +1,37 @@
 # Sistema visual de Handyx (usuario) · Fase 3
 
+## Rediseño · lote 3.1 (vigente)
+
+Desde el rediseño ([`rediseno.md`](rediseno.md)) la app usa **el mismo kit visual que la demo de la landing**, no uno
+parecido:
+
+- **`npm run kit`** (`scripts/kit.mjs`) copia `demo-app.css` (`.hd-*`), las piezas `.app-*` de `main.css` y
+  `demo-usuario.css` (`.du-*`) de `Handy-landing-page-fe` a `src/styles/kit/` con cambios mecánicos (ámbito `.hx`,
+  `.app` → `.hx-app`). Esos archivos **no se editan**: llevan el encabezado "GENERADO" (lo verifica una prueba) y
+  Prettier los ignora. Si la demo cambia, se vuelve a sincronizar.
+- **`src/styles/kit/ajustes.css`** es lo propio de la app: escala, estructura de app nativa, enlaces en lugar de botones,
+  foco, contraste, objetivos de 44 px, texto del sistema al 200 % y convivencia con las pantallas sin rediseñar.
+- **Escala**: el kit está en `em` y la demo mide 22,5 em de ancho. En la app, `.hx` toma `clamp(1.0625rem, 4.444vw,
+1.2rem)`: la misma proporción que la demo, pero respetando el tamaño de letra de la persona. Títulos grandes, barra y
+  pestañas tienen techo por ancho (`min(…, vw)`) para crecer sin partir palabras.
+- **Estructura**: `MarcoApp` sin cabecera fija; la pantalla ocupa el alto y solo se desplaza su cuerpo, como una app
+  nativa. Componentes en `src/components/hx.tsx`: `Pantalla` (arriba fijo, cuerpo desplazable o no, pie fijo),
+  `CabeceraInicio` (solo en Inicio), `Barra` ("← Título", con el h1), `NavApp` (4 pestañas, desde `NAVEGACION`),
+  `AvatarHx`, `ChipsVerificacion` (solo datos reales), `ChipEstado` ("Estado: …" para lectores), `Marcado` y `entra(i)`
+  (entrada en cascada, como la demo).
+- **Pantalla de carga**: `Splash.tsx` + `splash.css`, HTML y CSS puros en la primera pintura (secuencia en
+  `screens/rediseno-3-1/splash-secuencia.jpg`). Se saltea con un toque, dura 2,7 s, no aparece con "reducir movimiento" ni
+  en navegadores automatizados (salvo `?splash=1`).
+- **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
+  avisos, Handys e íconos.
+- **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el
+  10/12, sin HandIA ("Mirá qué hace cada uno"), "Consultar" en lugar de "Ver perfil" hasta que exista el perfil (3.5) y
+  "Comparar" para ver todas las propuestas lado a lado sin destacar ninguna.
+
+Comparaciones demo/app y galería: [`screens/rediseno-3-1/`](screens/rediseno-3-1/).
+
+## Antes del rediseño (sigue valiendo para las pantallas que todavía no se rehicieron)
+
 Fuente de marca: `Handy-landing-page-fe` (`src/brand/tokens.ts`, `src/styles/demo-app.css`, `/demo/`). Esta app no inventa
 otra marca: reusa logo, Archivo/DM Sans, Handys, íconos de línea, botones táctiles, mosaicos, marcador amarillo y barra azul.
 

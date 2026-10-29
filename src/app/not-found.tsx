@@ -5,7 +5,7 @@ import { Marco } from '@/components/Marco';
 
 export default function NoEncontrada() {
   return (
-    <Marco barra={false}>
+    <Marco>
       <div className="estado">
         <Image
           className="estado__handy"

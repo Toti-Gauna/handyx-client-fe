@@ -89,7 +89,11 @@ describe('movimiento', () => {
     const reglas = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)];
     for (const [, selector, cuerpo] of reglas) {
       if (/animation(-name)?:/.test(cuerpo!) && !/none/.test(cuerpo!))
-        expect(selector, selector).not.toMatch(/\.boton|\.decision|button/);
+        if (!/aria-busy/.test(selector!))
+          // la ruedita de "enviando" no apura nada
+          expect(selector, selector).not.toMatch(
+            /\.boton|\.hd-boton|\.du-oferta__btn|\.decision|button/,
+          );
     }
   });
 

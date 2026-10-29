@@ -762,8 +762,8 @@ export const pantalla = (id: string): Pantalla => {
 /** Barra inferior de la app (como la de la demo de la landing). */
 export const NAVEGACION = [
   { id: 'inicio', etiqueta: 'Inicio', icono: 'casa' },
-  { id: 'pedidos', etiqueta: 'Pedidos', icono: 'maletin' },
+  // "Actividad" junta pedidos, trabajos y agenda (rediseño, docs/rediseno.md §3); hasta el lote 3.7 abre Mis pedidos.
+  { id: 'pedidos', etiqueta: 'Actividad', icono: 'calendario' },
   { id: 'chats', etiqueta: 'Mensajes', icono: 'chat' },
-  { id: 'agenda', etiqueta: 'Agenda', icono: 'calendario' },
   { id: 'cuenta', etiqueta: 'Cuenta', icono: 'usuario' },
 ] as const;

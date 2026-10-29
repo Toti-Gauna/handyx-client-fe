@@ -10,3 +10,6 @@ src/contracts
 docs/screens/matriz.md
 tests/e2e
 docs/screens/capturas/README.md
+src/styles/kit/app.css
+src/styles/kit/hd.css
+src/styles/kit/usuario.css

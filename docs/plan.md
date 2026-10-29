@@ -16,7 +16,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                        | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos   | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
 |                        | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial         | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
 |                        | 2.5  | Pagos directos, avisos y los 18 escenarios                         | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-| 3 · Rediseño premium   | 3.1  | Dirección de arte, sistema y 3 pantallas modelo (aprobación)       | Opus 5.5 · high   | propuesto ([rediseño](rediseno.md))      |
+| 3 · Rediseño premium   | 3.1  | Dirección de arte, sistema y 3 pantallas modelo (aprobación)       | Opus 5.5 · high   | ✅ listo · esperando aprobación          |
 |                        | 3.2  | Splash animado, acceso y onboarding                                | Opus 5.5 · high   | propuesto                                |
 |                        | 3.3  | Mapa (MapLibre + PMTiles de MDP, dirección, búsqueda, seguimiento) | Opus 5.5 · high   | propuesto                                |
 |                        | 3.4  | Inicio y pedir                                                     | Opus 5.5 · high   | propuesto                                |

@@ -1,5 +1,6 @@
 'use client';
 
+import { tareaPorId } from '@/content/inicio';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { Calendario } from '@/components/Calendario';
@@ -50,7 +51,10 @@ export default function Pedir() {
   const [paso, setPaso] = useState(rubroInicial ? (tipoInicial ? 3 : 2) : 1);
   const [rubro, setRubro] = useState<Rubro | null>(rubroInicial);
   const [tipo, setTipo] = useState<Tipo | null>(tipoInicial);
-  const [descripcion, setDescripcion] = useState('');
+  // Desde "Quiero…" de Inicio llega una tarea conocida (nunca texto libre por la URL).
+  const [descripcion, setDescripcion] = useState(
+    () => tareaPorId(params.get('tarea'))?.problema ?? '',
+  );
   const [fotos, setFotos] = useState<string[]>([]);
   const [ubicacion, setUbicacion] = useState<UbicacionForm>(
     deUbicacion(sesion.perfil.ubicacion) ?? UBICACION_VACIA,

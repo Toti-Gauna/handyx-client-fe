@@ -20,7 +20,8 @@
     "mapa": "node --experimental-strip-types scripts/mapa.ts",
     "mapa:check": "node --experimental-strip-types scripts/mapa.ts --check",
     "e2e": "node tests/e2e/recorrido.cjs capturas-e2e && node tests/e2e/escenarios.cjs capturas-e2e && node tests/e2e/accesibilidad.cjs capturas-e2e && node tests/e2e/teclado.cjs && node tests/e2e/pwa.cjs capturas-e2e",
-    "capturas": "node tests/e2e/escenarios.cjs docs/screens/capturas/escenarios && node tests/e2e/capturas.cjs docs/screens/capturas"
+    "capturas": "node tests/e2e/escenarios.cjs docs/screens/capturas/escenarios && node tests/e2e/capturas.cjs docs/screens/capturas",
+    "kit": "node scripts/kit.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "5.3.0",

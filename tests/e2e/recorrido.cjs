@@ -80,7 +80,7 @@ const paso = (m) => console.log('•', m);
   await p.getByRole('link', { name: /Ver propuestas/ }).click();
   await p.getByRole('heading', { name: /propuestas/i }).waitFor();
   await foto('16-propuestas');
-  await p.getByRole('link', { name: 'Ver y responder' }).first().click();
+  await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
   await p.getByRole('button', { name: 'Aceptar', exact: true }).waitFor();
   await foto('17-propuesta-detalle');
   await p.getByRole('button', { name: 'Aceptar', exact: true }).click();

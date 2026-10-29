@@ -1,6 +1,6 @@
 # Rediseño premium de la app de usuario de Handyx · Plan
 
-Estado: **propuesto, esperando aprobación** (29/10/2026). Reemplaza el trabajo visual de la Fase 3 (lotes 3.1–3.3) por
+Estado: **aprobado** (29/10/2026, con las decisiones recomendadas). **Lote 3.1 hecho: las 3 pantallas modelo esperan tu aprobación** antes de escalar. Reemplaza el trabajo visual de la Fase 3 (lotes 3.1–3.3) por
 una Fase 3 rehecha en 9 lotes. Las Fases 4 y 5 no cambian de objetivo; se agregan los cambios de contrato que pide el
 rediseño (sección 9).
 

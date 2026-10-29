@@ -35,7 +35,10 @@ export function AvisoVistaPrueba() {
   return (
     <>
       <p className="aviso-prueba" role="note">
-        Vista de prueba · datos ficticios, sin backend ni cuentas reales
+        <span>
+          <strong>Vista de prueba</strong> · datos ficticios
+          <span className="sr-only">, sin backend ni cuentas reales</span>
+        </span>
         <button type="button" className="panel-prueba__abrir" onClick={() => setAbierto(true)}>
           Panel de prueba
         </button>

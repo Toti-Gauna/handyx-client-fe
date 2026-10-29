@@ -6,7 +6,7 @@
 // persona. Las acciones no se encolan ni se reintentan solas: sin conexión, fallan a la vista.
 //
 // Si cambia la lógica de este archivo, subir VERSION: el navegador instala el nuevo y borra los cachés viejos.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE_PAGINAS = `handyx-paginas-${VERSION}`;
 const CACHE_ESTATICOS = `handyx-estaticos-${VERSION}`;
 const MAX_ESTATICOS = 200;
@@ -28,8 +28,23 @@ const PRECARGA = [
   '/img/handy-llave-rota.webp',
 ];
 
+/** Archivos con hash que necesita una página (scripts y estilos de Next), sacados de su propio HTML. */
+const recursosDe = (html) => [
+  ...new Set(html.match(/\/_next\/static\/[\w./-]+\.(?:js|css|woff2)/g) ?? []),
+];
+
 self.addEventListener('install', (evento) => {
-  evento.waitUntil(caches.open(CACHE_PAGINAS).then((c) => c.addAll(PRECARGA)));
+  evento.waitUntil(
+    (async () => {
+      const paginas = await caches.open(CACHE_PAGINAS);
+      await paginas.addAll(PRECARGA);
+      // La pantalla sin conexión tiene que poder abrirse sin red: también sus scripts y estilos.
+      const html = await (await paginas.match('/sin-conexion/')).text();
+      // De a uno: si alguno no está, la instalación sigue (la pantalla igual se ve, aunque sin estilos).
+      const estaticos = await caches.open(CACHE_ESTATICOS);
+      await Promise.allSettled(recursosDe(html).map((u) => estaticos.add(u)));
+    })(),
+  );
 });
 
 self.addEventListener('activate', (evento) => {
