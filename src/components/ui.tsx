@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useEffect, useId, useRef } from 'react';
 import type { ErrorCliente } from '@/data/cliente';
+import { enfocarSiPrimerError } from './foco';
 import { Icono } from './Icono';
 import type { NombreIcono } from './trazos';
 
@@ -71,6 +72,9 @@ export function Campo({
   children: (props: PropsControl) => React.ReactNode;
 }) {
   const id = useId();
+  useEffect(() => {
+    if (error) enfocarSiPrimerError(id);
+  }, [error, id]);
   const ids = [ayuda ? `${id}-ayuda` : null, error ? `${id}-error` : null]
     .filter(Boolean)
     .join(' ');
@@ -252,11 +256,16 @@ export function Hoja({
   handy?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const refTitulo = useRef<HTMLHeadingElement>(null);
   const idTitulo = useId();
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (abierta && !d.open) d.showModal();
+    if (abierta && !d.open) {
+      d.showModal();
+      // El foco arranca en el título, no en el primer botón: un Enter apurado no confirma nada.
+      refTitulo.current?.focus();
+    }
     if (!abierta && d.open) d.close();
   }, [abierta]);
   return (
@@ -278,7 +287,7 @@ export function Hoja({
           {handy ? (
             <Image className="hoja__handy" src={handy} alt="" width={96} height={96} />
           ) : null}
-          <h2 id={idTitulo} className="hoja__titulo">
+          <h2 id={idTitulo} ref={refTitulo} tabIndex={-1} className="hoja__titulo">
             {titulo}
           </h2>
           {children}
@@ -301,7 +310,8 @@ export function Pastilla({
   return (
     <span className={`pastilla pastilla--${tono}`}>
       {icono ? <Icono nombre={icono} className="icono" /> : null}
-      {children}
+      <span className="sr-only">Estado: </span>
+      <span>{children}</span>
     </span>
   );
 }

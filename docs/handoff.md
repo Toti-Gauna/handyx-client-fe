@@ -1,11 +1,41 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Refinación de diseño — lote 3.1 listo.** Próximo: lote 3.2 (responsive y accesibilidad), misma rama.
+**Fase actual: 3 · Refinación de diseño — lotes 3.1 y 3.2 listos.** Próximo: lote 3.3 (motion, PWA y capturas), misma rama.
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Lote 3.2 · Responsive y accesibilidad
+
+- **Auditoría reproducible** (`tests/e2e/accesibilidad.cjs`, axe-core 4.14 como dependencia de desarrollo): 32 rutas y 5
+  hojas abiertas × 360, 390, 820, 1280 px y horizontal, más texto al 200 %. Primera corrida: **181 de 203 chequeos con
+  fallas**; final: **203 de 203 OK**.
+- Corregido: objetivos táctiles < 44 px (panel de prueba, desplegables de ayuda y privacidad, enlaces sueltos, días del
+  calendario a 360 px), nombre accesible de los días del calendario, orden de títulos de la agenda, desbordes con texto
+  al 200 % (pestañas, títulos, filas de datos, importes).
+- **Teclado y lector** (`tests/e2e/teclado.cjs`, 13 de 13): saltar al contenido, foco al h1 al navegar, título de pestaña
+  por pantalla, foco en el primer error al enviar, hojas que abren en su título (un Enter no confirma), Escape devuelve
+  el foco, pastillas leídas como "Estado: …", Aceptar/Rechazar descritos por el resumen, "Aire acondicionado" completo.
+  Se revisó el árbol de accesibilidad de Chromium; no hubo lector de pantalla real ni dispositivos (queda para el 5.2).
+- **Responsive**: tablet con columna de 600 px y hojas centradas; escritorio con navegación lateral; horizontal con
+  barra compacta y rótulo de prueba no fijo.
+- Guía actualizada en [`docs/diseno.md`](diseno.md); QA en [`docs/qa.md`](qa.md); capturas en `docs/screens/lote-3-2/`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                                      |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                             |
+| `npm test`                                         | **72 pruebas OK** (7 archivos; `tests/diseno.test.ts` suma 6 guardas de accesibilidad)         |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · 36 páginas                                                      |
+| `node tests/e2e/accesibilidad.cjs`                 | 203 de 203 chequeos OK                                                                         |
+| `node tests/e2e/teclado.cjs`                       | 13 de 13 OK                                                                                    |
+| `node tests/e2e/recorrido.cjs` · `escenarios.cjs`  | OK · 18 de 18                                                                                  |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas; axe-core no suma avisos |
+
+`npm run e2e` ahora corre los cuatro scripts en orden.
 
 ## Lote 3.1 · Sistema visual y navegación
 
@@ -53,9 +83,9 @@ Las pruebas e2e cambiaron solo en los nombres de dos controles: el botón "Acept
 
 ## Próximo paso
 
-Lote 3.2 (Opus 5.5 high) en `fase-3-diseno`: auditoría con teclado y lector de pantalla, axe automatizado, 768/820 px y
-horizontal, texto del sistema al 200 %, objetivos táctiles y foco en hojas y formularios. Después 3.3: movimiento, PWA
-(manifest, service worker, `/sin-conexion/`) y capturas de todas las pantallas y estados.
+Lote 3.3 (Opus 5.5 high) en `fase-3-diseno`: movimiento funcional que respete `prefers-reduced-motion` y nunca empuje a
+aceptar, PWA instalable (manifest e íconos coherentes, service worker, `/sin-conexion/` sin éxitos ficticios) y capturas
+de todas las pantallas y estados. Al cerrarlo, PR de la Fase 3 hacia `fase-2-mockup`.
 
 ---
 

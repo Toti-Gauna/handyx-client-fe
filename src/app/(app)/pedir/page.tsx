@@ -192,7 +192,8 @@ export default function Pedir() {
                 }}
               >
                 <Icono nombre={RUBROS_INFO[r].icono} />
-                {RUBROS_INFO[r].corto}
+                <span aria-hidden="true">{RUBROS_INFO[r].corto}</span>
+                <span className="sr-only">{RUBROS_INFO[r].nombre}</span>
                 {rubro === r ? (
                   <Icono nombre="checkCirculo" className="icono mosaico__tilde" />
                 ) : null}

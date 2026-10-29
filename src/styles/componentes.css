@@ -413,7 +413,11 @@ dialog.hoja::backdrop {
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
 }
+/* Enlace suelto (fuera de un párrafo): objetivo táctil de 44 px aunque se vea como texto. */
 .enlace-tarjeta {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--toque-min);
   color: var(--color-azul);
   font-weight: 700;
 }
@@ -635,7 +639,7 @@ dialog.hoja::backdrop {
 }
 .compositor {
   position: sticky;
-  bottom: calc(var(--barra-alto) - 4px);
+  bottom: calc(var(--barra-alto) + env(safe-area-inset-bottom));
   display: flex;
   gap: 8px;
   align-items: flex-end;
@@ -1110,4 +1114,73 @@ button.mosaico {
   right: 8px;
   width: var(--icono-sm);
   height: var(--icono-sm);
+}
+
+/* ── Accesibilidad y responsive (Fase 3 · lote 3.2) ─────────────────────────────────────────── */
+
+/* Desplegables: la fila entera es el objetivo (44 px). */
+details > summary {
+  min-height: var(--toque-min);
+  padding-block: 11px;
+  color: var(--texto-titulo);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Panel de prueba: también con objetivos de 44 px (lo usa quien prueba, a veces desde el celular). */
+.panel-prueba__abrir {
+  min-height: var(--toque-min);
+  padding: 4px 14px;
+}
+.panel-prueba__acciones button {
+  min-height: var(--toque-min);
+}
+
+/* Texto del sistema grande (hasta 200 %): las filas pasan a dos líneas en vez de salirse. */
+.tabs {
+  flex-wrap: wrap;
+}
+.tabs__tab {
+  flex: 1 1 auto;
+}
+.datos__fila,
+.desglose__fila {
+  flex-wrap: wrap;
+}
+.datos dd,
+.desglose dd {
+  margin-left: auto;
+}
+.importe,
+.desglose dd {
+  white-space: normal;
+}
+.titulo,
+.hoja__titulo,
+.decision__titulo,
+.panel-marca__titulo {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Tablet y escritorio: la hoja es un diálogo centrado, no una hoja inferior. */
+@media (min-width: 768px) {
+  dialog.hoja {
+    max-width: 520px;
+    margin: auto;
+    border-radius: var(--radio-lg);
+  }
+  dialog.hoja .hoja__manija {
+    display: none;
+  }
+  .hoja__cuerpo {
+    padding-top: var(--esp-5);
+  }
+}
+/* A 360 px, siete días con 4 px de hueco no llegan a 44 px: el hueco baja a 2 px. */
+.cal__grilla {
+  gap: 2px;
+}
+.datos dt {
+  flex: 0 1 auto;
 }

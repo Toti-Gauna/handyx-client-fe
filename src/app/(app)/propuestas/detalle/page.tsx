@@ -159,7 +159,7 @@ export default function DetallePropuesta() {
           <h2 id="decision-titulo" className="decision__titulo">
             {p.tipo === 'cotizacion' ? '¿Aceptás esta propuesta?' : '¿Aceptás este cambio?'}
           </h2>
-          <p className="decision__resumen">
+          <p id="decision-resumen" className="decision__resumen">
             Total {pesos(total)} · {p.horario ? cuando(p.horario.inicio) : 'horario a declarar'}
           </p>
           <Aviso tipo="info">
@@ -169,6 +169,7 @@ export default function DetallePropuesta() {
           </Aviso>
           <div className="decision__botones">
             <Boton
+              aria-describedby="decision-resumen"
               variante="peligro"
               icono="cerrar"
               onClick={() => {
@@ -179,6 +180,7 @@ export default function DetallePropuesta() {
               Rechazar
             </Boton>
             <Boton
+              aria-describedby="decision-resumen"
               icono="check"
               onClick={() => {
                 accion.limpiar();

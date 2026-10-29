@@ -34,7 +34,7 @@ segmentos dinámicos `[id]`.
   tarjeta"; HandIA desactivada; sin envíos automáticos a terceros.
 - **Datos de prueba**: solo ficticios (ids `de000000-…`, `*@example.test`, nombres inventados).
 - **Accesibilidad y responsive**: 360/390, 768/820 y escritorio; foco visible, labels, targets ≥ 44 px, contraste, nada
-  que dependa solo del color, `prefers-reduced-motion`.
+  que dependa solo del color, `prefers-reduced-motion`. Auditoría: `tests/e2e/accesibilidad.cjs` y `teclado.cjs` (ver `docs/qa.md`).
 
 ## Comandos
 

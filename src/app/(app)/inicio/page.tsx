@@ -156,7 +156,8 @@ export default function Inicio() {
               className="mosaico"
             >
               <Icono nombre={RUBROS_INFO[r].icono} />
-              {RUBROS_INFO[r].corto}
+              <span aria-hidden="true">{RUBROS_INFO[r].corto}</span>
+              <span className="sr-only">{RUBROS_INFO[r].nombre}</span>
             </Enlace>
           </li>
         ))}

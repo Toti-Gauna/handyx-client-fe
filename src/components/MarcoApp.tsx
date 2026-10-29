@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Suspense } from 'react';
+import { FocoAlNavegar } from './FocoAlNavegar';
 import { BarraInferior } from './BarraInferior';
 import { Icono } from './Icono';
 import { Enlace } from './nav';
@@ -29,7 +30,11 @@ function Campana() {
 /** Marco de las pantallas con sesión: proveedor de sesión, cabecera con avisos y barra inferior. */
 export function MarcoApp({ children, barra }: { children: React.ReactNode; barra: boolean }) {
   return (
-    <div className="app">
+    <div className={barra ? 'app app--con-barra' : 'app'}>
+      <a className="saltar" href="#contenido">
+        Saltar al contenido
+      </a>
+      <FocoAlNavegar />
       <SesionProvider>
         <header className="app__cabecera">
           <Image

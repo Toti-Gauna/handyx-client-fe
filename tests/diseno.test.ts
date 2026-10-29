@@ -87,3 +87,46 @@ describe('sistema visual', () => {
     expect(iniciales('Ñandú')).toBe('Ñ');
   });
 });
+
+describe('accesibilidad (guardas estáticas; la auditoría completa está en tests/e2e/accesibilidad.cjs)', () => {
+  const leer = (f: string) => readFileSync(f, 'utf8');
+
+  it('los dos marcos tienen "Saltar al contenido" y mueven el foco al navegar', () => {
+    for (const f of ['src/components/Marco.tsx', 'src/components/MarcoApp.tsx']) {
+      expect(leer(f), f).toMatch(/href="#contenido"[\s\S]*Saltar al contenido/);
+      expect(leer(f), f).toMatch(/<FocoAlNavegar \/>/);
+      expect(leer(f), f).toMatch(/id="contenido"/);
+    }
+  });
+
+  it('las hojas abren con el foco en el título, no en un botón de confirmar', () => {
+    const ui = leer('src/components/ui.tsx');
+    expect(ui).toMatch(/showModal\(\);[\s\S]{0,200}refTitulo\.current\?\.focus\(\)/);
+    expect(ui).toMatch(/ref=\{refTitulo\} tabIndex=\{-1\}/);
+  });
+
+  it('las pastillas anuncian que son un estado y los campos con error toman el foco al enviar', () => {
+    const ui = leer('src/components/ui.tsx');
+    expect(ui).toMatch(/<span className="sr-only">Estado: <\/span>/);
+    expect(ui).toMatch(/enfocarSiPrimerError\(id\)/);
+  });
+
+  it('cada pantalla con h1 pone el título de la pestaña', () => {
+    expect(leer('src/components/Titulo.tsx')).toMatch(/nivel === 1 \? <TituloDocumento/);
+  });
+
+  it('objetivos de 44 px en desplegables, enlaces sueltos y panel de prueba', () => {
+    const css = leer('src/styles/componentes.css');
+    for (const sel of ['details > summary', '.enlace-tarjeta', '.panel-prueba__abrir']) {
+      const i = css.lastIndexOf(`${sel} {`);
+      expect(i, sel).toBeGreaterThan(-1);
+      expect(css.slice(i, css.indexOf('}', i)), sel).toMatch(/min-height: var\(--toque-min\)/);
+    }
+  });
+
+  it('el calendario muestra el número del día dentro de su nombre accesible', () => {
+    expect(leer('src/components/Calendario.tsx')).toMatch(
+      /aria-label=\{`\$\{partes\(f\)\.dia\} · /,
+    );
+  });
+});

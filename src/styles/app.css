@@ -45,6 +45,32 @@ a {
   outline-offset: 2px;
 }
 
+/* Primer foco de la página: saltar al contenido (visible solo con teclado). */
+.saltar {
+  position: absolute;
+  z-index: 50;
+  top: 8px;
+  left: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--color-tinta);
+  color: var(--texto-sobre-marca);
+  font-weight: 800;
+}
+.saltar:not(:focus) {
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* El h1 recibe el foco al cambiar de pantalla: sin contorno (no es un control), sí para lectores. */
+.titulo:focus {
+  outline: none;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -396,6 +422,100 @@ a {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.85em;
   overflow-wrap: anywhere;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────────────────────────── */
+
+/* Tablet: columna más ancha, sigue siendo una app. */
+@media (min-width: 768px) {
+  :root {
+    --ancho-app: 600px;
+  }
+}
+
+/* Celular en horizontal: poco alto. Barra compacta (ícono y texto en fila), rótulo de prueba no fijo. */
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --barra-alto: 52px;
+  }
+  .aviso-prueba {
+    position: static;
+  }
+  .app__cabecera {
+    padding-block: max(6px, env(safe-area-inset-top)) 6px;
+  }
+  .barra {
+    padding-block: 4px max(4px, env(safe-area-inset-bottom));
+    padding-inline: max(6px, env(safe-area-inset-left)) max(6px, env(safe-area-inset-right));
+    border-radius: 16px 16px 0 0;
+  }
+  .barra__item {
+    flex-direction: row;
+    gap: 6px;
+    min-height: var(--toque-min);
+    padding: 4px 10px;
+    font-size: var(--t-sm);
+  }
+  .barra__item[aria-current='page']::after {
+    bottom: 3px;
+  }
+}
+
+/* Escritorio: la barra pasa a ser una columna de navegación a la izquierda. */
+@media (min-width: 1024px) {
+  .aviso-prueba {
+    position: static;
+  }
+  .app--con-barra {
+    --barra-alto: 0px;
+    display: grid;
+    grid-template-columns: 232px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'nav cabecera'
+      'nav cuerpo';
+    max-width: 1000px;
+  }
+  .app--con-barra .app__cabecera {
+    grid-area: cabecera;
+    padding-inline: 32px;
+  }
+  .app--con-barra .app__cuerpo {
+    grid-area: cuerpo;
+    width: 100%;
+    max-width: 704px;
+    padding-inline: 32px;
+  }
+  .app--con-barra .barra {
+    grid-area: nav;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 4px;
+    width: auto;
+    max-width: none;
+    height: 100dvh;
+    min-height: 0;
+    padding: 96px 14px 24px;
+    border-radius: 0;
+  }
+  .app--con-barra .barra__item {
+    flex-direction: row;
+    gap: 12px;
+    min-height: 48px;
+    padding: 10px 14px;
+    font-size: var(--t-md);
+  }
+  .app--con-barra .barra__item[aria-current='page']::after {
+    top: 50%;
+    bottom: auto;
+    left: auto;
+    right: 12px;
+    margin: -2.5px 0 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

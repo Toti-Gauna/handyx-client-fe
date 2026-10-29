@@ -57,11 +57,42 @@ tarifa, horario, alcance, verificaciones y vigencia, sin destacar ninguna fila. 
 "más barato", "top", "matriculado" ni "verificado por Handy" (prueba en `tests/diseno.test.ts`). "Verificado" solo
 aparece si `especialista.verificaciones` lo trae; si no, "Todavía sin verificaciones registradas".
 
-## Pendiente para los lotes 3.2 y 3.3
+## Responsive (lote 3.2)
 
-- 3.2: auditoría con lector de pantalla y teclado, axe automatizado, 820 px y orientación horizontal, tamaños de texto
-  del sistema (200 %).
-- 3.3: movimiento funcional (aparición de propuestas, hoja), manifest e íconos, service worker y `/sin-conexion/`,
-  capturas de todas las pantallas y estados.
+| Ancho / forma                       | Diseño                                                                                                                        |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| < 768 px (360, 390)                 | columna completa, barra azul inferior                                                                                         |
+| 768–1023 px (768, 820)              | columna de 600 px centrada; las hojas pasan a diálogo centrado (sin manija)                                                   |
+| ≥ 1024 px                           | la barra pasa a ser una columna de navegación a la izquierda (232 px); contenido hasta 704 px; el rótulo de prueba no es fijo |
+| Horizontal con poco alto (≤ 500 px) | barra compacta (ícono y texto en fila, 52 px), cabecera más baja, rótulo de prueba no fijo                                    |
+| Texto del sistema al 200 %          | filas de datos, desglose y pestañas pasan a dos líneas; títulos cortan palabras con guion; nada se sale de la pantalla        |
 
-Capturas del lote 3.1 (antes / después, 390 px, datos ficticios): `docs/screens/lote-3-1/`.
+El compositor del chat se apoya siempre sobre la barra (`--barra-alto`, que vale 0 en escritorio).
+
+## Accesibilidad (lote 3.2)
+
+- **Saltar al contenido**: primer foco de cada pantalla, visible solo con teclado.
+- **Foco al navegar**: va al h1 de la pantalla nueva (también si todavía estaba cargando). Cada h1 pone el **título de la
+  pestaña** ("Propuesta · Handyx"), que es lo que anuncia el anunciador de rutas de Next.
+- **Hojas**: diálogos modales nativos (`showModal`); el foco arranca en el **título**, nunca en el botón de confirmar (un
+  Enter apurado no acepta ni rechaza); Escape cierra y el foco vuelve al botón que la abrió; Tab no sale de la hoja.
+- **Formularios**: al enviar con errores, el foco va al primer campo inválido; cada error está asociado con
+  `aria-describedby` y se anuncia (`role="alert"`).
+- **Estados**: las pastillas se leen "Estado: Pendiente"; Aceptar y Rechazar se describen con el resumen de la decisión
+  (total y horario).
+- **Objetivos táctiles ≥ 44 px** en todo control, incluidos desplegables, enlaces sueltos, días del calendario a 360 px y
+  el panel de prueba. Los enlaces dentro de un párrafo son la excepción "en línea" de WCAG 2.5.8.
+- **Calendario**: cada día se llama "20 · Viernes 20/11, con trabajos" (el número visible está en el nombre).
+- **Abreviaturas**: "Aire acond." se lee "Aire acondicionado".
+- **Movimiento reducido**: todas las transiciones y animaciones se anulan.
+
+Auditoría: `tests/e2e/accesibilidad.cjs` (axe-core + chequeos propios) y `tests/e2e/teclado.cjs`. Resultados en `docs/qa.md`.
+
+## Pendiente para el lote 3.3
+
+- Movimiento funcional (aparición de propuestas, hoja), manifest e íconos, service worker y `/sin-conexion/`, capturas de
+  todas las pantallas y estados.
+- Lectores de pantalla y zoom reales en iOS/Android: en la prueba con dos celulares (lote 5.2).
+
+Capturas del lote 3.1 (antes / después, 390 px, datos ficticios): `docs/screens/lote-3-1/`. Lote 3.2 (escritorio, tablet,
+horizontal y hojas): `docs/screens/lote-3-2/`.
