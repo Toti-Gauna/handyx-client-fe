@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+coverage
+package-lock.json
+next-env.d.ts
+# Copia byte a byte de handyx-client-be (npm run contracts:sync): no se reformatea acá.
+src/contracts
+# Generado por npm run mapa
+docs/screens/matriz.md
+tests/e2e

@@ -1,0 +1,30 @@
+/* Tokens de marca de Handy, copiados de Handy-landing-page-fe/src/brand/tokens.ts (misma fuente que el portal). */
+:root {
+  --color-azul: #1f57a8;
+  --color-azul-ui: #4a72b0;
+  --color-azul-personajes: #2f6bff;
+  --color-gris: #cfcfcf;
+  --color-amarillo: #f5f59a;
+  --color-noche: #1d2c4a;
+  --color-mosaico: #ececec;
+  --color-hueso: #f7f6f1;
+  --color-tinta: #0e1d36;
+  --color-texto: #26324a;
+  --color-texto-suave: #5f6b84;
+  --color-fondo: #ffffff;
+  --color-borde: #dadfe8;
+  --color-naranja: #f6a623;
+  --color-error: #d93025;
+  --color-exito: #1e9e57;
+  --color-whatsapp: #1fa855;
+
+  --radio-sm: 10px;
+  --radio-md: 16px;
+  --radio-lg: 24px;
+  --radio-xl: 36px;
+  --radio-pastilla: 999px;
+
+  /* Fuentes empaquetadas con @fontsource: el portal no pide recursos a terceros. */
+  --fuente: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fuente-titulos: 'Archivo Variable', 'Archivo', 'Arial Black', system-ui, sans-serif;
+}
