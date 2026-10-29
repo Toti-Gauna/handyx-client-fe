@@ -46,6 +46,14 @@ parecido:
 - **Búsqueda** (`PedidoBuscando`, como u-buscando): mapa con tu casa y el pulso, botón volver flotante, "Buscando en
   {barrio}", hoja azul con el estado, las tres tarjetas que esperan propuestas, hasta cuándo sigue la búsqueda (nunca
   cuándo llega alguien) y las acciones; "Nadie respondió todavía" con el Handy roto y "El equipo de Handy busca por vos".
+- **Propuesta** (lote 3.5, como u-perfil): héroe azul con avatar, verificaciones reales (o "Sin verificaciones
+  todavía") y trabajos con Handyx; rubros; qué incluye; ticket azul con el total final, el desglose, el horario y la
+  vigencia; contrapropuesta y chat como filas; historial de la negociación. Pie fijo con Rechazar (izquierda, contorno
+  rojo) y Aceptar (derecha). "Elegir" desde la tarjeta abre la confirmación.
+- **Confirmá el turno** (como u-confirmar, en una hoja): ticket con quién, qué, cuándo, dónde y la plata; cómo se paga
+  (Mercado Pago o efectivo, informativo: se elige al terminar); **`DeslizarConfirmar`** (`Deslizar.tsx`): hay que llevar
+  la perilla al 90 % del recorrido, vuelve si se suelta antes o si el servidor rechaza, quieto (sin brillos que apuren)
+  y siempre acompañado del botón "Sí, acepto estas condiciones" (WCAG 2.5.7).
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

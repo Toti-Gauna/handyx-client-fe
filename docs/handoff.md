@@ -1,12 +1,37 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.4 (el mapa todavía sin los datos reales), pantalla de carga y
-HandIA. Sigue el lote 3.5** (propuestas y decisión) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.5 (el mapa todavía sin los datos reales), pantalla de carga y
+HandIA. Sigue el lote 3.6** (trabajo en curso y cierre) ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.5 · Propuestas y decisión
+
+Pedido de Ignacio: "Seguí con 3.5".
+
+- **Tarjetas** (lista y comparación): "Ver perfil" abre la propuesta y "Elegir" abre directamente "Confirmá el turno";
+  en la comparación, "Elegir" solo en las que se pueden aceptar.
+- **Propuesta = perfil + propuesta** (u-perfil): verificaciones reales (o "Sin verificaciones todavía"), rubros,
+  trabajos con Handyx, qué incluye, total final con desglose, horario y vigencia, contrapropuesta, chat e historial de
+  la negociación. Pie: Rechazar | Aceptar.
+- **Confirmá el turno** (u-confirmar): quién, qué, cuándo, dónde y la plata; cómo se paga (informativo: el contrato no
+  guarda la forma de pago, se elige al pagar); **deslizá para confirmar** (no acepta a medias; vuelve si el servidor
+  rechaza; sin animaciones que apuren) y siempre el botón "Sí, acepto estas condiciones" como alternativa accesible.
+- **Contrapropuesta** en el kit, a pantalla completa (sin barra de pestañas).
+- Pendiente de contrato (Fase 4.3): el historial general y la zona del especialista.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                                     |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                            |
+| `npm test`                                         | **138 pruebas OK** (8 nuevas de propuestas)                                                   |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                  |
+| `npm run e2e`                                      | recorrido (acepta deslizando) · 18 escenarios · accesibilidad · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas             |
 
 ## Rediseño · lote 3.4 · Inicio y pedir
 

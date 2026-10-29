@@ -1485,3 +1485,180 @@ body {
   font-weight: 800;
   text-decoration: underline;
 }
+
+/* ── Lote 3.5 · Propuestas y decisión ────────────────────────────────────────────────────────────── */
+.du-propuesta .du-heroe {
+  background: var(--hd-azul);
+}
+.du-heroe__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35em;
+}
+.du-heroe > small {
+  color: rgb(255 255 255 / 0.88);
+  font-size: 0.72em;
+  font-weight: 700;
+}
+.du-propuesta .du-heroe .hd-avatar--grande {
+  box-shadow: 0 0 0 0.25em rgb(255 255 255 / 0.9);
+}
+.du-propuesta__sobre {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.du-propuesta__alcance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.du-propuesta__alcance small {
+  color: var(--hd-suave);
+  font-size: 0.66em;
+  font-weight: 800;
+}
+.du-propuesta__alcance p {
+  margin: 0;
+  color: var(--hd-tinta);
+  font-size: 0.84em;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.du-precio__abajo strong {
+  font-weight: 800;
+}
+.du-cadena {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.7em 0.9em;
+  list-style: none;
+}
+.du-cadena li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  font-size: 0.78em;
+}
+.du-cadena li[aria-current='true'] strong {
+  color: var(--hd-azul);
+}
+.du-cadena span {
+  color: var(--hd-suave);
+  font-size: 0.9em;
+}
+.du-perfil .du-pie .decision__botones {
+  margin-top: 0;
+}
+/* Confirmar el turno (u-confirmar) dentro de la hoja. */
+.du-confirmar {
+  font-size: 0.95rem;
+}
+.du-confirmar__plata {
+  margin: 0;
+}
+.du-confirmar__plata dd {
+  margin: 0;
+  font-weight: 800;
+}
+.du-pagos--info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-pagos--info .du-pago {
+  box-shadow: none;
+}
+.du-confirmar__pago-nota {
+  margin: 0;
+  color: var(--hd-suave);
+  font-size: 0.85rem;
+}
+.du-confirmar__acciones {
+  margin-top: 8px;
+}
+
+/* Deslizá para confirmar: pista verde con la perilla blanca. Quieto hasta que la persona lo arrastra. */
+.du-deslizar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 3.6rem;
+  margin: 12px 0 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--hd-exito-tinte);
+  box-shadow: inset 0 0 0 2px var(--hd-exito);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.du-deslizar__relleno {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--hd-exito);
+  transition: width 0.25s var(--hd-curva);
+}
+.du-deslizar__texto {
+  position: relative;
+  padding-left: 3rem;
+  color: var(--hd-tinta);
+  font-weight: 800;
+}
+.du-deslizar__perilla {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: grid;
+  place-items: center;
+  width: calc(3.6rem - 8px);
+  height: calc(3.6rem - 8px);
+  border-radius: 50%;
+  background: var(--sup-tarjeta);
+  color: var(--hd-exito);
+  box-shadow: 0 0.15rem 0.5rem rgb(14 29 54 / 0.25);
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.25s var(--hd-curva);
+}
+.du-deslizar__perilla .icono {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.du-deslizar--arrastrando .du-deslizar__perilla,
+.du-deslizar--arrastrando .du-deslizar__relleno {
+  cursor: grabbing;
+  transition: none;
+}
+.du-deslizar--cargando {
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-deslizar__relleno,
+  .du-deslizar__perilla {
+    transition: none;
+  }
+}
+.hx a.hd-fila {
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.hx a.hd-fila strong {
+  color: var(--hd-azul);
+}
+.du-heroe__chips {
+  max-width: 100%;
+}
+.du-heroe__chips .hd-chip {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+  text-align: start;
+}

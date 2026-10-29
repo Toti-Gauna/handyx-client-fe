@@ -78,6 +78,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | propuestas-tarjetas | [propuestas-tarjetas-390.jpg](propuestas-tarjetas-390.jpg) |
 | propuestas-tabla | [propuestas-tabla-390.jpg](propuestas-tabla-390.jpg) |
 | propuesta-detalle | [propuesta-detalle-390.jpg](propuesta-detalle-390.jpg) |
+| propuesta-detalle-abajo | [propuesta-detalle-abajo-390.jpg](propuesta-detalle-abajo-390.jpg) |
 | hoja-aceptar | [hoja-aceptar-390.jpg](hoja-aceptar-390.jpg) |
 | hoja-rechazar | [hoja-rechazar-390.jpg](hoja-rechazar-390.jpg) |
 | aceptacion-ya-resuelta | [aceptacion-ya-resuelta-390.jpg](aceptacion-ya-resuelta-390.jpg) |

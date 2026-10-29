@@ -83,8 +83,8 @@ const casos = {
       .first()
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
-    await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
-    await p.getByRole('link', { name: 'Hacer una contrapropuesta' }).click();
+    await p.getByRole('link', { name: /^Ver perfil de/ }).first().click();
+    await p.getByRole('link', { name: /Hacer una contrapropuesta/ }).click();
     await p.getByLabel('Precio que proponés').fill('40.000');
     await p.getByRole('button', { name: 'Enviar contrapropuesta' }).click();
     await p.waitForURL('**/chats/conversacion/**');
@@ -100,8 +100,9 @@ const casos = {
       .first()
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
+    // "Elegir" abre directamente "Confirmá el turno".
     await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
-    await p.getByRole('button', { name: 'Aceptar', exact: true }).click();
+    await p.getByRole('heading', { name: 'Confirmá el turno' }).waitFor();
     await p.getByRole('button', { name: 'Sí, acepto estas condiciones' }).click();
     await p.getByText('Esto ya se resolvió').waitFor();
     await p.getByText('No se creó otro trabajo').waitFor();

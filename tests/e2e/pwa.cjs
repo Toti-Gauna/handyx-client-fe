@@ -67,7 +67,14 @@ const PROP = '/propuestas/detalle/?id=de000000-0000-4000-8000-000000001003&escen
   await p.screenshot({ path: `${CARPETA}/pwa-aceptar-sin-conexion.png` });
   await ctx.setOffline(false);
   await p.waitForTimeout(600);
-  ok(await p.getByText('Estado: Pendiente').first().isVisible().catch(() => false) || (await p.locator('.pastilla', { hasText: 'Pendiente' }).count()) > 0, 'al volver la conexión la propuesta sigue pendiente (no se aceptó)');
+  // Sigue pendiente: la decisión (Aceptar) sigue disponible y no hay trabajo creado.
+  await p.getByRole('button', { name: 'Volver' }).first().click().catch(() => {});
+  await p.waitForTimeout(3500);
+  ok(
+    p.url().includes('/propuestas/detalle/') &&
+      (await p.getByRole('button', { name: 'Aceptar', exact: true }).count()) === 1,
+    'al volver la conexión la propuesta sigue pendiente (no se aceptó)',
+  );
 
   // 4. Chat sin conexión: el mensaje queda "No se envió" con reintento, nunca como enviado.
   await p.goto(BASE + '/chats/conversacion/?id=de000000-0000-4000-8000-000000001002&escenario=contrapropuesta', { waitUntil: 'networkidle' });

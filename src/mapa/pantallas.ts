@@ -368,12 +368,14 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'propuestas',
     lote: '2.3',
     acceso: 'sesion',
-    consulta: ['id'],
+    consulta: ['id', 'elegir'],
     acciones: [
-      'Aceptar estas condiciones (confirmación explícita)',
+      'Perfil del especialista: verificaciones reales, rubros, trabajos con Handyx, historial con vos',
+      'Total final con desglose, horario y vigencia',
+      'Aceptar → "Confirmá el turno" (u-confirmar): deslizá para confirmar o "Sí, acepto estas condiciones"',
       'Rechazar',
       'Hacer contrapropuesta',
-      'Ver perfil profesional',
+      'Hablar con el especialista',
     ],
     estados: [
       'pendiente (con vigencia)',
@@ -387,6 +389,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     endpoints: ['propuesta', 'propuestaAceptar', 'propuestaRechazar'],
     entidades: ['proposals', 'jobs'],
     pruebas: [
+      'deslizar a medias no acepta; el botón alternativo siempre está (WCAG 2.5.7)',
       'no hay acuerdo hasta aceptar la misma versión',
       'aceptación duplicada no crea dos trabajos',
       'vencida no se puede aceptar',

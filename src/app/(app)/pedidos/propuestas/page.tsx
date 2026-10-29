@@ -25,7 +25,7 @@ const total = (p: Propuesta) => p.monto.centavos + p.comisionHandy.importe.centa
 
 /**
  * Propuestas de un pedido (rediseño, pantalla modelo del lote 3.1). Como la demo (u-presupuestos): barra "← Propuestas"
- * y una hoja azul que llena la pantalla con las tarjetas, ordenadas por llegada. Elegir lleva al detalle, donde se
+ * y una hoja azul que llena la pantalla con las tarjetas, ordenadas por llegada. Elegir abre la confirmación del turno, donde se
  * confirma (nada se acepta desde la tarjeta). "Comparar" muestra todas en una tabla, sin destacar ninguna.
  */
 export default function Propuestas() {
@@ -169,7 +169,10 @@ export default function Propuestas() {
   );
 }
 
-/** Tarjeta de la demo (du-oferta). Solo verificaciones reales; elegir lleva al detalle, que pide confirmación. */
+/**
+ * Tarjeta de la demo (du-oferta). Solo verificaciones reales. "Ver perfil" abre quién es y qué propone; "Elegir" abre
+ * directamente la confirmación del turno (que igual pide deslizar o confirmar). Nada se acepta desde la tarjeta.
+ */
 function Oferta({ p, i }: { p: Propuesta; i: number }) {
   const e = p.especialista;
   const propia = p.autorRol === 'usuario';
@@ -243,13 +246,18 @@ function Oferta({ p, i }: { p: Propuesta; i: number }) {
       <div className="du-oferta__franja">
         <Enlace
           className="du-oferta__btn"
-          href={ruta('/chats/conversacion/', { id: p.conversacionId })}
+          href={ruta('/propuestas/detalle/', { id: p.id })}
+          aria-label={`Ver perfil de ${e.nombrePublico}`}
         >
-          Consultar
+          Ver perfil
         </Enlace>
         <Enlace
           className="du-oferta__btn du-oferta__btn--azul"
-          href={ruta('/propuestas/detalle/', { id: p.id })}
+          href={
+            pendiente && !propia
+              ? ruta('/propuestas/detalle/', { id: p.id, elegir: '1' })
+              : ruta('/propuestas/detalle/', { id: p.id })
+          }
           aria-label={
             pendiente && !propia
               ? `Elegir la propuesta de ${e.nombrePublico}`
@@ -314,12 +322,23 @@ function Comparacion({ items }: { items: Propuesta[] }) {
             </th>
             {items.map((p) => (
               <td key={p.id}>
-                <Enlace
-                  className="hd-boton hd-boton--chico"
-                  href={ruta('/propuestas/detalle/', { id: p.id })}
-                >
-                  Elegir
-                </Enlace>
+                {p.estado === 'pendiente' && p.autorRol !== 'usuario' ? (
+                  <Enlace
+                    className="hd-boton hd-boton--chico"
+                    href={ruta('/propuestas/detalle/', { id: p.id, elegir: '1' })}
+                    aria-label={`Elegir la propuesta de ${p.especialista.nombrePublico}`}
+                  >
+                    Elegir
+                  </Enlace>
+                ) : (
+                  <Enlace
+                    className="hd-boton hd-boton--chico hd-boton--claro"
+                    href={ruta('/propuestas/detalle/', { id: p.id })}
+                    aria-label={`Ver la propuesta de ${p.especialista.nombrePublico}`}
+                  >
+                    Ver
+                  </Enlace>
+                )}
               </td>
             ))}
           </tr>

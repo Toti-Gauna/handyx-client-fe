@@ -158,6 +158,12 @@ contratado. La del especialista es aproximada y deja de mostrarse al llegar. Lo 
 > fotos › dirección › revisar); búsqueda, sin respuesta y búsqueda manual sobre el mapa con la hoja azul. "Sin
 > especialistas" para tareas fuera de los 6 rubros ya lo cubre HandIA ("Es otro rubro").
 
+> **Lote 3.5 hecho (29/10).** Propuesta con el perfil del especialista (u-perfil), "Confirmá el turno" (u-confirmar)
+> con deslizar para confirmar y botón alternativo, tarjetas con "Ver perfil | Elegir" y contrapropuesta en el kit. La
+> forma de pago no se guarda al confirmar (el contrato no la tiene): se informa y se elige al pagar (3.6). El historial
+> general y la zona del especialista necesitan `especialistaPerfil`/`especialistaHistorial` (Fase 4.3); hoy se ve lo que
+> trae la propuesta y la negociación con vos.
+
 ## 7. Componentes premium nuevos
 
 - **Hoja arrastrable** (3 alturas, con manija, gesto y teclado) sobre mapa o pantalla.

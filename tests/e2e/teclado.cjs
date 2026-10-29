@@ -83,13 +83,13 @@ const enfocado = (p) =>
   await p.goto(BASE + '/pedidos/propuestas/?pedido=de000000-0000-4000-8000-000000001001&escenario=varias-propuestas', {
     waitUntil: 'networkidle',
   });
-  await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
+  await p.getByRole('link', { name: /^Ver perfil de/ }).first().click();
   await p.waitForURL('**/propuestas/detalle/**');
   await p.getByRole('button', { name: 'Aceptar', exact: true }).focus();
   await p.keyboard.press('Enter');
   await p.waitForTimeout(400);
   f = await enfocado(p);
-  ok(f.tag === 'H2' && /Aceptar estas condiciones/.test(f.texto), `la hoja abre con el foco en el título (${f.tag} «${f.texto}»)`);
+  ok(f.tag === 'H2' && /Confirmá el turno/.test(f.texto), `la hoja abre con el foco en el título (${f.tag} «${f.texto}»)`);
   await p.keyboard.press('Enter');
   await p.waitForTimeout(600);
   ok(p.url().includes('/propuestas/detalle/'), 'un Enter apurado no acepta la propuesta');
