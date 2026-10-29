@@ -6,31 +6,44 @@ Cinco fases, ejecutadas por lotes en orden. Una rama por fase (`fase-N-…`) con
 Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable con datos ficticios) · **conectado**
 (contra el backend real) · **probado** (pruebas ejecutadas con resultado) · **desplegado** (publicado y verificado).
 
-| Fase                     | Lote | Objetivo                                                         | Modelo · esfuerzo | Estado                                   |
-| ------------------------ | ---- | ---------------------------------------------------------------- | ----------------- | ---------------------------------------- |
-| 1 · Bases                | 1.1  | Auditoría y base ejecutable (Next export + Express)              | Opus 5.5 · high   | ✅ listo · probado (local)               |
-|                          | 1.2  | Alcance, pantallas y registro                                    | Opus 5.5 · high   | ✅ listo · decidido                      |
-|                          | 1.3  | Contrato común de integración                                    | Opus 5.5 · high   | ✅ listo · decidido + probado (esquemas) |
-| 2 · Mockup completo      | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-|                          | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA              | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-|                          | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-|                          | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial       | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-|                          | 2.5  | Pagos directos, avisos y los 18 escenarios                       | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-| 3 · Refinación de diseño | 3.1  | Sistema visual y navegación                                      | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                          | 3.2  | Responsive y accesibilidad                                       | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                          | 3.3  | Motion, PWA (manifest, SW, offline) y capturas                   | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
-| 4 · BE y DB conectados   | 4.1  | Esquema compartido y migraciones (base aislada)                  | Opus 5.5 · high   | pendiente                                |
-|                          | 4.2  | Auth, cuenta y privacidad reales                                 | Opus 5.5 · high   | pendiente                                |
-|                          | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)         | Opus 5.5 · high   | pendiente                                |
-|                          | 4.4  | Chat, agenda, trabajos y reclamos reales                         | Opus 5.5 · high   | pendiente                                |
-|                          | 4.5  | Pago directo, fee y métricas (o gate concreto)                   | Opus 5.5 · high   | pendiente                                |
-|                          | 4.6  | Integración con Especialista y regresión                         | Opus 5.5 · high   | pendiente                                |
-| 5 · Deploy               | 5.1  | Readiness, CI y deploy de prueba                                 | Sonnet 5.5 · high | pendiente                                |
-|                          | 5.2  | Testing integrado en dos celulares                               | Sonnet 5.5 · high | pendiente                                |
-|                          | 5.3  | Deploy web final y rollback                                      | Sonnet 5.5 · high | pendiente                                |
-|                          | 5.4  | Mapa final (PROD-26) y Handy Docs                                | Sonnet 5.5 · high | pendiente                                |
+| Fase                   | Lote | Objetivo                                                           | Modelo · esfuerzo | Estado                                   |
+| ---------------------- | ---- | ------------------------------------------------------------------ | ----------------- | ---------------------------------------- |
+| 1 · Bases              | 1.1  | Auditoría y base ejecutable (Next export + Express)                | Opus 5.5 · high   | ✅ listo · probado (local)               |
+|                        | 1.2  | Alcance, pantallas y registro                                      | Opus 5.5 · high   | ✅ listo · decidido                      |
+|                        | 1.3  | Contrato común de integración                                      | Opus 5.5 · high   | ✅ listo · decidido + probado (esquemas) |
+| 2 · Mockup completo    | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida   | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                        | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA                | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                        | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos   | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                        | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial         | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                        | 2.5  | Pagos directos, avisos y los 18 escenarios                         | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+| 3 · Rediseño premium   | 3.1  | Dirección de arte, sistema y 3 pantallas modelo (aprobación)       | Opus 5.5 · high   | propuesto ([rediseño](rediseno.md))      |
+|                        | 3.2  | Splash animado, acceso y onboarding                                | Opus 5.5 · high   | propuesto                                |
+|                        | 3.3  | Mapa (MapLibre + PMTiles de MDP, dirección, búsqueda, seguimiento) | Opus 5.5 · high   | propuesto                                |
+|                        | 3.4  | Inicio y pedir                                                     | Opus 5.5 · high   | propuesto                                |
+|                        | 3.5  | Propuestas y decisión                                              | Opus 5.5 · high   | propuesto                                |
+|                        | 3.6  | Trabajo en curso, pago, reseña y reclamo                           | Opus 5.5 · high   | propuesto                                |
+|                        | 3.7  | Actividad, mensajes y soporte                                      | Opus 5.5 · high   | propuesto                                |
+|                        | 3.8  | Cuenta y ayuda                                                     | Opus 5.5 · high   | propuesto                                |
+|                        | 3.9  | Pulido premium y QA (transiciones, gestos, capturas)               | Opus 5.5 · high   | propuesto                                |
+| 4 · BE y DB conectados | 4.1  | Esquema compartido y migraciones (base aislada)                    | Opus 5.5 · high   | pendiente                                |
+|                        | 4.2  | Auth, cuenta y privacidad reales                                   | Opus 5.5 · high   | pendiente                                |
+|                        | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)           | Opus 5.5 · high   | pendiente                                |
+|                        | 4.4  | Chat, agenda, trabajos y reclamos reales                           | Opus 5.5 · high   | pendiente                                |
+|                        | 4.5  | Pago directo, fee y métricas (o gate concreto)                     | Opus 5.5 · high   | pendiente                                |
+|                        | 4.6  | Integración con Especialista y regresión                           | Opus 5.5 · high   | pendiente                                |
+| 5 · Deploy             | 5.1  | Readiness, CI y deploy de prueba                                   | Sonnet 5.5 · high | pendiente                                |
+|                        | 5.2  | Testing integrado en dos celulares                                 | Sonnet 5.5 · high | pendiente                                |
+|                        | 5.3  | Deploy web final y rollback                                        | Sonnet 5.5 · high | pendiente                                |
+|                        | 5.4  | Mapa final (PROD-26) y Handy Docs                                  | Sonnet 5.5 · high | pendiente                                |
 
-## Comprobaciones de cierre de la Fase 3
+## Rediseño de la Fase 3 (29/10)
+
+Ignacio pidió rehacer el diseño: la versión de los lotes 3.1–3.3 originales quedó lejos de la demo de la landing, con
+cabecera fija y pantallas faltantes. Plan nuevo, con mapa de pantallas: [`docs/rediseno.md`](rediseno.md). Se conserva
+la infraestructura de esos lotes (tokens semánticos, accesibilidad, PWA, service worker, pruebas, catálogo de capturas);
+la tabla de abajo es el registro de lo que se hizo entonces.
+
+## Comprobaciones de cierre de la Fase 3 (versión anterior al rediseño)
 
 | Lote | Comprobación                                                                                                                        | Evidencia                                                                                                                                                                                                                            |
 | ---- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

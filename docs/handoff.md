@@ -1,6 +1,6 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Refinación de diseño — completa (lotes 3.1, 3.2 y 3.3).** Próxima: Fase 4 · lote 4.1 (esquema y migraciones, base aislada).
+**Fase actual: 3 · Rediseño premium — plan propuesto, esperando aprobación** ([`docs/rediseno.md`](rediseno.md)). La versión anterior de la Fase 3 (abajo) no se mergea tal cual: se conserva su infraestructura y se rehace la capa visual.
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
@@ -120,9 +120,9 @@ Las pruebas e2e cambiaron solo en los nombres de dos controles: el botón "Acept
 
 ## Próximo paso
 
-Fase 4 · lote 4.1 (Opus 5.5 high), rama `fase-4-backend` en `handyx-client-be` (y en el FE si hace falta): esquema
-compartido con Prisma 7 y migraciones contra una **base aislada local** (nada remoto sin autorización), con las preguntas
-de `docs/contrato-mock.md` resueltas. Antes, mergear los PR de las Fases 1–3 en orden.
+Aprobar el plan de [`docs/rediseno.md`](rediseno.md) (o ajustar sus 10 decisiones) y arrancar el lote 3.1 del rediseño
+(Opus 5.5 high) en `fase-3-diseno`: dirección de arte, sistema y 3 pantallas modelo para aprobar antes de escalar. El PR
+#3 queda abierto como borrador de la fase hasta completar el rediseño.
 
 ---
 
