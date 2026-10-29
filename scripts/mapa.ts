@@ -45,7 +45,7 @@ lineas.push(
 );
 ESCENARIOS.forEach((e, i) =>
   lineas.push(
-    `| ${i + 1} | ${e.titulo} (\`${e.id}\`) | ${e.lote} | ${e.pantallas.join(', ')} | ${e.esperado} |`,
+    `| ${i + 1} | ${e.titulo} (\`${e.id}\`) | ${e.lote} | \`${e.entrada}${e.id === 'nuevo-usuario' ? '' : `?escenario=${e.id}`}\` | ${e.pantallas.join(', ')} | ${e.esperado} |`,
   ),
 );
 

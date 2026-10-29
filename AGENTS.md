@@ -16,13 +16,14 @@ segmentos dinámicos `[id]`.
 - **Diseño**: reutilizar marca, tokens, Handys y lenguaje de la landing y su demo (`/demo/`); no inventar otra marca.
   Español rioplatense con voseo, pesos `$ 45.000`, "verificado" solo con dato real, sin "matriculado", sin prometer
   inmediatez ni ETA.
-- **Datos**: las pantallas solo usan `cliente` de `src/data` (interfaz `ClienteApi`). Nunca `fetch` directo ni fixtures
+- **Datos**: la vista de prueba es un servidor simulado completo (`src/data/mock/`, 54 endpoints, 18 escenarios): una regla de negocio nueva va primero en `docs/state-machines.md` y en `tests/servidor-mock.test.ts`. Las pantallas solo usan `cliente` de `src/data` (interfaz `ClienteApi`). Nunca `fetch` directo ni fixtures
   importados. Con `NEXT_PUBLIC_API_BASE_URL` el cliente es HTTP y **nunca** cae a mocks; sin ella es la vista de prueba
   rotulada. Un build de producción sin API falla.
 - **Contrato**: `src/contracts/v1/` es copia byte a byte de `handyx-client-be` (dueño). No se edita acá:
   `npm run contracts:sync` / `contracts:check`.
 - **Mapa**: `src/mapa/pantallas.ts` es la fuente de rutas, estados, API y pruebas; `npm run mapa` regenera
   `docs/screens/matriz.md`. Pantalla nueva = entrada en el mapa + página.
+- **React Compiler (lint)**: sin `setState` sincrónico en efectos, sin escribir refs en el render y sin llamadas impuras (`Date.now()`) en el render; los hooks de `src/data/hooks.ts` ya resuelven esos casos.
 - **Seguridad**: nada en `localStorage`/`sessionStorage`/IndexedDB/cookies propias/URL (lo vigilan ESLint y
   `tests/seguridad.test.ts`). CSRF solo en memoria; sesión en cookie HttpOnly del BE. `NEXT_PUBLIC_*` es público: nunca
   secretos. Tokens de recuperación en el fragmento (`#t=`).
@@ -42,6 +43,7 @@ npm ci
 npm run dev                 # http://127.0.0.1:5175 (vista de prueba sin .env)
 npm run build && npm run preview   # export estático en out/ servido como Hostinger (127.0.0.1:5176)
 npm run lint | typecheck | test | format:check | mapa:check | contracts:check
+npm run e2e                 # navegador real (requiere Playwright y `npm run preview`); ver docs/qa.md
 ```
 
 Antes de cada PR: `format:check`, `lint`, `typecheck`, `test`, `mapa:check`, `contracts:check`, `build` y `npm audit`.

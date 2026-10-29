@@ -37,11 +37,18 @@ export default function Mapa() {
           </ul>
         </section>
       ))}
-      <h2 className="subtitulo">Escenarios obligatorios (Fase 2)</h2>
+      <h2 className="subtitulo">Escenarios obligatorios</h2>
+      <p className="texto-suave">
+        Cada uno recarga la vista de prueba en su punto de partida. Con el panel de prueba controlás
+        al especialista, a Operations y al reloj.
+      </p>
       <ol className="lista-plana">
         {ESCENARIOS.map((e) => (
           <li key={e.id}>
-            <strong>{e.titulo}</strong>: {e.esperado}
+            <a href={`${e.entrada}${e.id === 'nuevo-usuario' ? '' : `?escenario=${e.id}`}`}>
+              <strong>{e.titulo}</strong>
+            </a>
+            : {e.esperado}
           </li>
         ))}
       </ol>

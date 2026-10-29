@@ -140,3 +140,11 @@ export function diaMes(instante: string): string {
 /** "15:05" en Buenos Aires de un instante UTC. */
 export const horaDeInstante = (instante: string): string =>
   fmt({ hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(instante));
+
+/** "Mié 18/11 · 10:00" de un instante UTC, en Buenos Aires. */
+export const cuando = (instante: string): string =>
+  `${fechaLarga(fechaDeInstante(instante))} · ${horaDeInstante(instante)}`;
+
+/** Instante UTC de una fecha y hora de Buenos Aires (UTC−3, sin horario de verano). */
+export const instanteBA = (fecha: FechaISO, hora: string): string =>
+  new Date(`${fecha}T${hora}:00-03:00`).toISOString();

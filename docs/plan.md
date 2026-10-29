@@ -11,11 +11,11 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 | 1 · Bases                | 1.1  | Auditoría y base ejecutable (Next export + Express)              | Opus 5.5 · high   | ✅ listo · probado (local)               |
 |                          | 1.2  | Alcance, pantallas y registro                                    | Opus 5.5 · high   | ✅ listo · decidido                      |
 |                          | 1.3  | Contrato común de integración                                    | Opus 5.5 · high   | ✅ listo · decidido + probado (esquemas) |
-| 2 · Mockup completo      | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida | Sonnet 5.5 · high | pendiente                                |
-|                          | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA              | Sonnet 5.5 · high | pendiente                                |
-|                          | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos | Sonnet 5.5 · high | pendiente                                |
-|                          | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial       | Sonnet 5.5 · high | pendiente                                |
-|                          | 2.5  | Pagos directos, avisos y los 18 escenarios                       | Sonnet 5.5 · high | pendiente                                |
+| 2 · Mockup completo      | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                          | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA              | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                          | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                          | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial       | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
+|                          | 2.5  | Pagos directos, avisos y los 18 escenarios                       | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
 | 3 · Refinación de diseño | 3.1  | Sistema visual y navegación                                      | Opus 5.5 · high   | pendiente                                |
 |                          | 3.2  | Responsive y accesibilidad                                       | Opus 5.5 · high   | pendiente                                |
 |                          | 3.3  | Motion, PWA (manifest, SW, offline) y capturas                   | Opus 5.5 · high   | pendiente                                |
@@ -29,6 +29,18 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                          | 5.2  | Testing integrado en dos celulares                               | Sonnet 5.5 · high | pendiente                                |
 |                          | 5.3  | Deploy web final y rollback                                      | Sonnet 5.5 · high | pendiente                                |
 |                          | 5.4  | Mapa final (PROD-26) y Handy Docs                                | Sonnet 5.5 · high | pendiente                                |
+
+## Comprobaciones de cierre de la Fase 2
+
+| Lote | Comprobación                                                                        | Evidencia                                                                                                                                                                      |
+| ---- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2.1  | Datos y estados de cuenta se pueden probar sin backend y sin datos reales           | cuenta, perfil por pasos, modal y contador del fee 0 %, privacidad, baja real y sesión vencida contra el mock; escenarios `nuevo-usuario`, `sesion-vencida`, `baja-solicitada` |
+| 2.2  | Ubicación denegada y falta de oferta son recuperables; no hay ETA ficticia          | escenarios `ubicacion-denegada`, `otra-ciudad`, `sin-especialistas`, `urgencia-sin-respuesta`, `programado`; el test busca "ETA" y "en N minutos"                              |
+| 2.3  | No hay acuerdo hasta aceptar las mismas condiciones; expiración y rechazo funcionan | escenarios `varias-propuestas`, `contrapropuesta`, `aceptacion-duplicada`, `propuesta-vencida`                                                                                 |
+| 2.4  | Texto/foto fallidos, cancelación y reclamo tienen estados y acciones coherentes     | escenarios `chat-fallido`, `cancelacion`, `obra-por-etapas`, `reclamo`                                                                                                         |
+| 2.5  | Volver de checkout no confirma pago; fee cero no significa trabajo gratis           | escenarios `efectivo-reportado`, `mp-pendiente-fallido`; texto explícito en la pantalla de pago                                                                                |
+
+Detalle de las pruebas ejecutadas: [`docs/qa.md`](qa.md).
 
 ## Comprobaciones de cierre de la Fase 1
 
