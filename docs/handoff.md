@@ -50,7 +50,7 @@ mapa en el onboarding.
 
 Pedido de Ignacio: "mejora la pantalla de carga", "handia va incluido".
 
-- **Pantalla de carga**: ondas de color desde el centro (amarillo → azul vivo → azul con mosaico); los 5 Handys entran
+- **Pantalla de carga**: ondas de color desde el centro (amarillo → azul vivo → azul liso, sin los bloques del fondo); los 5 Handys entran
   saltando, las letras de "Handyx" (recortes del logotipo real) caen de a una delante de ellos y cada uno queda agarrado
   de su letra; confeti de mosaicos y salida en círculo. 2,95 s; se saltea con un toque; sin "reducir movimiento" no aparece.
 - **HandIA** (`/handia/`, como `u-handia` de la demo), a pantalla completa desde la tarjeta de Inicio "Contale a HandIA":

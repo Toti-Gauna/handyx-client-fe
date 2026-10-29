@@ -1,5 +1,5 @@
 /* Pantalla de carga (components/Splash.tsx). Línea de tiempo, en segundos:
-   0      azul de la marca con el mosaico
+   0      azul de la marca, liso
    0,05   onda amarilla desde el centro · 0,55 onda azul vivo · 1,05 vuelve el azul de la marca
    0,2    los Handys entran saltando de a uno (cada 0,1 s) hasta su lugar
    1,05   las letras de "Handyx" caen de a una (cada 0,07 s) delante de ellos: quedan asomados, agarrados de su letra
@@ -16,7 +16,6 @@
   gap: 1.6rem;
   overflow: hidden;
   background-color: var(--color-azul);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect x='4' y='4' width='40' height='40' rx='11' fill='white' fill-opacity='0.07'/%3E%3C/svg%3E");
   clip-path: circle(150% at 50% 50%);
   animation: splash-cerrar 0.45s cubic-bezier(0.65, 0, 0.35, 1) 2.5s forwards;
   /* Mientras se ve, un toque la saltea y no llega a la app (nada se toca sin querer); al terminar, queda oculta. */
@@ -60,7 +59,6 @@
 .splash__onda--3 {
   --d: 1.05s;
   background-color: var(--color-azul);
-  background-image: inherit;
 }
 
 /* ── Logotipo armado con sus letras ─────────────────────────────────────────────────────────────────────── */
