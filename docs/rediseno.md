@@ -112,6 +112,12 @@ logotipo se arma en SVG con Archivo 900 para que los personajes puedan agarrarse
 - Sin login con Google ni Apple por ahora (Apple exige una cuenta paga y Google un proyecto propio: decisión 3).
 - Sin teléfono ni SMS (costo y datos personales). Sin DNI.
 
+> **Hecho en el lote 3.2 (29/10).** Dos ajustes respecto del plan: (1) la **confirmación del email** no está en el
+> contrato v1 (depende del proveedor de email del BE), así que en la vista de prueba es un paso simulado y rotulado y con
+> la API real no aparece hasta que exista; (2) la **dirección en el mapa** llega con el mapa (3.3): hoy es calle y
+> número, con el permiso de ubicación explicado antes. El pre-permiso de avisos aparece solo si el navegador puede
+> preguntar.
+
 ## 6. Mapa
 
 ### Tecnología (sin cuentas ni costos, sin mandar ubicaciones a terceros)

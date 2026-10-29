@@ -1,12 +1,50 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: el lote 3.1, la pantalla de carga mejorada y HandIA. Sigue el lote 3.2**
-(acceso y onboarding) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 y 3.2, pantalla de carga mejorada y HandIA. Sigue el lote 3.3**
+(mapa) ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.2 · Acceso y onboarding
+
+Pedido de Ignacio: "Seguí con el 3.2". Todo a pantalla completa con el kit de la demo, como las apps on-demand:
+
+- **Bienvenida**: azul con el mosaico, logo en blanco, 3 tarjetas deslizables con los Handys (contá qué pasó, recibí
+  propuestas, elegís vos), "Crear cuenta" y "Ya tengo cuenta" (aclara que la demo es con invitación).
+- **Ingresar en 2 pasos**: email › contraseña con ver/ocultar; el email elegido queda arriba con "Cambiar".
+- **Registro por pasos**: invitación › email › contraseña con medidor › textos (sin tildar por defecto) › **confirmar
+  email** › "¡Listo!" con la tarifa 0 % hasta el 10/12 (1 de 3 lugares). Si el servidor rechaza un dato, vuelve al paso
+  de ese dato. La confirmación del email **no está en el contrato v1**: en la vista de prueba es un paso simulado y
+  rotulado; con la API real no aparece hasta que el BE la sume (Fase 4, con el proveedor de email).
+- **Recuperar en 3 pasos**: email › "Revisá tu email" (con reenviar) › contraseña nueva con medidor.
+- **Onboarding**: nombre › sobre vos › **pre-permiso de ubicación** ("¿Usamos tu ubicación?", el navegador pregunta solo
+  después del toque) › dirección › **pre-permiso de avisos** (solo si el navegador puede preguntar) › Inicio con el modal
+  del fee (2 de 3). La dirección en el mapa llega con el mapa (3.3).
+- **Arreglado en el camino**: al guardar un paso del perfil y pasar enseguida al siguiente, el segundo guardado salía
+  con la versión vieja y mostraba "Tu perfil cambió en otro lado" sin que nada hubiera cambiado. Ahora cada paso usa la
+  versión que devolvió el anterior.
+- La bienvenida se compacta en pantallas bajas (360×640) y se desplaza en apaisado.
+- Piezas nuevas en `src/components/acceso.tsx` (`Flujo`, `BotonHx`, `CampoContrasena`, `Escena`); el perfil se separó
+  en `usePerfil` + `CamposPerfil` (lo comparten el onboarding y "Mis datos"). Pasos de acceso compartidos por los e2e en
+  `tests/e2e/acceso.cjs`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                           |
+| `npm test`                                         | **108 pruebas OK** (9 nuevas de acceso)                                      |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                 |
+| `npm run e2e`                                      | recorrido OK · 18 escenarios · 209 de accesibilidad · teclado · PWA · HandIA |
+| `npm run capturas`                                 | catálogo regenerado con las pantallas de acceso por paso                     |
+
+### Próximo paso
+
+Lote 3.3 del rediseño: el mapa (MapLibre + PMTiles autoalojado de Mar del Plata, estilo Handyx), con la dirección en el
+mapa en el onboarding.
 
 ## Pantalla de carga mejorada y HandIA incluida
 
@@ -78,8 +116,7 @@ Ignacio aprobó el plan de rediseño con las decisiones recomendadas ("Vamos con
 
 ### Próximo paso
 
-Lote 3.2 del rediseño: acceso y onboarding a pantalla
-completa (bienvenida, ingreso en 2 pasos, registro en 6, recuperar, pre-permisos, dirección inicial).
+Hecho en el lote 3.2 (arriba).
 
 ---
 

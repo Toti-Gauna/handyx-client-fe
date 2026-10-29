@@ -2,6 +2,7 @@
 // No corre en CI (Playwright no es dependencia del repo). Uso, con `npm run build && npm run preview` activo:
 //   node tests/e2e/escenarios.cjs [carpeta-de-capturas] [id-de-escenario]
 const { chromium } = require('playwright');
+const { completarPerfil, ingresar } = require('./acceso.cjs');
 const fs = require('node:fs');
 
 const CARPETA = process.argv[2] || 'capturas-e2e';
@@ -12,11 +13,9 @@ fs.mkdirSync(CARPETA, { recursive: true });
 const casos = {
   'nuevo-usuario': async ({ ir, p }) => {
     await ir('/');
-    await p.getByRole('link', { name: 'Tengo invitación' }).waitFor();
+    await p.getByRole('link', { name: 'Crear cuenta' }).waitFor();
     await ir('/ingresar/');
-    await p.getByLabel('Email').fill('usuaria@example.test');
-    await p.getByLabel('Contraseña').fill('handyx-demo-1234');
-    await p.getByRole('button', { name: 'Ingresar' }).click();
+    await ingresar(p);
     await p.getByRole('button', { name: 'Entendido' }).waitFor();
   },
 
@@ -33,13 +32,10 @@ const casos = {
 
   'ubicacion-denegada': async ({ ir, p }) => {
     await ir('/perfil/', 'ubicacion-denegada');
-    await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-    await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-    await p.getByRole('button', { name: 'Usar mi ubicación ahora' }).click();
-    await p.getByText('No diste permiso de ubicación').waitFor();
-    await p.getByLabel('Dirección').fill('Calle Ficticia 55');
-    await p.getByRole('button', { name: 'Terminar' }).click();
-    await p.waitForURL('**/inicio/**');
+    await completarPerfil(p, {
+      completar: false,
+      antesDeTerminar: (p) => p.getByText('No diste permiso de ubicación').waitFor(),
+    });
   },
 
   'sin-especialistas': async ({ ir, p, panel }) => {

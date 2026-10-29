@@ -2,6 +2,7 @@
 // No corre en CI (Playwright no es dependencia del repo). Uso, con `npm run build && npm run preview` activo:
 //   node tests/e2e/recorrido.cjs [carpeta-de-capturas]
 const { chromium } = require('playwright');
+const { completarPerfil, registrarse } = require('./acceso.cjs');
 const fs = require('node:fs');
 
 const CARPETA = process.argv[2] || 'capturas-e2e';
@@ -25,36 +26,23 @@ const paso = (m) => console.log('•', m);
     await p.waitForTimeout(300);
   };
 
-  await p.goto(BASE + '/registro/', { waitUntil: 'networkidle' });
-  await p.getByLabel('Código de invitación').fill('DEMO2026');
-  await p.getByLabel('Email').fill('nueva@example.test');
-  await p.getByLabel('Contraseña').fill('una-contrasena-larga');
-  await p.getByRole('button', { name: 'Crear cuenta' }).click();
-  paso(
-    'sin tildar los textos no se crea la cuenta: ' +
-      ((await p.getByText('Tenés que aceptar los términos').count()) > 0),
-  );
-  await p.getByLabel('Acepto los términos de uso').check();
-  await p.getByLabel('Acepto la política de privacidad').check();
-  await p.getByRole('button', { name: 'Crear cuenta' }).click();
-  await p.waitForURL('**/registro/listo/');
-  await p.getByText('hasta el 10/12').first().waitFor();
+  await registrarse(p, BASE, async (p) => {
+    await p.getByRole('button', { name: 'Crear cuenta' }).click();
+    paso(
+      'sin tildar los textos no se crea la cuenta: ' +
+        ((await p.getByText('Tenés que aceptar los términos').count()) > 0),
+    );
+  });
   paso('aviso del fee 0 % después del registro');
   await foto('10-registro-listo');
   await p.getByRole('link', { name: 'Completar mi perfil' }).click();
   await p.waitForURL('**/perfil/');
-  await p.getByLabel('Nombre', { exact: true }).fill('Persona');
-  await p.getByLabel('Apellido').fill('Ficticia');
-  await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-  await p.getByLabel('Fecha de nacimiento').fill('1990-03-04');
-  await p.getByLabel('Género').selectOption('mujer');
-  await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-  await p.getByRole('button', { name: 'Usar mi ubicación ahora' }).click();
-  await p.getByText('tomamos tu ubicación').waitFor();
-  await p.getByLabel('Dirección').fill('Calle Ficticia 123');
-  await foto('11-perfil-ubicacion');
-  await p.getByRole('button', { name: 'Terminar' }).click();
-  await p.waitForURL('**/inicio/');
+  await completarPerfil(p, {
+    antesDeTerminar: async (p) => {
+      await p.getByText('tomamos tu ubicación').waitFor();
+      await foto('11-perfil-ubicacion');
+    },
+  });
   await p.getByRole('button', { name: 'Entendido' }).waitFor();
   paso('modal de primer ingreso (fee 0 %)');
   await p.getByRole('button', { name: 'Entendido' }).click();

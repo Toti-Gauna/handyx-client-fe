@@ -2,6 +2,7 @@
 //   node tests/e2e/capturas.cjs [carpeta]       (por defecto docs/screens/capturas)
 // Genera JPEG a 390 px (página completa) y 1280 px (algunas), más un índice README.md. Solo datos ficticios del mock.
 const { chromium } = require('playwright');
+const acceso = require('./acceso.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -18,6 +19,12 @@ const fee = async (p) => {
     await p.waitForFunction(() => !document.querySelector('dialog[open]'));
   }
 };
+const escribir = (etiqueta, valor) => async (p) => {
+  await p.getByLabel(etiqueta, { exact: true }).fill(valor);
+};
+const tildar = (etiqueta) => async (p) => {
+  await p.getByLabel(etiqueta).check();
+};
 const clic = (sel) => async (p) => {
   await p.locator(sel).first().click();
   await p.waitForLoadState('networkidle');
@@ -29,31 +36,11 @@ const panel = (accion) => async (p) => {
   await p.waitForTimeout(400);
 };
 // Usuario nuevo: registro con la invitación de prueba (el escenario "nuevo-usuario" no trae sesión).
-const registrarse = async (p) => {
-  await p.goto(BASE + '/registro/', { waitUntil: 'networkidle' });
-  await p.getByLabel('Código de invitación').fill('DEMO2026');
-  await p.getByLabel('Email').fill('nueva@example.test');
-  await p.getByLabel('Contraseña').fill('una-contrasena-larga');
-  await p.getByLabel('Acepto los términos de uso').check();
-  await p.getByLabel('Acepto la política de privacidad').check();
-  await p.getByRole('button', { name: 'Crear cuenta' }).click();
-  await p.waitForURL('**/registro/listo/');
-  await p.getByText('hasta el 10/12').first().waitFor();
-};
+const registrarse = (p) => acceso.registrarse(p, BASE);
 const completarPerfil = async (p) => {
   await p.getByRole('link', { name: 'Completar mi perfil' }).click();
   await p.waitForURL('**/perfil/');
-  await p.getByLabel('Nombre', { exact: true }).fill('Persona');
-  await p.getByLabel('Apellido').fill('Ficticia');
-  await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-  await p.getByLabel('Fecha de nacimiento').fill('1990-03-04');
-  await p.getByLabel('Género').selectOption('mujer');
-  await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-  await p.getByRole('button', { name: 'Usar mi ubicación ahora' }).click();
-  await p.getByText('tomamos tu ubicación').waitFor();
-  await p.getByLabel('Dirección').fill('Calle Ficticia 123');
-  await p.getByRole('button', { name: 'Terminar' }).click();
-  await p.waitForURL('**/inicio/');
+  await acceso.completarPerfil(p);
   await p.getByRole('button', { name: 'Entendido' }).waitFor();
 };
 // La app se desplaza por dentro (como una app nativa): para la captura de página completa, se despliega todo.
@@ -68,17 +55,24 @@ const tocar = (rol, nombre, exacto = false) => async (p) => {
 // [grupo, nombre, ruta, pasos?, opciones?]  · opciones: { fee: false } deja el modal de primer ingreso abierto,
 // { vista: true } captura solo lo visible (hojas y modales).
 const CAPTURAS = [
-  ['Acceso', 'portada', '/'],
-  ['Acceso', 'ingresar', '/ingresar/'],
-  ['Acceso', 'ingresar-errores', '/ingresar/', [tocar('button', 'Ingresar')]],
-  ['Acceso', 'registro', '/registro/'],
-  ['Acceso', 'registro-errores', '/registro/', [tocar('button', 'Crear cuenta')]],
-  ['Acceso', 'recuperar', '/recuperar/'],
-  ['Acceso', 'recuperar-nueva', '/recuperar/nueva/#t=DEMOtokenDEMOtokenDEMOtokenDEMO1234'],
-  ['Acceso', 'recuperar-enlace-incompleto', '/recuperar/nueva/'],
-  ['Alta', 'registro-listo-fee', '/registro/', [registrarse]],
-  ['Alta', 'perfil', '/registro/', [registrarse, tocar('link', 'Completar mi perfil')]],
-  ['Alta', 'perfil-ubicacion-denegada', E('/perfil/', 'ubicacion-denegada')],
+  ['Acceso', 'bienvenida', '/', [], { vista: true }],
+  ['Acceso', 'bienvenida-tarjeta-3', '/', [tocar('button', 'Ver la tarjeta 3')], { vista: true }],
+  ['Acceso', 'ingresar-email', '/ingresar/', [], { vista: true }],
+  ['Acceso', 'ingresar-errores', '/ingresar/', [tocar('button', 'Seguir', true)], { vista: true }],
+  ['Acceso', 'ingresar-contrasena', '/ingresar/', [escribir('Email', 'usuaria@example.test'), tocar('button', 'Seguir', true)], { vista: true }],
+  ['Acceso', 'registro-invitacion', '/registro/', [], { vista: true }],
+  ['Acceso', 'registro-errores', '/registro/', [tocar('button', 'Seguir', true)], { vista: true }],
+  ['Acceso', 'registro-contrasena', '/registro/', [escribir('Código de invitación', 'DEMO2026'), tocar('button', 'Seguir', true), escribir('Email', 'nueva@example.test'), tocar('button', 'Seguir', true), escribir('Contraseña', 'una-contrasena-larga')], { vista: true }],
+  ['Acceso', 'registro-textos', '/registro/', [escribir('Código de invitación', 'DEMO2026'), tocar('button', 'Seguir', true), escribir('Email', 'nueva@example.test'), tocar('button', 'Seguir', true), escribir('Contraseña', 'una-contrasena-larga'), tocar('button', 'Seguir', true)], { vista: true }],
+  ['Acceso', 'recuperar', '/recuperar/', [], { vista: true }],
+  ['Acceso', 'recuperar-enviado', '/recuperar/', [escribir('Email', 'usuaria@example.test'), tocar('button', 'Mandarme el enlace')], { vista: true }],
+  ['Acceso', 'recuperar-nueva', '/recuperar/nueva/#t=DEMOtokenDEMOtokenDEMOtokenDEMO1234', [escribir('Contraseña nueva', 'Una-clave-nueva-2026')], { vista: true }],
+  ['Acceso', 'recuperar-enlace-incompleto', '/recuperar/nueva/', [], { vista: true }],
+  ['Alta', 'registro-confirmar-email', '/registro/', [escribir('Código de invitación', 'DEMO2026'), tocar('button', 'Seguir', true), escribir('Email', 'nueva@example.test'), tocar('button', 'Seguir', true), escribir('Contraseña', 'una-contrasena-larga'), tocar('button', 'Seguir', true), tildar('Acepto los términos de uso'), tildar('Acepto la política de privacidad'), tocar('button', 'Crear cuenta')], { vista: true }],
+  ['Alta', 'registro-listo-fee', '/registro/', [registrarse], { vista: true }],
+  ['Alta', 'perfil-nombre', '/registro/', [registrarse, tocar('link', 'Completar mi perfil')], { vista: true }],
+  ['Alta', 'perfil-permiso-ubicacion', E('/perfil/', 'ubicacion-denegada'), [tocar('button', 'Seguir', true), tocar('button', 'Seguir', true)], { vista: true }],
+  ['Alta', 'perfil-ubicacion-denegada', E('/perfil/', 'ubicacion-denegada'), [tocar('button', 'Seguir', true), tocar('button', 'Seguir', true), tocar('button', 'Usar mi ubicación')], { vista: true }],
   ['Inicio', 'modal-fee-primer-ingreso', '/registro/', [registrarse, completarPerfil], { fee: false, vista: true }],
   ['Inicio', 'inicio-propuestas', E('/inicio/', 'varias-propuestas')],
   ['Inicio', 'inicio-trabajo-en-curso', E('/inicio/', 'efectivo-reportado')],

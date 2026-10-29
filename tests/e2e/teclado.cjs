@@ -43,7 +43,7 @@ const enfocado = (p) =>
 
   // 2. Enviar vacío: el foco va al primer campo inválido.
   await p.goto(BASE + '/ingresar/', { waitUntil: 'networkidle' });
-  await p.getByRole('button', { name: 'Ingresar' }).focus();
+  await p.getByRole('button', { name: 'Seguir' }).focus();
   await p.keyboard.press('Enter');
   await p.waitForTimeout(300);
   f = await enfocado(p);
@@ -51,8 +51,12 @@ const enfocado = (p) =>
 
   // 3. Ingresar solo con teclado; al navegar, el foco va al h1 y el título de la pestaña cambia.
   await p.getByLabel('Email').fill('usuaria@example.test');
-  await p.getByLabel('Contraseña').fill('handyx-demo-1234');
-  await p.getByLabel('Contraseña').press('Enter');
+  await p.getByLabel('Email').press('Enter');
+  await p.getByLabel('Contraseña', { exact: true }).waitFor();
+  f = await enfocado(p);
+  ok(f.tag === 'INPUT' && f.id === (await p.getByLabel('Contraseña', { exact: true }).getAttribute('id')), 'al pasar de paso, el foco va al campo nuevo');
+  await p.getByLabel('Contraseña', { exact: true }).fill('handyx-demo-1234');
+  await p.getByLabel('Contraseña', { exact: true }).press('Enter');
   await p.waitForURL('**/inicio/**');
   await p.waitForTimeout(800);
   const entendido = p.getByRole('button', { name: 'Entendido' });

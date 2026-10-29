@@ -53,7 +53,11 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'acceso',
     lote: '2.1',
     acceso: 'publica',
-    acciones: ['Tengo invitación → registro', 'Ya tengo cuenta → ingresar'],
+    acciones: [
+      '3 tarjetas: contá qué pasó, recibí propuestas, elegís vos',
+      'Crear cuenta → registro (con invitación)',
+      'Ya tengo cuenta → ingresar',
+    ],
     estados: [
       'normal',
       'sesion_activa → inicio',
@@ -71,7 +75,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     lote: '2.1',
     acceso: 'publica',
     consulta: ['motivo'],
-    acciones: ['Ingresar con email y contraseña', 'Olvidé mi contraseña'],
+    acciones: ['Paso 1: email', 'Paso 2: contraseña (ver/ocultar)', 'Olvidé mi contraseña'],
     estados: [
       'inicial',
       'enviando',
@@ -95,9 +99,11 @@ export const PANTALLAS: readonly Pantalla[] = [
     lote: '2.1',
     acceso: 'publica',
     acciones: [
-      'Código de invitación',
-      'Email y contraseña',
-      'Aceptar términos y privacidad (versión mostrada)',
+      'Paso 1: código de invitación',
+      'Paso 2: email',
+      'Paso 3: contraseña con medidor',
+      'Paso 4: aceptar términos y privacidad (versión mostrada)',
+      'Paso 5: confirmar el email (solo vista de prueba, simulado)',
     ],
     estados: [
       'inicial',
@@ -111,6 +117,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     entidades: ['accounts', 'policy_acceptances'],
     pruebas: [
       'aceptaciones sin tildar por defecto',
+      'si el servidor rechaza un dato, vuelve al paso de ese dato',
       'un preregistro de la landing no crea ni activa la cuenta',
       'no pide DNI, CUIT ni certificados',
     ],
@@ -139,7 +146,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'acceso',
     lote: '2.1',
     acceso: 'publica',
-    acciones: ['Pedir el enlace por email'],
+    acciones: ['Paso 1: pedir el enlace por email', 'Paso 2: revisá tu email (reenviar)'],
     estados: [
       'inicial',
       'enviado (respuesta uniforme)',
@@ -156,7 +163,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'acceso',
     lote: '2.1',
     acceso: 'publica',
-    acciones: ['Elegir contraseña nueva'],
+    acciones: ['Paso 3: elegir contraseña nueva (con medidor)'],
     estados: ['inicial', 'token_vencido_o_usado', 'listo → ingresar'],
     endpoints: ['csrf', 'recuperacionConfirmar'],
     entidades: ['accounts', 'sessions'],
@@ -173,15 +180,15 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'perfil',
     lote: '2.1',
     acceso: 'sesion',
-    consulta: ['paso'],
     acciones: [
       'Nombre y apellido',
       'Fecha de nacimiento, nacionalidad y género',
-      'Ubicación: a mano o "usar mi ubicación" una vez',
+      'Pre-permiso de ubicación, después la dirección (a mano o "usar mi ubicación" una vez)',
+      'Pre-permiso de avisos (solo si el navegador puede preguntar)',
       'Completar después (lo que falta queda vacío)',
     ],
     estados: [
-      'paso_1..3',
+      'paso_1..4',
       'validacion_por_campo',
       'guardando',
       'conflicto_version',
@@ -194,6 +201,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     pruebas: [
       'la geolocalización se pide una vez y nunca en segundo plano',
       'denegar el permiso no bloquea el alta',
+      'el navegador pregunta solo después de explicar para qué (pre-permiso)',
       'otra ciudad no promete cobertura',
     ],
   }),

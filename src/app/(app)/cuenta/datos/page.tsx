@@ -13,7 +13,7 @@ export default function MisDatos() {
       <p className="texto-suave">
         Lo que falta queda vacío: no inventamos datos. No pedimos DNI ni documentos.
       </p>
-      <FormPerfil modo="completo" alTerminar={() => undefined} />
+      <FormPerfil />
     </>
   );
 }

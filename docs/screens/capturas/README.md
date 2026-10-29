@@ -8,12 +8,17 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 
 | Pantalla o estado | Captura |
 | --- | --- |
-| portada | [portada-390.jpg](portada-390.jpg) |
-| ingresar | [ingresar-390.jpg](ingresar-390.jpg) |
+| bienvenida | [bienvenida-390.jpg](bienvenida-390.jpg) |
+| bienvenida-tarjeta-3 | [bienvenida-tarjeta-3-390.jpg](bienvenida-tarjeta-3-390.jpg) |
+| ingresar-email | [ingresar-email-390.jpg](ingresar-email-390.jpg) |
 | ingresar-errores | [ingresar-errores-390.jpg](ingresar-errores-390.jpg) |
-| registro | [registro-390.jpg](registro-390.jpg) |
+| ingresar-contrasena | [ingresar-contrasena-390.jpg](ingresar-contrasena-390.jpg) |
+| registro-invitacion | [registro-invitacion-390.jpg](registro-invitacion-390.jpg) |
 | registro-errores | [registro-errores-390.jpg](registro-errores-390.jpg) |
+| registro-contrasena | [registro-contrasena-390.jpg](registro-contrasena-390.jpg) |
+| registro-textos | [registro-textos-390.jpg](registro-textos-390.jpg) |
 | recuperar | [recuperar-390.jpg](recuperar-390.jpg) |
+| recuperar-enviado | [recuperar-enviado-390.jpg](recuperar-enviado-390.jpg) |
 | recuperar-nueva | [recuperar-nueva-390.jpg](recuperar-nueva-390.jpg) |
 | recuperar-enlace-incompleto | [recuperar-enlace-incompleto-390.jpg](recuperar-enlace-incompleto-390.jpg) |
 
@@ -21,8 +26,10 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 
 | Pantalla o estado | Captura |
 | --- | --- |
+| registro-confirmar-email | [registro-confirmar-email-390.jpg](registro-confirmar-email-390.jpg) |
 | registro-listo-fee | [registro-listo-fee-390.jpg](registro-listo-fee-390.jpg) |
-| perfil | [perfil-390.jpg](perfil-390.jpg) |
+| perfil-nombre | [perfil-nombre-390.jpg](perfil-nombre-390.jpg) |
+| perfil-permiso-ubicacion | [perfil-permiso-ubicacion-390.jpg](perfil-permiso-ubicacion-390.jpg) |
 | perfil-ubicacion-denegada | [perfil-ubicacion-denegada-390.jpg](perfil-ubicacion-denegada-390.jpg) |
 
 ## Inicio

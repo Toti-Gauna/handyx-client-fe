@@ -1,6 +1,6 @@
 # Sistema visual de Handyx (usuario) · Fase 3
 
-## Rediseño · lote 3.1 (vigente)
+## Rediseño · lotes 3.1 y 3.2 (vigente)
 
 Desde el rediseño ([`rediseno.md`](rediseno.md)) la app usa **el mismo kit visual que la demo de la landing**, no uno
 parecido:
@@ -26,6 +26,14 @@ parecido:
   saltea con un toque, no aparece con "reducir movimiento" ni en navegadores automatizados (salvo `?splash=1`).
 - **HandIA** (`/handia/`, como `u-handia`): chat a pantalla completa, sugiere el rubro con "Rubro detectado", la persona
   confirma y elige "Pedir para hoy" o "Programar turno"; el pedido llega precargado desde un borrador en memoria.
+- **Flujos a pantalla completa** (lote 3.2: acceso, registro, onboarding), en `src/components/acceso.tsx`: `Flujo`
+  (volver, barra de progreso con "Paso n de N", título grande con marcador, el paso que entra de costado, pie fijo; con
+  `onSubmit` es un formulario y al cambiar de paso el foco va al primer campo), `BotonHx` (botón del kit con "Un
+  momento…"), `CampoContrasena` (ver/ocultar con `aria-pressed` y medidor con texto, nunca solo color) y `Escena` (un
+  Handy sobre un mosaico de color). Los campos son los `Campo` de siempre: dentro de `.pantalla` toman el aspecto del
+  kit (`ajustes.css`), así que una pantalla se rediseña sin tocar su validación.
+- **Bienvenida**: azul con el mosaico de la marca, logo en blanco, 3 tarjetas deslizables (carrusel con
+  `role="region"`, puntos de 44 px con `aria-current`) y "Crear cuenta" / "Ya tengo cuenta".
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

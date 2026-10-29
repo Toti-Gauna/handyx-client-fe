@@ -50,48 +50,62 @@ function useDebounced<T>(valor: T, ms: number): T {
   return v;
 }
 
-/**
- * Ubicación manual o con un permiso puntual de geolocalización (nunca en segundo plano). Avisa si la ciudad no tiene
- * cobertura: se guarda igual (queda el interés), pero no se puede pedir un servicio ahí.
- */
-export function FormUbicacion({
-  valor,
-  onCambio,
-  errores = {},
-  onCobertura,
-}: {
-  valor: UbicacionForm;
-  onCambio: (v: UbicacionForm) => void;
-  errores?: Record<string, string>;
-  onCobertura?: (cubierta: boolean | null) => void;
-}) {
-  const [buscando, setBuscando] = useState(false);
-  const [geo, setGeo] = useState<{
-    tipo: 'ok' | 'imprecisa' | 'denegada' | 'sin_senal' | 'no_soportada';
-  } | null>(null);
-  const ciudad = useDebounced(valor.ciudad.trim(), 450);
-  const cobertura = useConsulta('cobertura', ciudad.length >= 2 ? { consulta: { ciudad } } : null);
-  const cubierta =
-    cobertura.datos && cobertura.datos.ciudad === ciudad ? cobertura.datos.cubierta : null;
-  useEffect(() => onCobertura?.(cubierta), [cubierta, onCobertura]);
+export type ResultadoGeo = 'ok' | 'imprecisa' | 'denegada' | 'sin_senal' | 'no_soportada';
 
-  async function usarMiUbicacion() {
+/**
+ * Ubicación puntual (nunca en segundo plano): se pide solo cuando la persona toca el botón. Si hay posición, se guarda
+ * como referencia en el formulario; la dirección se escribe igual.
+ */
+export function useGeoPuntual(valor: UbicacionForm, onCambio: (v: UbicacionForm) => void) {
+  const [buscando, setBuscando] = useState(false);
+  const [resultado, setResultado] = useState<ResultadoGeo | null>(null);
+  async function usar(): Promise<ResultadoGeo> {
     setBuscando(true);
     const r = await pedirUbicacionUnaVez();
     setBuscando(false);
-    setGeo({ tipo: r.tipo });
+    setResultado(r.tipo);
     if (r.tipo === 'ok' || r.tipo === 'imprecisa')
       onCambio({
         ...valor,
         origen: 'geolocalizacion_puntual',
         coordenadas: { lat: r.lat, lng: r.lng, precisionMetros: r.precisionMetros },
       });
+    return r.tipo;
   }
+  return { buscando, resultado, usar };
+}
+
+/**
+ * Ubicación manual o con un permiso puntual de geolocalización (nunca en segundo plano). Avisa si la ciudad no tiene
+ * cobertura: se guarda igual (queda el interés), pero no se puede pedir un servicio ahí. `geo` permite que la pantalla
+ * que lo contiene haya pedido la ubicación antes (pre-permiso del onboarding).
+ */
+export function FormUbicacion({
+  valor,
+  onCambio,
+  errores = {},
+  onCobertura,
+  geo: externo,
+}: {
+  valor: UbicacionForm;
+  onCambio: (v: UbicacionForm) => void;
+  errores?: Record<string, string>;
+  onCobertura?: (cubierta: boolean | null) => void;
+  geo?: ReturnType<typeof useGeoPuntual>;
+}) {
+  const interno = useGeoPuntual(valor, onCambio);
+  const { buscando, resultado, usar } = externo ?? interno;
+  const geo = resultado ? { tipo: resultado } : null;
+  const ciudad = useDebounced(valor.ciudad.trim(), 450);
+  const cobertura = useConsulta('cobertura', ciudad.length >= 2 ? { consulta: { ciudad } } : null);
+  const cubierta =
+    cobertura.datos && cobertura.datos.ciudad === ciudad ? cobertura.datos.cubierta : null;
+  useEffect(() => onCobertura?.(cubierta), [cubierta, onCobertura]);
 
   const set = (campo: keyof UbicacionForm, v: string) => onCambio({ ...valor, [campo]: v });
   return (
-    <div>
-      <Boton variante="claro" icono="pin" cargando={buscando} onClick={usarMiUbicacion}>
+    <div className="form-ubicacion">
+      <Boton variante="claro" icono="pin" cargando={buscando} onClick={() => void usar()}>
         Usar mi ubicación ahora
       </Boton>
       <p className="campo__ayuda">
