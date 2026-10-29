@@ -2,7 +2,7 @@
 
 import { Contador } from '@/components/Contador';
 import { useSesion } from '@/components/SesionProvider';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Datos } from '@/components/ui';
 import { resumirFee, textoFee } from '@/domain/fee';
 import { diaMes } from '@/domain/fechas';
@@ -13,14 +13,20 @@ export default function Tarifa() {
   if (r.tipo === 'sin_dato' || !fee?.vigente)
     return (
       <>
-        <Titulo texto="Tarifa y ==demo==" />
+        <Encabezado
+          titulo="Tarifa y ==demo=="
+          volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+        />
         <Aviso tipo="alerta">No pudimos cargar las condiciones. Probá de nuevo en un rato.</Aviso>
       </>
     );
   const v = fee.vigente;
   return (
     <>
-      <Titulo texto="Tarifa y ==demo==" />
+      <Encabezado
+        titulo="Tarifa y ==demo=="
+        volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+      />
       {r.cuenta.terminada ? (
         <Aviso tipo="info" titulo="La demo terminó" rol="status">
           Todavía no hay una tarifa aprobada. No se aplica ninguna hasta que esté aprobada y te la

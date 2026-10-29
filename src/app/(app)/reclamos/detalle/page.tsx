@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
 import { FotoSubida } from '@/components/FotoSubida';
 import { Enlace, ruta } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Campo, Cargando, ErrorEstado, Pastilla, Vacio } from '@/components/ui';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { ACTOR_TEXTO, CATEGORIAS_RECLAMO, ESTADOS_RECLAMO_TEXTO } from '@/domain/etiquetas';
@@ -53,14 +53,17 @@ export default function DetalleReclamo() {
 
   return (
     <>
-      <Titulo texto="Tu ==reclamo==" />
-      <p>
-        {e ? (
-          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-            {e.texto}
-          </Pastilla>
-        ) : null}
-      </p>
+      <Encabezado
+        titulo="Tu ==reclamo=="
+        volver={{ href: '/reclamos/', etiqueta: 'Volver a tus reclamos' }}
+        bajada={
+          e ? (
+            <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
+              {e.texto}
+            </Pastilla>
+          ) : null
+        }
+      />
       <section className="tarjeta">
         <div className="tarjeta__cuerpo">
           <p className="tarjeta__titulo">{CATEGORIAS_RECLAMO[x.categoria]}</p>

@@ -186,9 +186,6 @@ export default function Pedir() {
                 type="button"
                 className="mosaico"
                 aria-pressed={rubro === r}
-                style={
-                  rubro === r ? { background: 'var(--color-noche)', color: '#fff' } : undefined
-                }
                 onClick={() => {
                   setRubro(r);
                   setLocal({});
@@ -196,6 +193,9 @@ export default function Pedir() {
               >
                 <Icono nombre={RUBROS_INFO[r].icono} />
                 {RUBROS_INFO[r].corto}
+                {rubro === r ? (
+                  <Icono nombre="checkCirculo" className="icono mosaico__tilde" />
+                ) : null}
               </button>
             ))}
           </div>

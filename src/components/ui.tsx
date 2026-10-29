@@ -7,7 +7,7 @@ import { Icono } from './Icono';
 import type { NombreIcono } from './trazos';
 
 // ── Botones ─────────────────────────────────────────────────────────────────────────────────────────
-type Variante = 'azul' | 'amarillo' | 'claro' | 'contorno' | 'peligro' | 'texto';
+type Variante = 'azul' | 'amarillo' | 'claro' | 'contorno' | 'peligro' | 'peligro-lleno' | 'texto';
 
 export function Boton({
   variante = 'azul',
@@ -241,12 +241,15 @@ export function Hoja({
   titulo,
   children,
   cerrable = true,
+  handy,
 }: {
   abierta: boolean;
   onCerrar: () => void;
   titulo: string;
   children: React.ReactNode;
   cerrable?: boolean;
+  /** Ilustración opcional (ruta en /img): para confirmaciones que conviene leer dos veces. */
+  handy?: string;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const idTitulo = useId();
@@ -272,6 +275,9 @@ export function Hoja({
       {abierta ? (
         <div className="hoja__cuerpo">
           <div className="hoja__manija" aria-hidden="true" />
+          {handy ? (
+            <Image className="hoja__handy" src={handy} alt="" width={96} height={96} />
+          ) : null}
           <h2 id={idTitulo} className="hoja__titulo">
             {titulo}
           </h2>

@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta, useIr } from '@/components/nav';
 import { useAhora } from '@/components/SesionProvider';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Campo, Cargando, Datos, ErrorEstado, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import { useConsulta, useEnvio } from '@/data/hooks';
@@ -68,7 +68,10 @@ function Formulario({ t }: { t: Trabajo }) {
 
   return (
     <>
-      <Titulo texto="Cambiar ==turno o condiciones==" />
+      <Encabezado
+        titulo="Cambiar ==turno o condiciones=="
+        volver={{ href: ruta('/trabajos/detalle/', { id: t.id }), etiqueta: 'Volver al trabajo' }}
+      />
       <section className="tarjeta">
         <div className="tarjeta__cuerpo">
           <p className="tarjeta__titulo">Lo acordado hoy</p>

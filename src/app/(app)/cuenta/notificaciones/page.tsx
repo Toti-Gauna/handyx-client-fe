@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, EstadoConsulta } from '@/components/ui';
 import { ErrorCliente } from '@/data/cliente';
 import { useConsulta, useEnvio } from '@/data/hooks';
@@ -49,7 +49,10 @@ export default function AvisosCelular() {
 
   return (
     <>
-      <Titulo texto="Avisos del ==celular==" />
+      <Encabezado
+        titulo="Avisos del ==celular=="
+        volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+      />
       <p>
         Te avisamos cuando llega una propuesta, cuando el especialista está en camino o responde.
         Los avisos no llevan datos personales.

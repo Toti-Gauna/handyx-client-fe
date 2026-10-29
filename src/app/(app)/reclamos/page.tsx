@@ -1,7 +1,7 @@
 'use client';
 
 import { Enlace, ruta } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { EstadoConsulta, Pastilla, Vacio } from '@/components/ui';
 import { useConsulta } from '@/data/hooks';
 import { CATEGORIAS_RECLAMO, ESTADOS_RECLAMO_TEXTO } from '@/domain/etiquetas';
@@ -11,7 +11,10 @@ export default function Reclamos() {
   const lista = useConsulta('reclamos', { consulta: { limite: 50 } }, { cada: 10_000 });
   return (
     <>
-      <Titulo texto="Tus ==reclamos==" />
+      <Encabezado
+        titulo="Tus ==reclamos=="
+        volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+      />
       <p>
         Si algo salió mal con un pedido o un trabajo, contanos. Vas a ver el estado y el historial.
       </p>

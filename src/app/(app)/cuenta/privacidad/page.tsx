@@ -2,7 +2,7 @@
 
 import { useSesion } from '@/components/SesionProvider';
 import { Enlace } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Datos } from '@/components/ui';
 import { AVISO_LEGAL_PROVISORIO, TEXTOS_LEGALES } from '@/content/textos';
 import { useEnvio } from '@/data/hooks';
@@ -24,7 +24,10 @@ export default function Privacidad() {
 
   return (
     <>
-      <Titulo texto="==Privacidad== y textos" />
+      <Encabezado
+        titulo="==Privacidad== y textos"
+        volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+      />
       <Aviso tipo="alerta">{AVISO_LEGAL_PROVISORIO}</Aviso>
       {pendientes.length ? (
         <Aviso tipo="info" titulo="Hay textos nuevos para aceptar">

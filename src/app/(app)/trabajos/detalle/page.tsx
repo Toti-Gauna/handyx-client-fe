@@ -3,12 +3,12 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta } from '@/components/nav';
-import { PerfilProfesional } from '@/components/Propuesta';
-import { Titulo } from '@/components/Titulo';
+import { Desglose, PerfilProfesional } from '@/components/Propuesta';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Cargando, Datos, ErrorEstado, Hoja, Pastilla, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import { useConsulta, useEnvio } from '@/data/hooks';
-import { pesos, porcentaje } from '@/domain/dinero';
+import { pesos } from '@/domain/dinero';
 import { ACTOR_TEXTO, RUBROS_INFO, etiquetaPago, etiquetaTrabajo } from '@/domain/etiquetas';
 import { cuando } from '@/domain/fechas';
 
@@ -97,18 +97,19 @@ export default function DetalleTrabajo() {
 
   return (
     <>
-      <Titulo
-        texto={
+      <Encabezado
+        titulo={
           rubro
             ? `${RUBROS_INFO[rubro].nombre} con ==${t.especialista.nombrePublico}==`
             : `Trabajo con ==${t.especialista.nombrePublico}==`
         }
+        volver={{ href: '/pedidos/', etiqueta: 'Volver a mis pedidos' }}
+        bajada={
+          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
+            {e.texto}
+          </Pastilla>
+        }
       />
-      <p>
-        <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-          {e.texto}
-        </Pastilla>
-      </p>
 
       {t.estado === 'en_camino' ? (
         <Aviso tipo="info" titulo="El especialista va en camino" rol="status">
@@ -173,15 +174,13 @@ export default function DetalleTrabajo() {
           <h2 id="acuerdo" className="tarjeta__titulo">
             Lo acordado
           </h2>
-          <p className="importe" style={{ margin: '4px 0' }}>
-            {pesos(t.acuerdo.monto.centavos)}
-          </p>
+          <Desglose
+            monto={t.acuerdo.monto}
+            comision={t.acuerdo.comisionHandy}
+            etiquetaTotal="Total acordado"
+          />
           <Datos
             filas={[
-              [
-                'Comisión de Handy',
-                `${pesos(t.acuerdo.comisionHandy.importe.centavos)} (${porcentaje(t.acuerdo.comisionHandy.bp)})`,
-              ],
               [
                 'Horario',
                 t.acuerdo.horario

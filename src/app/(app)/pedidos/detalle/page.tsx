@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
 import { FotoSubida } from '@/components/FotoSubida';
 import { Enlace, ruta } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import {
   Aviso,
   Boton,
@@ -97,12 +97,15 @@ export default function DetallePedido() {
 
   return (
     <>
-      <Titulo texto={`${RUBROS_INFO[p.rubro].nombre} · ==${TIPOS_INFO[p.tipo].nombre}==`} />
-      <p>
-        <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-          {e.texto}
-        </Pastilla>
-      </p>
+      <Encabezado
+        titulo={`${RUBROS_INFO[p.rubro].nombre} · ==${TIPOS_INFO[p.tipo].nombre}==`}
+        volver={{ href: '/pedidos/', etiqueta: 'Volver a mis pedidos' }}
+        bajada={
+          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
+            {e.texto}
+          </Pastilla>
+        }
+      />
 
       {accion.error ? (
         <Aviso

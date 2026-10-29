@@ -3,11 +3,13 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta } from '@/components/nav';
-import { PerfilProfesional, TarjetaPropuesta, Vigencia } from '@/components/Propuesta';
-import { Titulo } from '@/components/Titulo';
+import { TarjetaPropuesta, Verificaciones, Vigencia } from '@/components/Propuesta';
+import { Encabezado } from '@/components/Titulo';
+import { Icono } from '@/components/Icono';
+import { RUBROS_INFO, TIPOS_INFO } from '@/domain/etiquetas';
 import { Aviso, Boton, Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { useConsulta } from '@/data/hooks';
-import { pesos } from '@/domain/dinero';
+import { pesos, porcentaje } from '@/domain/dinero';
 import { cuando } from '@/domain/fechas';
 
 export default function Propuestas() {
@@ -52,12 +54,16 @@ export default function Propuestas() {
 
   return (
     <>
-      <Titulo texto="Tus ==propuestas==" />
-      <p>
-        <Enlace className="enlace-tarjeta" href={ruta('/pedidos/detalle/', { id: pedidoId })}>
-          ← Volver al pedido
-        </Enlace>
-      </p>
+      <Encabezado
+        titulo="Tus ==propuestas=="
+        volver={{ href: ruta('/pedidos/detalle/', { id: pedidoId }), etiqueta: 'Volver al pedido' }}
+        bajada={
+          <>
+            <Icono nombre={RUBROS_INFO[pedido.datos.rubro].icono} />
+            {RUBROS_INFO[pedido.datos.rubro].nombre} · {TIPOS_INFO[pedido.datos.tipo].nombre}
+          </>
+        }
+      />
       {pedido.datos.estado === 'contratado' && pedido.datos.trabajoId ? (
         <Aviso tipo="ok" titulo="Ya hay un acuerdo">
           <Enlace
@@ -111,17 +117,25 @@ export default function Propuestas() {
             </thead>
             <tbody>
               <tr>
-                <th scope="row">Precio</th>
+                <th scope="row">Total para vos</th>
                 {vigentes.map((p) => (
-                  <td key={p.id}>
-                    <strong>{pesos(p.monto.centavos)}</strong>
+                  <td key={p.id} className="tabla__importe">
+                    {pesos(p.monto.centavos + p.comisionHandy.importe.centavos)}
                   </td>
                 ))}
               </tr>
               <tr>
-                <th scope="row">Comisión de Handy</th>
+                <th scope="row">Precio del especialista</th>
                 {vigentes.map((p) => (
-                  <td key={p.id}>{pesos(p.comisionHandy.importe.centavos)}</td>
+                  <td key={p.id}>{pesos(p.monto.centavos)}</td>
+                ))}
+              </tr>
+              <tr>
+                <th scope="row">Tarifa de Handy</th>
+                {vigentes.map((p) => (
+                  <td key={p.id}>
+                    {pesos(p.comisionHandy.importe.centavos)} ({porcentaje(p.comisionHandy.bp)})
+                  </td>
                 ))}
               </tr>
               <tr>
@@ -140,7 +154,7 @@ export default function Propuestas() {
                 <th scope="row">Verificaciones</th>
                 {vigentes.map((p) => (
                   <td key={p.id}>
-                    <PerfilProfesional e={{ ...p.especialista, trabajosRealizados: null }} />
+                    <Verificaciones e={p.especialista} />
                   </td>
                 ))}
               </tr>
@@ -171,7 +185,9 @@ export default function Propuestas() {
       ) : (
         <ul className="lista-tarjetas">
           {vigentes.map((p) => (
-            <TarjetaPropuesta key={p.id} p={p} />
+            <li key={p.id}>
+              <TarjetaPropuesta p={p} />
+            </li>
           ))}
         </ul>
       )}
@@ -179,7 +195,9 @@ export default function Propuestas() {
       {mias.length ? (
         <ul className="lista-tarjetas">
           {mias.map((p) => (
-            <TarjetaPropuesta key={p.id} p={p} />
+            <li key={p.id}>
+              <TarjetaPropuesta p={p} />
+            </li>
           ))}
         </ul>
       ) : null}
@@ -189,7 +207,9 @@ export default function Propuestas() {
           <summary>Anteriores ({otras.length})</summary>
           <ul className="lista-tarjetas">
             {otras.map((p) => (
-              <TarjetaPropuesta key={p.id} p={p} />
+              <li key={p.id}>
+                <TarjetaPropuesta p={p} />
+              </li>
             ))}
           </ul>
         </details>

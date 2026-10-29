@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Cargando, Datos, ErrorEstado, Hoja, Pastilla, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import type { RegistroPago } from '@/contracts/v1/servicio';
@@ -116,12 +116,10 @@ function Contenido({
   const gate = accion.error?.codigo === 'funcion_inactiva';
   return (
     <>
-      <Titulo texto="Pago al ==especialista==" />
-      <p>
-        <Enlace className="enlace-tarjeta" href={ruta('/trabajos/detalle/', { id: t.id })}>
-          ← Volver al trabajo
-        </Enlace>
-      </p>
+      <Encabezado
+        titulo="Pago al ==especialista=="
+        volver={{ href: ruta('/trabajos/detalle/', { id: t.id }), etiqueta: 'Volver al trabajo' }}
+      />
       <Aviso tipo="info" titulo="Pagás directo, sin pasar por Handy">
         <p>
           Le pagás al especialista, por Mercado Pago o en efectivo. Handy no recibe ni reparte ese

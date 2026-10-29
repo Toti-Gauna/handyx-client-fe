@@ -13,7 +13,7 @@ function Campana() {
   return (
     <Enlace
       href="/notificaciones/"
-      className="campana"
+      className="boton-icono"
       aria-label={noLeidas ? `Avisos, ${noLeidas} sin leer` : 'Avisos'}
     >
       <Icono nombre="campana" />

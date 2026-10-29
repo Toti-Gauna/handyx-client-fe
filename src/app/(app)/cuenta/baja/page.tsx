@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Enlace } from '@/components/nav';
 import { useSesion } from '@/components/SesionProvider';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Campo, Cargando, Datos, ErrorEstado, Pastilla } from '@/components/ui';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { cuando } from '@/domain/fechas';
@@ -68,7 +68,10 @@ export default function Baja() {
     const e = ESTADOS[s.estado] ?? ESTADOS.recibida!;
     return (
       <>
-        <Titulo texto="Eliminar ==cuenta==" />
+        <Encabezado
+          titulo="Eliminar ==cuenta=="
+          volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+        />
         <section className="tarjeta" aria-live="polite">
           <div className="tarjeta__cuerpo">
             <p style={{ margin: '0 0 8px' }}>
@@ -109,7 +112,10 @@ export default function Baja() {
 
   return (
     <>
-      <Titulo texto="Eliminar ==cuenta==" />
+      <Encabezado
+        titulo="Eliminar ==cuenta=="
+        volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+      />
       <p>Pedir la eliminación borra de verdad tu cuenta y tus datos. Cerrar sesión no lo hace.</p>
       <ul className="lista-plana">
         <li>Te mostramos el estado de la solicitud en cada paso.</li>

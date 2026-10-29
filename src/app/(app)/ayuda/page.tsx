@@ -1,14 +1,17 @@
 'use client';
 
 import { Enlace } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso } from '@/components/ui';
 import { PREGUNTAS } from '@/content/textos';
 
 export default function Ayuda() {
   return (
     <>
-      <Titulo texto="==Ayuda==" />
+      <Encabezado
+        titulo="==Ayuda=="
+        volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+      />
       {PREGUNTAS.map((q) => (
         <details key={q.p} className="tarjeta" style={{ padding: '12px 16px' }}>
           <summary style={{ cursor: 'pointer', fontWeight: 800, color: 'var(--color-tinta)' }}>

@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { FotoSubida } from '@/components/FotoSubida';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Campo, Cargando, ErrorEstado } from '@/components/ui';
 import { CATEGORIAS_RECLAMO as CATEGORIAS } from '@/contracts/v1/servicio';
 import { useConsulta, useEnvio } from '@/data/hooks';
@@ -62,7 +62,10 @@ export default function NuevoReclamo() {
 
   return (
     <>
-      <Titulo texto="Abrir un ==reclamo==" />
+      <Encabezado
+        titulo="Abrir un ==reclamo=="
+        volver={{ href: '/reclamos/', etiqueta: 'Volver a tus reclamos' }}
+      />
       <form onSubmit={mandar} noValidate>
         {!pedidoConocido || elegido ? (
           <Campo etiqueta="¿Sobre qué trabajo?" error={errores.trabajo} requerido>

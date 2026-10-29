@@ -6,7 +6,7 @@ import { FotoPrivada } from '@/components/FotoPrivada';
 import { Icono } from '@/components/Icono';
 import { Enlace, ruta } from '@/components/nav';
 import { TarjetaPropuesta } from '@/components/Propuesta';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { TIPOS_MEDIA } from '@/contracts/v1/pedidos';
 import type { Mensaje } from '@/contracts/v1/servicio';
@@ -191,19 +191,22 @@ export default function Conversacion() {
 
   return (
     <>
-      <Titulo texto={conv.especialista.nombrePublico} />
-      <p style={{ margin: 0 }}>
-        <Enlace
-          className="enlace-tarjeta"
-          href={
-            conv.trabajoId
-              ? ruta('/trabajos/detalle/', { id: conv.trabajoId })
-              : ruta('/pedidos/detalle/', { id: conv.pedidoId })
-          }
-        >
-          {conv.trabajoId ? 'Ver el trabajo' : 'Ver el pedido'}
-        </Enlace>
-      </p>
+      <Encabezado
+        titulo={conv.especialista.nombrePublico}
+        volver={{ href: '/chats/', etiqueta: 'Volver a mensajes' }}
+        bajada={
+          <Enlace
+            className="enlace-tarjeta"
+            href={
+              conv.trabajoId
+                ? ruta('/trabajos/detalle/', { id: conv.trabajoId })
+                : ruta('/pedidos/detalle/', { id: conv.pedidoId })
+            }
+          >
+            {conv.trabajoId ? 'Ver el trabajo' : 'Ver el pedido'}
+          </Enlace>
+        }
+      />
       {!conv.trabajoId ? (
         <Aviso tipo="info">
           Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una propuesta.
@@ -222,10 +225,8 @@ export default function Conversacion() {
         {entradas.map((e) => {
           if (e.prop)
             return (
-              <li key={e.k} className="tarjeta-propuesta" style={{ listStyle: 'none' }}>
-                <ul className="lista-tarjetas">
-                  <TarjetaPropuesta p={e.prop} />
-                </ul>
+              <li key={e.k} className="chat__propuesta">
+                <TarjetaPropuesta p={e.prop} />
               </li>
             );
           if (e.sal) {
@@ -245,7 +246,7 @@ export default function Conversacion() {
                     <button
                       type="button"
                       className="boton boton--texto boton--chico"
-                      style={{ color: '#fff' }}
+                      style={{ color: 'var(--texto-sobre-marca)' }}
                       onClick={() => void mandar(s)}
                     >
                       Reintentar
@@ -253,7 +254,7 @@ export default function Conversacion() {
                     <button
                       type="button"
                       className="boton boton--texto boton--chico"
-                      style={{ color: '#fff' }}
+                      style={{ color: 'var(--texto-sobre-marca)' }}
                       onClick={() =>
                         setSalientes((xs) => xs.filter((x) => x.clienteId !== s.clienteId))
                       }

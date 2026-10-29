@@ -16,7 +16,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                          | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
 |                          | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial       | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
 |                          | 2.5  | Pagos directos, avisos y los 18 escenarios                       | Sonnet 5.5 · high | ✅ listo · mock probado en navegador     |
-| 3 · Refinación de diseño | 3.1  | Sistema visual y navegación                                      | Opus 5.5 · high   | pendiente                                |
+| 3 · Refinación de diseño | 3.1  | Sistema visual y navegación                                      | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                          | 3.2  | Responsive y accesibilidad                                       | Opus 5.5 · high   | pendiente                                |
 |                          | 3.3  | Motion, PWA (manifest, SW, offline) y capturas                   | Opus 5.5 · high   | pendiente                                |
 | 4 · BE y DB conectados   | 4.1  | Esquema compartido y migraciones (base aislada)                  | Opus 5.5 · high   | pendiente                                |
@@ -29,6 +29,14 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                          | 5.2  | Testing integrado en dos celulares                               | Sonnet 5.5 · high | pendiente                                |
 |                          | 5.3  | Deploy web final y rollback                                      | Sonnet 5.5 · high | pendiente                                |
 |                          | 5.4  | Mapa final (PROD-26) y Handy Docs                                | Sonnet 5.5 · high | pendiente                                |
+
+## Comprobaciones de cierre de la Fase 3
+
+| Lote | Comprobación                                                                       | Evidencia                                                                                                                                                                                                                            |
+| ---- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 3.1  | Acciones de aceptar/rechazar se distinguen y no se inventan claims de verificación | rechazar (contorno rojo, cruz, izquierda) / aceptar (azul lleno, check, derecha), ambas con hoja de confirmación; verificaciones solo de `especialista.verificaciones`; `tests/diseno.test.ts`; capturas en `docs/screens/lote-3-1/` |
+
+Guía del sistema visual: [`docs/diseno.md`](diseno.md).
 
 ## Comprobaciones de cierre de la Fase 2
 

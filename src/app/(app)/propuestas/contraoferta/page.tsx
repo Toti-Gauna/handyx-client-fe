@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta, useIr } from '@/components/nav';
 import { useAhora } from '@/components/SesionProvider';
-import { Titulo } from '@/components/Titulo';
+import { Encabezado, Titulo } from '@/components/Titulo';
 import { Aviso, Boton, Campo, Cargando, Datos, ErrorEstado, Vacio } from '@/components/ui';
 import type { Propuesta } from '@/contracts/v1/propuestas';
 import { useConsulta, useEnvio } from '@/data/hooks';
@@ -87,7 +87,13 @@ function Formulario({ p }: { p: Propuesta }) {
 
   return (
     <>
-      <Titulo texto="Hacé tu ==contrapropuesta==" />
+      <Encabezado
+        titulo="Hacé tu ==contrapropuesta=="
+        volver={{
+          href: ruta('/propuestas/detalle/', { id: p.id }),
+          etiqueta: 'Volver a la propuesta',
+        }}
+      />
       <section className="tarjeta">
         <div className="tarjeta__cuerpo">
           <p className="tarjeta__titulo">La propuesta de {p.especialista.nombrePublico}</p>

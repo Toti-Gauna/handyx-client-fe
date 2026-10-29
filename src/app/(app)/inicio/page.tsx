@@ -5,12 +5,48 @@ import { Icono } from '@/components/Icono';
 import { ModalFee } from '@/components/ModalFee';
 import { Enlace, ruta } from '@/components/nav';
 import { useSesion } from '@/components/SesionProvider';
-import { TarjetaDePedido, TarjetaDeTrabajo } from '@/components/TarjetaPedido';
 import { Titulo } from '@/components/Titulo';
 import { Aviso, Cargando, ErrorEstado } from '@/components/ui';
 import { RUBROS } from '@/contracts/v1/pedidos';
 import { useConsulta } from '@/data/hooks';
-import { RUBROS_INFO, TIPOS_INFO } from '@/domain/etiquetas';
+import { RUBROS_INFO, TIPOS_INFO, etiquetaPedido, etiquetaTrabajo } from '@/domain/etiquetas';
+import { cuando } from '@/domain/fechas';
+import type { NombreIcono } from '@/components/trazos';
+
+const ICONO_TIPO: Record<'urgente' | 'programado' | 'obra', NombreIcono> = {
+  urgente: 'reloj',
+  programado: 'calendario',
+  obra: 'ladrillos',
+};
+
+/** Lo primero que hay que mirar o decidir, en el panel azul de la demo. Una sola prioridad a la vez. */
+function PanelPrioridad({
+  rotulo,
+  titulo,
+  detalle,
+  accion,
+  href,
+}: {
+  rotulo: string;
+  titulo: string;
+  detalle: string;
+  accion: string;
+  href: string;
+}) {
+  return (
+    <section className="panel-marca" aria-labelledby="prioridad">
+      <p className="panel-marca__rotulo">{rotulo}</p>
+      <h2 id="prioridad" className="panel-marca__titulo">
+        {titulo}
+      </h2>
+      <p className="panel-marca__texto">{detalle}</p>
+      <Enlace className="boton boton--amarillo" href={href}>
+        {accion}
+        <Icono nombre="derecha" />
+      </Enlace>
+    </section>
+  );
+}
 
 export default function Inicio() {
   const { sesion } = useSesion();
@@ -41,6 +77,10 @@ export default function Inicio() {
   const cargando = trabajos.estado === 'cargando' || pedidos.estado === 'cargando';
   const sinHistorial = trabajos.datos?.items.length === 0 && pedidos.datos?.items.length === 0;
   const pedidoPorId = (id: string) => pedidos.datos?.items.find((p) => p.id === id);
+  const rubroDe = (pedidoId: string) => {
+    const r = pedidoPorId(pedidoId)?.rubro;
+    return r ? `${RUBROS_INFO[r].nombre} con ` : '';
+  };
 
   return (
     <>
@@ -72,41 +112,39 @@ export default function Inicio() {
       {cargando ? <Cargando /> : null}
 
       {enCurso ? (
-        <section aria-labelledby="prio">
-          <h2 id="prio" className="subtitulo">
-            Tu trabajo en curso
-          </h2>
-          <ul className="lista-tarjetas">
-            <TarjetaDeTrabajo t={enCurso} rubro={pedidoPorId(enCurso.pedidoId)?.rubro ?? null} />
-          </ul>
-        </section>
+        <PanelPrioridad
+          rotulo="Tu trabajo en curso"
+          titulo={`${rubroDe(enCurso.pedidoId)}${enCurso.especialista.nombrePublico}`}
+          detalle={etiquetaTrabajo(enCurso).texto}
+          accion="Ver el trabajo"
+          href={ruta('/trabajos/detalle/', { id: enCurso.id })}
+        />
       ) : conPropuestas ? (
-        <section aria-labelledby="prio">
-          <h2 id="prio" className="subtitulo">
-            Tenés propuestas
-          </h2>
-          <ul className="lista-tarjetas">
-            <TarjetaDePedido p={conPropuestas} />
-          </ul>
-        </section>
+        <PanelPrioridad
+          rotulo="Para resolver"
+          titulo={`${conPropuestas.propuestasPendientes} ${
+            conPropuestas.propuestasPendientes === 1 ? 'propuesta' : 'propuestas'
+          } para tu pedido`}
+          detalle={`${RUBROS_INFO[conPropuestas.rubro].nombre} · ${TIPOS_INFO[conPropuestas.tipo].nombre}. Nada queda acordado hasta que aceptes.`}
+          accion="Ver propuestas"
+          href={ruta('/pedidos/propuestas/', { pedido: conPropuestas.id })}
+        />
       ) : buscando ? (
-        <section aria-labelledby="prio">
-          <h2 id="prio" className="subtitulo">
-            Tu pedido
-          </h2>
-          <ul className="lista-tarjetas">
-            <TarjetaDePedido p={buscando} />
-          </ul>
-        </section>
+        <PanelPrioridad
+          rotulo="Tu pedido"
+          titulo={`${RUBROS_INFO[buscando.rubro].nombre} · ${etiquetaPedido(buscando).texto}`}
+          detalle="Te avisamos cuando llegue una propuesta. No hay tiempos garantizados."
+          accion="Ver el pedido"
+          href={ruta('/pedidos/detalle/', { id: buscando.id })}
+        />
       ) : proximo ? (
-        <section aria-labelledby="prio">
-          <h2 id="prio" className="subtitulo">
-            Tu próximo turno
-          </h2>
-          <ul className="lista-tarjetas">
-            <TarjetaDeTrabajo t={proximo} />
-          </ul>
-        </section>
+        <PanelPrioridad
+          rotulo="Tu próximo turno"
+          titulo={proximo.acuerdo.horario ? cuando(proximo.acuerdo.horario.inicio) : 'A coordinar'}
+          detalle={`${rubroDe(proximo.pedidoId)}${proximo.especialista.nombrePublico}`}
+          accion="Ver el trabajo"
+          href={ruta('/trabajos/detalle/', { id: proximo.id })}
+        />
       ) : null}
 
       <h2 className="subtitulo">¿Qué necesitás?</h2>
@@ -124,14 +162,21 @@ export default function Inicio() {
         ))}
       </ul>
 
-      <h2 className="subtitulo">Quiero…</h2>
-      <div className="acciones">
+      <h2 className="subtitulo">¿Para cuándo?</h2>
+      <ul className="lista-opciones">
         {(['urgente', 'programado', 'obra'] as const).map((t) => (
-          <Enlace key={t} href={ruta('/pedir/', { tipo: t })} className="boton boton--claro">
-            {TIPOS_INFO[t].nombre}: {TIPOS_INFO[t].texto.split('.')[0]?.toLowerCase()}
-          </Enlace>
+          <li key={t}>
+            <Enlace href={ruta('/pedir/', { tipo: t })} className="opcion-enlace">
+              <Icono nombre={ICONO_TIPO[t]} />
+              <span>
+                <span className="opcion__titulo">{TIPOS_INFO[t].nombre}</span>
+                <span className="opcion__texto">{TIPOS_INFO[t].texto}</span>
+              </span>
+              <Icono nombre="derecha" />
+            </Enlace>
+          </li>
         ))}
-      </div>
+      </ul>
 
       {sinHistorial ? (
         <div className="estado">

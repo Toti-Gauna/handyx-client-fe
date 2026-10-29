@@ -1,6 +1,67 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 2 · Mockup completo — lotes 2.1 a 2.5 listos.** Próxima: Fase 3 · lote 3.1 (rama `fase-3-diseno`).
+**Fase actual: 3 · Refinación de diseño — lote 3.1 listo.** Próximo: lote 3.2 (responsive y accesibilidad), misma rama.
+Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
+esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
+
+Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
+real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Lote 3.1 · Sistema visual y navegación
+
+Referencia: la demo de la landing (`/demo/`, construida y capturada en local), comparada pantalla por pantalla con la app.
+
+- **Tokens semánticos** sobre los de marca (`src/styles/tokens.css`): superficies, texto, acciones, estados, importes,
+  tipografía, espaciado, elevación, íconos, movimiento y capas. Cero colores sueltos en el resto del CSS (lo vigila una prueba).
+  Contrastes ajustados: pastilla "ok" (3,5 → 6,5:1) y etiquetas inactivas de la barra (4,2 → 5,0:1).
+- **Navegación**: `Encabezado` con botón de volver (destino fijo, nombre accesible) en las 17 pantallas internas, en
+  lugar de los enlaces "← Volver…"; botón de avisos azul y táctil como en la demo; pestaña activa de la barra con fondo y
+  punto amarillo, además del color.
+- **Inicio**: un panel azul con **una** prioridad (trabajo en curso › propuestas › pedido buscando › próximo turno) y su
+  acción; rubros; "¿Para cuándo?" con ícono, título y explicación por tipo de pedido.
+- **Importes**: `Desglose` (precio del especialista + tarifa de Handy = total, cifras tabulares, total grande en azul) en
+  la propuesta, la hoja de aceptar y el trabajo; la tabla comparativa empieza por el total.
+- **Propuestas**: tarjeta con avatar de iniciales, verificaciones del backend, total, condiciones (horario y vigencia) en
+  caja propia y alcance; en el chat se usa la misma tarjeta, **sin el doble borde**.
+- **Decisión**: rechazar (contorno rojo, cruz, izquierda) y aceptar (azul lleno, check, derecha), las dos con hoja de
+  confirmación; la de rechazar con Handy y botón rojo lleno. Contrapropuesta y chat, debajo.
+- **Chat**: el compositor ya no queda tapado por la barra inferior (`--barra-alto` coincide con la barra real).
+- **Pedir**: el rubro elegido muestra un tilde además del cambio de color.
+- Guía: [`docs/diseno.md`](diseno.md). Capturas antes/después (390 px, datos ficticios): `docs/screens/lote-3-1/`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                                        | Resultado                                                                    |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` (React Compiler) · `typecheck` | OK                                                                           |
+| `npm test`                                                     | **66 pruebas OK** (7 archivos; nuevo `tests/diseno.test.ts` con 7 pruebas)   |
+| `npm run mapa:check` · `contracts:check`                       | OK · contrato v1 idéntico al de `handyx-client-be`                           |
+| `npm run build`                                                | 36 páginas estáticas                                                         |
+| `node tests/e2e/recorrido.cjs`                                 | OK, sin errores de consola                                                   |
+| `node tests/e2e/escenarios.cjs`                                | **18 de 18 escenarios OK**                                                   |
+| Desborde horizontal en 21 rutas × 360/390/768/1280 px          | ninguno                                                                      |
+| `npm audit`                                                    | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas; igual |
+
+Las pruebas e2e cambiaron solo en los nombres de dos controles: el botón "Aceptar" y la fila "Tarifa de Handy" de la tabla.
+
+### Decisiones de diseño (reversibles)
+
+1. "Tarifa de Handy" reemplaza "Comisión de Handy" en la interfaz (mismo dato: `comisionHandy`, calculada con `usuarioBp`);
+   el total para el usuario es precio + tarifa, sumado sin redondeos propios. Con 0 % el total es el precio.
+2. Avatar con iniciales: el contrato no tiene fotos de perfil (y no se agregan sin decisión de Producto).
+3. Volver con destino fijo, no `history.back()`: llegar desde un aviso o un enlace no rompe la vuelta.
+
+## Próximo paso
+
+Lote 3.2 (Opus 5.5 high) en `fase-3-diseno`: auditoría con teclado y lector de pantalla, axe automatizado, 768/820 px y
+horizontal, texto del sistema al 200 %, objetivos táctiles y foco en hojas y formularios. Después 3.3: movimiento, PWA
+(manifest, service worker, `/sin-conexion/`) y capturas de todas las pantallas y estados.
+
+---
+
+# Histórico · Fase 2 · Mockup completo
+
+**Fase 2 · Mockup completo — lotes 2.1 a 2.5 listos.**
 Fecha: 29/10/2026. Rama: `fase-2-mockup` (parte de `fase-1-bases`; el PR de la Fase 1 sigue abierto, por eso el PR de esta fase apunta a esa rama).
 Modelo de la sesión: **Claude Sonnet 5.5**, como recomienda el plan para la Fase 2 (la Fase 1 se hizo con Opus 5.5).
 
@@ -70,11 +131,9 @@ y edad mínima. Ninguna cambia el contrato v1; si el servidor real decide otra c
 | Notion (TECH-03 y tickets)                                | no se consultó en esta sesión                         | conciliar el modelo en 4.1                      |
 | Accesibilidad medida, dispositivos reales, service worker | trabajo de la Fase 3                                  | lotes 3.2 y 3.3                                 |
 
-## Próximo paso
+## Próximo paso (al cerrar la Fase 2)
 
-Fase 3 · lote 3.1 (recomendado Opus 5.5 high; cambiar con `/model`), rama `fase-3-diseno` desde `fase-2-mockup`: unificar el sistema
-visual con la landing (hoy hay doble borde en las tarjetas de propuesta dentro del chat y la barra inferior tapa parte del
-compositor), distinguir aceptar/rechazar sin depender del color, y revisar jerarquía de importes y navegación.
+Fase 3 · lote 3.1 — hecho, ver arriba.
 
 ---
 

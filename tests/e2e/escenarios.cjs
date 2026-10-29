@@ -77,7 +77,7 @@ const casos = {
     await p.getByText('No es una recomendación ni un ranking').waitFor();
     await p.getByRole('button', { name: 'Comparar en tabla' }).click();
     await p.getByRole('columnheader', { name: 'Especialista 3' }).waitFor();
-    await p.getByRole('rowheader', { name: 'Comisión de Handy' }).waitFor();
+    await p.getByRole('rowheader', { name: 'Tarifa de Handy' }).waitFor();
   },
 
   contrapropuesta: async ({ ir, p, panel }) => {
@@ -105,7 +105,7 @@ const casos = {
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
     await p.getByRole('link', { name: 'Ver y responder' }).first().click();
-    await p.getByRole('button', { name: 'Aceptar esta propuesta' }).click();
+    await p.getByRole('button', { name: 'Aceptar', exact: true }).click();
     await p.getByRole('button', { name: 'Sí, acepto estas condiciones' }).click();
     await p.getByText('Esto ya se resolvió').waitFor();
     await p.getByText('No se creó otro trabajo').waitFor();

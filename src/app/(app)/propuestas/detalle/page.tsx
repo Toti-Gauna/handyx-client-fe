@@ -3,8 +3,8 @@
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { PerfilProfesional, ResumenMonto, Vigencia } from '@/components/Propuesta';
-import { Titulo } from '@/components/Titulo';
+import { Condiciones, Desglose, PerfilProfesional } from '@/components/Propuesta';
+import { Encabezado } from '@/components/Titulo';
 import { Aviso, Boton, Cargando, Datos, ErrorEstado, Hoja, Pastilla, Vacio } from '@/components/ui';
 import type { Propuesta } from '@/contracts/v1/propuestas';
 import { useConsulta, useEnvio } from '@/data/hooks';
@@ -42,6 +42,7 @@ export default function DetallePropuesta() {
   const propia = p.autorRol === 'usuario';
   const error = accion.error;
   const conflicto = error?.conflicto ?? null;
+  const total = p.monto.centavos + p.comisionHandy.importe.centavos;
 
   async function aceptar(x: Propuesta) {
     const r = await accion.enviar(
@@ -77,8 +78,8 @@ export default function DetallePropuesta() {
 
   return (
     <>
-      <Titulo
-        texto={
+      <Encabezado
+        titulo={
           p.tipo === 'cotizacion'
             ? propia
               ? 'Tu ==contrapropuesta=='
@@ -87,25 +88,28 @@ export default function DetallePropuesta() {
               ? 'Un ==adicional=='
               : 'Cambio del ==acuerdo=='
         }
+        volver={
+          p.tipo === 'cotizacion'
+            ? {
+                href: ruta('/pedidos/propuestas/', { pedido: p.pedidoId }),
+                etiqueta: 'Volver a todas las propuestas',
+              }
+            : p.trabajoId
+              ? {
+                  href: ruta('/trabajos/detalle/', { id: p.trabajoId }),
+                  etiqueta: 'Volver al trabajo',
+                }
+              : {
+                  href: ruta('/pedidos/detalle/', { id: p.pedidoId }),
+                  etiqueta: 'Volver al pedido',
+                }
+        }
+        bajada={
+          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
+            {e.texto}
+          </Pastilla>
+        }
       />
-      <p>
-        <Enlace
-          className="enlace-tarjeta"
-          href={ruta('/pedidos/propuestas/', { pedido: p.pedidoId })}
-        >
-          ← Todas las propuestas
-        </Enlace>
-      </p>
-      <p>
-        <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-          {e.texto}
-        </Pastilla>{' '}
-        {p.estado === 'pendiente' ? (
-          <span className="texto-suave">
-            <Vigencia hasta={p.venceEn} />
-          </span>
-        ) : null}
-      </p>
 
       {conflicto === 'vencida' ? (
         <Aviso tipo="alerta" titulo="La propuesta venció">
@@ -134,51 +138,36 @@ export default function DetallePropuesta() {
         </Aviso>
       ) : null}
 
-      <section className="tarjeta">
+      <section className="tarjeta" aria-label="Condiciones de la propuesta">
         <div className="tarjeta__cuerpo">
           <PerfilProfesional e={p.especialista} />
-          <hr style={{ border: 0, borderTop: '1px solid var(--linea)', margin: '12px 0' }} />
-          <ResumenMonto p={p} />
+          <Desglose monto={p.monto} comision={p.comisionHandy} />
+          <Condiciones p={p} />
+          <h2 className="subtitulo">Qué incluye</h2>
+          <p style={{ margin: 0 }}>{p.alcance}</p>
           <Datos
             filas={[
-              [
-                'Horario',
-                p.horario ? cuando(p.horario.inicio) : 'El especialista lo declara al aceptar',
-              ],
               ['Quién la propuso', propia ? 'Vos' : p.especialista.nombrePublico],
               ['Enviada', cuando(p.creadaEn)],
             ]}
           />
-          <h2 className="subtitulo">Qué incluye</h2>
-          <p style={{ margin: 0 }}>{p.alcance}</p>
         </div>
       </section>
 
       {p.estado === 'pendiente' && !propia ? (
-        <>
+        <section className="decision" aria-labelledby="decision-titulo">
+          <h2 id="decision-titulo" className="decision__titulo">
+            {p.tipo === 'cotizacion' ? '¿Aceptás esta propuesta?' : '¿Aceptás este cambio?'}
+          </h2>
+          <p className="decision__resumen">
+            Total {pesos(total)} · {p.horario ? cuando(p.horario.inicio) : 'horario a declarar'}
+          </p>
           <Aviso tipo="info">
             {p.tipo === 'cotizacion'
               ? 'Aceptar crea el trabajo con exactamente estas condiciones. Cualquier cambio después necesita otra propuesta que la otra parte acepte.'
               : 'Mientras no aceptes, sigue valiendo el acuerdo actual.'}
           </Aviso>
-          <div className="acciones">
-            <Boton
-              icono="check"
-              onClick={() => {
-                accion.limpiar();
-                setHoja('aceptar');
-              }}
-            >
-              Aceptar esta propuesta
-            </Boton>
-            {p.tipo === 'cotizacion' ? (
-              <Enlace
-                className="boton boton--contorno"
-                href={ruta('/propuestas/contraoferta/', { id: p.id })}
-              >
-                Hacer una contrapropuesta
-              </Enlace>
-            ) : null}
+          <div className="decision__botones">
             <Boton
               variante="peligro"
               icono="cerrar"
@@ -189,6 +178,25 @@ export default function DetallePropuesta() {
             >
               Rechazar
             </Boton>
+            <Boton
+              icono="check"
+              onClick={() => {
+                accion.limpiar();
+                setHoja('aceptar');
+              }}
+            >
+              Aceptar
+            </Boton>
+          </div>
+          <div className="decision__otras">
+            {p.tipo === 'cotizacion' ? (
+              <Enlace
+                className="boton boton--contorno"
+                href={ruta('/propuestas/contraoferta/', { id: p.id })}
+              >
+                Hacer una contrapropuesta
+              </Enlace>
+            ) : null}
             <Enlace
               className="boton boton--texto"
               href={ruta('/chats/conversacion/', { id: p.conversacionId })}
@@ -196,7 +204,7 @@ export default function DetallePropuesta() {
               Hablar con {p.especialista.nombrePublico}
             </Enlace>
           </div>
-        </>
+        </section>
       ) : null}
       {p.estado === 'pendiente' && propia ? (
         <>
@@ -259,14 +267,9 @@ export default function DetallePropuesta() {
         onCerrar={() => setHoja(null)}
         titulo="Aceptar estas condiciones"
       >
-        <Datos
-          filas={[
-            ['Especialista', p.especialista.nombrePublico],
-            ['Precio', pesos(p.monto.centavos)],
-            ['Comisión de Handy', pesos(p.comisionHandy.importe.centavos)],
-            ['Horario', p.horario ? cuando(p.horario.inicio) : 'A coordinar'],
-          ]}
-        />
+        <PerfilProfesional e={{ ...p.especialista, trabajosRealizados: null }} />
+        <Desglose monto={p.monto} comision={p.comisionHandy} />
+        <Condiciones p={p} />
         <p style={{ margin: '10px 0 0' }}>{p.alcance}</p>
         <Aviso tipo="info">Pagás directo al especialista, por Mercado Pago o en efectivo.</Aviso>
         {error ? <Aviso tipo="error">{error.mensaje}</Aviso> : null}
@@ -283,6 +286,7 @@ export default function DetallePropuesta() {
         abierta={hoja === 'rechazar'}
         onCerrar={() => setHoja(null)}
         titulo="¿Rechazar la propuesta?"
+        handy="/img/handy-cano-roto.webp"
       >
         <p>
           Se la avisamos a {p.especialista.nombrePublico}. Podés seguir con las otras propuestas.
@@ -290,7 +294,7 @@ export default function DetallePropuesta() {
         {error ? <Aviso tipo="error">{error.mensaje}</Aviso> : null}
         <div className="acciones">
           <Boton
-            variante="peligro"
+            variante="peligro-lleno"
             icono="cerrar"
             cargando={accion.pendiente}
             onClick={() => rechazar(p)}
