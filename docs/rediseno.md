@@ -224,6 +224,7 @@ el contrato; en la Fase 4 se implementa de verdad.
 ## 11. Mapa de pantallas
 
 Leyenda: 🆕 nueva · ♻️ rehecha · 🗺️ usa mapa · (H) hoja/modal. Las referencias `u-*` son pantallas de la demo de la landing.
+Versión en imagen: [`screens/mapa-rediseno.png`](screens/mapa-rediseno.png).
 
 ```mermaid
 flowchart TD
