@@ -127,6 +127,19 @@ function chequeosPropios() {
 }
 
 async function auditar(p, etiqueta) {
+  // Que terminen la transición de pantalla y las animaciones finitas (axe mide colores con la opacidad del momento).
+  await p
+    .waitForFunction(
+      () =>
+        !document.documentElement.classList.contains('vt-entrando') &&
+        !document.querySelector('.esqueleto') &&
+        document
+          .getAnimations()
+          .every((x) => x.playState !== 'running' || x.effect?.getTiming().iterations === Infinity),
+      null,
+      { timeout: 4000 },
+    )
+    .catch(() => undefined);
   await p.addScriptTag({ content: AXE });
   const r = await p.evaluate(async () => {
     // eslint-disable-next-line no-undef
@@ -170,19 +183,7 @@ async function auditar(p, etiqueta) {
       await ir(r);
       await accion(p);
       await p.waitForTimeout(400);
-      // Que terminen la transición de pantalla y las animaciones finitas (axe mide colores con la opacidad del momento).
-      await p
-        .waitForFunction(
-          () =>
-            !document.documentElement.classList.contains('vt-entrando') &&
-            !document.querySelector('.esqueleto') &&
-            document
-              .getAnimations()
-              .every((x) => x.playState !== 'running' || x.effect?.getTiming().iterations === Infinity),
-          null,
-          { timeout: 4000 },
-        )
-        .catch(() => undefined);
+
       resultados.push({ ancho: a.nombre, ...(await auditar(p, nombre)) });
       if (a.nombre === '390') await p.screenshot({ path: path.join(CARPETA, `${nombre}.png`) });
     }

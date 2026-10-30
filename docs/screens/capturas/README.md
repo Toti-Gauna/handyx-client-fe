@@ -2,7 +2,7 @@
 
 Generado con `node tests/e2e/capturas.cjs` sobre `npm run preview` (vista de prueba, datos ficticios). 390 px página
 completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px. Regenerar todo: `npm run capturas`
-(primero los 18 escenarios en `escenarios/`, después este índice).
+(primero los escenarios en `escenarios/`, después este índice).
 
 ## Acceso
 
@@ -94,6 +94,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | chats | [chats-390.jpg](chats-390.jpg) |
 | conversacion | [conversacion-390.jpg](conversacion-390.jpg) |
 | conversacion-mensaje-fallido | [conversacion-mensaje-fallido-390.jpg](conversacion-mensaje-fallido-390.jpg) |
+| soporte | [soporte-390.jpg](soporte-390.jpg) |
 | conversacion (escritorio) | [conversacion-1280.jpg](conversacion-1280.jpg) |
 
 ## Trabajo
@@ -110,6 +111,10 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | pago-comprobante | [pago-comprobante-390.jpg](pago-comprobante-390.jpg) |
 | pago-mercado-pago | [pago-mercado-pago-390.jpg](pago-mercado-pago-390.jpg) |
 | pago-elegir-metodo | [pago-elegir-metodo-390.jpg](pago-elegir-metodo-390.jpg) |
+| pago-retorno-pendiente | [pago-retorno-pendiente-390.jpg](pago-retorno-pendiente-390.jpg) |
+| pago-retorno-fallido | [pago-retorno-fallido-390.jpg](pago-retorno-fallido-390.jpg) |
+| pago-retorno-confirmado | [pago-retorno-confirmado-390.jpg](pago-retorno-confirmado-390.jpg) |
+| trabajo-hoja-achicada | [trabajo-hoja-achicada-390.jpg](trabajo-hoja-achicada-390.jpg) |
 
 ## Agenda
 
@@ -155,9 +160,10 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | error-de-carga | [error-de-carga-390.jpg](error-de-carga-390.jpg) |
 | sin-conexion | [sin-conexion-390.jpg](sin-conexion-390.jpg) |
 | no-encontrado | [no-encontrado-390.jpg](no-encontrado-390.jpg) |
+| version-nueva | [version-nueva-390.jpg](version-nueva-390.jpg) |
 | panel-de-prueba | [panel-de-prueba-390.jpg](panel-de-prueba-390.jpg) |
 
-## Los 18 escenarios (estado final de cada recorrido)
+## Los escenarios (estado final de cada recorrido)
 
 | Escenario | Qué muestra | Captura |
 | --- | --- | --- |

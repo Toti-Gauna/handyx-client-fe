@@ -34,6 +34,24 @@ Pedido de Ignacio: "Seguí con 3.9".
 - Pruebas: e2e nuevo `tests/e2e/pulido.cjs` (en `npm run e2e`). La prueba PWA ahora espera a que la conversación y la
   propuesta terminen de cargar antes de cortar la red (antes dependía de la demora simulada).
 
+### Comandos ejecutados (30/10/2026, local)
+
+| Comando                                            | Resultado                                                                                         |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                                |
+| `npm test`                                         | **166 pruebas OK**                                                                                |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                      |
+| `npm run e2e`                                      | recorrido · 19 escenarios · **accesibilidad 299 de 299** · teclado · PWA · HandIA · mapa · pulido |
+| `npm run capturas`                                 | 99 capturas + 19 escenarios; las 40 pantallas del mapa con captura                                |
+| `npm run comparar`                                 | 20 pares demo · app en `docs/screens/comparacion/`                                                |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas                 |
+
+### Qué queda de la Fase 3 para después
+
+- Datos reales del mapa (`npm run mdp:datos`, necesita internet o permitir `build.protomaps.com` y `github.com`).
+- Especialistas guardados (decisión 4): necesita `favoritos` (4.3).
+- Dispositivos reales y lectores de pantalla reales: lote 5.2.
+
 ## Rediseño · lote 3.8 · Cuenta y ayuda
 
 Pedido de Ignacio: "Vamos con 3.8".

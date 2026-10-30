@@ -47,6 +47,11 @@ Otros recorridos (también en `npm run e2e`) y herramientas del rediseño:
   66 capturas + 18 escenarios revisado a ojo (se corrigieron capturas tomadas durante la carga, cortes con guion en títulos
   y el texto "comisión" que quedaba en Pago).
 
+- Lote 3.9 (30/10): accesibilidad **299 de 299** (rutas y hojas nuevas: detalle del reclamo, vuelta del pago, hoja azul
+  achicada, versión nueva); la auditoría espera a que terminen transiciones y animaciones antes de medir colores. Pulido
+  OK (transiciones, gestos, título que se compacta, versión nueva, 404, sin conexión, movimiento reducido); PWA OK;
+  catálogo de 99 capturas con las 40 pantallas del mapa; 20 comparaciones con la demo revisadas a ojo.
+
 ## Qué NO se probó todavía
 
 - Dispositivos reales (iOS/Android) y lectores de pantalla reales (VoiceOver, TalkBack): sin acceso en esta sesión; se revisó
