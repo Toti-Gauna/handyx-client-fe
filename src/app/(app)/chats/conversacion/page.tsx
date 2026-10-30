@@ -4,15 +4,17 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
 import { Icono } from '@/components/Icono';
+import { AvatarHx } from '@/components/hx';
 import { Enlace, ruta } from '@/components/nav';
 import { TarjetaPropuesta } from '@/components/Propuesta';
-import { Encabezado } from '@/components/Titulo';
-import { Aviso, Boton, Cargando, ErrorEstado, Vacio } from '@/components/ui';
+import { TituloDocumento } from '@/components/TituloDocumento';
+import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { TIPOS_MEDIA } from '@/contracts/v1/pedidos';
 import type { Mensaje } from '@/contracts/v1/servicio';
 import { cliente } from '@/data';
 import { ErrorCliente } from '@/data/cliente';
 import { avisarSiSesion, useConsulta } from '@/data/hooks';
+import { RUBROS_INFO } from '@/domain/etiquetas';
 import { horaDeInstante } from '@/domain/fechas';
 
 interface Saliente {
@@ -188,15 +190,36 @@ export default function Conversacion() {
   const cerrado = trabajo.datos
     ? ['finalizado', 'cancelado'].includes(trabajo.datos.estado)
     : false;
+  const esp = conv.especialista.nombrePublico;
+  // Respuestas rápidas según el momento (antes de contratar, preguntas; con el trabajo en marcha, coordinar). Completan
+  // el mensaje: se manda recién con "Enviar", así un toque no manda nada sin querer.
+  const rapidas = conv.trabajoId
+    ? ['Te espero', '¿Necesitás algo más para el trabajo?', '¡Gracias!']
+    : ['¿Incluye los materiales?', '¿Podés otro día u horario?', '¿Te mando más fotos?'];
 
   return (
-    <>
-      <Encabezado
-        titulo={conv.especialista.nombrePublico}
-        volver={{ href: '/chats/', etiqueta: 'Volver a mensajes' }}
-        bajada={
+    <div className="pantalla du-app du-chat-pantalla du-conversacion">
+      <TituloDocumento texto={`Chat con ${esp}`} />
+      <header className="hd-chat-cabecera">
+        <div className="hd-chat-cabecera__fila">
           <Enlace
-            className="enlace-tarjeta"
+            href="/chats/"
+            className="hd-chat-cabecera__volver"
+            aria-label="Volver a mensajes"
+          >
+            <Icono nombre="atras" />
+          </Enlace>
+          <AvatarHx
+            nombre={esp}
+            verificado={conv.especialista.verificaciones.length > 0}
+            tamano="chico"
+          />
+          <h1 className="hd-chat-cabecera__quien">
+            <strong>{esp}</strong>
+            <small>{conv.especialista.rubros.map((r) => RUBROS_INFO[r].nombre).join(' · ')}</small>
+          </h1>
+          <Enlace
+            className="du-conversacion__ver"
             href={
               conv.trabajoId
                 ? ruta('/trabajos/detalle/', { id: conv.trabajoId })
@@ -205,137 +228,174 @@ export default function Conversacion() {
           >
             {conv.trabajoId ? 'Ver el trabajo' : 'Ver el pedido'}
           </Enlace>
-        }
-      />
-      {!conv.trabajoId ? (
-        <Aviso tipo="info">
-          Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una propuesta.
-        </Aviso>
-      ) : null}
-      {cerrado ? (
-        <Aviso tipo="info" titulo="El trabajo terminó">
-          Esta conversación quedó solo de lectura.
-        </Aviso>
-      ) : null}
+        </div>
+      </header>
 
-      <ul className="chat" aria-label="Conversación" aria-live="polite">
-        {entradas.length === 0 ? (
-          <li className="burbuja burbuja--sistema">Todavía no hay mensajes. Escribí el primero.</li>
-        ) : null}
-        {entradas.map((e) => {
-          if (e.prop)
-            return (
-              <li key={e.k} className="chat__propuesta">
-                <TarjetaPropuesta p={e.prop} />
-              </li>
-            );
-          if (e.sal) {
-            const s = e.sal;
-            return (
-              <li
-                key={e.k}
-                className={`burbuja burbuja--yo${s.estado === 'error' ? ' burbuja--error' : ''}`}
-              >
-                {s.archivo ? <span>📷 {s.archivo.name}</span> : s.texto}
-                <span className="burbuja__meta">
-                  {s.estado === 'enviando' ? 'Enviando…' : 'No se envió'}
-                </span>
-                {s.estado === 'error' ? (
-                  <span role="alert" style={{ display: 'block' }}>
-                    {s.error}{' '}
-                    <button
-                      type="button"
-                      className="boton boton--texto boton--chico"
-                      style={{ color: 'var(--texto-sobre-marca)' }}
-                      onClick={() => void mandar(s)}
-                    >
-                      Reintentar
-                    </button>
-                    <button
-                      type="button"
-                      className="boton boton--texto boton--chico"
-                      style={{ color: 'var(--texto-sobre-marca)' }}
-                      onClick={() =>
-                        setSalientes((xs) => xs.filter((x) => x.clienteId !== s.clienteId))
-                      }
-                    >
-                      Descartar
-                    </button>
-                  </span>
-                ) : null}
-              </li>
-            );
-          }
-          const m = e.msg as Mensaje;
-          if (m.autor === 'sistema')
-            return (
-              <li key={e.k} className="burbuja burbuja--sistema">
-                {m.texto}
-              </li>
-            );
-          return (
-            <li key={e.k} className={`burbuja${m.autor === 'usuario' ? ' burbuja--yo' : ''}`}>
-              {m.media ? (
-                <FotoPrivada className="burbuja__foto" url={m.media.url} alt="Foto enviada" />
-              ) : (
-                m.texto
-              )}
-              <span className="burbuja__meta">
-                {m.autor === 'usuario' ? 'Vos' : conv.especialista.nombrePublico} ·{' '}
-                {horaDeInstante(m.creadoEn)}
-                {m.autor === 'usuario' ? ' · enviado' : ''}
+      <div className="du-chat">
+        <ul
+          className="du-chat__mensajes hd-scroll du-conversacion__lista"
+          aria-label="Conversación"
+          aria-live="polite"
+          tabIndex={0}
+        >
+          <li className="du-chat__espacio" aria-hidden="true" />
+          {!conv.trabajoId ? (
+            <li className="du-nota du-nueva">
+              <Icono nombre="info" />
+              <span>
+                Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una
+                propuesta.
               </span>
             </li>
-          );
-        })}
-        <li ref={fondo} aria-hidden="true" style={{ listStyle: 'none' }} />
-      </ul>
+          ) : null}
+          {entradas.length === 0 ? (
+            <li className="du-nota">Todavía no hay mensajes. Escribí el primero.</li>
+          ) : null}
+          {entradas.map((e) => {
+            if (e.prop)
+              return (
+                <li key={e.k} className="du-conversacion__propuesta">
+                  <TarjetaPropuesta p={e.prop} />
+                </li>
+              );
+            if (e.sal) {
+              const s = e.sal;
+              return (
+                <li
+                  key={e.k}
+                  className={`du-burbuja du-burbuja--propia${s.estado === 'error' ? ' du-burbuja--error' : ''}`}
+                >
+                  <span>{s.archivo ? `📷 ${s.archivo.name}` : s.texto}</span>
+                  <small className="du-burbuja__meta">
+                    {s.estado === 'enviando' ? 'Enviando…' : 'No se envió'}
+                  </small>
+                  {s.estado === 'error' ? (
+                    <span role="alert" className="du-burbuja__error">
+                      {s.error}
+                      <button type="button" onClick={() => void mandar(s)}>
+                        Reintentar
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSalientes((xs) => xs.filter((x) => x.clienteId !== s.clienteId))
+                        }
+                      >
+                        Descartar
+                      </button>
+                    </span>
+                  ) : null}
+                </li>
+              );
+            }
+            const m = e.msg as Mensaje;
+            if (m.autor === 'sistema')
+              return (
+                <li key={e.k} className="du-nota du-conversacion__sistema">
+                  <Icono nombre="info" />
+                  <span>{m.texto}</span>
+                </li>
+              );
+            const mio = m.autor === 'usuario';
+            return (
+              <li key={e.k} className={`du-burbuja du-burbuja--${mio ? 'propia' : 'otra'}`}>
+                <span className="sr-only">{mio ? 'Vos: ' : `${esp}: `}</span>
+                {m.media ? (
+                  <FotoPrivada className="du-burbuja__foto" url={m.media.url} alt="Foto enviada" />
+                ) : (
+                  <span>{m.texto}</span>
+                )}
+                <small className="du-burbuja__meta">
+                  {horaDeInstante(m.creadoEn)}
+                  {mio ? ' · enviado' : ''}
+                </small>
+              </li>
+            );
+          })}
+          <li ref={fondo} aria-hidden="true" />
+        </ul>
 
-      {aviso ? (
-        <Aviso tipo="alerta" rol="status">
-          {aviso}
-        </Aviso>
-      ) : null}
-      {!cerrado ? (
-        <form className="compositor" onSubmit={enviarTexto}>
-          <input
-            ref={entradaFoto}
-            type="file"
-            accept={TIPOS_MEDIA.join(',')}
-            hidden
-            aria-label="Elegir una foto"
-            onChange={(e) => elegirFoto(e.target.files)}
-          />
-          <Boton
-            variante="claro"
-            aria-label="Enviar una foto"
-            onClick={() => entradaFoto.current?.click()}
-          >
-            <Icono nombre="camara" />
-          </Boton>
-          <label className="sr-only" htmlFor="mensaje">
-            Mensaje
-          </label>
-          <textarea
-            id="mensaje"
-            className="entrada"
-            rows={1}
-            maxLength={2000}
-            placeholder="Escribí un mensaje"
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && e.currentTarget.form) {
-                e.preventDefault();
-                e.currentTarget.form.requestSubmit();
-              }
-            }}
-          />
-          <Boton type="submit" aria-label="Enviar el mensaje" disabled={!texto.trim()}>
-            <Icono nombre="enviar" />
-          </Boton>
-        </form>
-      ) : null}
-    </>
+        <div className="du-chat__pie">
+          {aviso ? (
+            <p className="du-nota" role="status">
+              <Icono nombre="alerta" />
+              <span>{aviso}</span>
+            </p>
+          ) : null}
+          {cerrado ? (
+            <p className="du-nota">
+              <Icono nombre="info" />
+              <span>El trabajo terminó: esta conversación quedó solo de lectura.</span>
+            </p>
+          ) : (
+            <>
+              <div
+                className="hd-chips du-rapidas du-rapidas--envolver"
+                role="group"
+                aria-label="Respuestas rápidas"
+              >
+                {rapidas.map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    className="hd-chip hd-chip--tinte du-rapida"
+                    onClick={() => {
+                      setTexto(r);
+                      document.getElementById('mensaje')?.focus();
+                    }}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+              <form className="du-escribir" onSubmit={enviarTexto}>
+                <input
+                  ref={entradaFoto}
+                  type="file"
+                  accept={TIPOS_MEDIA.join(',')}
+                  hidden
+                  aria-label="Elegir una foto"
+                  onChange={(e) => elegirFoto(e.target.files)}
+                />
+                <button
+                  type="button"
+                  className="du-escribir__foto"
+                  aria-label="Enviar una foto"
+                  onClick={() => entradaFoto.current?.click()}
+                >
+                  <Icono nombre="camara" />
+                </button>
+                <label className="sr-only" htmlFor="mensaje">
+                  Mensaje
+                </label>
+                <textarea
+                  id="mensaje"
+                  className="du-escribir__campo"
+                  rows={1}
+                  maxLength={2000}
+                  placeholder="Escribí un mensaje"
+                  value={texto}
+                  onChange={(e) => setTexto(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && e.currentTarget.form) {
+                      e.preventDefault();
+                      e.currentTarget.form.requestSubmit();
+                    }
+                  }}
+                />
+                <button
+                  type="submit"
+                  className="du-escribir__enviar"
+                  aria-label="Enviar el mensaje"
+                  disabled={!texto.trim()}
+                >
+                  <Icono nombre="enviar" />
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

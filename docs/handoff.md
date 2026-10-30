@@ -1,12 +1,39 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.6 (el mapa todavía sin los datos reales), pantalla de carga y
-HandIA. Sigue el lote 3.7** (actividad, mensajes y soporte) ([`docs/rediseno.md`](rediseno.md)).
-Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.7 (el mapa todavía sin los datos reales), pantalla de carga y
+HandIA. Sigue el lote 3.8** (cuenta y ayuda) ([`docs/rediseno.md`](rediseno.md)).
+Fecha: 30/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.7 · Actividad, mensajes y soporte
+
+Pedido de Ignacio: "Seguí con el lote 3.7".
+
+- **Actividad** (`/pedidos/`, y `/agenda/` abre la pestaña Agenda): segmentos **En curso** (arriba "Espera tu
+  respuesta": propuestas para elegir y trabajos para confirmar; después "En marcha"), **Agenda** (calendario y el día) e
+  **Historial**. Tarjetas con franja de la demo; el enlace dice qué abre (rubro y especialista).
+- **Mensajes**: filas con avatar, rubros, momento y no leídos; HandIA y Soporte al final.
+- **Chat**: cabecera del especialista con "Ver el trabajo/pedido", burbujas, propuestas dentro de la conversación,
+  **respuestas rápidas** según el momento (antes de contratar, preguntas; con el trabajo en marcha, coordinar) que
+  **completan el mensaje** sin mandarlo, foto, "No se envió" con Reintentar (mismo `clienteId`, no duplica).
+- **Soporte** (`/soporte/`, decisión 5): chat con el equipo; lo atiende una persona, sin IA ni plazos. No está en el
+  contrato v1: en la vista de prueba responde un acuse simulado y rotulado; con la API real queda "todavía no
+  disponible" (con Ayuda y reclamos) hasta la conversación con Operations (Fase 4.4).
+- **Avisos** como tarjetas con ícono por tipo y "nuevo"; **cambiar turno** en el kit (siempre una propuesta que la otra
+  parte acepta).
+
+### Comandos ejecutados (30/10/2026, local)
+
+| Comando                                            | Resultado                                                                         |
+| -------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                |
+| `npm test`                                         | **154 pruebas OK** (6 nuevas de actividad, mensajes y soporte)                    |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                      |
+| `npm run e2e`                                      | recorrido · 18 escenarios · accesibilidad · teclado · PWA · HandIA · mapa         |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas |
 
 ## Rediseño · lote 3.6 · Trabajo en curso y cierre
 

@@ -1,6 +1,7 @@
+// Tarjetas de pedidos y trabajos para las listas (rediseño 3.7): la tarjeta con franja de la demo (u-turnos): ícono del
+// rubro, qué y cuándo, el estado y el total; la franja de abajo abre el detalle.
 import type { Pedido, Rubro } from '@/contracts/v1/pedidos';
 import type { Trabajo } from '@/contracts/v1/propuestas';
-import { cuando } from '@/domain/fechas';
 import { pesos } from '@/domain/dinero';
 import {
   RUBROS_INFO,
@@ -9,47 +10,54 @@ import {
   etiquetaTrabajo,
   type Etiqueta,
 } from '@/domain/etiquetas';
+import { cuando } from '@/domain/fechas';
+import { ChipEstado } from './hx';
 import { Icono } from './Icono';
 import { Enlace, ruta } from './nav';
-import { Pastilla } from './ui';
 
 function Tarjeta({
   href,
   rubro,
   titulo,
-  linea,
-  etiqueta,
+  detalle,
   extra,
+  etiqueta,
+  importe,
+  destino,
 }: {
   href: string;
   rubro: Rubro | null;
   titulo: string;
-  linea: string;
-  etiqueta: Etiqueta;
+  detalle: string;
   extra?: string | undefined;
+  etiqueta: Etiqueta;
+  importe?: string | undefined;
+  /** Nombre del enlace: qué abre (incluye rubro y quién, para distinguir tarjetas iguales). */
+  destino: string;
 }) {
   return (
-    <li>
-      <Enlace href={href} className="tarjeta tarjeta--enlace">
-        <div className="tarjeta__cuerpo">
-          <div className="tarjeta__fila">
-            <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              {rubro ? <Icono nombre={RUBROS_INFO[rubro].icono} /> : null}
-              <strong className="tarjeta__titulo" style={{ margin: 0 }}>
-                {titulo}
-              </strong>
-            </span>
-            <Pastilla tono={etiqueta.tono} {...(etiqueta.icono ? { icono: etiqueta.icono } : {})}>
-              {etiqueta.texto}
-            </Pastilla>
-          </div>
-          <p style={{ margin: '6px 0 0' }}>{linea}</p>
-          {extra ? (
-            <p className="texto-suave" style={{ margin: '4px 0 0' }}>
-              {extra}
-            </p>
-          ) : null}
-        </div>
+    <li className="du-tarjeta du-tarjeta-hx">
+      <div className="du-tarjeta__cuerpo">
+        <span className="du-tarjeta__ico du-tarjeta__ico--azul" aria-hidden="true">
+          <Icono nombre={rubro ? RUBROS_INFO[rubro].icono : 'calendario'} />
+        </span>
+        <span className="du-tarjeta__datos">
+          <strong>{titulo}</strong>
+          <small>{detalle}</small>
+          {extra ? <small>{extra}</small> : null}
+        </span>
+        <span className="du-tarjeta__der">
+          <ChipEstado e={etiqueta} />
+          {importe ? <strong className="hd-precio">{importe}</strong> : null}
+        </span>
+      </div>
+      <Enlace
+        href={href}
+        className="du-tarjeta__franja tarjeta--enlace"
+        aria-label={`Ver detalle: ${destino}`}
+      >
+        Ver detalle
+        <Icono nombre="derecha" />
       </Enlace>
     </li>
   );
@@ -57,34 +65,42 @@ function Tarjeta({
 
 export function TarjetaDePedido({ p }: { p: Pedido }) {
   const f = p.fechaSolicitada;
+  const titulo = `${RUBROS_INFO[p.rubro].nombre} · ${TIPOS_INFO[p.tipo].nombre}`;
   return (
     <Tarjeta
       href={ruta('/pedidos/detalle/', { id: p.id })}
       rubro={p.rubro}
-      titulo={`${RUBROS_INFO[p.rubro].nombre} · ${TIPOS_INFO[p.tipo].nombre}`}
-      linea={p.descripcion.length > 90 ? `${p.descripcion.slice(0, 90)}…` : p.descripcion}
-      etiqueta={etiquetaPedido(p)}
+      titulo={titulo}
+      detalle={p.descripcion.length > 70 ? `${p.descripcion.slice(0, 70)}…` : p.descripcion}
       extra={
         f
           ? `Pedido para el ${f.fecha.split('-').reverse().slice(0, 2).join('/')} a las ${f.desde}`
           : p.estado === 'con_propuestas'
-            ? `${p.propuestasPendientes} propuestas esperando tu respuesta`
+            ? `${p.propuestasPendientes} ${p.propuestasPendientes === 1 ? 'propuesta espera' : 'propuestas esperan'} tu respuesta`
             : undefined
       }
+      etiqueta={etiquetaPedido(p)}
+      destino={titulo}
     />
   );
 }
 
 export function TarjetaDeTrabajo({ t, rubro }: { t: Trabajo; rubro?: Rubro | null }) {
   const inicio = t.acuerdo.horario?.inicio;
+  const quien = t.especialista.nombrePublico;
+  const titulo = rubro ? RUBROS_INFO[rubro].nombre : 'Trabajo';
   return (
     <Tarjeta
       href={ruta('/trabajos/detalle/', { id: t.id })}
       rubro={rubro ?? null}
-      titulo={`${t.especialista.nombrePublico}`}
-      linea={inicio ? cuando(inicio) : 'Horario a coordinar con el especialista'}
+      titulo={titulo}
+      detalle={`${inicio ? cuando(inicio) : 'Horario a coordinar'} · ${quien}`}
+      extra={
+        t.acuerdo.alcance.length > 60 ? `${t.acuerdo.alcance.slice(0, 60)}…` : t.acuerdo.alcance
+      }
       etiqueta={etiquetaTrabajo(t)}
-      extra={`Acordado: ${pesos(t.acuerdo.monto.centavos)}`}
+      importe={pesos(t.acuerdo.monto.centavos + t.acuerdo.comisionHandy.importe.centavos)}
+      destino={`${titulo} con ${quien}`}
     />
   );
 }

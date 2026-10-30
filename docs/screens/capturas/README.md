@@ -63,7 +63,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | Pantalla o estado | Captura |
 | --- | --- |
 | pedidos-activos | [pedidos-activos-390.jpg](pedidos-activos-390.jpg) |
-| pedidos-programados | [pedidos-programados-390.jpg](pedidos-programados-390.jpg) |
+| pedidos-agenda | [pedidos-agenda-390.jpg](pedidos-agenda-390.jpg) |
 | pedidos-historial | [pedidos-historial-390.jpg](pedidos-historial-390.jpg) |
 | pedido-con-propuestas | [pedido-con-propuestas-390.jpg](pedido-con-propuestas-390.jpg) |
 | pedido-buscando | [pedido-buscando-390.jpg](pedido-buscando-390.jpg) |

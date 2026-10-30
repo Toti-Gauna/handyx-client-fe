@@ -22,7 +22,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                        | 3.4  | Inicio y pedir                                                     | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                        | 3.5  | Propuestas y decisión                                              | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                        | 3.6  | Trabajo en curso, pago, reseña y reclamo                           | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                        | 3.7  | Actividad, mensajes y soporte                                      | Opus 5.5 · high   | propuesto                                |
+|                        | 3.7  | Actividad, mensajes y soporte                                      | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 |                        | 3.8  | Cuenta y ayuda                                                     | Opus 5.5 · high   | propuesto                                |
 |                        | 3.9  | Pulido premium y QA (transiciones, gestos, capturas)               | Opus 5.5 · high   | propuesto                                |
 | 4 · BE y DB conectados | 4.1  | Esquema compartido y migraciones (base aislada)                    | Opus 5.5 · high   | pendiente                                |

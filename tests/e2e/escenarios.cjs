@@ -40,7 +40,7 @@ const casos = {
 
   'sin-especialistas': async ({ ir, p, panel }) => {
     await ir('/pedidos/', 'sin-especialistas');
-    await p.getByText('Buscando', { exact: true }).first().waitFor();
+    await p.getByText(/^(Estado: )?Buscando$/).first().waitFor();
     await p
       .getByRole('link', { name: /Plomería/ })
       .first()
@@ -126,7 +126,7 @@ const casos = {
 
   'urgencia-sin-respuesta': async ({ ir, p }) => {
     await ir('/pedidos/', 'urgencia-sin-respuesta');
-    await p.getByText('Sin respuesta', { exact: true }).first().waitFor();
+    await p.getByText(/^(Estado: )?Sin respuesta$/).first().waitFor();
     await p
       .getByRole('link', { name: /Electricidad/ })
       .first()
@@ -192,7 +192,7 @@ const casos = {
     await p.getByRole('button', { name: 'Sí, cancelar el pedido' }).click();
     await p.getByText('Cancelaste este pedido').waitFor();
     await ir('/pedidos/', 'cancelacion');
-    await p.getByRole('tab', { name: 'Programados' }).click();
+    // Los turnos agendados están en "En curso" (la pestaña de entrada de Actividad).
     await p
       .getByRole('link', { name: /Especialista 1/ })
       .first()

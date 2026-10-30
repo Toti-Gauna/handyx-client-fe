@@ -19,6 +19,9 @@ const SIN_BARRA = [
   '/propuestas/contraoferta/',
   '/trabajos/resena/',
   '/reclamos/nuevo/',
+  '/trabajos/cambiar/',
+  '/chats/conversacion/',
+  '/soporte/',
 ];
 
 export function MarcoApp({ children, barra }: { children: React.ReactNode; barra: boolean }) {

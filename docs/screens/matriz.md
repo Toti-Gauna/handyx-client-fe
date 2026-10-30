@@ -2,7 +2,7 @@
 
 # Matriz pantalla → acción → estado → API → entidad → prueba
 
-36 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
+37 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
 Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/data-model.md).
 
 ## Acceso
@@ -34,7 +34,7 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | Pantalla | Ruta | Lote | Acciones | Estados | API | Entidades | Pruebas |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Pedir un servicio**<br><sub>demo: u-opciones, u-programar, u-describir</sub> | `/pedir/?rubro&tipo&tarea&desde` | 2.2 | Rubro (con su Handy), si no viene elegido<br>Para cuándo: urgencia / programado / obra<br>Día en tira y franja (programado y obra), "Quiero elegir otra fecha" y "otro horario"<br>Contanos con tus palabras y fotos opcionales<br>Dirección en el mapa<br>Revisar con "Cambiar" en cada dato; precio y autoaceptación opcionales<br>Pedir presupuestos | paso_n<br>foto_subiendo / foto_error / tipo_no_permitido / payload_grande<br>ubicacion_denegada → manual<br>fecha_pasada o hora_invalida (bloqueadas; las franjas de hoy que ya pasaron, deshabilitadas)<br>enviando<br>error_reintentable (misma Idempotency-Key)<br>enviado → detalle | `POST /v1/media`<br>`GET /v1/cobertura`<br>`POST /v1/pedidos` | service_requests<br>media_assets | doble tap no crea dos pedidos<br>urgente sin fecha; programado y obra con fecha<br>las fotos no se pierden al cambiar de paso<br>un rechazo del servidor vuelve al paso del dato<br>zona horaria de Buenos Aires |
-| **Mis pedidos** | `/pedidos/?vista` | 2.2 | Activos / historial<br>Abrir un pedido | cargando<br>vacio<br>lista_paginada<br>error_reintentable | `GET /v1/pedidos` | service_requests | paginado en servidor<br>solo pedidos propios |
+| **Actividad** | `/pedidos/?vista` | 2.2 | En curso (lo que espera tu respuesta arriba)<br>Agenda (calendario y el día)<br>Historial<br>Abrir un pedido o un trabajo | cargando<br>vacio<br>lista_paginada<br>error_reintentable | `GET /v1/pedidos` | service_requests | paginado en servidor<br>solo pedidos propios |
 | **Tu pedido**<br><sub>demo: u-buscando, u-sin-especialistas</sub> | `/pedidos/detalle/?id` | 2.2 | Búsqueda: mapa con tu casa y la hoja azul (u-buscando)<br>Ver propuestas<br>Editar mientras se busca<br>Relanzar búsqueda<br>Pedir búsqueda manual<br>Cancelar | buscando (sin ETA)<br>con_propuestas<br>sin_respuesta (urgente 20 min / programado 12 h)<br>busqueda_manual (Operations, sin ETA)<br>contratado → trabajo<br>cancelado<br>vencido<br>no_encontrado (también si es ajeno) | `GET /v1/pedidos/{id}`<br>`PATCH /v1/pedidos/{id}`<br>`POST /v1/pedidos/{id}/relanzar`<br>`POST /v1/pedidos/{id}/busqueda-manual`<br>`POST /v1/pedidos/{id}/cancelar` | service_requests<br>job_events | cambiar el id no muestra pedidos ajenos (404)<br>relanzar tiene intentos limitados<br>no se inventan especialistas disponibles |
 | **HandIA**<br><sub>demo: u-handia</sub> | `/handia/` | 3.1 | Contar el problema (texto o ejemplos)<br>Confirmar o cambiar el rubro sugerido<br>Pedir para hoy o programar turno (arma el pedido) | inicio<br>pensando<br>rubro sugerido<br>rubro dudoso<br>sin rubro<br>aviso de seguridad<br>no disponible | — | borrador del pedido (en memoria) | tacha emails, teléfonos y documentos antes de enviar<br>no recibe fotos<br>solo sugiere: la persona confirma el rubro y revisa el pedido<br>olor a gas o chispas: primero el aviso de seguridad |
 
@@ -62,21 +62,22 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | **Tu agenda**<br><sub>demo: u-turnos, u-turno-detalle</sub> | `/agenda/` | 2.4 | Elegir día<br>Abrir trabajo | cargando<br>dia_vacio<br>dia_con_trabajos<br>error_reintentable | `GET /v1/trabajos` | jobs | días en Buenos Aires aunque el celular esté en otra zona |
 | **Calificar el trabajo**<br><sub>demo: u-resena</sub> | `/trabajos/resena/?id` | 3.6 | Estrellas de 1 a 5<br>Lo mejor o lo que estuvo mal (chips)<br>Comentario opcional sin datos personales | todavía no se puede (trabajo sin confirmar)<br>calificando<br>enviada → gracias<br>funcion_inactiva (API real sin resenaCrear) | `GET /v1/trabajos/{id}`<br>`GET /v1/pedidos/{id}` | — | solo después de confirmar que terminó<br>el comentario se envía sin teléfonos, emails ni documentos<br>con la API real queda inactiva hasta resenaCrear (Fase 4.4) |
 
+## Soporte
+
+| Pantalla | Ruta | Lote | Acciones | Estados | API | Entidades | Pruebas |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Soporte**<br><sub>demo: u-soporte</sub> | `/soporte/` | 3.7 | Escribirle al equipo de Handy<br>Ir a Ayuda o abrir un reclamo | vacío con temas<br>esperando respuesta<br>respondido<br>funcion_inactiva (API real) | — | — | lo atiende una persona: sin IA y sin plazos prometidos<br>con la API real queda inactivo hasta el contrato (Fase 4.4) |
+| **Reclamos** | `/reclamos/` | 2.4 | Abrir un reclamo<br>Ver un reclamo | cargando<br>vacio<br>lista<br>error_reintentable | `GET /v1/reclamos` | support_cases | solo reclamos propios |
+| **Nuevo reclamo**<br><sub>demo: u-soporte</sub> | `/reclamos/nuevo/?pedido&trabajo` | 2.4 | Categoría<br>Detalle<br>Adjuntar fotos | inicial<br>validacion<br>adjunto_error<br>enviando<br>enviado | `POST /v1/media`<br>`POST /v1/reclamos` | support_cases<br>media_assets | sin plazos de respuesta inventados<br>reintento no duplica |
+| **Reclamo** | `/reclamos/detalle/?id` | 2.4 | Sumar información cuando la piden | abierto<br>en_revision<br>esperando_usuario<br>resuelto<br>cerrado | `GET /v1/reclamos/{id}`<br>`POST /v1/reclamos/{id}/respuestas`<br>`POST /v1/media` | support_cases<br>support_events | historial con actor y fecha |
+| **Ayuda**<br><sub>demo: u-ayuda, u-ayuda-detalle, u-handia</sub> | `/ayuda/` | 2.4 | Preguntas frecuentes<br>Abrir reclamo | normal | — | — | HandIA: acceso al asistente (sin datos personales a terceros) |
+
 ## Pagos
 
 | Pantalla | Ruta | Lote | Acciones | Estados | API | Entidades | Pruebas |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | **Pago al especialista**<br><sub>demo: u-pagos</sub> | `/trabajos/pago/?id` | 2.5 | Mercado Pago directo al especialista<br>Efectivo<br>Reportar que pagué | pendiente<br>reportado (no verificado)<br>verificado<br>fallido → reintentar<br>checkout_inactivo (gate MP) | `GET /v1/trabajos/{id}`<br>`GET /v1/trabajos/{id}/pagos`<br>`POST /v1/trabajos/{id}/pagos`<br>`POST /v1/pagos/{id}/checkout` | payment_records | reportado nunca se muestra como verificado<br>Handy no figura como receptor del dinero<br>sin "Agregar tarjeta" ni datos de tarjeta en Handy |
 | **Volviste del pago** | `/pagos/retorno/?id` | 2.5 | Consultar el estado real<br>Volver al trabajo | consultando<br>pendiente<br>verificado<br>fallido<br>cancelado | `GET /v1/pagos/{id}` | payment_records | volver de la URL de checkout no confirma el pago |
-
-## Soporte
-
-| Pantalla | Ruta | Lote | Acciones | Estados | API | Entidades | Pruebas |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| **Reclamos** | `/reclamos/` | 2.4 | Abrir un reclamo<br>Ver un reclamo | cargando<br>vacio<br>lista<br>error_reintentable | `GET /v1/reclamos` | support_cases | solo reclamos propios |
-| **Nuevo reclamo**<br><sub>demo: u-soporte</sub> | `/reclamos/nuevo/?pedido&trabajo` | 2.4 | Categoría<br>Detalle<br>Adjuntar fotos | inicial<br>validacion<br>adjunto_error<br>enviando<br>enviado | `POST /v1/media`<br>`POST /v1/reclamos` | support_cases<br>media_assets | sin plazos de respuesta inventados<br>reintento no duplica |
-| **Reclamo** | `/reclamos/detalle/?id` | 2.4 | Sumar información cuando la piden | abierto<br>en_revision<br>esperando_usuario<br>resuelto<br>cerrado | `GET /v1/reclamos/{id}`<br>`POST /v1/reclamos/{id}/respuestas`<br>`POST /v1/media` | support_cases<br>support_events | historial con actor y fecha |
-| **Ayuda**<br><sub>demo: u-ayuda, u-ayuda-detalle, u-handia</sub> | `/ayuda/` | 2.4 | Preguntas frecuentes<br>Abrir reclamo | normal | — | — | HandIA: acceso al asistente (sin datos personales a terceros) |
 
 ## Avisos
 

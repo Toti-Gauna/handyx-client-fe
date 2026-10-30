@@ -169,6 +169,11 @@ contratado. La del especialista es aproximada y deja de mostrarse al llegar. Lo 
 > no está en el contrato v1: en la vista de prueba se guarda en memoria y con la API real queda inactiva hasta
 > `resenaCrear` (4.4). La posición del especialista en el mapa sigue esperando `trabajoUbicacionEspecialista` (4.4/4.6).
 
+> **Lote 3.7 hecho (30/10).** Actividad (en curso con lo que espera tu respuesta, agenda e historial), mensajes y chat
+> con respuestas rápidas, soporte, avisos y cambiar turno en el kit. El soporte no está en el contrato v1: en la vista de
+> prueba responde un acuse simulado y rotulado; con la API real queda inactivo hasta la conversación con Operations (4.4).
+> Cancelar sigue en la hoja del trabajo (3.6) y el turno es el seguimiento del trabajo.
+
 ## 7. Componentes premium nuevos
 
 - **Hoja arrastrable** (3 alturas, con manija, gesto y teclado) sobre mapa o pantalla.

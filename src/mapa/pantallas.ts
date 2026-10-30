@@ -17,7 +17,7 @@ export type Grupo =
   | 'cuenta'
   | 'sistema';
 
-export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3' | '3.6';
+export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3' | '3.6' | '3.7';
 
 export interface Pantalla {
   readonly id: string;
@@ -289,12 +289,17 @@ export const PANTALLAS: readonly Pantalla[] = [
   p({
     id: 'pedidos',
     ruta: '/pedidos/',
-    titulo: 'Mis pedidos',
+    titulo: 'Actividad',
     grupo: 'pedido',
     lote: '2.2',
     acceso: 'sesion',
     consulta: ['vista'],
-    acciones: ['Activos / historial', 'Abrir un pedido'],
+    acciones: [
+      'En curso (lo que espera tu respuesta arriba)',
+      'Agenda (calendario y el día)',
+      'Historial',
+      'Abrir un pedido o un trabajo',
+    ],
     estados: ['cargando', 'vacio', 'lista_paginada', 'error_reintentable'],
     endpoints: ['pedidos'],
     entidades: ['service_requests'],
@@ -561,6 +566,29 @@ export const PANTALLAS: readonly Pantalla[] = [
     ],
     nota: 'Decisión 2 del rediseño. Contrato pendiente: resenaCrear y el promedio (solo con un mínimo de reseñas reales).',
     demo: ['u-resena'],
+  }),
+  p({
+    id: 'soporte',
+    ruta: '/soporte/',
+    titulo: 'Soporte',
+    grupo: 'soporte',
+    lote: '3.7',
+    acceso: 'sesion',
+    acciones: ['Escribirle al equipo de Handy', 'Ir a Ayuda o abrir un reclamo'],
+    estados: [
+      'vacío con temas',
+      'esperando respuesta',
+      'respondido',
+      'funcion_inactiva (API real)',
+    ],
+    endpoints: [],
+    entidades: [],
+    pruebas: [
+      'lo atiende una persona: sin IA y sin plazos prometidos',
+      'con la API real queda inactivo hasta el contrato (Fase 4.4)',
+    ],
+    nota: 'Decisión 5 del rediseño. Contrato pendiente: conversación con Operations (reusa Conversacion).',
+    demo: ['u-soporte'],
   }),
   // ── Pagos directos ──────────────────────────────────────────────────────────────────────────────
   p({

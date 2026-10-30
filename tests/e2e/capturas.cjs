@@ -92,7 +92,7 @@ const CAPTURAS = [
   ['Pedido', 'pedir-direccion', E('/pedir/?rubro=plomeria&tipo=urgente', 'varias-propuestas'), [escribir('Contalo con tus palabras', 'Pierde la canilla de la cocina hace dos días.'), tocar('button', 'Seguir', true)], { vista: true }],
   ['Pedido', 'pedir-revisar', E('/pedir/?rubro=plomeria&tipo=urgente', 'varias-propuestas'), [escribir('Contalo con tus palabras', 'Pierde la canilla de la cocina hace dos días.'), tocar('button', 'Seguir', true), tocar('button', 'Seguir', true)], { vista: true }],
   ['Pedidos', 'pedidos-activos', E('/pedidos/', 'varias-propuestas')],
-  ['Pedidos', 'pedidos-programados', E('/pedidos/', 'programado'), [tocar('tab', 'Programados')]],
+  ['Pedidos', 'pedidos-agenda', E('/pedidos/', 'programado'), [tocar('tab', 'Agenda')], { vista: true }],
   ['Pedidos', 'pedidos-historial', E('/pedidos/', 'cancelacion'), [tocar('tab', 'Historial')]],
   ['Pedidos', 'pedido-con-propuestas', E(`/pedidos/detalle/?id=${P}01`, 'varias-propuestas')],
   ['Pedidos', 'pedido-buscando', E('/pedidos/', 'sin-especialistas'), [clic('.tarjeta--enlace')], { vista: true }],
@@ -115,8 +115,8 @@ const CAPTURAS = [
     await p.getByRole('button', { name: 'Enviar el mensaje' }).click();
     await p.waitForTimeout(1200);
   }]],
-  ['Trabajo', 'trabajo-seguimiento', E('/pedidos/', 'programado'), [tocar('tab', 'Programados'), clic('main a[href*="/trabajos/detalle/"]')], { vista: true }],
-  ['Trabajo', 'trabajo-lo-acordado', E('/pedidos/', 'programado'), [tocar('tab', 'Programados'), clic('main a[href*="/trabajos/detalle/"]'), clic('.du-acordado > summary')], { vista: true }],
+  ['Trabajo', 'trabajo-seguimiento', E('/pedidos/', 'programado'), [clic('main a[href*="/trabajos/detalle/"]')], { vista: true }],
+  ['Trabajo', 'trabajo-lo-acordado', E('/pedidos/', 'programado'), [clic('main a[href*="/trabajos/detalle/"]'), clic('.du-acordado > summary')], { vista: true }],
   ['Trabajo', 'trabajo-falta-confirmacion', E(`/trabajos/detalle/?id=${P}05`, 'efectivo-reportado'), [], { vista: true }],
   ['Trabajo', 'trabajo-obra-por-etapas', E('/pedidos/', 'obra-por-etapas'), [tocar('link', /Especialista 3/)], { vista: true }],
   ['Trabajo', 'resena-todavia-no', E(`/trabajos/resena/?id=${P}05`, 'efectivo-reportado'), [], { vista: true }],

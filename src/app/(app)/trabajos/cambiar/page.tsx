@@ -4,8 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Enlace, ruta, useIr } from '@/components/nav';
 import { useAhora } from '@/components/SesionProvider';
-import { Encabezado } from '@/components/Titulo';
-import { Aviso, Boton, Campo, Cargando, Datos, ErrorEstado, Vacio } from '@/components/ui';
+import { BotonHx, Flujo } from '@/components/acceso';
+import { Aviso, Campo, Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { pesos } from '@/domain/dinero';
@@ -67,111 +67,109 @@ function Formulario({ t }: { t: Trabajo }) {
   }
 
   return (
-    <>
-      <Encabezado
-        titulo="Cambiar ==turno o condiciones=="
-        volver={{ href: ruta('/trabajos/detalle/', { id: t.id }), etiqueta: 'Volver al trabajo' }}
-      />
-      <section className="tarjeta">
-        <div className="tarjeta__cuerpo">
-          <p className="tarjeta__titulo">Lo acordado hoy</p>
-          <Datos
-            filas={[
-              ['Precio', pesos(t.acuerdo.monto.centavos)],
-              ['Horario', t.acuerdo.horario ? cuando(t.acuerdo.horario.inicio) : 'A coordinar'],
-            ]}
-          />
+    <Flujo
+      titulo="Cambiar ==turno o condiciones=="
+      sub={
+        <>
+          Es una <strong>propuesta</strong>: el acuerdo actual sigue valiendo hasta que{' '}
+          {t.especialista.nombrePublico} la acepte. Si la rechaza, no cambia nada.
+        </>
+      }
+      atras={{ href: ruta('/trabajos/detalle/', { id: t.id }), etiqueta: 'Volver al trabajo' }}
+      onSubmit={proponer}
+      pie={
+        <BotonHx type="submit" icono="enviar" cargando={pendiente}>
+          Enviar la propuesta
+        </BotonHx>
+      }
+    >
+      <div className="du-resumen">
+        <div className="du-resumen__tile du-resumen__tile--azul">
+          <small>Precio acordado</small>
+          <strong>{pesos(t.acuerdo.monto.centavos)}</strong>
+          <span>al especialista</span>
         </div>
-      </section>
-      <Aviso tipo="info">
-        Es una <strong>propuesta</strong>: el acuerdo actual sigue valiendo hasta que{' '}
-        {t.especialista.nombrePublico} la acepte. Si la rechaza, no cambia nada.
-      </Aviso>
-      <form onSubmit={proponer} noValidate>
-        {errores.general ? <Aviso tipo="alerta">{errores.general}</Aviso> : null}
-        <label className="opcion">
-          <input
-            type="checkbox"
-            checked={cambiaTurno}
-            onChange={(e) => setCambiaTurno(e.target.checked)}
-          />
-          <span>
-            <span className="opcion__titulo">Cambiar el día o la hora</span>
-          </span>
-        </label>
-        {cambiaTurno ? (
-          <div className="fila fila--2">
-            <Campo etiqueta="Día" error={errores.horario}>
-              {(c) => (
-                <input
-                  {...c}
-                  className="entrada"
-                  type="date"
-                  min={hoy}
-                  value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
-                />
-              )}
-            </Campo>
-            <Campo etiqueta="Hora">
-              {(c) => (
-                <input
-                  {...c}
-                  className="entrada"
-                  type="time"
-                  value={hora}
-                  onChange={(e) => setHora(e.target.value)}
-                />
-              )}
-            </Campo>
-          </div>
-        ) : null}
-        <label className="opcion">
-          <input
-            type="checkbox"
-            checked={cambiaMonto}
-            onChange={(e) => setCambiaMonto(e.target.checked)}
-          />
-          <span>
-            <span className="opcion__titulo">Cambiar el precio</span>
-          </span>
-        </label>
-        {cambiaMonto ? (
-          <Campo etiqueta="Precio nuevo" error={errores.monto ?? errores.montoCentavos} requerido>
+        <div className="du-resumen__tile">
+          <small>Horario acordado</small>
+          <strong>{t.acuerdo.horario ? cuando(t.acuerdo.horario.inicio) : 'A coordinar'}</strong>
+          <span>{t.especialista.nombrePublico}</span>
+        </div>
+      </div>
+      {errores.general ? <Aviso tipo="alerta">{errores.general}</Aviso> : null}
+      <label className="opcion">
+        <input
+          type="checkbox"
+          checked={cambiaTurno}
+          onChange={(e) => setCambiaTurno(e.target.checked)}
+        />
+        <span>
+          <span className="opcion__titulo">Cambiar el día o la hora</span>
+        </span>
+      </label>
+      {cambiaTurno ? (
+        <div className="du-form__fila">
+          <Campo etiqueta="Día" error={errores.horario}>
             {(c) => (
               <input
                 {...c}
                 className="entrada"
-                inputMode="numeric"
-                value={monto}
-                onChange={(e) => setMonto(e.target.value)}
+                type="date"
+                min={hoy}
+                value={fecha}
+                onChange={(e) => setFecha(e.target.value)}
               />
             )}
           </Campo>
-        ) : null}
-        <Campo etiqueta="Qué incluye" error={errores.alcance}>
+          <Campo etiqueta="Hora">
+            {(c) => (
+              <input
+                {...c}
+                className="entrada"
+                type="time"
+                value={hora}
+                onChange={(e) => setHora(e.target.value)}
+              />
+            )}
+          </Campo>
+        </div>
+      ) : null}
+      <label className="opcion">
+        <input
+          type="checkbox"
+          checked={cambiaMonto}
+          onChange={(e) => setCambiaMonto(e.target.checked)}
+        />
+        <span>
+          <span className="opcion__titulo">Cambiar el precio</span>
+        </span>
+      </label>
+      {cambiaMonto ? (
+        <Campo etiqueta="Precio nuevo" error={errores.monto ?? errores.montoCentavos} requerido>
           {(c) => (
-            <textarea
+            <input
               {...c}
               className="entrada"
-              maxLength={1000}
-              value={alcance}
-              onChange={(e) => setAlcance(e.target.value)}
+              inputMode="numeric"
+              value={monto}
+              onChange={(e) => setMonto(e.target.value)}
             />
           )}
         </Campo>
-        {error && !Object.keys(erroresDe(error)).length ? (
-          <Aviso tipo={error.codigo === 'conflicto' ? 'alerta' : 'error'}>{error.mensaje}</Aviso>
-        ) : null}
-        <div className="acciones">
-          <Boton type="submit" cargando={pendiente}>
-            Enviar la propuesta
-          </Boton>
-          <Enlace className="boton boton--claro" href={ruta('/trabajos/detalle/', { id: t.id })}>
-            Volver
-          </Enlace>
-        </div>
-      </form>
-    </>
+      ) : null}
+      <Campo etiqueta="Qué incluye" error={errores.alcance}>
+        {(c) => (
+          <textarea
+            {...c}
+            className="entrada"
+            maxLength={1000}
+            value={alcance}
+            onChange={(e) => setAlcance(e.target.value)}
+          />
+        )}
+      </Campo>
+      {error && !Object.keys(erroresDe(error)).length ? (
+        <Aviso tipo={error.codigo === 'conflicto' ? 'alerta' : 'error'}>{error.mensaje}</Aviso>
+      ) : null}
+    </Flujo>
   );
 }

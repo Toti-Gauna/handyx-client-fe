@@ -63,6 +63,14 @@ parecido:
   el comprobante del registro (no es una factura).
 - **Reseña** (`/trabajos/resena/`, como u-resena): estrellas, chips de lo mejor o lo que estuvo mal y comentario sin
   datos personales; solo de trabajos confirmados.
+- **Actividad** (lote 3.7, `Actividad.tsx`): título grande y segmentos En curso · Agenda · Historial; en curso, "Espera
+  tu respuesta" arriba (propuestas para elegir, trabajos para confirmar) y "En marcha"; agenda con el calendario y el día;
+  tarjetas con franja de u-turnos (`TarjetaPedido.tsx`).
+- **Mensajes** (u-mensajes): filas con avatar, rubros, momento y no leídos; HandIA y Soporte al final. **Chat** (u-chat):
+  cabecera del especialista con "Ver el trabajo/pedido", burbujas, propuestas en la conversación, respuestas rápidas
+  según el momento (completan el mensaje, no lo mandan) y el compositor con foto.
+- **Soporte** (`/soporte/`, u-soporte): chat con el equipo de Handy; lo atiende una persona, sin IA ni plazos.
+- **Avisos** (u-notificaciones): tarjetas con ícono por tipo, "nuevo" con punto y texto.
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el
