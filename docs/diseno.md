@@ -83,6 +83,13 @@ parecido:
   otras preguntas en pastillas chicas.
 - **Tarifa, privacidad, avisos del celular y eliminar cuenta**: barra del kit, notas con ícono, datos en tarjeta gris,
   textos legales plegables, interruptor con `role="switch"` y la baja con su estado paso a paso.
+- **Movimiento** (lote 3.9): al navegar, fundido corto; la tarjeta tocada crece hasta el encabezado del detalle (marcar
+  el origen con `data-vt-origen` y el destino con `data-vt-destino`). El título grande de las pestañas se compacta al
+  bajar. Todo se apaga con "reducir movimiento" y nada anima botones de aceptar o pagar.
+- **Hoja azul arrastrable** (`useHojaAzul` en `gestos.tsx`): tres alturas; la manija es un botón (toque, arrastre,
+  flechas). Las hojas de diálogo bajan con el dedo para cerrarse.
+- **Estados del sistema**: `Cargando` con `forma` (lista, detalle, mapa), `ErrorEstado` con Handy roto, `EstadoSistema`
+  (404, sin conexión) y el aviso de versión nueva.
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

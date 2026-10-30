@@ -181,6 +181,11 @@ contratado. La del especialista es aproximada y deja de mostrarse al llegar. Lo 
 > están en el contrato v1: en la vista de prueba quedan en memoria y con la API real solo está la del perfil hasta
 > `direcciones` (4.2). Sin foto de perfil ni "modo especialista" (no están en el contrato; 4.6).
 
+> **Lote 3.9 hecho (30/10). Fase 3 completa.** Transiciones compartidas (View Transitions, tarjeta → detalle), título que
+> se compacta, hoja azul de tres alturas y hojas que se cierran deslizando, esqueletos con forma, error/404/sin conexión
+> en el kit, aviso de versión nueva (nunca recarga sola), detalle del pedido, reclamos y vuelta del pago en el kit,
+> catálogo de capturas que cubre las 40 pantallas y comparación lado a lado con la demo (`npm run comparar`).
+
 ## 7. Componentes premium nuevos
 
 - **Hoja arrastrable** (3 alturas, con manija, gesto y teclado) sobre mapa o pantalla.

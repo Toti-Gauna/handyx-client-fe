@@ -25,6 +25,17 @@ Requieren Playwright y `npm run build && npm run preview`. `npm run e2e` los cor
 | `tests/e2e/accesibilidad.cjs` | 32 rutas + 5 hojas abiertas × 360, 390, 820, 1280 px y horizontal (844×390): axe-core 4.14 (WCAG 2.0/2.1/2.2 A y AA + buenas prácticas), objetivos táctiles ≥ 44 px, un h1 por pantalla, desborde horizontal; además texto al 200 % en 18 pantallas                                |
 | `tests/e2e/teclado.cjs`       | Solo teclado: saltar al contenido, foco en el primer campo con error, ingreso, foco en el h1 al navegar, título de la pestaña, foco visible en la barra, hoja que abre en su título (un Enter no acepta), Escape devuelve el foco, el foco no sale de la hoja, movimiento reducido |
 
+Otros recorridos (también en `npm run e2e`) y herramientas del rediseño:
+
+| Script                   | Qué recorre                                                                                                                                                                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/e2e/pwa.cjs`      | Instalable, caché sin datos, sin conexión sin éxitos ficticios, pantalla de carga                                                                                                                                                                 |
+| `tests/e2e/handia.cjs`   | HandIA: rubro sugerido, datos personales tachados antes de enviar, sin fotos                                                                                                                                                                      |
+| `tests/e2e/mapa.cjs`     | Mapa con el extracto de prueba: elegir con el pin, sin terceros, respaldo ilustrado                                                                                                                                                               |
+| `tests/e2e/pulido.cjs`   | Lote 3.9: transición tarjeta → detalle, hoja azul de tres alturas (toque, arrastre, flechas), hoja que se cierra deslizando, título que se compacta, versión nueva sin recarga sola, 404 y sin conexión, sin transiciones con movimiento reducido |
+| `tests/e2e/capturas.cjs` | Catálogo de capturas (`npm run capturas`); falla si alguna pantalla del mapa (`src/mapa/pantallas.ts`) queda sin captura                                                                                                                          |
+| `tests/e2e/comparar.cjs` | Comparación lado a lado con la demo de la landing (`npm run comparar`, necesita la demo construida en `LANDING_DIST`)                                                                                                                             |
+
 ## Resultados (29/10/2026, Chromium 390 px, local)
 
 - Recorrido completo: OK, sin errores de consola.

@@ -3154,3 +3154,154 @@ html.vt-entrando [data-vt-destino] {
 .sistema-hx .du-pie .hd-boton--fantasma {
   min-height: 44px;
 }
+/* Detalle del pedido fuera de la búsqueda (con propuestas, contratado, cancelado, vencido). */
+.du-pedido-hx .du-cuerpo {
+  gap: 0.9em;
+}
+.du-pedido-hx__estado {
+  display: flex;
+}
+.du-pedido-hx__aviso {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.9em 1em;
+}
+.du-pedido-hx__aviso > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.du-pedido-hx__aviso small {
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.du-pedido-hx__handy {
+  height: 3.4em;
+  flex: none;
+}
+.du-pedido-hx__mapa .detalle-mapa {
+  height: 11em;
+  border-radius: 1.4em;
+  overflow: hidden;
+}
+.du-pedido-hx__datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.9em 1em;
+}
+.du-pedido-hx__datos .du-datos-hx__lista {
+  padding: 0;
+}
+.du-pedido-hx__descripcion {
+  margin: 0;
+  line-height: 1.45;
+}
+/* Reclamos y vuelta del pago (3.9). */
+.du-reclamo-hx .du-cuerpo {
+  gap: 0.9em;
+}
+.du-reclamo-hx__detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.9em 1em;
+}
+.du-reclamo-hx__texto {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+.du-reclamo-hx__fecha {
+  color: var(--hd-suave);
+}
+.du-reclamo-hx__enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+}
+.du-reclamo-hx__enlaces .hd-boton {
+  flex: 1 1 9em;
+}
+.du-reclamo-hx__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+.du-linea-hx {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-linea-hx li {
+  position: relative;
+  display: flex;
+  gap: 0.8em;
+  padding-bottom: 1em;
+}
+.du-linea-hx li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 1.2em;
+  bottom: 0;
+  left: 0.45em;
+  width: 0.12em;
+  background: var(--hd-linea);
+}
+.du-linea-hx i {
+  width: 1em;
+  height: 1em;
+  margin-top: 0.15em;
+  border-radius: 50%;
+  border: 0.18em solid var(--hd-azul);
+  background: var(--sup-tarjeta);
+  flex: none;
+}
+.du-linea-hx .is-actual i {
+  background: var(--hd-azul);
+}
+.du-linea-hx span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.du-linea-hx small {
+  color: var(--hd-suave);
+  font-size: 0.8em;
+}
+.du-retorno-hx__texto {
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+}
+.du-reclamos-hx .du-tarjeta__datos .hd-chip {
+  align-self: flex-start;
+  margin-top: 0.3em;
+}
+/* Filas que son enlaces: texto en tinta, como la demo (el azul queda para los íconos). */
+.hx a.hd-fila {
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.du-pedido-hx__reclamo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  font-size: 0.82em;
+  font-weight: 700;
+  color: var(--hd-azul);
+}
+.du-pedido-hx__reclamo .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+/* Hoja achicada: solo el título (y el pie del seguimiento); lo demás se oculta del todo hasta que se agranda, para que
+   nada quede recortado a medias (ni para la vista ni para un lector de pantalla). */
+.du-seg-hx[data-altura='baja'] .du-seg-hx__scroll > :not(h1),
+.du-buscando__hoja[data-altura='baja'] > :not(.du-manija-hx):not(h1) {
+  display: none;
+}

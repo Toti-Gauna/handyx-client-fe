@@ -69,6 +69,24 @@ const HOJAS = [
   ['direccion-nueva', E('/cuenta/direcciones/', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Agregar una dirección' }).click()],
   ['pago-ver-mas', E('/cuenta/pagos/', 'efectivo-reportado'), (p) => p.getByRole('button', { name: /^Ver más/ }).first().click()],
   ['ayuda-gracias', E('/ayuda/respuesta/?p=pagar', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'No', exact: true }).click()],
+  ['reclamo-detalle', E('/reclamos/', 'reclamo'), (p) => p.getByRole('link', { name: /Ver el reclamo/ }).first().click()],
+  ['version-nueva', E('/inicio/', 'varias-propuestas'), async (p) => {
+    await p.getByRole('button', { name: 'Panel de prueba' }).click();
+    await p.getByRole('button', { name: 'Simular versión nueva' }).click();
+  }],
+  ['hoja-achicada', E('/pedidos/', 'obra-por-etapas'), async (p) => {
+    await p.getByRole('link', { name: /Especialista 3/ }).first().click();
+    await p.locator('.du-manija-hx').focus();
+    await p.keyboard.press('ArrowDown');
+  }],
+  ['pago-retorno', E('/pedidos/', 'mp-pendiente-fallido'), async (p) => {
+    await p.getByRole('link', { name: /Especialista 2/ }).first().click();
+    await p.getByRole('link', { name: 'Pago al especialista' }).click();
+    await p.getByRole('button', { name: 'Pagar de otra forma' }).click();
+    await p.getByLabel('Mercado Pago').check();
+    await p.getByRole('button', { name: 'Ir a Mercado Pago' }).click();
+    await p.waitForURL('**/pagos/retorno/**');
+  }],
   ['panel-prueba', E('/inicio/', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Panel de prueba' }).click()],
 ];
 
@@ -152,6 +170,19 @@ async function auditar(p, etiqueta) {
       await ir(r);
       await accion(p);
       await p.waitForTimeout(400);
+      // Que terminen la transición de pantalla y las animaciones finitas (axe mide colores con la opacidad del momento).
+      await p
+        .waitForFunction(
+          () =>
+            !document.documentElement.classList.contains('vt-entrando') &&
+            !document.querySelector('.esqueleto') &&
+            document
+              .getAnimations()
+              .every((x) => x.playState !== 'running' || x.effect?.getTiming().iterations === Infinity),
+          null,
+          { timeout: 4000 },
+        )
+        .catch(() => undefined);
       resultados.push({ ancho: a.nombre, ...(await auditar(p, nombre)) });
       if (a.nombre === '390') await p.screenshot({ path: path.join(CARPETA, `${nombre}.png`) });
     }

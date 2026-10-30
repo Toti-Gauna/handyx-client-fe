@@ -23,7 +23,8 @@
     "mapa:check": "node --experimental-strip-types scripts/mapa.ts --check",
     "mdp:datos": "sh scripts/mapa-datos.sh",
     "mdp:verificar": "node scripts/mapa-verificar.mjs",
-    "e2e": "node tests/e2e/recorrido.cjs capturas-e2e && node tests/e2e/escenarios.cjs capturas-e2e && node tests/e2e/accesibilidad.cjs capturas-e2e && node tests/e2e/teclado.cjs && node tests/e2e/pwa.cjs capturas-e2e && node tests/e2e/handia.cjs capturas-e2e && node tests/e2e/mapa.cjs capturas-e2e",
+    "e2e": "node tests/e2e/recorrido.cjs capturas-e2e && node tests/e2e/escenarios.cjs capturas-e2e && node tests/e2e/accesibilidad.cjs capturas-e2e && node tests/e2e/teclado.cjs && node tests/e2e/pwa.cjs capturas-e2e && node tests/e2e/handia.cjs capturas-e2e && node tests/e2e/mapa.cjs capturas-e2e && node tests/e2e/pulido.cjs capturas-e2e",
+    "comparar": "node tests/e2e/comparar.cjs",
     "capturas": "node tests/e2e/escenarios.cjs docs/screens/capturas/escenarios && node tests/e2e/capturas.cjs docs/screens/capturas",
     "kit": "node scripts/kit.mjs"
   },

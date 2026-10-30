@@ -1,12 +1,38 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.8 (el mapa todavía sin los datos reales), pantalla de carga y
-HandIA. Sigue el lote 3.9** (pulido premium y QA) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium, completo: lotes 3.1 a 3.9 (el mapa todavía sin los datos reales). Sigue la Fase 4**
+(backend y base conectados, lote 4.1) ([`docs/plan.md`](plan.md)).
 Fecha: 30/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.9 · Pulido premium y QA
+
+Pedido de Ignacio: "Seguí con 3.9".
+
+- **Transiciones de pantalla** (`src/components/transicion.ts`, View Transitions del navegador): fundido corto al navegar
+  y, al tocar una tarjeta (pedido, trabajo, propuesta, reclamo), la tarjeta crece hasta el encabezado del detalle. La
+  barra de pestañas queda quieta. Sin soporte o con "reducir movimiento", se navega sin animación; nunca demora una
+  acción (si la pantalla nueva tarda, la transición se suelta).
+- **Título grande** de Actividad y Mensajes que se compacta al bajar (ligado al desplazamiento, solo CSS).
+- **Gestos** (`src/components/gestos.tsx`): la hoja azul de la búsqueda y del seguimiento tiene tres alturas (achicada,
+  a medio abrir, abierta) con la manija como botón real de 44 px: toque, arrastre o flechas. Las hojas de diálogo se
+  cierran deslizándolas hacia abajo (lo mismo que Escape o tocar afuera; nunca confirman nada).
+- **Estados del sistema**: esqueletos con la forma de la pantalla que viene (lista, detalle, mapa con hoja azul), error
+  con Handy roto en el kit, 404 y sin conexión en el kit (`Sistema.tsx`), aviso de **versión nueva** del service worker
+  ("Actualizar" o "Después"; nunca recarga sola; `sw.js` VERSION v3 espera el "activar" de la app). En la vista de prueba
+  se simula desde el panel.
+- **Últimas pantallas al kit**: detalle del pedido (con propuestas, contratado, cancelado, vencido; atajo a un reclamo),
+  reclamos (lista y detalle con historial en línea de tiempo) y la vuelta del pago de Mercado Pago (pendiente, falló,
+  cancelado, confirmado; volver del checkout sigue sin confirmar nada).
+- **Catálogo completo**: `npm run capturas` falla si alguna pantalla del mapa queda sin captura (40 de 40 con captura).
+- **Comparación con la demo**: `npm run comparar` deja en `docs/screens/comparacion/` 20 pares demo | app (390 × 844)
+  con su índice. Ajustes que salieron de mirarla: filas de Cuenta en tinta (no en azul de enlace) y "Respuesta" en la
+  barra de la ayuda.
+- Pruebas: e2e nuevo `tests/e2e/pulido.cjs` (en `npm run e2e`). La prueba PWA ahora espera a que la conversación y la
+  propuesta terminen de cargar antes de cortar la red (antes dependía de la demora simulada).
 
 ## Rediseño · lote 3.8 · Cuenta y ayuda
 

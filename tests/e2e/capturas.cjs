@@ -52,6 +52,12 @@ const tocar = (rol, nombre, exacto = false) => async (p) => {
   await p.waitForTimeout(500);
 };
 
+const achicarHoja = async (p) => {
+  await p.locator('.du-manija-hx').focus();
+  await p.keyboard.press('ArrowDown');
+  await p.waitForTimeout(500);
+};
+
 // [grupo, nombre, ruta, pasos?, opciones?]  · opciones: { fee: false } deja el modal de primer ingreso abierto,
 // { vista: true } captura solo lo visible (hojas y modales).
 const CAPTURAS = [
@@ -125,6 +131,11 @@ const CAPTURAS = [
   ['Trabajo', 'pago-comprobante', E(`/trabajos/pago/?id=${P}05`, 'efectivo-reportado'), [tocar('button', 'Ver comprobante')], { vista: true }],
   ['Trabajo', 'pago-mercado-pago', E('/pedidos/', 'mp-pendiente-fallido'), [tocar('link', /Especialista 2/), tocar('link', 'Pago al especialista')], { vista: true }],
   ['Trabajo', 'pago-elegir-metodo', E('/pedidos/', 'mp-pendiente-fallido'), [tocar('link', /Especialista 2/), tocar('link', 'Pago al especialista'), tocar('button', 'Pagar de otra forma')], { vista: true }],
+  ['Trabajo', 'pago-retorno-pendiente', E('/pedidos/', 'mp-pendiente-fallido'), [tocar('link', /Especialista 2/), tocar('link', 'Pago al especialista'), tocar('button', 'Pagar de otra forma'), tildar('Mercado Pago'), tocar('button', 'Ir a Mercado Pago')], { vista: true }],
+  ['Trabajo', 'pago-retorno-fallido', E('/pedidos/', 'mp-pendiente-fallido'), [tocar('link', /Especialista 2/), tocar('link', 'Pago al especialista'), tocar('button', 'Pagar de otra forma'), tildar('Mercado Pago'), tocar('button', 'Ir a Mercado Pago'), panel('Mercado Pago rechaza el pago')], { vista: true }],
+  ['Trabajo', 'pago-retorno-confirmado', E('/pedidos/', 'mp-pendiente-fallido'), [tocar('link', /Especialista 2/), tocar('link', 'Pago al especialista'), tocar('button', 'Pagar de otra forma'), tildar('Mercado Pago'), tocar('button', 'Ir a Mercado Pago'), panel('Mercado Pago confirma el pago')], { vista: true }],
+  ['Trabajo', 'trabajo-hoja-achicada', E('/pedidos/', 'obra-por-etapas'), [tocar('link', /Especialista 3/), achicarHoja], { vista: true }],
+  ['Mensajes', 'soporte', E('/soporte/', 'contrapropuesta'), [], { vista: true }],
   ['Agenda', 'agenda', E('/agenda/', 'programado')],
   ['Reclamos', 'reclamos', E('/reclamos/', 'reclamo')],
   ['Reclamos', 'reclamo-nuevo', E('/reclamos/nuevo/', 'reclamo'), [], { vista: true }],
@@ -149,6 +160,7 @@ const CAPTURAS = [
   ['Sistema', 'error-de-carga', E('/pedidos/', 'varias-propuestas'), [panel('Sin conexión (sí/no)'), clic('.tarjeta--enlace')]],
   ['Sistema', 'sin-conexion', '/sin-conexion/'],
   ['Sistema', 'no-encontrado', '/no-existe/'],
+  ['Sistema', 'version-nueva', E('/inicio/', 'varias-propuestas'), [tocar('button', 'Panel de prueba'), tocar('button', 'Simular versión nueva')], { vista: true }],
   ['Sistema', 'panel-de-prueba', E('/inicio/', 'varias-propuestas'), [tocar('button', 'Panel de prueba')], { vista: true }],
 ];
 const ESCRITORIO = ['inicio-propuestas', 'propuestas-tarjetas', 'propuesta-detalle', 'conversacion', 'cuenta'];
@@ -156,6 +168,7 @@ const ESCRITORIO = ['inicio-propuestas', 'propuestas-tarjetas', 'propuesta-detal
 (async () => {
   const b = await chromium.launch();
   const filas = [];
+  const vistas = new Set();
   let fallas = 0;
   for (const [ancho, alto] of [[390, 844], [1280, 800]]) {
     const ctx = await b.newContext({ viewport: { width: ancho, height: alto } });
@@ -176,6 +189,7 @@ const ESCRITORIO = ['inicio-propuestas', 'propuestas-tarjetas', 'propuesta-detal
         if (!op.vista) await p.addStyleTag({ content: DESPLEGAR });
         await p.screenshot({ path: path.join(CARPETA, archivo), type: 'jpeg', quality: 72, fullPage: !op.vista });
         filas.push({ grupo, nombre, ancho, archivo });
+        vistas.add(new URL(p.url()).pathname);
         console.log(`✔ ${archivo}`);
       } catch (e) {
         fallas++;
@@ -186,12 +200,19 @@ const ESCRITORIO = ['inicio-propuestas', 'propuestas-tarjetas', 'propuesta-detal
   }
   await b.close();
 
+  // Catálogo completo: cada pantalla del mapa (src/mapa/pantallas.ts) tiene al menos una captura.
+  const rutas = [...fs.readFileSync('src/mapa/pantallas.ts', 'utf8').matchAll(/ruta: '([^']+)'/g)].map((m) => m[1]);
+  const sinCaptura = rutas.filter((r) => !vistas.has(r));
+  for (const r of sinCaptura) console.log(`✘ sin captura: ${r}`);
+  fallas += sinCaptura.length;
+  if (!sinCaptura.length) console.log(`✔ las ${rutas.length} pantallas del mapa tienen captura`);
+
   const lineas = [
     '# Catálogo de pantallas y estados',
     '',
     'Generado con `node tests/e2e/capturas.cjs` sobre `npm run preview` (vista de prueba, datos ficticios). 390 px página',
     'completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px. Regenerar todo: `npm run capturas`',
-    '(primero los 18 escenarios en `escenarios/`, después este índice).',
+    '(primero los escenarios en `escenarios/`, después este índice).',
     '',
   ];
   for (const grupo of [...new Set(filas.map((f) => f.grupo))]) {
@@ -200,14 +221,14 @@ const ESCRITORIO = ['inicio-propuestas', 'propuestas-tarjetas', 'propuesta-detal
       lineas.push(`| ${f.nombre}${f.ancho === 1280 ? ' (escritorio)' : ''} | [${f.archivo}](${f.archivo}) |`);
     lineas.push('');
   }
-  // Los 18 escenarios: capturas que deja `escenarios.cjs` en CARPETA/escenarios (estado final de cada recorrido).
+  // Los escenarios: capturas que deja `escenarios.cjs` en CARPETA/escenarios (estado final de cada recorrido).
   const dirEsc = path.join(CARPETA, 'escenarios');
   if (fs.existsSync(dirEsc)) {
     const ts = fs.readFileSync('src/mapa/escenarios.ts', 'utf8');
     const titulos = Object.fromEntries(
       [...ts.matchAll(/id: '([a-z-]+)',[\s\S]*?titulo: '([^']+)'/g)].map((m) => [m[1], m[2]]),
     );
-    lineas.push('## Los 18 escenarios (estado final de cada recorrido)', '', '| Escenario | Qué muestra | Captura |', '| --- | --- | --- |');
+    lineas.push('## Los escenarios (estado final de cada recorrido)', '', '| Escenario | Qué muestra | Captura |', '| --- | --- | --- |');
     for (const f of fs.readdirSync(dirEsc).filter((x) => /^esc-.+\.jpg$/.test(x)).sort()) {
       const id = f.slice(4, -4);
       lineas.push(`| \`${id}\` | ${titulos[id] ?? ''} | [escenarios/${f}](escenarios/${f}) |`);

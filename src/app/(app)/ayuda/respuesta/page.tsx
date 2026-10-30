@@ -23,7 +23,7 @@ export default function Respuesta() {
       key={q.id}
       arriba={
         <Barra
-          titulo="Centro de ayuda"
+          titulo="Respuesta"
           volver={{ href: '/ayuda/', etiqueta: 'Volver a las preguntas' }}
         />
       }

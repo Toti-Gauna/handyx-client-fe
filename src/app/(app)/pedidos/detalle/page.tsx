@@ -7,22 +7,13 @@ import { FotoSubida } from '@/components/FotoSubida';
 import { MapaHx } from '@/components/MapaHx';
 import { ESTADOS_BUSQUEDA, PedidoBuscando } from '@/components/PedidoBuscando';
 import { Enlace, ruta } from '@/components/nav';
-import { Encabezado } from '@/components/Titulo';
-import {
-  Aviso,
-  Boton,
-  Campo,
-  Cargando,
-  Datos,
-  ErrorEstado,
-  Hoja,
-  Pastilla,
-  Vacio,
-} from '@/components/ui';
+import { Barra, ChipEstado, HandyRubro, Pantalla, entra } from '@/components/hx';
+import { Icono } from '@/components/Icono';
+import { Aviso, Boton, Campo, Cargando, ErrorEstado, Hoja, Vacio } from '@/components/ui';
 import type { Pedido } from '@/contracts/v1/pedidos';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { RUBROS_INFO, TIPOS_INFO, etiquetaPedido } from '@/domain/etiquetas';
-import { cuando, horaDeInstante } from '@/domain/fechas';
+import { cuando, fechaLarga, horaDeInstante } from '@/domain/fechas';
 import { pesos } from '@/domain/dinero';
 
 const MOTIVOS = [
@@ -183,140 +174,182 @@ export default function DetallePedido() {
       </>
     );
 
+  const principal =
+    p.estado === 'con_propuestas' ? (
+      <Enlace className="hd-boton" href={ruta('/pedidos/propuestas/', { pedido: p.id })}>
+        <Icono nombre="etiqueta" />
+        Ver propuestas{p.propuestasPendientes ? ` (${p.propuestasPendientes})` : ''}
+      </Enlace>
+    ) : p.estado === 'contratado' && p.trabajoId ? (
+      <Enlace className="hd-boton" href={ruta('/trabajos/detalle/', { id: p.trabajoId })}>
+        Ver el trabajo
+        <Icono nombre="derecha" />
+      </Enlace>
+    ) : ['cancelado', 'vencido'].includes(p.estado) ? (
+      <Enlace className="hd-boton" href={ruta('/pedir/', { rubro: p.rubro, tipo: p.tipo })}>
+        <Icono nombre="reintentar" />
+        Pedir de nuevo
+      </Enlace>
+    ) : null;
+
   return (
-    <>
-      <Encabezado
-        titulo={`${RUBROS_INFO[p.rubro].nombre} · ==${TIPOS_INFO[p.tipo].nombre}==`}
-        volver={{ href: '/pedidos/', etiqueta: 'Volver a mis pedidos' }}
-        bajada={
-          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-            {e.texto}
-          </Pastilla>
-        }
-      />
-
-      {accion.error ? (
-        <Aviso
-          tipo={accion.error.codigo === 'conflicto' ? 'alerta' : 'error'}
-          titulo={accion.error.codigo === 'conflicto' ? 'Esto cambió' : 'No se pudo'}
-        >
-          <p>{accion.error.mensaje}</p>
-          {accion.error.codigo === 'conflicto' ? (
-            <Boton
-              chico
-              variante="claro"
-              onClick={() => {
-                accion.limpiar();
-                pedido.recargar();
-              }}
-            >
-              Actualizar
-            </Boton>
-          ) : null}
-        </Aviso>
-      ) : null}
-
-      {p.ubicacion.coordenadas ? (
-        <MapaHx
-          modo="ver"
-          centro={p.ubicacion.coordenadas}
-          etiqueta="Mapa: dónde es el trabajo"
-          clase="detalle-mapa"
+    <Pantalla
+      arriba={
+        <Barra
+          titulo={`${RUBROS_INFO[p.rubro].nombre} · ==${TIPOS_INFO[p.tipo].nombre}==`}
+          volver={{ href: '/pedidos/', etiqueta: 'Volver a Actividad' }}
+          icono={RUBROS_INFO[p.rubro].icono}
+          sub={f ? `Pedido para el ${fechaLarga(f.fecha)} · ${f.desde} h` : 'Lo antes posible'}
         />
-      ) : null}
-      {p.estado === 'con_propuestas' ? (
-        <Aviso
-          tipo="ok"
-          titulo={
-            p.propuestasPendientes
-              ? `Tenés ${p.propuestasPendientes} ${p.propuestasPendientes === 1 ? 'propuesta' : 'propuestas'}`
-              : 'Las propuestas vencieron'
-          }
-          rol="status"
-        >
-          {p.propuestasPendientes ? (
-            <p>Compará, aceptá, rechazá o contraofertá. Nada queda acordado hasta que aceptes.</p>
-          ) : (
-            <p>
-              Ninguna sigue vigente. La búsqueda sigue hasta las{' '}
-              {horaDeInstante(p.busqueda.ventanaHasta)}.
-            </p>
-          )}
-        </Aviso>
-      ) : null}
-      {p.estado === 'cancelado' ? <Aviso tipo="info">Cancelaste este pedido.</Aviso> : null}
-      {p.estado === 'vencido' ? (
-        <Aviso tipo="info">
-          La fecha que pediste ya pasó sin un acuerdo. Podés hacer un pedido nuevo.
-        </Aviso>
-      ) : null}
-
-      <section className="tarjeta">
-        <div className="tarjeta__cuerpo">
-          <Datos
-            filas={[
-              [
-                'Dónde',
-                `${p.ubicacion.barrio ? `${p.ubicacion.barrio}, ` : ''}${p.ubicacion.ciudad}`,
-              ],
-              ...(f
-                ? [
-                    [
-                      'Cuándo (solicitud)',
-                      `${f.fecha.split('-').reverse().join('/')} · ${f.desde}${f.hasta ? ` a ${f.hasta}` : ''}`,
-                    ] as const,
-                  ]
-                : ([['Cuándo', 'Lo antes posible']] as const)),
-              [
-                'Precio que propusiste',
-                p.precioPropuestoCentavos ? pesos(p.precioPropuestoCentavos) : 'Ninguno',
-              ],
-              [
-                'Aceptación automática',
-                p.autoaceptacion
-                  ? `Hasta ${pesos(p.autoaceptacion.montoMaximoCentavos)}`
-                  : 'Desactivada',
-              ],
-              ['Pedido', cuando(p.creadoEn)],
-            ]}
-          />
-          <p style={{ margin: '10px 0 0' }}>{p.descripcion}</p>
-          {p.fotos.length ? (
-            <ul className="fotos">
-              {p.fotos.map((x) => (
-                <li key={x.id} className="foto">
-                  <FotoPrivada url={x.url} alt="Foto del pedido" />
-                </li>
-              ))}
-            </ul>
-          ) : null}
+      }
+      pie={
+        principal || puedeCancelar ? (
+          <>
+            {principal}
+            {puedeCancelar ? (
+              <button
+                type="button"
+                className="hd-boton hd-boton--fantasma du-rojo"
+                onClick={() => setHoja('cancelar')}
+              >
+                <Icono nombre="cerrar" />
+                Cancelar el pedido
+              </button>
+            ) : null}
+          </>
+        ) : undefined
+      }
+      clase="du-pedido-hx"
+    >
+      <div className="du-cuerpo">
+        <div className="du-pedido-hx__estado" {...entra(1)}>
+          <ChipEstado e={e} vivo />
         </div>
-      </section>
+        {accion.error ? (
+          <Aviso
+            tipo={accion.error.codigo === 'conflicto' ? 'alerta' : 'error'}
+            titulo={accion.error.codigo === 'conflicto' ? 'Esto cambió' : 'No se pudo'}
+          >
+            <p>{accion.error.mensaje}</p>
+            {accion.error.codigo === 'conflicto' ? (
+              <Boton
+                chico
+                variante="claro"
+                onClick={() => {
+                  accion.limpiar();
+                  pedido.recargar();
+                }}
+              >
+                Actualizar
+              </Boton>
+            ) : null}
+          </Aviso>
+        ) : null}
 
-      <div className="acciones">
-        {['con_propuestas'].includes(p.estado) ? (
-          <Enlace className="boton" href={ruta('/pedidos/propuestas/', { pedido: p.id })}>
-            Ver propuestas{p.propuestasPendientes ? ` (${p.propuestasPendientes})` : ''}
+        {p.estado === 'con_propuestas' ? (
+          <section
+            className="hd-tarjeta hd-tarjeta--amarillo du-pedido-hx__aviso"
+            role="status"
+            data-vt-destino
+            {...entra(2, 'pop')}
+          >
+            <HandyRubro rubro={p.rubro} clase="du-pedido-hx__handy" />
+            <span>
+              <strong>
+                {p.propuestasPendientes
+                  ? `Tenés ${p.propuestasPendientes} ${p.propuestasPendientes === 1 ? 'propuesta' : 'propuestas'}`
+                  : 'Las propuestas vencieron'}
+              </strong>
+              <small>
+                {p.propuestasPendientes
+                  ? 'Compará, aceptá, rechazá o contraofertá. Nada queda acordado hasta que aceptes.'
+                  : `Ninguna sigue vigente. La búsqueda sigue hasta las ${horaDeInstante(p.busqueda.ventanaHasta)}.`}
+              </small>
+            </span>
+          </section>
+        ) : null}
+        {p.estado === 'cancelado' ? (
+          <p className="du-nota" {...entra(2)}>
+            <Icono nombre="info" />
+            <span>Cancelaste este pedido.</span>
+          </p>
+        ) : null}
+        {p.estado === 'vencido' ? (
+          <p className="du-nota" {...entra(2)}>
+            <Icono nombre="reloj" />
+            <span>La fecha que pediste ya pasó sin un acuerdo. Podés hacer un pedido nuevo.</span>
+          </p>
+        ) : null}
+
+        {p.ubicacion.coordenadas ? (
+          <div className="du-pedido-hx__mapa" {...entra(3)}>
+            <MapaHx
+              modo="ver"
+              centro={p.ubicacion.coordenadas}
+              etiqueta="Mapa: dónde es el trabajo"
+              clase="detalle-mapa"
+            />
+          </div>
+        ) : null}
+
+        <section className="du-bloque" aria-labelledby="pedido-t" {...entra(4)}>
+          <h2 id="pedido-t" className="hd-sobre du-sobre">
+            Tu pedido
+          </h2>
+          <div className="hd-tarjeta hd-tarjeta--gris du-pedido-hx__datos">
+            <p className="du-pedido-hx__descripcion">{p.descripcion}</p>
+            {p.fotos.length ? (
+              <ul className="fotos">
+                {p.fotos.map((x) => (
+                  <li key={x.id} className="foto">
+                    <FotoPrivada url={x.url} alt="Foto del pedido" />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <dl className="du-datos-hx__lista">
+              {(
+                [
+                  [
+                    'Dónde',
+                    `${p.ubicacion.barrio ? `${p.ubicacion.barrio}, ` : ''}${p.ubicacion.ciudad}`,
+                  ],
+                  f
+                    ? [
+                        'Cuándo (solicitud)',
+                        `${f.fecha.split('-').reverse().join('/')} · ${f.desde}${f.hasta ? ` a ${f.hasta}` : ''}`,
+                      ]
+                    : ['Cuándo', 'Lo antes posible'],
+                  [
+                    'Precio que propusiste',
+                    p.precioPropuestoCentavos ? pesos(p.precioPropuestoCentavos) : 'Ninguno',
+                  ],
+                  [
+                    'Aceptación automática',
+                    p.autoaceptacion
+                      ? `Hasta ${pesos(p.autoaceptacion.montoMaximoCentavos)}`
+                      : 'Desactivada',
+                  ],
+                  ['Pedido', cuando(p.creadoEn)],
+                ] as const
+              ).map(([dt, dd]) => (
+                <div key={dt} className="hd-dato">
+                  <dt>{dt}</dt>
+                  <dd>{dd}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <Enlace
+            className="du-pedido-hx__reclamo"
+            href={ruta('/reclamos/nuevo/', { pedido: p.id })}
+          >
+            <Icono nombre="alerta" />
+            ¿Algo salió mal? Abrí un reclamo
           </Enlace>
-        ) : null}
-        {p.estado === 'contratado' && p.trabajoId ? (
-          <Enlace className="boton" href={ruta('/trabajos/detalle/', { id: p.trabajoId })}>
-            Ver el trabajo
-          </Enlace>
-        ) : null}
-        {puedeCancelar ? (
-          <Boton variante="peligro" icono="cerrar" onClick={() => setHoja('cancelar')}>
-            Cancelar el pedido
-          </Boton>
-        ) : null}
-        {['cancelado', 'vencido'].includes(p.estado) ? (
-          <Enlace className="boton" href={ruta('/pedir/', { rubro: p.rubro, tipo: p.tipo })}>
-            Pedir de nuevo
-          </Enlace>
-        ) : null}
+        </section>
       </div>
-
       {hojas}
-    </>
+    </Pantalla>
   );
 }

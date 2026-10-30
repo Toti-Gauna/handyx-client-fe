@@ -55,6 +55,7 @@ const PROP = '/propuestas/detalle/?id=de000000-0000-4000-8000-000000001003&escen
 
   // 3. Sin conexión: aceptar en una pantalla ya abierta falla a la vista y no crea nada.
   await p.goto(BASE + PROP, { waitUntil: 'networkidle' });
+  await p.getByRole('button', { name: 'Aceptar', exact: true }).waitFor({ timeout: 10000 });
   await ctx.setOffline(true);
   await p.getByText('Sin conexión.').waitFor();
   ok(true, 'aparece el aviso "Sin conexión"');
@@ -78,6 +79,8 @@ const PROP = '/propuestas/detalle/?id=de000000-0000-4000-8000-000000001003&escen
 
   // 4. Chat sin conexión: el mensaje queda "No se envió" con reintento, nunca como enviado.
   await p.goto(BASE + '/chats/conversacion/?id=de000000-0000-4000-8000-000000001002&escenario=contrapropuesta', { waitUntil: 'networkidle' });
+  // Primero que la conversación termine de cargar (la vista de prueba simula la demora de la red).
+  await p.getByRole('textbox', { name: 'Mensaje' }).waitFor({ timeout: 10000 });
   await ctx.setOffline(true);
   await p.getByRole('textbox', { name: 'Mensaje' }).fill('Hola, ¿mañana podés?');
   await p.getByRole('button', { name: 'Enviar el mensaje' }).click();
