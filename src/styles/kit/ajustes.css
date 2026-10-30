@@ -2353,3 +2353,438 @@ body {
   text-align: end;
   overflow-wrap: anywhere;
 }
+/* ── Cuenta y ayuda (rediseño 3.8) ───────────────────────────────────── */
+.du-cuenta {
+  gap: 1.1em;
+}
+.du-yo__textos h1 {
+  margin: 0;
+}
+.du-aviso-cuenta {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.8em 1em;
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.du-aviso-cuenta > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.du-aviso-cuenta small {
+  font-size: 0.78em;
+}
+.du-cuenta .hd-lista,
+.du-pastillas,
+.du-puntos-hx,
+.du-direccion__tipos,
+.du-elegir-direccion {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+}
+.du-cuenta-hx__salir {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35em;
+}
+.du-nota--centro {
+  justify-content: center;
+  text-align: center;
+}
+/* Datos personales: etiqueta arriba, valor abajo; lo que falta, en gris (nunca inventado). */
+.du-fila-dato {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.15em;
+}
+.du-fila-dato dt {
+  color: var(--hd-suave);
+  font-size: 0.72em;
+}
+.du-fila-dato dd {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.du-falta {
+  color: var(--hd-suave);
+  font-style: italic;
+}
+.du-datos-hx__lista {
+  margin: 0;
+  padding: 0.6em 1em;
+}
+.du-datos-hx__lista dt,
+.du-datos-hx__lista dd {
+  margin: 0;
+}
+.du-datos-hx__lista .hd-dato > :last-child {
+  white-space: normal;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+.du-form-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+.du-form-perfil__botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-top: 0.6em;
+}
+/* Direcciones */
+.du-direccion__quitar {
+  width: 100%;
+  border: 0;
+  color: var(--hd-error);
+  cursor: pointer;
+}
+.du-direccion__quitar:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.du-direccion__tipos legend,
+.du-elegir-direccion legend {
+  padding: 0;
+  margin-bottom: 0.5em;
+}
+.du-elegir-direccion {
+  margin-bottom: 0.8em;
+}
+.du-direccion__tipos .hd-chip,
+.du-elegir-direccion .hd-chip {
+  min-height: 44px;
+}
+/* Pagos registrados (sin tarjetas) */
+.du-pagos-hx {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+.du-pagos-hx__resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.85em 1em;
+}
+.du-pagos-hx__cifras {
+  display: flex;
+  gap: 1.4em;
+  margin: 0;
+}
+.du-pagos-hx__cifras span {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+.du-pagos-hx__cifras strong {
+  font-family: var(--hd-titulos);
+  font-size: 1.5em;
+  font-weight: 900;
+  color: var(--hd-azul);
+}
+.du-pagos-hx__cifras small {
+  color: var(--hd-suave);
+  font-size: 0.8em;
+}
+.du-mov-tarjeta {
+  color: var(--hd-tinta);
+}
+.du-mov-hx__estado {
+  padding: 0 0.85em 0.55em;
+}
+.du-mov-hx__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  min-height: 44px;
+  font-size: 0.76em;
+  font-weight: 700;
+  color: var(--hd-azul);
+}
+.du-mov-hx__ver .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-tarjeta__franja--plegable {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+}
+/* Tarifa y demo */
+.du-tarifa-hx__hero {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  padding: 1em;
+}
+.du-tarifa-hx__handy {
+  width: auto;
+  height: 5.2em;
+  flex: none;
+}
+.du-tarifa-hx__titulo {
+  margin: 0 0 0.35em;
+  font-family: var(--hd-titulos);
+  font-stretch: 110%;
+  font-size: 1.05em;
+  line-height: 1.2;
+}
+.du-tarifa-hx__titulo strong {
+  font-size: 1.35em;
+  font-weight: 900;
+}
+.du-tarifa-hx__hero p {
+  margin: 0 0 0.3em;
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.du-puntos-hx {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+/* Privacidad: textos plegables */
+.du-legal-hx {
+  border-radius: 1.1em;
+  background: var(--hd-fondo-2);
+  margin-bottom: 0.5em;
+  overflow: hidden;
+}
+.du-legal-hx summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0.6em 1em;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+.du-legal-hx summary::-webkit-details-marker {
+  display: none;
+}
+.du-legal-hx summary span {
+  flex: 1;
+}
+.du-legal-hx summary .icono {
+  width: 1.15em;
+  height: 1.15em;
+  color: var(--hd-azul);
+  flex: none;
+}
+.du-legal-hx[open] summary .icono:last-child {
+  transform: rotate(180deg);
+}
+.du-legal-hx__cuerpo {
+  padding: 0 1em 0.8em;
+  font-size: 0.82em;
+  line-height: 1.5;
+}
+/* Avisos del celular */
+.du-avisos-cel-hx__hero {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+}
+.du-avisos-cel-hx__hero .hd-handy {
+  width: auto;
+  height: 4.6em;
+  flex: none;
+}
+.du-avisos-cel-hx__hero p {
+  margin: 0;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+.du-interruptor-hx {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.8em 1em;
+  cursor: pointer;
+}
+.du-interruptor-hx__texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.du-interruptor-hx__texto small {
+  color: var(--hd-suave);
+  font-size: 0.78em;
+}
+.du-interruptor-hx__control {
+  appearance: none;
+  position: relative;
+  width: 3.1em;
+  height: 1.8em;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--hd-linea);
+  cursor: pointer;
+  flex: none;
+  transition: background-color 0.2s ease;
+}
+.du-interruptor-hx__control::after {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background: var(--sup-tarjeta);
+  box-shadow: 0 0.1em 0.3em rgb(14 29 54 / 0.25);
+  transition: transform 0.2s ease;
+}
+.du-interruptor-hx__control:checked {
+  background: var(--hd-exito);
+}
+.du-interruptor-hx__control:checked::after {
+  transform: translateX(1.3em);
+}
+.du-interruptor-hx__control:disabled {
+  opacity: 0.6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-interruptor-hx__control,
+  .du-interruptor-hx__control::after {
+    transition: none;
+  }
+}
+/* Centro de ayuda */
+.du-ayuda {
+  gap: 1em;
+}
+.du-pastillas li {
+  display: flex;
+}
+.du-pastilla {
+  min-height: 44px;
+  text-decoration: none;
+}
+.du-respuesta__pregunta {
+  margin: 0;
+}
+.du-respuesta__cuerpo .hd-boton {
+  align-self: flex-start;
+}
+.du-sirvio h2 {
+  margin: 0;
+}
+.du-sirvio__botones .hd-boton {
+  min-height: 44px;
+}
+.du-sirvio__gracias-hx {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+}
+.du-ayuda__pie .hd-boton {
+  width: 100%;
+}
+/* Eliminar cuenta */
+.du-baja-hx__intro {
+  margin: 0 0 0.6em;
+  font-size: 0.9em;
+  line-height: 1.45;
+  font-weight: 600;
+}
+.du-baja-hx__estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6em;
+  padding: 1em;
+}
+.du-baja-hx__estado > p {
+  margin: 0;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+.du-baja-hx__estado .du-datos-hx__lista {
+  align-self: stretch;
+  padding: 0;
+}
+.du-baja-hx__pasos {
+  display: flex;
+  gap: 0.4em;
+  align-self: stretch;
+  margin: 0.2em 0;
+  padding: 0;
+  list-style: none;
+}
+.du-baja-hx__pasos li {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 0.7em;
+  text-align: center;
+  color: var(--hd-suave);
+}
+.du-baja-hx__pasos i {
+  display: grid;
+  place-items: center;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  border: 0.14em solid var(--hd-linea);
+  background: var(--sup-tarjeta);
+}
+.du-baja-hx__pasos .icono {
+  width: 1em;
+  height: 1em;
+}
+.du-baja-hx__pasos .is-hecho,
+.du-baja-hx__pasos .is-actual {
+  color: var(--hd-tinta);
+  font-weight: 700;
+}
+.du-baja-hx__pasos .is-hecho i,
+.du-baja-hx__pasos .is-actual i {
+  border-color: var(--hd-exito);
+  background: var(--hd-exito);
+  color: var(--texto-sobre-marca);
+}
+/* Botón blanco con borde sobre fondo claro (el .du-boton-borde de la app es el de las hojas azules). */
+.hx .du-boton-claro-hx {
+  box-shadow:
+    inset 0 0 0 0.1em var(--hd-linea),
+    0 0.28em 0 var(--hd-linea);
+}
+.hx .du-respuesta__pregunta {
+  color: var(--texto-sobre-marca);
+}
+.hx .hd-boton--fantasma,
+.du-mov-tarjeta .du-tarjeta__franja {
+  min-height: 44px;
+}
+.du-yo__textos {
+  min-width: 0;
+}
+.du-yo__textos h1 {
+  overflow-wrap: anywhere;
+}
+.du-yo__textos .hd-chip {
+  max-width: 100%;
+  white-space: normal;
+}
+.du-tarifa-hx__titulo strong {
+  white-space: nowrap;
+}
+/* La franja plegable de los movimientos: margen sobre los 44 px (el redondeo a 390 px la dejaba en 43,9). */
+.du-mov-tarjeta .du-tarjeta__franja {
+  min-height: 48px;
+}

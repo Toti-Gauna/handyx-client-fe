@@ -1,12 +1,49 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.7 (el mapa todavía sin los datos reales), pantalla de carga y
-HandIA. Sigue el lote 3.8** (cuenta y ayuda) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.8 (el mapa todavía sin los datos reales), pantalla de carga y
+HandIA. Sigue el lote 3.9** (pulido premium y QA) ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 30/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.8 · Cuenta y ayuda
+
+Pedido de Ignacio: "Vamos con 3.8".
+
+- **Cuenta** (u-cuenta): avatar con iniciales, nombre y barrio; tarifa de Handy 0 % con el contador y "no es un
+  descuento" (tercer lugar del aviso); instalar (si el navegador lo permite); accesos Cuenta (datos, direcciones, pagos
+  registrados, agenda, reclamos) y Configuración (avisos del celular, tarifa y demo, privacidad, centro de ayuda, eliminar
+  cuenta); cerrar sesión ("no elimina tu cuenta"). Sin foto de perfil (el contrato no la tiene) y sin "modo
+  especialista" hasta su app (4.6).
+- **Datos personales** (u-datos): el perfil en lectura (lo que falta dice "Sin completar", nunca inventado; nacimiento
+  como `20/03/1990`) y "Editar mis datos" con el mismo formulario del alta. `?editar=1` abre la edición.
+- **Direcciones** (`/cuenta/direcciones/`): la principal es la del perfil; se pueden guardar hasta 4 más con nombre
+  (Casa, Trabajo, Otra) y elegirlas al pedir (chips en el paso de dirección). **No está en el contrato v1**: en la vista
+  de prueba quedan en memoria (se pierden al recargar, nunca en el navegador); con la API real solo está la principal y
+  agregar dice "Pronto" hasta `direcciones` (4.2).
+- **Pagos registrados** (`/cuenta/pagos/`, u-pagos **sin tarjetas**): los pagos de cada trabajo con su estado real
+  (reportado ≠ verificado), quién lo registró y el enlace al pago del trabajo. Usa `trabajos` + `pagos` del contrato v1
+  (una consulta por trabajo; con muchos trabajos convendría un endpoint agregado en la Fase 4).
+- **Avisos del celular, privacidad, tarifa y demo** en el kit (mismas reglas y textos; interruptor accesible).
+- **Centro de ayuda** (u-ayuda) con 9 preguntas y **respuesta** (`/ayuda/respuesta/?p=`, u-ayuda-detalle) con atajo,
+  "¿Te sirvió?" (el voto queda en la pantalla: no se envía ni se guarda; si no sirvió, ofrece soporte) y otras preguntas.
+- **Eliminar cuenta**: baja real con contraseña y confirmación; el estado verdadero paso a paso (Recibida › En proceso ›
+  Completada) y lo que se conserva por obligación legal.
+- El botón del pin de Inicio abre Direcciones y "Cambiar la dirección" abre la edición de datos.
+
+Queda del 3.7 sin hacer: **especialistas guardados** (decisión 4, u-contactos), que necesita `favoritos` (4.3).
+
+### Comandos ejecutados (30/10/2026, local)
+
+| Comando                                            | Resultado                                                                                                      |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                                             |
+| `npm test`                                         | **166 pruebas OK** (12 nuevas de cuenta, pagos, direcciones, ayuda y baja)                                     |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                                   |
+| `npm run e2e`                                      | recorrido · 19 escenarios (nuevo: cuenta y ayuda) · accesibilidad 279 chequeos · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas                              |
 
 ## Rediseño · lote 3.7 · Actividad, mensajes y soporte
 

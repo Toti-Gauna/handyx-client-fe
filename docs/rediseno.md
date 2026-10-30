@@ -174,6 +174,13 @@ contratado. La del especialista es aproximada y deja de mostrarse al llegar. Lo 
 > prueba responde un acuse simulado y rotulado; con la API real queda inactivo hasta la conversación con Operations (4.4).
 > Cancelar sigue en la hoja del trabajo (3.6) y el turno es el seguimiento del trabajo.
 
+> **Lote 3.8 hecho (30/10).** Cuenta (u-cuenta) con avatar, tarifa con contador, instalar y accesos; datos personales
+> (u-datos) en lectura y edición; direcciones guardadas (elegibles al pedir); pagos registrados (u-pagos sin tarjetas,
+> con su estado real); avisos del celular, privacidad, tarifa y demo; centro de ayuda (u-ayuda) y respuesta con "¿te
+> sirvió?" (u-ayuda-detalle, el voto no se envía); eliminar cuenta con el estado paso a paso. Las direcciones guardadas no
+> están en el contrato v1: en la vista de prueba quedan en memoria y con la API real solo está la del perfil hasta
+> `direcciones` (4.2). Sin foto de perfil ni "modo especialista" (no están en el contrato; 4.6).
+
 ## 7. Componentes premium nuevos
 
 - **Hoja arrastrable** (3 alturas, con manija, gesto y teclado) sobre mapa o pantalla.

@@ -53,6 +53,11 @@ const RUTAS = [
   E('/cuenta/notificaciones/', 'varias-propuestas'),
   E('/cuenta/privacidad/', 'varias-propuestas'),
   E('/cuenta/baja/', 'varias-propuestas'),
+  E('/cuenta/baja/', 'baja-solicitada'),
+  E('/cuenta/direcciones/', 'varias-propuestas'),
+  E('/cuenta/pagos/', 'efectivo-reportado'),
+  E('/cuenta/datos/?editar=1', 'varias-propuestas'),
+  E('/ayuda/respuesta/?p=pagar', 'varias-propuestas'),
 ];
 
 // Estados con hoja abierta: se llega desde una ruta y se ejecuta una acción.
@@ -61,6 +66,9 @@ const HOJAS = [
   ['hoja-rechazar', E(`/propuestas/detalle/?id=${P}03`, 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Rechazar', exact: true }).click()],
   ['modal-fee', E('/inicio/', 'nuevo-usuario'), async () => {}],
   ['reingreso', E('/inicio/', 'sesion-vencida'), async () => {}],
+  ['direccion-nueva', E('/cuenta/direcciones/', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Agregar una dirección' }).click()],
+  ['pago-ver-mas', E('/cuenta/pagos/', 'efectivo-reportado'), (p) => p.getByRole('button', { name: /^Ver más/ }).first().click()],
+  ['ayuda-gracias', E('/ayuda/respuesta/?p=pagar', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'No', exact: true }).click()],
   ['panel-prueba', E('/inicio/', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Panel de prueba' }).click()],
 ];
 

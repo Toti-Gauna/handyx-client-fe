@@ -121,7 +121,7 @@ export function BotonHx({
   type = 'button',
   ...resto
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variante?: 'amarillo' | 'claro' | 'blanco' | 'fantasma' | 'exito';
+  variante?: 'amarillo' | 'claro' | 'blanco' | 'fantasma' | 'exito' | 'peligro';
   cargando?: boolean;
   icono?: NombreIcono;
 }) {

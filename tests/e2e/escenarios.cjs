@@ -270,6 +270,43 @@ const casos = {
       .waitFor({ state: 'hidden', timeout: 10000 });
   },
 
+  'cuenta-y-ayuda': async ({ ir, p }) => {
+    // Pagos registrados: el reporte del trabajo aparece como reportado, nunca como verificado.
+    await ir('/cuenta/pagos/', 'efectivo-reportado');
+    await p.getByText('Reportado (sin verificar)').first().waitFor();
+    await p.getByRole('button', { name: /^Ver más/ }).first().click();
+    await p.getByText('Lo reportaste vos').waitFor();
+    if (await p.getByText(/Agregar tarjeta/i).count()) throw new Error('aparece "Agregar tarjeta"');
+    // Direcciones: guardar una con nombre y elegirla al pedir.
+    await ir('/cuenta/direcciones/', 'varias-propuestas');
+    await p.getByRole('button', { name: 'Agregar una dirección' }).click();
+    await p.getByLabel('Dirección').fill('Calle Inventada 742');
+    await p.getByRole('button', { name: 'Guardar la dirección' }).click();
+    await p.getByText('Calle Inventada 742').waitFor();
+    await p.getByRole('link', { name: 'Inicio', exact: true }).click();
+    await p.getByRole('link', { name: 'Plomería' }).click();
+    await p.waitForURL('**/pedir/**');
+    await p.getByRole('button', { name: /Urgencia/ }).click();
+    await p.getByLabel('Contalo con tus palabras').fill('Gotea la canilla del baño.');
+    await p.getByRole('button', { name: 'Seguir' }).click();
+    await p.getByRole('button', { name: 'Trabajo', pressed: false }).click();
+    if ((await p.getByLabel('Dirección').inputValue()) !== 'Calle Inventada 742')
+      throw new Error('elegir la dirección guardada no completa el formulario');
+    await p.getByRole('button', { name: 'Principal', pressed: false }).click();
+    if ((await p.getByLabel('Dirección').inputValue()) === 'Calle Inventada 742')
+      throw new Error('volver a la principal no cambia la dirección');
+    // Ayuda: la respuesta, "¿te sirvió?" y otra pregunta.
+    await ir('/ayuda/', 'varias-propuestas');
+    await p.getByRole('link', { name: '¿Cómo le pago al especialista?' }).click();
+    await p.getByRole('heading', { name: '¿Cómo le pago al especialista?' }).waitFor();
+    await p.getByRole('button', { name: 'No', exact: true }).click();
+    await p.getByText('¡Gracias por contarnos!').waitFor();
+    await p.getByRole('link', { name: 'Escribile al equipo' }).waitFor();
+    await p.getByRole('link', { name: '¿Puedo borrar mi cuenta?' }).click();
+    await p.getByRole('heading', { name: '¿Puedo borrar mi cuenta?' }).waitFor();
+    await p.getByRole('button', { name: 'Sí', exact: true }).waitFor();
+  },
+
   'baja-solicitada': async ({ ir, p, panel }) => {
     await ir('/cuenta/baja/', 'baja-solicitada');
     await p.getByText('En proceso').first().waitFor();

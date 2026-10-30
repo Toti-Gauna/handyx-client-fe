@@ -107,7 +107,7 @@ export default function Inicio() {
             Solo la ve el especialista que elijas, cuando se acuerda el trabajo.
           </p>
           <div className="acciones">
-            <Enlace href="/cuenta/datos/" className="boton">
+            <Enlace href="/cuenta/datos/?editar=1" className="boton">
               Cambiar la dirección
             </Enlace>
           </div>

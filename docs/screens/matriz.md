@@ -2,7 +2,7 @@
 
 # Matriz pantalla → acción → estado → API → entidad → prueba
 
-37 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
+40 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
 Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/data-model.md).
 
 ## Acceso
@@ -70,7 +70,8 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | **Reclamos** | `/reclamos/` | 2.4 | Abrir un reclamo<br>Ver un reclamo | cargando<br>vacio<br>lista<br>error_reintentable | `GET /v1/reclamos` | support_cases | solo reclamos propios |
 | **Nuevo reclamo**<br><sub>demo: u-soporte</sub> | `/reclamos/nuevo/?pedido&trabajo` | 2.4 | Categoría<br>Detalle<br>Adjuntar fotos | inicial<br>validacion<br>adjunto_error<br>enviando<br>enviado | `POST /v1/media`<br>`POST /v1/reclamos` | support_cases<br>media_assets | sin plazos de respuesta inventados<br>reintento no duplica |
 | **Reclamo** | `/reclamos/detalle/?id` | 2.4 | Sumar información cuando la piden | abierto<br>en_revision<br>esperando_usuario<br>resuelto<br>cerrado | `GET /v1/reclamos/{id}`<br>`POST /v1/reclamos/{id}/respuestas`<br>`POST /v1/media` | support_cases<br>support_events | historial con actor y fecha |
-| **Ayuda**<br><sub>demo: u-ayuda, u-ayuda-detalle, u-handia</sub> | `/ayuda/` | 2.4 | Preguntas frecuentes<br>Abrir reclamo | normal | — | — | HandIA: acceso al asistente (sin datos personales a terceros) |
+| **Centro de ayuda**<br><sub>demo: u-ayuda, u-handia</sub> | `/ayuda/` | 2.4 | Preguntas frecuentes<br>Chatear con soporte<br>Ver mis reclamos<br>HandIA | normal | — | — | HandIA: acceso al asistente (sin datos personales a terceros) |
+| **Respuesta de ayuda**<br><sub>demo: u-ayuda-detalle</sub> | `/ayuda/respuesta/?p` | 3.8 | Ir al atajo de la respuesta<br>¿Te sirvió? (sí / no)<br>Otras preguntas | respuesta<br>gracias<br>no sirvió (ofrece soporte) | — | — | el voto no se envía ni se guarda<br>una pregunta desconocida muestra la primera |
 
 ## Pagos
 
@@ -89,8 +90,10 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 
 | Pantalla | Ruta | Lote | Acciones | Estados | API | Entidades | Pruebas |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| **Cuenta**<br><sub>demo: u-cuenta</sub> | `/cuenta/` | 2.1 | Mis datos<br>Tarifa y demo<br>Avisos<br>Privacidad<br>Eliminar cuenta<br>Cerrar sesión | normal<br>perfil_incompleto<br>baja_en_curso | `GET /v1/sesion`<br>`GET /v1/cuenta/fee`<br>`POST /v1/auth/logout` | accounts<br>fee_policies | contador hasta el 10/12 con el reloj del servidor<br>cerrar sesión no es baja |
-| **Mis datos**<br><sub>demo: u-datos</sub> | `/cuenta/datos/` | 2.1 | Editar perfil operativo | normal<br>guardando<br>validacion<br>conflicto_version | `GET /v1/sesion`<br>`PATCH /v1/cuenta/perfil` | user_profiles | los campos faltantes se muestran vacíos, no inventados |
+| **Cuenta**<br><sub>demo: u-cuenta</sub> | `/cuenta/` | 2.1 | Datos personales<br>Direcciones<br>Pagos registrados<br>Tu agenda<br>Reclamos<br>Avisos del celular<br>Tarifa y demo<br>Privacidad<br>Centro de ayuda<br>Eliminar cuenta<br>Instalar<br>Cerrar sesión | normal<br>perfil_incompleto<br>baja_en_curso | `GET /v1/sesion`<br>`GET /v1/cuenta/fee`<br>`POST /v1/auth/logout` | accounts<br>fee_policies | contador hasta el 10/12 con el reloj del servidor<br>cerrar sesión no es baja |
+| **Datos personales**<br><sub>demo: u-datos</sub> | `/cuenta/datos/?editar` | 2.1 | Ver el perfil operativo<br>Editar mis datos | lectura<br>editando<br>guardando<br>validacion<br>conflicto_version<br>guardado | `GET /v1/sesion`<br>`PATCH /v1/cuenta/perfil` | user_profiles | los campos faltantes se muestran vacíos, no inventados |
+| **Direcciones** | `/cuenta/direcciones/` | 3.8 | Ver la principal (perfil)<br>Agregar una dirección con nombre<br>Quitar una | solo principal<br>lista<br>nueva<br>máximo alcanzado<br>funcion_inactiva (API real) | `GET /v1/sesion` | user_profiles | las guardadas viven solo en memoria (nunca en el navegador)<br>con la API real solo la principal hasta el contrato (Fase 4.2)<br>al pedir, elegir una completa el formulario |
+| **Pagos registrados**<br><sub>demo: u-pagos</sub> | `/cuenta/pagos/` | 3.8 | Ver los pagos de cada trabajo<br>Ver más (quién lo registró, verificado)<br>Ir al pago del trabajo | cargando<br>vacio<br>lista<br>error_reintentable | `GET /v1/trabajos`<br>`GET /v1/pedidos`<br>`GET /v1/trabajos/{id}/pagos` | payment_records | sin tarjetas ni "Agregar tarjeta"<br>reportado ≠ verificado<br>Handy no cobra el servicio |
 | **Tarifa y demo** | `/cuenta/tarifa/` | 2.1 | Ver condiciones y versión aceptada | demo_vigente<br>demo_terminada_sin_tarifa_aprobada<br>sin_dato | `GET /v1/cuenta/fee`<br>`POST /v1/cuenta/fee/aceptacion` | fee_policies<br>fee_acceptances | al vencer el contador no aparece ninguna tarifa no aprobada |
 | **Preferencias de avisos** | `/cuenta/notificaciones/` | 2.5 | Activar o desactivar push | normal<br>permiso_denegado<br>no_soportado | `GET /v1/cuenta/notificaciones`<br>`PATCH /v1/cuenta/notificaciones`<br>`POST /v1/cuenta/push`<br>`DELETE /v1/cuenta/push` | notification_outbox | el permiso se pide solo al tocar, nunca al abrir la app |
 | **Privacidad** | `/cuenta/privacidad/` | 2.1 | Ver textos y versiones aceptadas<br>Aceptar una versión nueva | normal<br>version_nueva_pendiente | `GET /v1/sesion`<br>`POST /v1/cuenta/aceptaciones` | policy_acceptances<br>consents | HandIA explicada (sin datos personales ni fotos)<br>la versión aceptada queda registrada |

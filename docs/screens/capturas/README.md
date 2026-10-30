@@ -137,7 +137,13 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | cuenta-privacidad | [cuenta-privacidad-390.jpg](cuenta-privacidad-390.jpg) |
 | cuenta-baja | [cuenta-baja-390.jpg](cuenta-baja-390.jpg) |
 | cuenta-baja-solicitada | [cuenta-baja-solicitada-390.jpg](cuenta-baja-solicitada-390.jpg) |
+| cuenta-datos-editar | [cuenta-datos-editar-390.jpg](cuenta-datos-editar-390.jpg) |
+| cuenta-direcciones | [cuenta-direcciones-390.jpg](cuenta-direcciones-390.jpg) |
+| cuenta-direccion-nueva | [cuenta-direccion-nueva-390.jpg](cuenta-direccion-nueva-390.jpg) |
+| cuenta-pagos | [cuenta-pagos-390.jpg](cuenta-pagos-390.jpg) |
+| cuenta-pagos-vacio | [cuenta-pagos-vacio-390.jpg](cuenta-pagos-vacio-390.jpg) |
 | ayuda | [ayuda-390.jpg](ayuda-390.jpg) |
+| ayuda-respuesta | [ayuda-respuesta-390.jpg](ayuda-respuesta-390.jpg) |
 | cuenta (escritorio) | [cuenta-1280.jpg](cuenta-1280.jpg) |
 
 ## Sistema
@@ -160,6 +166,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | `cancelacion` | Cancelación | [escenarios/esc-cancelacion.jpg](escenarios/esc-cancelacion.jpg) |
 | `chat-fallido` | Chat fallido | [escenarios/esc-chat-fallido.jpg](escenarios/esc-chat-fallido.jpg) |
 | `contrapropuesta` | Contrapropuesta | [escenarios/esc-contrapropuesta.jpg](escenarios/esc-contrapropuesta.jpg) |
+| `cuenta-y-ayuda` |  | [escenarios/esc-cuenta-y-ayuda.jpg](escenarios/esc-cuenta-y-ayuda.jpg) |
 | `efectivo-reportado` | Efectivo reportado | [escenarios/esc-efectivo-reportado.jpg](escenarios/esc-efectivo-reportado.jpg) |
 | `mp-pendiente-fallido` | Mercado Pago pendiente/fallido | [escenarios/esc-mp-pendiente-fallido.jpg](escenarios/esc-mp-pendiente-fallido.jpg) |
 | `nuevo-usuario` | Nuevo usuario | [escenarios/esc-nuevo-usuario.jpg](escenarios/esc-nuevo-usuario.jpg) |

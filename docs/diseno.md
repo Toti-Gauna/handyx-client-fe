@@ -71,6 +71,18 @@ parecido:
   según el momento (completan el mensaje, no lo mandan) y el compositor con foto.
 - **Soporte** (`/soporte/`, u-soporte): chat con el equipo de Handy; lo atiende una persona, sin IA ni plazos.
 - **Avisos** (u-notificaciones): tarjetas con ícono por tipo, "nuevo" con punto y texto.
+- **Cuenta** (lote 3.8, u-cuenta): avatar con nombre y barrio, la tarifa con su contador (tarjeta con franja), instalar
+  como tarjeta amarilla con Handy, accesos en dos grupos (Cuenta · Configuración) y "Cerrar sesión" fantasma en rojo.
+- **Datos personales** (u-datos): lista de solo lectura (lo que falta dice "Sin completar") y "Editar mis datos" abre el
+  formulario en la misma pantalla. **Direcciones**: tarjetas con franja (la principal se edita en datos; las otras se
+  quitan) y, al pedir, chips para elegir una.
+- **Pagos registrados** (u-pagos sin tarjetas): resumen verificados / sin verificar y la hoja azul "Tus movimientos" con
+  tarjetas plegables (quién lo registró, reportado, verificado).
+- **Centro de ayuda** (u-ayuda): pastillas azules y, al pie, soporte, reclamos y HandIA. **Respuesta**
+  (u-ayuda-detalle): pregunta en azul, respuesta con atajo, "¿Te sirvió?" (No · Sí, sin rojo ni verde por contraste) y
+  otras preguntas en pastillas chicas.
+- **Tarifa, privacidad, avisos del celular y eliminar cuenta**: barra del kit, notas con ícono, datos en tarjeta gris,
+  textos legales plegables, interruptor con `role="switch"` y la baja con su estado paso a paso.
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

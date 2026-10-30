@@ -5,6 +5,7 @@ import { GENEROS, type PerfilUsuario } from '@/contracts/v1/cuenta';
 import { useEnvio } from '@/data/hooks';
 import { GENEROS_ETIQUETA, NACIONALIDADES, erroresDe, nombrePais } from '@/domain/formularios';
 import { FormUbicacion, aUbicacion, deUbicacion, type UbicacionForm } from './FormUbicacion';
+import { BotonHx } from './acceso';
 import { useSesion } from './SesionProvider';
 import { Aviso, Boton, Campo } from './ui';
 
@@ -214,30 +215,35 @@ export function ErroresPerfil({ perfil }: { perfil: Perfil }) {
   return null;
 }
 
-/** "Mis datos": el perfil completo en un formulario. */
-export function FormPerfil() {
+/** "Datos personales": el perfil completo en un formulario. */
+export function FormPerfil({
+  onGuardado,
+  onCancelar,
+}: {
+  onGuardado?: () => void;
+  onCancelar?: () => void;
+}) {
   const perfil = usePerfil();
-  const [guardado, setGuardado] = useState(false);
   return (
     <form
+      className="du-form-perfil"
       onSubmit={async (e) => {
         e.preventDefault();
-        setGuardado(false);
-        if (await perfil.guardar([1, 2, 3])) setGuardado(true);
+        if (await perfil.guardar([1, 2, 3])) onGuardado?.();
       }}
       noValidate
     >
       <CamposPerfil perfil={perfil} grupos={[1, 2, 3]} />
       <ErroresPerfil perfil={perfil} />
-      {guardado ? (
-        <Aviso tipo="ok" rol="status">
-          Guardamos tus datos.
-        </Aviso>
-      ) : null}
-      <div className="acciones">
-        <Boton type="submit" cargando={perfil.pendiente}>
+      <div className="du-form-perfil__botones">
+        <BotonHx type="submit" icono="check" cargando={perfil.pendiente}>
           Guardar cambios
-        </Boton>
+        </BotonHx>
+        {onCancelar ? (
+          <BotonHx variante="fantasma" onClick={onCancelar} disabled={perfil.pendiente}>
+            Cancelar
+          </BotonHx>
+        ) : null}
       </div>
     </form>
   );

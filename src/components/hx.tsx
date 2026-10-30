@@ -82,7 +82,7 @@ export function CabeceraInicio() {
               </span>
             ) : null}
           </Enlace>
-          <Enlace href="/cuenta/datos/" className="app-cuadrado" aria-label="Tu dirección">
+          <Enlace href="/cuenta/direcciones/" className="app-cuadrado" aria-label="Tus direcciones">
             <Icono nombre="pin" />
           </Enlace>
         </span>

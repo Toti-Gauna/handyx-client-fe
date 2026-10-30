@@ -11,6 +11,7 @@ import {
   deUbicacion,
   type UbicacionForm,
 } from '@/components/FormUbicacion';
+import { ElegirDireccion } from '@/components/ElegirDireccion';
 import { FotoSubida, useFotos } from '@/components/FotoSubida';
 import { HandyRubro } from '@/components/hx';
 import { Icono } from '@/components/Icono';
@@ -583,6 +584,10 @@ export default function Pedir() {
         onSubmit={enviarCon(siguiente)}
         pie={<BotonHx type="submit">Seguir</BotonHx>}
       >
+        <ElegirDireccion
+          actual={ubicacion.direccion}
+          onElegir={(u) => setUbicacion(deUbicacion(u))}
+        />
         <FormUbicacion
           valor={ubicacion}
           onCambio={setUbicacion}
