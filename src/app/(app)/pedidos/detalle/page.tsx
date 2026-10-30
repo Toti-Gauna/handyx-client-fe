@@ -48,7 +48,7 @@ export default function DetallePedido() {
         </Enlace>
       </Vacio>
     );
-  if (pedido.estado === 'cargando') return <Cargando />;
+  if (pedido.estado === 'cargando') return <Cargando forma="mapa" />;
   if (pedido.estado === 'error' && pedido.error)
     return <ErrorEstado error={pedido.error} onReintentar={pedido.recargar} />;
   const p = pedido.datos;

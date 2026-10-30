@@ -36,7 +36,7 @@ function Tarjeta({
   destino: string;
 }) {
   return (
-    <li className="du-tarjeta du-tarjeta-hx">
+    <li className="du-tarjeta du-tarjeta-hx" data-vt-origen>
       <div className="du-tarjeta__cuerpo">
         <span className="du-tarjeta__ico du-tarjeta__ico--azul" aria-hidden="true">
           <Icono nombre={rubro ? RUBROS_INFO[rubro].icono : 'calendario'} />

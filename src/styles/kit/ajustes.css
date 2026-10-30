@@ -2788,3 +2788,369 @@ body {
 .du-mov-tarjeta .du-tarjeta__franja {
   min-height: 48px;
 }
+
+/* ── Lote 3.9 · Pulido premium ───────────────────────────────────────────────────────────────────── */
+/* Transiciones de pantalla (transicion.ts): fundido corto con un leve ascenso; la barra de pestañas queda quieta y la
+   tarjeta tocada crece hasta el encabezado del detalle. Con "reducir movimiento" no hay ninguna. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-new(root) {
+  animation-name: hx-vt-entrar;
+}
+@keyframes hx-vt-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+}
+.hx .app-nav {
+  view-transition-name: hx-nav;
+}
+html.vt-entrando [data-vt-destino] {
+  view-transition-name: hx-tarjeta;
+}
+::view-transition-group(hx-tarjeta) {
+  animation-duration: 0.34s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-old(hx-tarjeta),
+::view-transition-new(hx-tarjeta) {
+  height: 100%;
+  object-fit: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+/* Título grande de las pestañas que se compacta al bajar (como la demo). Solo donde el navegador lo soporta: es un
+   detalle visual, ligado al desplazamiento (no se mueve solo). */
+@supports (animation-timeline: scroll()) {
+  .pantalla {
+    timeline-scope: --hx-desplazamiento;
+  }
+  .pantalla__scroll {
+    scroll-timeline: --hx-desplazamiento block;
+  }
+  .du-actividad__cabeza h1 {
+    animation: hx-compactar linear both;
+    animation-timeline: --hx-desplazamiento;
+    animation-range: 0 4.5em;
+  }
+  .du-actividad__cabeza {
+    animation: hx-cabeza-sombra linear both;
+    animation-timeline: --hx-desplazamiento;
+    animation-range: 0 4.5em;
+  }
+}
+@keyframes hx-compactar {
+  to {
+    font-size: 1.35em;
+  }
+}
+@keyframes hx-cabeza-sombra {
+  to {
+    box-shadow: 0 0.6em 1.2em -1em rgb(14 29 54 / 0.35);
+  }
+}
+.du-actividad__cabeza {
+  position: relative;
+  z-index: 1;
+  background: var(--sup-tarjeta);
+}
+/* Hoja azul arrastrable (gestos.tsx): la manija es un botón de 44 px; tres alturas sobre el mapa. */
+.du-manija-hx {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 5.5em;
+  min-height: 44px;
+  margin: -0.9em 0 -0.6em;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  flex: none;
+}
+.du-manija-hx span {
+  width: 2.8em;
+  height: 0.3em;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.55);
+}
+.du-manija-hx:active {
+  cursor: grabbing;
+}
+.du-manija-hx:focus-visible span {
+  background: var(--hd-amarillo);
+}
+.du-hoja-hx {
+  transform: translateY(var(--hx-arrastre, 0));
+  transition:
+    max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.2s ease;
+}
+.du-hoja-hx[data-arrastrando] {
+  transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hx .du-hoja-hx[data-altura='baja'] {
+  max-height: 10.5em;
+  overflow: hidden;
+}
+.hx .du-hoja-hx[data-altura='alta'] {
+  max-height: calc(100% - 4.6em);
+}
+/* Hojas de diálogo: bajar desde la manija las cierra. */
+.hoja__manija--arrastre {
+  box-sizing: content-box;
+  padding: 0.9em 2em;
+  margin: -0.9em auto calc(12px - 0.9em);
+  background-clip: content-box;
+  cursor: grab;
+  touch-action: none;
+}
+.hoja__cuerpo {
+  transition: transform 0.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-hoja-hx,
+  .hoja__cuerpo {
+    transition: none;
+  }
+}
+/* Esqueletos con la forma de la pantalla que viene (ui.tsx · Cargando). */
+.esqueletos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: 1em 1.1em;
+}
+.esqueletos .esqueleto {
+  display: block;
+  height: 0.85em;
+  margin: 0;
+  border-radius: 0.6em;
+}
+.esqueleto--corta {
+  width: 60%;
+}
+.esqueleto--titulo {
+  width: 70%;
+  height: 1.5em !important;
+}
+.esqueleto--icono {
+  width: 2.6em;
+  height: 2.6em !important;
+  border-radius: 0.9em !important;
+  flex: none;
+}
+.esqueletos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.esqueletos__tarjeta {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 1em;
+  border-radius: 1.3em;
+  background: var(--sup-tarjeta);
+  box-shadow: inset 0 0 0 1px var(--hd-linea);
+}
+.esqueletos__tarjeta > span,
+.esqueletos__fila {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.esqueletos__detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+}
+.esqueleto--heroe {
+  height: 9em !important;
+  border-radius: 1.6em !important;
+}
+.esqueletos--mapa {
+  padding: 0;
+}
+.esqueletos__mapa {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 24em;
+  background: var(--hd-mosaico);
+}
+.esqueletos__hoja {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  padding: 0.8em 1.2em 1.4em;
+  border-radius: 1.9em 1.9em 0 0;
+  background: var(--hd-azul);
+}
+.esqueletos__hoja .esqueleto {
+  background: rgb(255 255 255 / 0.18);
+  animation: hx-latir 1.4s ease-in-out infinite;
+}
+.esqueleto--manija {
+  align-self: center;
+  width: 2.8em;
+  height: 0.3em !important;
+}
+.esqueleto--boton {
+  height: 2.8em !important;
+  border-radius: 1em !important;
+}
+@keyframes hx-latir {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .esqueletos__hoja .esqueleto {
+    animation: none;
+  }
+}
+/* Error con un Handy roto, en el kit. */
+.estado-hx {
+  gap: 0.6em;
+}
+.estado-hx__titulo {
+  margin: 0;
+  text-align: center;
+}
+.estado-hx__texto {
+  margin: 0;
+  max-width: 22em;
+  text-align: center;
+  line-height: 1.45;
+}
+/* Versión nueva (Pwa.tsx · AvisoVersion): tarjeta oscura sobre la barra de pestañas; nunca recarga sola. Vive fuera de
+   .hx (en el layout raíz), así que usa los tokens globales. */
+.aviso-version-contenedor {
+  position: fixed;
+  inset: auto 0 calc(env(safe-area-inset-bottom, 0px) + 6.2em);
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  padding: 0 0.8em;
+  pointer-events: none;
+}
+.aviso-version {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em 0.8em;
+  width: min(100%, 26em);
+  padding: 0.8em 1em;
+  border-radius: 1.3em;
+  background: var(--color-tinta);
+  color: var(--texto-sobre-marca);
+  font-size: 0.95rem;
+  box-shadow: 0 0.8em 2em -0.8em rgb(14 29 54 / 0.6);
+  pointer-events: auto;
+  animation: aparecer 0.3s ease-out both;
+}
+.aviso-version > .icono {
+  width: 1.4em;
+  height: 1.4em;
+  color: var(--color-amarillo);
+  flex: none;
+}
+.aviso-version p {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15em;
+  min-width: 12em;
+  margin: 0;
+}
+.aviso-version small {
+  opacity: 0.85;
+}
+.aviso-version__botones {
+  display: flex;
+  gap: 0.4em;
+  margin-left: auto;
+}
+.aviso-version__si,
+.aviso-version__no {
+  min-height: 44px;
+  padding: 0 1em;
+  border: 0;
+  border-radius: 0.9em;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.aviso-version__si {
+  background: var(--color-amarillo);
+  color: var(--color-tinta);
+}
+.aviso-version__no {
+  background: transparent;
+  color: var(--texto-sobre-marca);
+  text-decoration: underline;
+}
+.aviso-version__si:focus-visible,
+.aviso-version__no:focus-visible {
+  outline: 3px solid var(--color-amarillo);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aviso-version {
+    animation: none;
+  }
+}
+/* Sin conexión: franja en el kit (tinta y amarillo). */
+.aviso-red {
+  align-items: center;
+  border-radius: 0 0 1.1em 1.1em;
+  font-weight: 600;
+}
+/* Pantallas del sistema (Sistema.tsx): sin conexión y página que no existe. */
+.sistema-hx__cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  padding: 1.5em 1.4em;
+  text-align: center;
+}
+.sistema-hx__titulo {
+  margin: 0.4em 0 0;
+  font-size: 1.6em;
+}
+.sistema-hx__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  max-width: 24em;
+  line-height: 1.5;
+}
+.sistema-hx__texto p {
+  margin: 0;
+}
+.sistema-hx__suave {
+  color: var(--hd-suave);
+  font-size: 0.9em;
+}
+.sistema-hx .du-pie .hd-boton--fantasma {
+  min-height: 44px;
+}

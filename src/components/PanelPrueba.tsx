@@ -7,6 +7,7 @@ import { emitir } from '@/data/eventos';
 import { CUENTA_PRUEBA, INVITACION_PRUEBA } from '@/data/prueba';
 import { ESCENARIOS } from '@/mapa/escenarios';
 import { Hoja } from './ui';
+import { hayVersionNueva } from './version';
 
 function irAEscenario(esc: (typeof ESCENARIOS)[number]): void {
   const destino = `${esc.entrada}${esc.id === 'nuevo-usuario' ? '' : `?escenario=${esc.id}`}`;
@@ -92,6 +93,23 @@ export function AvisoVistaPrueba() {
             </div>
           </section>
         ))}
+        <section aria-labelledby="pp-app">
+          <h3 id="pp-app" className="panel-prueba__grupo">
+            App
+          </h3>
+          <div className="panel-prueba__acciones">
+            <button
+              type="button"
+              onClick={() => {
+                // Simulación: "Actualizar" solo recarga (no hay un service worker nuevo de verdad).
+                hayVersionNueva({ actualizar: () => window.location.reload() });
+                setAbierto(false);
+              }}
+            >
+              Simular versión nueva
+            </button>
+          </div>
+        </section>
         <p className="panel-prueba__log" role="status" aria-live="polite">
           {registro || 'Sin acciones todavía.'}
         </p>

@@ -10,6 +10,7 @@ import { BotonHx } from './acceso';
 import { entra } from './hx';
 import { Icono } from './Icono';
 import { MapaHx } from './MapaHx';
+import { useHojaAzul } from './gestos';
 import { Enlace, ruta } from './nav';
 import { TituloDocumento } from './TituloDocumento';
 
@@ -36,6 +37,7 @@ export function PedidoBuscando({
   onRelanzar: () => void;
   onBusquedaManual: () => void;
 }) {
+  const hoja = useHojaAzul();
   const zona = p.ubicacion.barrio ?? p.ubicacion.ciudad;
   const f = p.fechaSolicitada;
   const cuando = f
@@ -79,10 +81,12 @@ export function PedidoBuscando({
       </div>
 
       <section
-        className="hd-hoja-azul du-hoja-azul du-hoja-azul--mapa du-buscando__hoja"
+        className="hd-hoja-azul du-hoja-azul du-hoja-azul--mapa du-buscando__hoja du-hoja-hx"
+        data-vt-destino
         aria-labelledby="buscando-titulo"
+        {...hoja.hoja}
       >
-        <span className="du-manija" aria-hidden="true" />
+        {hoja.manija}
         {p.estado === 'sin_respuesta' ? (
           <Image
             className="hd-handy du-buscando__handy"

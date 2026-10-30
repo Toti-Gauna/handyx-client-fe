@@ -23,7 +23,7 @@ export default function CambiarTrabajo() {
         </Enlace>
       </Vacio>
     );
-  if (t.estado === 'cargando') return <Cargando />;
+  if (t.estado === 'cargando') return <Cargando forma="detalle" />;
   if (t.estado === 'error' && t.error)
     return <ErrorEstado error={t.error} onReintentar={t.recargar} />;
   return t.datos ? <Formulario t={t.datos} /> : null;

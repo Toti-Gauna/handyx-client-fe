@@ -56,7 +56,7 @@ export default function Pago() {
         }}
       />
     );
-  if (!trabajo.datos || !pagos.datos) return <Cargando />;
+  if (!trabajo.datos || !pagos.datos) return <Cargando forma="detalle" />;
   return <Contenido t={trabajo.datos} pagos={pagos.datos.items} recargar={pagos.recargar} />;
 }
 

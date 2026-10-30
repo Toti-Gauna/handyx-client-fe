@@ -181,6 +181,7 @@ function Oferta({ p, i }: { p: Propuesta; i: number }) {
   return (
     <article
       className="du-oferta"
+      data-vt-origen
       aria-label={`${propia ? 'Tu contrapropuesta a' : 'Propuesta de'} ${e.nombrePublico}`}
       {...entra(i)}
     >

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useId, useRef } from 'react';
 import type { ErrorCliente } from '@/data/cliente';
 import { enfocarSiPrimerError } from './foco';
+import { UMBRAL_ARRASTRE, useArrastreVertical } from './gestos';
 import { Icono } from './Icono';
 import type { NombreIcono } from './trazos';
 
@@ -134,15 +135,55 @@ export function Aviso({
 }
 
 // ── Estados de pantalla ─────────────────────────────────────────────────────────────────────────────
-export function Cargando({ texto = 'Cargando…' }: { texto?: string }) {
+/**
+ * Carga con esqueletos que tienen la forma de la pantalla que viene (rediseño 3.9): tarjetas para las listas, el
+ * encabezado y los datos para un detalle, el mapa con su hoja azul para el seguimiento. Sin animación con "reducir
+ * movimiento". El texto queda para lectores de pantalla.
+ */
+export function Cargando({
+  texto = 'Cargando…',
+  forma = 'lista',
+}: {
+  texto?: string;
+  forma?: 'lista' | 'detalle' | 'mapa';
+}) {
   return (
-    <div role="status" aria-live="polite" className="estado">
-      <Image className="estado__handy" src="/img/handy-gota.webp" alt="" width={90} height={90} />
-      <p className="texto-suave">{texto}</p>
-      <div style={{ width: '100%' }} aria-hidden="true">
-        <div className="esqueleto" />
-        <div className="esqueleto" style={{ width: '70%' }} />
-      </div>
+    <div role="status" aria-live="polite" className={`esqueletos esqueletos--${forma}`}>
+      <span className="sr-only">{texto}</span>
+      {forma === 'mapa' ? (
+        <div aria-hidden="true" className="esqueletos__mapa">
+          <div className="esqueletos__hoja">
+            <i className="esqueleto esqueleto--manija" />
+            <i className="esqueleto esqueleto--titulo" />
+            <i className="esqueleto esqueleto--linea" />
+            <i className="esqueleto esqueleto--linea esqueleto--corta" />
+            <i className="esqueleto esqueleto--boton" />
+          </div>
+        </div>
+      ) : forma === 'detalle' ? (
+        <div aria-hidden="true" className="esqueletos__detalle">
+          <i className="esqueleto esqueleto--heroe" />
+          <i className="esqueleto esqueleto--titulo" />
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} className="esqueletos__fila">
+              <i className="esqueleto esqueleto--linea" />
+              <i className="esqueleto esqueleto--linea esqueleto--corta" />
+            </span>
+          ))}
+        </div>
+      ) : (
+        <ul aria-hidden="true" className="esqueletos__lista">
+          {[0, 1, 2].map((i) => (
+            <li key={i} className="esqueletos__tarjeta">
+              <i className="esqueleto esqueleto--icono" />
+              <span>
+                <i className="esqueleto esqueleto--linea" />
+                <i className="esqueleto esqueleto--linea esqueleto--corta" />
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -164,7 +205,7 @@ export function ErrorEstado({
   titulo?: string;
 }) {
   return (
-    <div className="estado" role="alert">
+    <div className="estado estado-hx" role="alert">
       <Image
         className="estado__handy"
         src={HANDY_ERROR[error.codigo] ?? '/img/handy-lamparita-rota.webp'}
@@ -172,7 +213,7 @@ export function ErrorEstado({
         width={110}
         height={110}
       />
-      <h2 className="subtitulo" style={{ margin: 0 }}>
+      <h2 className="hd-titulo hd-titulo--chico estado-hx__titulo">
         {titulo ??
           (error.codigo === 'no_encontrado'
             ? 'No lo encontramos'
@@ -180,11 +221,12 @@ export function ErrorEstado({
               ? 'No podés hacer esto'
               : 'No pudimos cargarlo')}
       </h2>
-      <p style={{ margin: 0 }}>{error.mensaje}</p>
+      <p className="estado-hx__texto">{error.mensaje}</p>
       {error.recuperable && onReintentar ? (
-        <Boton chico variante="azul" onClick={onReintentar} icono="reintentar">
+        <button type="button" className="hd-boton hd-boton--chico" onClick={onReintentar}>
+          <Icono nombre="reintentar" />
           Reintentar
-        </Boton>
+        </button>
       ) : null}
       {error.requestId ? (
         <p className="estado__codigo">Código para soporte: {error.requestId.slice(0, 8)}</p>
@@ -257,7 +299,18 @@ export function Hoja({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const refTitulo = useRef<HTMLHeadingElement>(null);
+  const refCuerpo = useRef<HTMLDivElement>(null);
   const idTitulo = useId();
+  // Bajarla con el dedo desde la manija la cierra (lo mismo que Escape o tocar afuera).
+  const arrastre = useArrastreVertical({
+    seguir: (dy) => {
+      const c = refCuerpo.current;
+      if (c) c.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
+    },
+    soltar: (dy) => {
+      if (cerrable && dy > UMBRAL_ARRASTRE * 1.5) onCerrar();
+    },
+  });
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
@@ -282,8 +335,12 @@ export function Hoja({
       }}
     >
       {abierta ? (
-        <div className="hoja__cuerpo">
-          <div className="hoja__manija" aria-hidden="true" />
+        <div className="hoja__cuerpo" ref={refCuerpo}>
+          <div
+            className={`hoja__manija${cerrable ? ' hoja__manija--arrastre' : ''}`}
+            aria-hidden="true"
+            {...(cerrable ? arrastre : {})}
+          />
           {handy ? (
             <Image className="hoja__handy" src={handy} alt="" width={96} height={96} />
           ) : null}

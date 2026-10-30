@@ -45,7 +45,7 @@ export default function DetallePropuesta() {
         </Enlace>
       </Vacio>
     );
-  if (prop.estado === 'cargando') return <Cargando />;
+  if (prop.estado === 'cargando') return <Cargando forma="detalle" />;
   if (prop.estado === 'error' && prop.error)
     return <ErrorEstado error={prop.error} onReintentar={prop.recargar} />;
   const p = prop.datos;
@@ -167,7 +167,12 @@ export default function DetallePropuesta() {
   return (
     <Pantalla arriba={<Barra titulo={titulo} volver={volver} />} pie={pie} clase="du-perfil">
       <div className="du-cuerpo du-propuesta">
-        <section className="du-heroe" aria-label={`Quién es ${e.nombrePublico}`} {...entra(1)}>
+        <section
+          className="du-heroe"
+          data-vt-destino
+          aria-label={`Quién es ${e.nombrePublico}`}
+          {...entra(1)}
+        >
           <AvatarHx
             nombre={e.nombrePublico}
             verificado={e.verificaciones.length > 0}

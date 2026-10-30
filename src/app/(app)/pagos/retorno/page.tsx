@@ -21,7 +21,8 @@ export default function RetornoPago() {
         </Enlace>
       </Vacio>
     );
-  if (pago.estado === 'cargando') return <Cargando texto="Consultando el estado de tu pago…" />;
+  if (pago.estado === 'cargando')
+    return <Cargando texto="Consultando el estado de tu pago…" forma="detalle" />;
   if (pago.estado === 'error' && pago.error)
     return <ErrorEstado error={pago.error} onReintentar={pago.recargar} />;
   const p = pago.datos;

@@ -23,7 +23,7 @@ export default function Contraoferta() {
         </Enlace>
       </Vacio>
     );
-  if (prop.estado === 'cargando') return <Cargando />;
+  if (prop.estado === 'cargando') return <Cargando forma="detalle" />;
   if (prop.estado === 'error' && prop.error)
     return <ErrorEstado error={prop.error} onReintentar={prop.recargar} />;
   if (!prop.datos) return null;

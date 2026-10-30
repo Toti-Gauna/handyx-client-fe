@@ -3,7 +3,7 @@ import '@fontsource-variable/dm-sans/index.css';
 import '@/styles/app.css';
 import type { Metadata, Viewport } from 'next';
 import { AvisoVistaPrueba } from '@/components/PanelPrueba';
-import { AvisoRed, RegistroSW } from '@/components/Pwa';
+import { AvisoRed, AvisoVersion, RegistroSW } from '@/components/Pwa';
 import { SCRIPT_SPLASH, Splash } from '@/components/Splash';
 import '@/styles/componentes.css';
 // Kit visual de la demo de la landing (generado con scripts/kit.mjs) y sus ajustes para la app.
@@ -40,6 +40,7 @@ export default function RaizLayout({ children }: { children: React.ReactNode }) 
         <Splash />
         <AvisoVistaPrueba />
         <AvisoRed />
+        <AvisoVersion />
         <RegistroSW />
         {children}
       </body>

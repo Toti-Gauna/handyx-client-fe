@@ -1,16 +1,17 @@
 'use client';
 
-import { Boton } from '@/components/ui';
+import { Icono } from '@/components/Icono';
 
 export function Reintentar() {
   return (
-    <div className="acciones" style={{ width: '100%' }}>
-      <Boton icono="reintentar" onClick={() => window.location.reload()}>
+    <>
+      <button type="button" className="hd-boton" onClick={() => window.location.reload()}>
+        <Icono nombre="reintentar" />
         Reintentar
-      </Boton>
-      <a className="boton boton--claro" href="/inicio/">
+      </button>
+      <a className="hd-boton hd-boton--fantasma" href="/inicio/">
         Ir al inicio
       </a>
-    </div>
+    </>
   );
 }

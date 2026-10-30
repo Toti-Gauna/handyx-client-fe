@@ -40,7 +40,7 @@ export default function ResenaTrabajo() {
         </Enlace>
       </Vacio>
     );
-  if (trabajo.estado === 'cargando') return <Cargando />;
+  if (trabajo.estado === 'cargando') return <Cargando forma="detalle" />;
   if (trabajo.estado === 'error' && trabajo.error)
     return <ErrorEstado error={trabajo.error} onReintentar={trabajo.recargar} />;
   const t = trabajo.datos;

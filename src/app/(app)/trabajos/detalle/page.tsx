@@ -7,6 +7,7 @@ import { BotonHx, Escena } from '@/components/acceso';
 import { AvatarHx, Barra, ChipEstado, Pantalla, entra } from '@/components/hx';
 import { Icono } from '@/components/Icono';
 import { MapaHx } from '@/components/MapaHx';
+import { useHojaAzul } from '@/components/gestos';
 import { Enlace, ruta } from '@/components/nav';
 import { TituloDocumento } from '@/components/TituloDocumento';
 import {
@@ -61,6 +62,7 @@ export default function DetalleTrabajo() {
   );
   const accion = useEnvio();
   const [hoja, setHoja] = useState<'cancelar' | 'terminar' | null>(null);
+  const hojaAzul = useHojaAzul();
   const [motivo, setMotivo] = useState<(typeof MOTIVOS)[number]['id']>('cambio_de_planes');
 
   if (!id)
@@ -71,7 +73,7 @@ export default function DetalleTrabajo() {
         </Enlace>
       </Vacio>
     );
-  if (trabajo.estado === 'cargando') return <Cargando />;
+  if (trabajo.estado === 'cargando') return <Cargando forma="mapa" />;
   if (trabajo.estado === 'error' && trabajo.error)
     return <ErrorEstado error={trabajo.error} onReintentar={trabajo.recargar} />;
   const t = trabajo.datos;
@@ -259,10 +261,12 @@ export default function DetalleTrabajo() {
           </span>
         </div>
         <section
-          className="hd-hoja-azul du-hoja-azul du-hoja-azul--mapa du-seg-hx"
+          className="hd-hoja-azul du-hoja-azul du-hoja-azul--mapa du-seg-hx du-hoja-hx"
+          data-vt-destino
           aria-labelledby="seg-titulo"
+          {...hojaAzul.hoja}
         >
-          <span className="du-manija" aria-hidden="true" />
+          {hojaAzul.manija}
           <div className="du-seg-hx__scroll">
             <h1 id="seg-titulo" className="du-buscando__titulo" aria-live="polite">
               {titulo}

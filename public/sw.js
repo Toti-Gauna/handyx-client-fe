@@ -6,7 +6,7 @@
 // persona. Las acciones no se encolan ni se reintentan solas: sin conexión, fallan a la vista.
 //
 // Si cambia la lógica de este archivo, subir VERSION: el navegador instala el nuevo y borra los cachés viejos.
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE_PAGINAS = `handyx-paginas-${VERSION}`;
 const CACHE_ESTATICOS = `handyx-estaticos-${VERSION}`;
 const MAX_ESTATICOS = 200;
@@ -45,6 +45,12 @@ self.addEventListener('install', (evento) => {
       await Promise.allSettled(recursosDe(html).map((u) => estaticos.add(u)));
     })(),
   );
+});
+
+// La versión nueva espera hasta que la persona toque "Actualizar" (la app manda este mensaje): nunca se cambia sola en el
+// medio de algo.
+self.addEventListener('message', (evento) => {
+  if (evento.data && evento.data.tipo === 'activar') self.skipWaiting();
 });
 
 self.addEventListener('activate', (evento) => {

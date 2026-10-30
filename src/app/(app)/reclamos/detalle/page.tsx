@@ -27,7 +27,7 @@ export default function DetalleReclamo() {
         </Enlace>
       </Vacio>
     );
-  if (r.estado === 'cargando') return <Cargando />;
+  if (r.estado === 'cargando') return <Cargando forma="detalle" />;
   if (r.estado === 'error' && r.error)
     return <ErrorEstado error={r.error} onReintentar={r.recargar} />;
   const x = r.datos;
