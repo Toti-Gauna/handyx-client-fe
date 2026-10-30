@@ -24,7 +24,11 @@ describe('deslizá para confirmar', () => {
   });
 
   it('nada se mueve solo para apurar la decisión', () => {
-    const bloque = ajustes.slice(ajustes.indexOf('/* Deslizá para confirmar'));
+    // Solo el bloque del deslizador: hasta la sección siguiente de ajustes.css.
+    const inicio = ajustes.indexOf('/* Deslizá para confirmar');
+    const fin = ajustes.indexOf('/* ──', inicio);
+    const bloque = ajustes.slice(inicio, fin === -1 ? undefined : fin);
+    expect(bloque).toMatch(/\.du-deslizar \{/);
     expect(bloque).not.toMatch(/animation:/);
   });
 });
