@@ -13,7 +13,13 @@ import { Cargando } from './ui';
  * Se comporta como una app nativa: la pantalla ocupa el alto y solo se desplaza su cuerpo.
  */
 /** Pantallas a pantalla completa, sin la barra de pestañas (chats y asistentes, como en la demo). */
-const SIN_BARRA = ['/handia/', '/pedir/', '/propuestas/contraoferta/'];
+const SIN_BARRA = [
+  '/handia/',
+  '/pedir/',
+  '/propuestas/contraoferta/',
+  '/trabajos/resena/',
+  '/reclamos/nuevo/',
+];
 
 export function MarcoApp({ children, barra }: { children: React.ReactNode; barra: boolean }) {
   const ruta = usePathname();

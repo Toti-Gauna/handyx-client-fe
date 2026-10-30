@@ -1,30 +1,48 @@
 'use client';
 
+import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { BotonHx, Escena } from '@/components/acceso';
+import { AvatarHx, Barra, ChipEstado, Pantalla, entra } from '@/components/hx';
+import { Icono } from '@/components/Icono';
 import { MapaHx } from '@/components/MapaHx';
 import { Enlace, ruta } from '@/components/nav';
-import { Desglose, PerfilProfesional } from '@/components/Propuesta';
-import { Encabezado } from '@/components/Titulo';
-import { Aviso, Boton, Cargando, Datos, ErrorEstado, Hoja, Pastilla, Vacio } from '@/components/ui';
+import { TituloDocumento } from '@/components/TituloDocumento';
+import {
+  Acordado,
+  EtapasObra,
+  HistorialTrabajo,
+  horarioAcordado,
+  totalAcordado,
+} from '@/components/Trabajo';
+import { Aviso, Boton, Cargando, ErrorEstado, Hoja, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { pesos } from '@/domain/dinero';
-import { ACTOR_TEXTO, RUBROS_INFO, etiquetaPago, etiquetaTrabajo } from '@/domain/etiquetas';
-import { cuando } from '@/domain/fechas';
+import { RUBROS_INFO, etiquetaPago, etiquetaTrabajo } from '@/domain/etiquetas';
 
 const MOTIVOS = [
   { id: 'cambio_de_planes', texto: 'Cambié de planes' },
   { id: 'no_se_presento', texto: 'El especialista no se presentó' },
   { id: 'otro', texto: 'Otro motivo' },
 ] as const;
-const ESTADO_ETAPA: Record<string, { texto: string; tono: 'azul' | 'gris' | 'ok' | 'alerta' }> = {
-  pendiente: { texto: 'Pendiente', tono: 'gris' },
-  en_curso: { texto: 'En curso', tono: 'azul' },
-  terminada_por_especialista: { texto: 'Falta tu confirmación', tono: 'alerta' },
-  confirmada: { texto: 'Confirmada', tono: 'ok' },
-};
 
+/** Las cuatro etapas del seguimiento (u-seguimiento). */
+const PASOS = [
+  { estado: 'agendado', texto: 'Confirmado' },
+  { estado: 'en_camino', texto: 'En camino' },
+  { estado: 'en_sitio', texto: 'Llegó' },
+  { estado: 'en_curso', texto: 'Trabajando' },
+] as const;
+type Activo = (typeof PASOS)[number]['estado'];
+const ACTIVOS: readonly Trabajo['estado'][] = PASOS.map((p) => p.estado);
+
+/**
+ * Trabajo contratado (rediseño 3.6). Mientras está activo, el seguimiento de la demo: tu casa en el mapa y la hoja azul
+ * con el paso actual (sin tiempos de llegada y sin seguir la ubicación de nadie). Cuando el especialista termina, se
+ * revisa y se confirma; recién confirmado, "¡Listo, quedó arreglado!" con el pago y la reseña.
+ */
 export default function DetalleTrabajo() {
   const id = useSearchParams().get('id');
   const trabajo = useConsulta('trabajo', id ? { parametros: { id } } : null, { cada: 4_000 });
@@ -58,15 +76,15 @@ export default function DetalleTrabajo() {
     return <ErrorEstado error={trabajo.error} onReintentar={trabajo.recargar} />;
   const t = trabajo.datos;
   if (!t) return null;
-  const e = etiquetaTrabajo(t);
+  const esp = t.especialista.nombrePublico;
   const cambioPendiente =
     propuestas.datos?.items.find(
       (p) => p.tipo !== 'cotizacion' && p.estado === 'pendiente' && p.trabajoId === t.id,
     ) ?? null;
   const pagosTrabajo = pagos.datos?.items ?? [];
-  const activo = ['agendado', 'en_camino', 'en_sitio', 'en_curso'].includes(t.estado);
   const cancelable = ['agendado', 'en_camino', 'en_sitio'].includes(t.estado);
   const rubro = pedido.datos?.rubro;
+  const casa = pedido.datos?.ubicacion ?? null;
 
   async function ejecutar(x: Trabajo, que: 'cancelar' | 'terminar') {
     const r =
@@ -87,261 +105,64 @@ export default function DetalleTrabajo() {
       eventos.recargar();
     }
   }
-  async function confirmarEtapa(x: Trabajo, etapaId: string, version: number) {
+  async function confirmarEtapa(etapaId: string, version: number) {
     const r = await accion.enviar(
       'etapaConfirmar',
-      { parametros: { id: x.id, etapaId }, cuerpo: { version } },
+      { parametros: { id: t!.id, etapaId }, cuerpo: { version } },
       `${etapaId}|${version}`,
     );
     if (r?.ok) trabajo.recargar();
   }
 
-  return (
+  const avisoError = accion.error ? (
+    <Aviso
+      tipo={accion.error.codigo === 'conflicto' ? 'alerta' : 'error'}
+      titulo={accion.error.codigo === 'conflicto' ? 'Esto cambió' : 'No se pudo'}
+    >
+      <p>{accion.error.mensaje}</p>
+      {accion.error.codigo === 'conflicto' ? (
+        <Boton
+          chico
+          variante="claro"
+          onClick={() => {
+            accion.limpiar();
+            trabajo.recargar();
+          }}
+        >
+          Actualizar
+        </Boton>
+      ) : null}
+    </Aviso>
+  ) : null;
+  const avisoCambio = cambioPendiente ? (
+    <Aviso
+      tipo="alerta"
+      titulo={
+        cambioPendiente.autorRol === 'especialista'
+          ? `${esp} propone un cambio`
+          : 'Tu cambio está esperando respuesta'
+      }
+    >
+      <p>Mientras no se acepte, sigue valiendo el acuerdo actual.</p>
+      <Enlace
+        className="enlace-tarjeta"
+        href={ruta('/propuestas/detalle/', { id: cambioPendiente.id })}
+      >
+        {cambioPendiente.autorRol === 'especialista' ? 'Ver y responder' : 'Ver el cambio'}
+      </Enlace>
+    </Aviso>
+  ) : null;
+  const reclamo = (
+    <Enlace
+      className="hd-boton hd-boton--fantasma"
+      href={ruta('/reclamos/nuevo/', { pedido: t.pedidoId, trabajo: t.id })}
+    >
+      Abrir un reclamo
+    </Enlace>
+  );
+
+  const hojas = (
     <>
-      <Encabezado
-        titulo={
-          rubro
-            ? `${RUBROS_INFO[rubro].nombre} con ==${t.especialista.nombrePublico}==`
-            : `Trabajo con ==${t.especialista.nombrePublico}==`
-        }
-        volver={{ href: '/pedidos/', etiqueta: 'Volver a mis pedidos' }}
-        bajada={
-          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-            {e.texto}
-          </Pastilla>
-        }
-      />
-
-      {t.estado === 'en_camino' && pedido.datos?.ubicacion.coordenadas ? (
-        // Por ahora, solo tu casa: la posición aproximada del especialista (solo mientras viaja) llega con el contrato
-        // del BE (trabajoUbicacionEspecialista, Fase 4). Nunca un tiempo de llegada.
-        <MapaHx
-          modo="ver"
-          centro={pedido.datos.ubicacion.coordenadas}
-          etiqueta="Mapa: tu casa, donde va el especialista"
-          clase="detalle-mapa"
-        />
-      ) : null}
-      {t.estado === 'en_camino' ? (
-        <Aviso tipo="info" titulo="El especialista va en camino" rol="status">
-          Te avisamos cuando llegue.
-        </Aviso>
-      ) : null}
-      {t.estado === 'en_sitio' ? (
-        <Aviso tipo="ok" titulo="El especialista avisó que llegó" rol="status">
-          Lo marcó él desde su celular. Nosotros no seguimos tu ubicación ni la suya.
-        </Aviso>
-      ) : null}
-      {t.estado === 'terminado_por_especialista' ? (
-        <Aviso tipo="alerta" titulo="El especialista terminó el trabajo" rol="status">
-          Revisá que esté todo bien y confirmalo. Si hay un problema, abrí un reclamo.
-        </Aviso>
-      ) : null}
-      {t.estado === 'finalizado' ? (
-        <Aviso tipo="ok">Trabajo finalizado. Si falta algo, podés abrir un reclamo.</Aviso>
-      ) : null}
-      {t.estado === 'cancelado' ? <Aviso tipo="info">Este trabajo se canceló.</Aviso> : null}
-      {cambioPendiente ? (
-        <Aviso
-          tipo="alerta"
-          titulo={
-            cambioPendiente.autorRol === 'especialista'
-              ? 'El especialista propone un cambio'
-              : 'Tu cambio está esperando respuesta'
-          }
-        >
-          <p>Mientras no se acepte, sigue valiendo el acuerdo actual.</p>
-          <Enlace
-            className="enlace-tarjeta"
-            href={ruta('/propuestas/detalle/', { id: cambioPendiente.id })}
-          >
-            {cambioPendiente.autorRol === 'especialista' ? 'Ver y responder' : 'Ver el cambio'}
-          </Enlace>
-        </Aviso>
-      ) : null}
-      {accion.error ? (
-        <Aviso
-          tipo={accion.error.codigo === 'conflicto' ? 'alerta' : 'error'}
-          titulo={accion.error.codigo === 'conflicto' ? 'Esto cambió' : 'No se pudo'}
-        >
-          <p>{accion.error.mensaje}</p>
-          {accion.error.codigo === 'conflicto' ? (
-            <Boton
-              chico
-              variante="claro"
-              onClick={() => {
-                accion.limpiar();
-                trabajo.recargar();
-              }}
-            >
-              Actualizar
-            </Boton>
-          ) : null}
-        </Aviso>
-      ) : null}
-
-      <section className="tarjeta" aria-labelledby="acuerdo">
-        <div className="tarjeta__cuerpo">
-          <h2 id="acuerdo" className="tarjeta__titulo">
-            Lo acordado
-          </h2>
-          <Desglose
-            monto={t.acuerdo.monto}
-            comision={t.acuerdo.comisionHandy}
-            etiquetaTotal="Total acordado"
-          />
-          <Datos
-            filas={[
-              [
-                'Horario',
-                t.acuerdo.horario
-                  ? cuando(t.acuerdo.horario.inicio)
-                  : 'A coordinar con el especialista',
-              ],
-              ['Aceptado', cuando(t.acuerdo.aceptadoEn)],
-            ]}
-          />
-          <p style={{ margin: '10px 0 0' }}>{t.acuerdo.alcance}</p>
-          <hr style={{ border: 0, borderTop: '1px solid var(--linea)', margin: '12px 0' }} />
-          <PerfilProfesional e={t.especialista} />
-          {t.historialAcuerdos.length ? (
-            <details style={{ marginTop: 10 }}>
-              <summary>Acuerdos anteriores ({t.historialAcuerdos.length})</summary>
-              <ul className="lista-plana">
-                {[...t.historialAcuerdos].reverse().map((a) => (
-                  <li key={a.propuestaId}>
-                    {pesos(a.monto.centavos)} ·{' '}
-                    {a.horario ? cuando(a.horario.inicio) : 'sin horario'} · aceptado{' '}
-                    {cuando(a.aceptadoEn)}
-                  </li>
-                ))}
-              </ul>
-            </details>
-          ) : null}
-        </div>
-      </section>
-
-      {t.etapas.length ? (
-        <section aria-labelledby="etapas">
-          <h2 id="etapas" className="subtitulo">
-            Etapas de la obra
-          </h2>
-          {t.etapas.map((et) => {
-            const s = ESTADO_ETAPA[et.estado] ?? ESTADO_ETAPA.pendiente!;
-            return (
-              <div key={et.id} className="etapa">
-                <div className="tarjeta__fila">
-                  <strong>
-                    {et.orden}. {et.titulo}
-                  </strong>
-                  <Pastilla tono={s.tono}>{s.texto}</Pastilla>
-                </div>
-                <p style={{ margin: '4px 0 0' }}>{pesos(et.monto.centavos)}</p>
-                {et.estado === 'terminada_por_especialista' ? (
-                  <div className="acciones">
-                    <Boton
-                      chico
-                      cargando={accion.pendiente}
-                      onClick={() => confirmarEtapa(t, et.id, et.version)}
-                    >
-                      Confirmar esta etapa
-                    </Boton>
-                  </div>
-                ) : null}
-              </div>
-            );
-          })}
-        </section>
-      ) : null}
-
-      {pagosTrabajo.length ? (
-        <section aria-labelledby="pagos-r">
-          <h2 id="pagos-r" className="subtitulo">
-            Pagos
-          </h2>
-          <ul className="lista-plana" style={{ listStyle: 'none', padding: 0 }}>
-            {pagosTrabajo.map((p) => {
-              const ep = etiquetaPago(p);
-              return (
-                <li key={p.id}>
-                  {pesos(p.monto.centavos)} ·{' '}
-                  {p.metodo === 'efectivo' ? 'Efectivo' : 'Mercado Pago'}{' '}
-                  <Pastilla tono={ep.tono} {...(ep.icono ? { icono: ep.icono } : {})}>
-                    {ep.texto}
-                  </Pastilla>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ) : null}
-
-      <div className="acciones">
-        {t.estado === 'terminado_por_especialista' &&
-        t.etapas.every((x) => x.estado === 'confirmada') ? (
-          <Boton
-            icono="check"
-            onClick={() => {
-              accion.limpiar();
-              setHoja('terminar');
-            }}
-          >
-            Confirmar que terminó
-          </Boton>
-        ) : null}
-        <Enlace
-          className="boton boton--claro"
-          href={ruta('/chats/conversacion/', { id: t.conversacionId })}
-        >
-          Chatear con {t.especialista.nombrePublico}
-        </Enlace>
-        {['en_curso', 'terminado_por_especialista', 'finalizado'].includes(t.estado) ? (
-          <Enlace className="boton boton--claro" href={ruta('/trabajos/pago/', { id: t.id })}>
-            Pago al especialista
-          </Enlace>
-        ) : null}
-        {activo ? (
-          <Enlace className="boton boton--contorno" href={ruta('/trabajos/cambiar/', { id: t.id })}>
-            Cambiar turno o condiciones
-          </Enlace>
-        ) : null}
-        <Enlace
-          className="boton boton--texto"
-          href={ruta('/reclamos/nuevo/', { pedido: t.pedidoId, trabajo: t.id })}
-        >
-          Abrir un reclamo
-        </Enlace>
-        {cancelable ? (
-          <Boton
-            variante="peligro"
-            icono="cerrar"
-            onClick={() => {
-              accion.limpiar();
-              setHoja('cancelar');
-            }}
-          >
-            Cancelar el trabajo
-          </Boton>
-        ) : null}
-      </div>
-
-      <h2 className="subtitulo">Historial</h2>
-      {eventos.datos ? (
-        <ol className="linea">
-          {eventos.datos.items.map((ev) => (
-            <li key={ev.id} className="linea__item">
-              <strong>{etiquetaTrabajo({ estado: ev.a }).texto}</strong>
-              <br />
-              <span className="linea__quien">
-                {cuando(ev.ocurridoEn)} · {ACTOR_TEXTO[ev.actor] ?? ev.actor}
-              </span>
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <Cargando />
-      )}
-
       <Hoja
         abierta={hoja === 'cancelar'}
         onCerrar={() => setHoja(null)}
@@ -383,8 +204,8 @@ export default function DetalleTrabajo() {
       >
         <p>
           Vas a confirmar que el trabajo quedó como se acordó:{' '}
-          <strong>{pesos(t.acuerdo.monto.centavos)}</strong>. Después podés pagar y, si hace falta,
-          abrir un reclamo.
+          <strong>{pesos(totalAcordado(t))}</strong>. Después podés pagar y, si hace falta, abrir un
+          reclamo.
         </p>
         {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
         <div className="acciones">
@@ -397,5 +218,264 @@ export default function DetalleTrabajo() {
         </div>
       </Hoja>
     </>
+  );
+
+  // ── Seguimiento (u-seguimiento) ────────────────────────────────────────────────────────────────────
+  if (ACTIVOS.includes(t.estado)) {
+    const actual = ACTIVOS.indexOf(t.estado);
+    const titulo = {
+      agendado: `${esp} confirmó tu turno`,
+      en_camino: `${esp} va para tu casa`,
+      en_sitio: `${esp} llegó a tu casa`,
+      en_curso: `${esp} está trabajando`,
+    }[t.estado as Activo];
+    const nota = {
+      agendado: 'Cuando salga para tu casa, te avisamos.',
+      en_camino: 'Va en el horario que acordaron. Cuando llegue, lo marca él desde su celular.',
+      en_sitio: 'Lo marcó él desde su celular al llegar.',
+      en_curso:
+        'Si te propone algún cambio o adicional, te avisamos: hasta que lo aceptes, no cambia nada.',
+    }[t.estado as Activo];
+    return (
+      <div className="pantalla du-app du-mapa-pantalla du-seguimiento-hx hd-entrando">
+        <TituloDocumento texto={titulo} />
+        <div className="du-mapa-zona">
+          {casa?.coordenadas ? (
+            <MapaHx
+              modo="ver"
+              centro={casa.coordenadas}
+              etiqueta="Mapa: tu casa, donde es el trabajo"
+              clase="du-buscando__mapa"
+            />
+          ) : (
+            <div className="du-buscando__sin-mapa" aria-hidden="true" />
+          )}
+          <Enlace href="/pedidos/" className="du-atras du-flotante" aria-label="Volver a Actividad">
+            <Icono nombre="atras" />
+          </Enlace>
+          <span className="hd-chip hd-chip--noche du-mapa-chip" {...entra(1, 'pop')}>
+            <Icono nombre="reloj" />
+            {horarioAcordado(t)}
+          </span>
+        </div>
+        <section
+          className="hd-hoja-azul du-hoja-azul du-hoja-azul--mapa du-seg-hx"
+          aria-labelledby="seg-titulo"
+        >
+          <span className="du-manija" aria-hidden="true" />
+          <div className="du-seg-hx__scroll">
+            <h1 id="seg-titulo" className="du-buscando__titulo" aria-live="polite">
+              {titulo}
+            </h1>
+            <ol className="du-pasos-seg" aria-label={`Paso ${actual + 1} de ${PASOS.length}`}>
+              {PASOS.map((p, i) => (
+                <li
+                  key={p.estado}
+                  className={i < actual ? 'is-hecho' : i === actual ? 'is-actual' : ''}
+                  aria-current={i === actual ? 'step' : undefined}
+                >
+                  <i aria-hidden="true">{i < actual ? <Icono nombre="check" /> : null}</i>
+                  <span>{p.texto}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="du-hoja-azul__nota" role="status">
+              <Icono nombre="info" />
+              <span>{nota}</span>
+            </p>
+            {avisoCambio}
+            {avisoError}
+            <Acordado t={t} desplegable />
+            <EtapasObra t={t} pendiente={accion.pendiente} onConfirmar={confirmarEtapa} />
+            <div className="du-seg-hx__acciones">
+              {t.estado === 'en_curso' ? (
+                <Enlace
+                  className="hd-boton hd-boton--blanco"
+                  href={ruta('/trabajos/pago/', { id: t.id })}
+                >
+                  <Icono nombre="billetera" />
+                  Pago al especialista
+                </Enlace>
+              ) : null}
+              <Enlace
+                className="hd-boton du-boton-borde"
+                href={ruta('/trabajos/cambiar/', { id: t.id })}
+              >
+                Cambiar turno o condiciones
+              </Enlace>
+              <Enlace
+                className="du-buscando__cancelar"
+                href={ruta('/reclamos/nuevo/', { pedido: t.pedidoId, trabajo: t.id })}
+              >
+                Abrir un reclamo
+              </Enlace>
+              {cancelable ? (
+                <button
+                  type="button"
+                  className="du-buscando__cancelar"
+                  onClick={() => {
+                    accion.limpiar();
+                    setHoja('cancelar');
+                  }}
+                >
+                  Cancelar el trabajo
+                </button>
+              ) : null}
+            </div>
+            <p className="du-hoja-azul__nota">
+              <Icono nombre="escudo" />
+              <span>Nosotros no seguimos tu ubicación ni la del especialista.</span>
+            </p>
+            <HistorialTrabajo eventos={eventos.datos?.items ?? null} />
+          </div>
+          <div className="du-seg-hx__pie">
+            <AvatarHx nombre={esp} tamano="chico" clase="du-avatar-blanco" />
+            <span>
+              <small>Tu especialista es</small>
+              <strong>{esp}</strong>
+            </span>
+            <Enlace
+              href={ruta('/chats/conversacion/', { id: t.conversacionId })}
+              className="app-cuadrado du-seg-hx__chat"
+              aria-label={`Chatear con ${esp}`}
+            >
+              <Icono nombre="chat" />
+            </Enlace>
+          </div>
+        </section>
+        {hojas}
+      </div>
+    );
+  }
+
+  // ── Cierre (u-terminado) y cancelado ─────────────────────────────────────────────────────────────
+  const finalizado = t.estado === 'finalizado';
+  const etapasListas = t.etapas.every((x) => x.estado === 'confirmada');
+  const ultimoPago = [...pagosTrabajo].reverse().find((p) => p.etapaId === null) ?? null;
+  const pagoHecho = ultimoPago !== null && ['reportado', 'verificado'].includes(ultimoPago.estado);
+  const titulo =
+    t.estado === 'cancelado'
+      ? 'Trabajo ==cancelado=='
+      : finalizado
+        ? '¡Listo, quedó ==arreglado==!'
+        : `${esp} ==terminó== el trabajo`;
+  const pie =
+    t.estado === 'terminado_por_especialista' ? (
+      <>
+        {etapasListas ? (
+          <BotonHx
+            icono="check"
+            onClick={() => {
+              accion.limpiar();
+              setHoja('terminar');
+            }}
+          >
+            Confirmar que terminó
+          </BotonHx>
+        ) : null}
+        <Enlace className="hd-boton hd-boton--claro" href={ruta('/trabajos/pago/', { id: t.id })}>
+          Pago al especialista
+        </Enlace>
+        {reclamo}
+      </>
+    ) : finalizado ? (
+      <>
+        <Enlace
+          className={`hd-boton ${pagoHecho ? 'hd-boton--claro' : 'hd-boton--exito'}`}
+          href={ruta('/trabajos/pago/', { id: t.id })}
+        >
+          Pago al especialista
+        </Enlace>
+        <Enlace className="hd-boton" href={ruta('/trabajos/resena/', { id: t.id })}>
+          <Icono nombre="estrella" />
+          Calificar a {esp}
+        </Enlace>
+        {reclamo}
+      </>
+    ) : (
+      <Enlace className="hd-boton hd-boton--claro" href="/pedir/">
+        Hacer un pedido nuevo
+      </Enlace>
+    );
+
+  return (
+    <Pantalla
+      arriba={
+        <Barra
+          titulo={rubro ? `${RUBROS_INFO[rubro].nombre} con ==${esp}==` : `Trabajo con ==${esp}==`}
+          volver={{ href: '/pedidos/', etiqueta: 'Volver a mis pedidos' }}
+        />
+      }
+      pie={pie}
+      clase="du-cierre"
+    >
+      <div className="du-cuerpo du-terminado">
+        {finalizado ? (
+          <Escena handy="handys-grupo" ancho={600} alto={311} tilde />
+        ) : t.estado === 'terminado_por_especialista' ? (
+          <Escena handy="handy-llave" ancho={581} alto={547} tono="amarillo" />
+        ) : (
+          <Image
+            className="hd-handy du-cierre__roto"
+            src="/img/handy-engranaje-roto.webp"
+            alt=""
+            width={338}
+            height={339}
+          />
+        )}
+        <p className="hd-titulo du-centro du-cierre__titulo" {...entra(2)}>
+          {titulo.split(/==(.+?)==/).map((x, i) => (i % 2 ? <mark key={i}>{x}</mark> : x))}
+        </p>
+        <p className="du-centro du-cierre__estado">
+          <ChipEstado e={etiquetaTrabajo(t)} />
+        </p>
+        {t.estado === 'terminado_por_especialista' ? (
+          <Aviso tipo="alerta" titulo="Falta tu confirmación" rol="status">
+            Revisá que esté todo como se acordó y confirmalo. Si hay un problema, abrí un reclamo.
+            {etapasListas ? null : ' Primero confirmá cada etapa de la obra.'}
+          </Aviso>
+        ) : null}
+        {finalizado ? (
+          <p className="du-nota">
+            <Icono nombre="checkCirculo" />
+            <span>
+              Trabajo finalizado: lo confirmaste vos. Si falta algo, podés abrir un reclamo.
+            </span>
+          </p>
+        ) : null}
+        {t.estado === 'cancelado' ? <Aviso tipo="info">Este trabajo se canceló.</Aviso> : null}
+        {avisoCambio}
+        {avisoError}
+        <EtapasObra t={t} pendiente={accion.pendiente} onConfirmar={confirmarEtapa} />
+
+        {finalizado || pagosTrabajo.length ? (
+          <div className="hd-ticket du-ticket du-ticket--pago" {...entra(3)}>
+            <div className="hd-ticket__papel">
+              <div className="du-ticket__total">
+                <small className="hd-sobre">
+                  {pagoHecho ? 'Registraste el pago' : 'Total a pagar'}
+                </small>
+                <span className="hd-precio hd-precio--grande">{pesos(totalAcordado(t))}</span>
+                {ultimoPago ? <ChipEstado e={etiquetaPago(ultimoPago)} /> : null}
+              </div>
+              <div className="hd-ticket__corte" />
+              <p className="du-ticket__abajo du-cierre__pago-nota">
+                Directo a {esp}, por Mercado Pago o en efectivo. Un pago que registrás vos queda
+                “reportado” hasta que lo confirma otra parte.
+              </p>
+            </div>
+          </div>
+        ) : null}
+        <Acordado t={t} />
+        <HistorialTrabajo eventos={eventos.datos?.items ?? null} />
+        <Enlace
+          className="hd-boton hd-boton--claro"
+          href={ruta('/chats/conversacion/', { id: t.conversacionId })}
+        >
+          Chatear con {esp}
+        </Enlace>
+      </div>
+      {hojas}
+    </Pantalla>
   );
 }

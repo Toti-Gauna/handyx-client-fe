@@ -2,7 +2,7 @@
 
 # Matriz pantalla → acción → estado → API → entidad → prueba
 
-35 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
+36 pantallas/modales · 54 endpoints del contrato v1 · 18 escenarios mock.
 Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/data-model.md).
 
 ## Acceso
@@ -60,6 +60,7 @@ Entidades: nombres lógicos de TECH-03 (diccionario en handyx-client-be/docs/dat
 | **Trabajo**<br><sub>demo: u-seguimiento, u-terminado</sub> | `/trabajos/detalle/?id` | 2.4 | Ver acuerdo vigente e historial<br>Confirmar que terminó<br>Confirmar etapa (obra)<br>Cancelar<br>Pagar<br>Reclamar | agendado<br>en_camino<br>en_sitio ("Llegué" del especialista)<br>en_curso<br>terminado_por_especialista<br>finalizado<br>cancelado | `GET /v1/trabajos/{id}`<br>`GET /v1/trabajos/{id}/eventos`<br>`POST /v1/trabajos/{id}/confirmar-fin`<br>`POST /v1/trabajos/{id}/etapas/{etapaId}/confirmar`<br>`POST /v1/trabajos/{id}/cancelar` | jobs<br>job_events | el acuerdo no cambia sin otra propuesta aceptada<br>cada cambio de estado tiene actor y fecha |
 | **Cambiar turno o condiciones**<br><sub>demo: u-cambiar, u-cancelar</sub> | `/trabajos/cambiar/?id` | 2.4 | Proponer otra fecha, hora, alcance o monto | inicial<br>enviando<br>pendiente (vale el acuerdo actual)<br>aceptada<br>rechazada | `GET /v1/trabajos/{id}`<br>`POST /v1/trabajos/{id}/propuestas` | proposals<br>jobs | mientras está pendiente se conserva el turno actual |
 | **Tu agenda**<br><sub>demo: u-turnos, u-turno-detalle</sub> | `/agenda/` | 2.4 | Elegir día<br>Abrir trabajo | cargando<br>dia_vacio<br>dia_con_trabajos<br>error_reintentable | `GET /v1/trabajos` | jobs | días en Buenos Aires aunque el celular esté en otra zona |
+| **Calificar el trabajo**<br><sub>demo: u-resena</sub> | `/trabajos/resena/?id` | 3.6 | Estrellas de 1 a 5<br>Lo mejor o lo que estuvo mal (chips)<br>Comentario opcional sin datos personales | todavía no se puede (trabajo sin confirmar)<br>calificando<br>enviada → gracias<br>funcion_inactiva (API real sin resenaCrear) | `GET /v1/trabajos/{id}`<br>`GET /v1/pedidos/{id}` | — | solo después de confirmar que terminó<br>el comentario se envía sin teléfonos, emails ni documentos<br>con la API real queda inactiva hasta resenaCrear (Fase 4.4) |
 
 ## Pagos
 

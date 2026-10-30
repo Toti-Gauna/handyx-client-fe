@@ -1662,3 +1662,453 @@ body {
   white-space: normal;
   text-align: start;
 }
+
+/* ── Lote 3.6 · Trabajo en curso y cierre ────────────────────────────────────────────────────────── */
+.hx-cuerpo > .du-seguimiento-hx {
+  background: var(--hd-mosaico);
+}
+.du-seguimiento-hx .du-mapa-zona {
+  margin: 0 0 -1.9em;
+  min-height: 7em;
+}
+.hx .du-seguimiento-hx .du-flotante {
+  z-index: 4;
+  top: 1em;
+  width: 44px;
+  height: 44px;
+  background: var(--sup-tarjeta);
+}
+.du-seguimiento-hx .du-mapa-chip {
+  z-index: 4;
+  top: 1.2em;
+  max-width: calc(100% - 6em);
+  height: auto;
+  white-space: normal;
+}
+.du-seg-hx {
+  max-height: 68%;
+  padding-bottom: 0;
+}
+.du-seg-hx__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 0.6em;
+}
+.du-pasos-seg {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.3em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-pasos-seg li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 0.64em;
+  font-weight: 800;
+}
+.du-pasos-seg i {
+  display: grid;
+  place-items: center;
+  height: 0.55em;
+  border-radius: 1em;
+  background: rgb(255 255 255 / 0.22);
+}
+.du-pasos-seg .icono {
+  display: none;
+}
+.du-pasos-seg .is-hecho i {
+  background: var(--hd-amarillo);
+}
+.du-pasos-seg .is-actual {
+  color: var(--texto-sobre-marca);
+}
+.du-pasos-seg .is-actual i {
+  background: var(--sup-tarjeta);
+}
+.du-seg-hx .aviso {
+  color: var(--hd-tinta);
+}
+.du-seg-hx__acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.hx a.du-buscando__cancelar {
+  display: grid;
+  place-items: center;
+}
+.du-seg-hx__pie {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin: 0 -1.2em;
+  padding: 0.7em 1.2em max(0.9em, calc(env(safe-area-inset-bottom, 0px) + 0.5em));
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+  flex: none;
+}
+.du-seg-hx__pie > span:not(.hd-avatar) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.du-seg-hx__pie small {
+  color: rgb(255 255 255 / 0.8);
+  font-size: 0.66em;
+}
+.du-seg-hx__pie strong {
+  font-size: 0.86em;
+}
+.hx .du-seg-hx__chat {
+  width: 44px;
+  height: 44px;
+}
+/* Lo acordado: tarjeta o desplegable (en la hoja azul). */
+.du-acordado {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  color: var(--hd-tinta);
+}
+.du-acordado > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+}
+.du-acordado > summary::-webkit-details-marker {
+  display: none;
+}
+.du-acordado > summary > span:first-child {
+  display: flex;
+  flex-direction: column;
+}
+.du-acordado > summary small,
+.du-acordado__aceptado {
+  color: var(--hd-suave);
+  font-size: 0.68em;
+  font-weight: 700;
+}
+.du-acordado__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--hd-azul);
+  font-size: 0.74em;
+  font-weight: 800;
+}
+.du-acordado__ver .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-acordado[open] .du-acordado__ver .icono {
+  transform: rotate(180deg);
+}
+.du-acordado__titulo {
+  margin: 0;
+  font-size: 0.95em;
+}
+.du-acordado__plata {
+  margin: 0;
+}
+.du-acordado__plata dd {
+  margin: 0;
+  font-weight: 800;
+}
+.du-acordado__dato {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+}
+.du-acordado__dato .icono {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--hd-azul);
+}
+.du-acordado__dato span {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78em;
+}
+.du-acordado__alcance {
+  margin: 0;
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.du-acordado__antes {
+  font-size: 0.74em;
+}
+.du-acordado__antes summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--hd-azul);
+  font-weight: 800;
+  cursor: pointer;
+}
+/* Etapas de una obra. */
+.du-etapas-obra {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.du-seg-hx .du-etapas-obra .du-sobre {
+  color: rgb(255 255 255 / 0.85);
+}
+.du-etapas-obra ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-etapa-obra {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  padding: 0.7em 0.85em;
+  border-radius: 1em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-tinta);
+}
+.du-etapa-obra__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  font-size: 0.82em;
+}
+.du-etapa-obra__monto {
+  color: var(--hd-suave);
+  font-size: 0.74em;
+  font-weight: 700;
+}
+/* Historial del trabajo. */
+.du-historial-trabajo {
+  font-size: 0.78em;
+}
+.du-historial-trabajo summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.du-seg-hx .du-historial-trabajo summary {
+  color: var(--texto-sobre-marca);
+}
+.du-historial-trabajo ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  margin: 0;
+  padding: 0 0 0 1em;
+}
+.du-historial-trabajo li span {
+  display: block;
+  opacity: 0.8;
+  font-size: 0.9em;
+}
+/* Cierre (u-terminado). */
+.du-cierre .du-escena {
+  margin-bottom: -0.4em;
+}
+.du-cierre__titulo {
+  font-size: min(1.5em, 9vw);
+}
+.du-cierre__estado {
+  margin: -0.4em 0 0;
+}
+.du-cierre__roto {
+  align-self: center;
+  width: auto;
+  height: 5.5em;
+}
+.du-cierre__pago-nota {
+  margin: 0;
+  color: var(--hd-suave);
+  font-size: 0.72em;
+  line-height: 1.4;
+}
+.du-ticket__total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25em;
+}
+/* Pago al especialista. */
+.du-pago-objetivo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+}
+.du-pago-objetivo__metodo {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  font-size: 0.78em;
+  font-weight: 700;
+}
+.du-pago-objetivo__metodo .icono {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--hd-azul);
+}
+.du-pago-objetivo__explica {
+  margin: 0;
+  color: var(--hd-suave);
+  font-size: 0.72em;
+  line-height: 1.4;
+}
+.du-pago-objetivo__comprobante {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  align-self: flex-start;
+  min-height: 44px;
+  color: var(--hd-azul);
+  font-size: 0.76em;
+  font-weight: 800;
+  text-decoration: underline;
+}
+.du-pago-objetivo__comprobante .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-pagos--elegir {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+}
+.du-pagos--elegir .du-pago {
+  position: relative;
+  cursor: pointer;
+}
+.du-pagos--elegir input {
+  position: absolute;
+  top: 0.7em;
+  right: 0.7em;
+  width: 1.2em;
+  height: 1.2em;
+  accent-color: var(--hd-azul);
+}
+.du-pagos--elegir .du-pago:has(input:checked) {
+  background: var(--hd-azul-tinte);
+  box-shadow:
+    inset 0 0 0 0.14em var(--hd-azul),
+    0 0.24em 0 var(--hd-mosaico-hondo);
+}
+.du-pagos--elegir .du-pago:has(input:focus-visible) {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 2px;
+}
+.du-pagos--elegir small {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.du-pago-hoja__que {
+  margin: 0;
+}
+.du-comprobante__datos {
+  margin: 0;
+}
+.du-comprobante__datos dd {
+  margin: 0;
+  font-weight: 800;
+  text-align: end;
+}
+/* Reseña (u-resena). */
+.du-resena-hx__quien {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  text-align: center;
+}
+.du-estrellas-hx {
+  display: flex;
+  justify-content: center;
+  gap: 0.3em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.du-estrella-hx {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 1em;
+  color: var(--hd-mosaico-hondo);
+  transition: transform 0.2s var(--hd-resorte);
+}
+.du-estrella-hx .icono {
+  width: 2em;
+  height: 2em;
+}
+.du-estrella-hx[aria-pressed='true'] {
+  color: var(--hd-amarillo-hondo);
+}
+.du-estrella-hx[aria-pressed='true'] .icono {
+  fill: var(--hd-amarillo);
+}
+:where(.hx) .du-estrella-hx:active {
+  transform: scale(0.9);
+}
+.du-resena-hx__ayuda {
+  margin: -0.4em 0 0;
+  color: var(--hd-suave);
+  font-size: 0.76em;
+  font-weight: 700;
+  text-align: center;
+}
+.du-resena-hx__chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.du-resena-hx__chips .hd-chips {
+  justify-content: center;
+}
+.hx .du-chip-voto {
+  min-height: 44px;
+}
+.hx .du-chip-voto[aria-pressed='true'] {
+  background: var(--hd-azul);
+  color: var(--texto-sobre-marca);
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-estrella-hx {
+    transition: none;
+  }
+}
+/* Objetivos de 44 px y texto al 200 % en el cierre. */
+.hx .du-pie .hd-boton--fantasma {
+  min-height: 44px;
+}
+.du-escena__fondo {
+  max-width: 100%;
+}
+.hx .hd-precio--grande {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}

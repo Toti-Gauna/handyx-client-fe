@@ -200,7 +200,7 @@ const casos = {
     await p.getByRole('button', { name: 'Cancelar el trabajo' }).click();
     await p.getByRole('button', { name: 'Sí, cancelar el trabajo' }).click();
     await p.getByText('Este trabajo se canceló').waitFor();
-    await p.getByText('Cancelado', { exact: true }).first().waitFor();
+    await p.getByText(/^(Estado: )?Cancelado$/).first().waitFor();
   },
 
   'efectivo-reportado': async ({ ir, p }) => {

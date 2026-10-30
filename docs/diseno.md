@@ -54,6 +54,15 @@ parecido:
   (Mercado Pago o efectivo, informativo: se elige al terminar); **`DeslizarConfirmar`** (`Deslizar.tsx`): hay que llevar
   la perilla al 90 % del recorrido, vuelve si se suelta antes o si el servidor rechaza, quieto (sin brillos que apuren)
   y siempre acompañado del botón "Sí, acepto estas condiciones" (WCAG 2.5.7).
+- **Trabajo** (lote 3.6, `Trabajo.tsx`): mientras está activo, el seguimiento de u-seguimiento (mapa con tu casa, el
+  horario en un chip, hoja azul con el paso actual en una tira de 4: Confirmado › En camino › Llegó › Trabajando, lo
+  acordado desplegable, etapas de la obra, acciones y el especialista con el chat al pie). Sin tiempos de llegada ni
+  ubicación de nadie. Al terminar: revisar y confirmar (la obra, etapa por etapa) y recién entonces "¡Listo, quedó
+  arreglado!" con el ticket del pago (reportado ≠ verificado), pagar, calificar y reclamo.
+- **Pago**: tickets por trabajo o etapa, métodos como tarjetas, deslizar para confirmar con el botón de siempre al lado y
+  el comprobante del registro (no es una factura).
+- **Reseña** (`/trabajos/resena/`, como u-resena): estrellas, chips de lo mejor o lo que estuvo mal y comentario sin
+  datos personales; solo de trabajos confirmados.
 - **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
   avisos, Handys e íconos.
 - **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el

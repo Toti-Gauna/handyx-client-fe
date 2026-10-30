@@ -38,6 +38,8 @@ const RUTAS = [
   E(`/chats/conversacion/?id=${P}02`, 'contrapropuesta'),
   E(`/trabajos/detalle/?id=${P}05`, 'efectivo-reportado'),
   E(`/trabajos/pago/?id=${P}05`, 'efectivo-reportado'),
+  E(`/trabajos/resena/?id=${P}05`, 'efectivo-reportado'),
+  E('/reclamos/nuevo/', 'reclamo'),
   E(`/trabajos/cambiar/?id=${P}05`, 'efectivo-reportado'),
   E('/agenda/', 'programado'),
   E('/reclamos/', 'reclamo'),

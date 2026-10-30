@@ -1,12 +1,39 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.5 (el mapa todavía sin los datos reales), pantalla de carga y
-HandIA. Sigue el lote 3.6** (trabajo en curso y cierre) ([`docs/rediseno.md`](rediseno.md)).
+**Fase actual: 3 · Rediseño premium. Listos: lotes 3.1 a 3.6 (el mapa todavía sin los datos reales), pantalla de carga y
+HandIA. Sigue el lote 3.7** (actividad, mensajes y soporte) ([`docs/rediseno.md`](rediseno.md)).
 Fecha: 29/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.
 
 Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
 real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.6 · Trabajo en curso y cierre
+
+Pedido de Ignacio: "Seguí con lote 3.6".
+
+- **Seguimiento** (u-seguimiento) mientras el trabajo está activo: tu casa en el mapa, el horario acordado, hoja azul con
+  "{especialista} va para tu casa" y la tira Confirmado › En camino › Llegó › Trabajando; lo acordado desplegable; etapas
+  de la obra con "Confirmar esta etapa"; pago, cambiar turno, reclamo y cancelar; el especialista con el chat al pie.
+  **Sin tiempos de llegada** y "nosotros no seguimos tu ubicación ni la del especialista" (la llegada la marca él).
+- **Cierre**: cuando el especialista termina, "Falta tu confirmación" (en una obra, cada etapa primero); recién al
+  confirmar, **"¡Listo, quedó arreglado!"** (u-terminado) con el ticket del pago, pagar, **calificar** y reclamo.
+- **Pago**: un ticket por trabajo o por etapa, métodos como tarjetas, **deslizar para confirmar** con el botón de siempre
+  y el **comprobante del registro** (estado, fechas, código; no es una factura). Reportado ≠ verificado.
+- **Reseña** (`/trabajos/resena/`, u-resena): estrellas, lo mejor o lo que estuvo mal, comentario **sin datos
+  personales** (se tachan antes de enviar). No está en el contrato v1: en la vista de prueba se guarda en memoria; con la
+  API real queda "todavía no disponible" hasta `resenaCrear` (Fase 4.4).
+- **Reclamo** nuevo en el kit, a pantalla completa.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                                   |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                          |
+| `npm test`                                         | **148 pruebas OK** (10 nuevas del trabajo y la reseña)                                      |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                |
+| `npm run e2e`                                      | recorrido (hasta la reseña) · 18 escenarios · accesibilidad · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas           |
 
 ## Rediseño · lote 3.5 · Propuestas y decisión
 

@@ -17,7 +17,7 @@ export type Grupo =
   | 'cuenta'
   | 'sistema';
 
-export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3';
+export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3' | '3.6';
 
 export interface Pantalla {
   readonly id: string;
@@ -532,6 +532,35 @@ export const PANTALLAS: readonly Pantalla[] = [
     entidades: ['jobs'],
     pruebas: ['días en Buenos Aires aunque el celular esté en otra zona'],
     demo: ['u-turnos', 'u-turno-detalle'],
+  }),
+  p({
+    id: 'resena',
+    ruta: '/trabajos/resena/',
+    titulo: 'Calificar el trabajo',
+    grupo: 'trabajo',
+    lote: '3.6',
+    acceso: 'sesion',
+    consulta: ['id'],
+    acciones: [
+      'Estrellas de 1 a 5',
+      'Lo mejor o lo que estuvo mal (chips)',
+      'Comentario opcional sin datos personales',
+    ],
+    estados: [
+      'todavía no se puede (trabajo sin confirmar)',
+      'calificando',
+      'enviada → gracias',
+      'funcion_inactiva (API real sin resenaCrear)',
+    ],
+    endpoints: ['trabajo', 'pedido'],
+    entidades: [],
+    pruebas: [
+      'solo después de confirmar que terminó',
+      'el comentario se envía sin teléfonos, emails ni documentos',
+      'con la API real queda inactiva hasta resenaCrear (Fase 4.4)',
+    ],
+    nota: 'Decisión 2 del rediseño. Contrato pendiente: resenaCrear y el promedio (solo con un mínimo de reseñas reales).',
+    demo: ['u-resena'],
   }),
   // ── Pagos directos ──────────────────────────────────────────────────────────────────────────────
   p({

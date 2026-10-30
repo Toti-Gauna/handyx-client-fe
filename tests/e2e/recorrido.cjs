@@ -110,8 +110,22 @@ const paso = (m) => console.log('•', m);
   paso('efectivo queda "reportado", no "verificado"');
   await foto('22-pago-reportado');
   await panel('Verificar el último pago');
-  await p.getByText('Verificado', { exact: true }).first().waitFor({ timeout: 10000 });
+  await p.getByText(/^(Estado: )?Verificado$/).first().waitFor({ timeout: 10000 });
   paso('verificado solo cuando lo confirma la contraparte');
+
+  // Festejo después del hecho y reseña (sin datos personales en el comentario).
+  await p.getByRole('link', { name: 'Volver al trabajo' }).click();
+  await p.getByText('¡Listo, quedó').waitFor();
+  paso('"¡Listo, quedó arreglado!" recién después de confirmar');
+  await foto('23-listo');
+  await p.getByRole('link', { name: /^Calificar a/ }).click();
+  await p.getByRole('button', { name: '5 estrellas' }).click();
+  await p.getByRole('button', { name: 'Puntual' }).click();
+  await p.getByLabel('Contá algo más (opcional)').fill('Excelente, escribime a ana@example.test');
+  await foto('24-resena');
+  await p.getByRole('button', { name: 'Enviar', exact: true }).click();
+  await p.getByText('¡Gracias por').waitFor();
+  paso('reseña enviada');
 
   console.log('errores de consola:', errores.length ? errores : 'ninguno');
   await b.close();

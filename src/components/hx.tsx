@@ -165,15 +165,19 @@ export function AvatarHx({
   verificado = false,
   tono = 0,
   tamano,
+  clase,
 }: {
   nombre: string;
   verificado?: boolean;
   tono?: number;
   tamano?: 'chico' | 'grande';
+  /** p. ej. `du-avatar-blanco` sobre una hoja azul. */
+  clase?: string;
 }) {
   const c = ['hd-avatar', `du-tono-${tono % 3}`];
   if (tamano) c.push(`hd-avatar--${tamano}`);
   if (verificado) c.push('hd-avatar--verificado');
+  if (clase) c.push(clase);
   return (
     <span className={c.join(' ')} aria-hidden="true">
       <span>{iniciales(nombre)}</span>

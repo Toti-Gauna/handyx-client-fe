@@ -164,6 +164,11 @@ contratado. La del especialista es aproximada y deja de mostrarse al llegar. Lo 
 > general y la zona del especialista necesitan `especialistaPerfil`/`especialistaHistorial` (Fase 4.3); hoy se ve lo que
 > trae la propuesta y la negociación con vos.
 
+> **Lote 3.6 hecho (29/10).** Seguimiento (u-seguimiento) con la tira de etapas, cierre y "¡Listo, quedó arreglado!"
+> (u-terminado) después de confirmar, pago con deslizar y comprobante, reseña (u-resena) y reclamo en el kit. La reseña
+> no está en el contrato v1: en la vista de prueba se guarda en memoria y con la API real queda inactiva hasta
+> `resenaCrear` (4.4). La posición del especialista en el mapa sigue esperando `trabajoUbicacionEspecialista` (4.4/4.6).
+
 ## 7. Componentes premium nuevos
 
 - **Hoja arrastrable** (3 alturas, con manija, gesto y teclado) sobre mapa o pantalla.

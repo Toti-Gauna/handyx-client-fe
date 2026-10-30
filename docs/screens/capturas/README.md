@@ -100,11 +100,16 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 
 | Pantalla o estado | Captura |
 | --- | --- |
+| trabajo-seguimiento | [trabajo-seguimiento-390.jpg](trabajo-seguimiento-390.jpg) |
+| trabajo-lo-acordado | [trabajo-lo-acordado-390.jpg](trabajo-lo-acordado-390.jpg) |
 | trabajo-falta-confirmacion | [trabajo-falta-confirmacion-390.jpg](trabajo-falta-confirmacion-390.jpg) |
 | trabajo-obra-por-etapas | [trabajo-obra-por-etapas-390.jpg](trabajo-obra-por-etapas-390.jpg) |
+| resena-todavia-no | [resena-todavia-no-390.jpg](resena-todavia-no-390.jpg) |
 | trabajo-cambiar | [trabajo-cambiar-390.jpg](trabajo-cambiar-390.jpg) |
 | pago-efectivo-reportado | [pago-efectivo-reportado-390.jpg](pago-efectivo-reportado-390.jpg) |
+| pago-comprobante | [pago-comprobante-390.jpg](pago-comprobante-390.jpg) |
 | pago-mercado-pago | [pago-mercado-pago-390.jpg](pago-mercado-pago-390.jpg) |
+| pago-elegir-metodo | [pago-elegir-metodo-390.jpg](pago-elegir-metodo-390.jpg) |
 
 ## Agenda
 
