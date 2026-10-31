@@ -2,6 +2,7 @@
 // No corre en CI (Playwright no es dependencia del repo). Uso, con `npm run build && npm run preview` activo:
 //   node tests/e2e/escenarios.cjs [carpeta-de-capturas] [id-de-escenario]
 const { chromium } = require('playwright');
+const { completarPerfil, ingresar } = require('./acceso.cjs');
 const fs = require('node:fs');
 
 const CARPETA = process.argv[2] || 'capturas-e2e';
@@ -12,11 +13,9 @@ fs.mkdirSync(CARPETA, { recursive: true });
 const casos = {
   'nuevo-usuario': async ({ ir, p }) => {
     await ir('/');
-    await p.getByRole('link', { name: 'Tengo invitación' }).waitFor();
+    await p.getByRole('link', { name: 'Crear cuenta' }).waitFor();
     await ir('/ingresar/');
-    await p.getByLabel('Email').fill('usuaria@example.test');
-    await p.getByLabel('Contraseña').fill('handyx-demo-1234');
-    await p.getByRole('button', { name: 'Ingresar' }).click();
+    await ingresar(p);
     await p.getByRole('button', { name: 'Entendido' }).waitFor();
   },
 
@@ -24,7 +23,7 @@ const casos = {
     await ir('/inicio/', 'otra-ciudad');
     await p.getByText('Todavía no llegamos a Rosario').first().waitFor();
     await ir('/pedir/?rubro=plomeria&tipo=urgente', 'otra-ciudad');
-    await p.getByLabel('Contanos qué necesitás').fill('Pierde la canilla de la cocina.');
+    await p.getByLabel('Contalo con tus palabras').fill('Pierde la canilla de la cocina.');
     await p.getByRole('button', { name: 'Seguir' }).click();
     await p.getByText('Todavía no llegamos a Rosario').first().waitFor();
     await p.getByRole('button', { name: 'Seguir' }).click();
@@ -33,37 +32,34 @@ const casos = {
 
   'ubicacion-denegada': async ({ ir, p }) => {
     await ir('/perfil/', 'ubicacion-denegada');
-    await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-    await p.getByRole('button', { name: 'Guardar y seguir' }).click();
-    await p.getByRole('button', { name: 'Usar mi ubicación ahora' }).click();
-    await p.getByText('No diste permiso de ubicación').waitFor();
-    await p.getByLabel('Dirección').fill('Calle Ficticia 55');
-    await p.getByRole('button', { name: 'Terminar' }).click();
-    await p.waitForURL('**/inicio/**');
+    await completarPerfil(p, {
+      completar: false,
+      antesDeTerminar: (p) => p.getByText('No diste permiso de ubicación').waitFor(),
+    });
   },
 
   'sin-especialistas': async ({ ir, p, panel }) => {
     await ir('/pedidos/', 'sin-especialistas');
-    await p.getByText('Buscando', { exact: true }).first().waitFor();
+    await p.getByText(/^(Estado: )?Buscando$/).first().waitFor();
     await p
       .getByRole('link', { name: /Plomería/ })
       .first()
       .click();
-    await p.getByText('Estamos buscando especialistas').waitFor();
+    await p.getByRole('heading', { name: /Avisando a especialistas/ }).waitFor();
     await panel('Avanzar 5 min');
-    await p.getByText('Nadie respondió en 20 minutos').waitFor({ timeout: 10000 });
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor({ timeout: 10000 });
     await p.getByRole('button', { name: 'Relanzar la búsqueda' }).click();
-    await p.getByText('Estamos buscando especialistas').waitFor();
+    await p.getByRole('heading', { name: /Avisando a especialistas/ }).waitFor();
     await panel('Avanzar 30 min');
-    await p.getByText('Nadie respondió en 20 minutos').waitFor({ timeout: 10000 });
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor({ timeout: 10000 });
     await p.getByRole('button', { name: 'Relanzar la búsqueda' }).click();
-    await p.getByText('Estamos buscando especialistas').waitFor();
+    await p.getByRole('heading', { name: /Avisando a especialistas/ }).waitFor();
     await panel('Avanzar 30 min');
-    await p.getByText('Nadie respondió en 20 minutos').waitFor({ timeout: 10000 });
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor({ timeout: 10000 });
     if ((await p.getByRole('button', { name: 'Relanzar la búsqueda' }).count()) !== 0)
       throw new Error('permite relanzar sin límite');
     await p.getByRole('button', { name: 'Pedir búsqueda manual' }).click();
-    await p.getByText('El equipo de Handy está buscando por vos').waitFor();
+    await p.getByRole('heading', { name: /El equipo de Handy busca por vos/ }).waitFor();
     if (await p.getByText(/en \d+ minutos|ETA/).count()) throw new Error('hay una ETA inventada');
   },
 
@@ -75,9 +71,9 @@ const casos = {
       .click();
     await p.getByRole('link', { name: /Ver propuestas \(3\)/ }).click();
     await p.getByText('No es una recomendación ni un ranking').waitFor();
-    await p.getByRole('button', { name: 'Comparar en tabla' }).click();
+    await p.getByRole('button', { name: 'Comparar' }).click();
     await p.getByRole('columnheader', { name: 'Especialista 3' }).waitFor();
-    await p.getByRole('rowheader', { name: 'Comisión de Handy' }).waitFor();
+    await p.getByRole('rowheader', { name: 'Tarifa de Handy' }).waitFor();
   },
 
   contrapropuesta: async ({ ir, p, panel }) => {
@@ -87,8 +83,8 @@ const casos = {
       .first()
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
-    await p.getByRole('link', { name: 'Ver y responder' }).first().click();
-    await p.getByRole('link', { name: 'Hacer una contrapropuesta' }).click();
+    await p.getByRole('link', { name: /^Ver perfil de/ }).first().click();
+    await p.getByRole('link', { name: /Hacer una contrapropuesta/ }).click();
     await p.getByLabel('Precio que proponés').fill('40.000');
     await p.getByRole('button', { name: 'Enviar contrapropuesta' }).click();
     await p.waitForURL('**/chats/conversacion/**');
@@ -104,8 +100,9 @@ const casos = {
       .first()
       .click();
     await p.getByRole('link', { name: /Ver propuestas/ }).click();
-    await p.getByRole('link', { name: 'Ver y responder' }).first().click();
-    await p.getByRole('button', { name: 'Aceptar esta propuesta' }).click();
+    // "Elegir" abre directamente "Confirmá el turno".
+    await p.getByRole('link', { name: /^Elegir la propuesta/ }).first().click();
+    await p.getByRole('heading', { name: 'Confirmá el turno' }).waitFor();
     await p.getByRole('button', { name: 'Sí, acepto estas condiciones' }).click();
     await p.getByText('Esto ya se resolvió').waitFor();
     await p.getByText('No se creó otro trabajo').waitFor();
@@ -123,18 +120,18 @@ const casos = {
       .first()
       .waitFor();
     await panel('Avanzar 5 min');
-    await p.getByText('No hay propuestas vigentes').waitFor({ timeout: 10000 });
+    await p.getByText('Sin propuestas vigentes').waitFor({ timeout: 10000 });
     await p.getByText('Anteriores (1)').waitFor();
   },
 
   'urgencia-sin-respuesta': async ({ ir, p }) => {
     await ir('/pedidos/', 'urgencia-sin-respuesta');
-    await p.getByText('Sin respuesta', { exact: true }).first().waitFor();
+    await p.getByText(/^(Estado: )?Sin respuesta$/).first().waitFor();
     await p
       .getByRole('link', { name: /Electricidad/ })
       .first()
       .click();
-    await p.getByText('Nadie respondió en 20 minutos').waitFor();
+    await p.getByText(/respondió a tu pedido urgente en 20 minutos/).waitFor();
     await p.getByRole('button', { name: 'Pedir búsqueda manual' }).waitFor();
     await p.getByRole('button', { name: 'Cancelar el pedido' }).waitFor();
   },
@@ -195,7 +192,7 @@ const casos = {
     await p.getByRole('button', { name: 'Sí, cancelar el pedido' }).click();
     await p.getByText('Cancelaste este pedido').waitFor();
     await ir('/pedidos/', 'cancelacion');
-    await p.getByRole('tab', { name: 'Programados' }).click();
+    // Los turnos agendados están en "En curso" (la pestaña de entrada de Actividad).
     await p
       .getByRole('link', { name: /Especialista 1/ })
       .first()
@@ -203,7 +200,7 @@ const casos = {
     await p.getByRole('button', { name: 'Cancelar el trabajo' }).click();
     await p.getByRole('button', { name: 'Sí, cancelar el trabajo' }).click();
     await p.getByText('Este trabajo se canceló').waitFor();
-    await p.getByText('Cancelado', { exact: true }).first().waitFor();
+    await p.getByText(/^(Estado: )?Cancelado$/).first().waitFor();
   },
 
   'efectivo-reportado': async ({ ir, p }) => {
@@ -259,19 +256,8 @@ const casos = {
   'sesion-vencida': async ({ ir, p }) => {
     await ir('/inicio/', 'sesion-vencida');
     await p.getByRole('button', { name: 'Entendido' }).count();
-    for (const r of ['/pedidos/', '/agenda/', '/chats/', '/cuenta/']) {
-      await p
-        .getByRole('link', {
-          name:
-            r === '/pedidos/'
-              ? 'Pedidos'
-              : r === '/agenda/'
-                ? 'Agenda'
-                : r === '/chats/'
-                  ? 'Mensajes'
-                  : 'Cuenta',
-        })
-        .click();
+    for (const pestana of ['Actividad', 'Mensajes', 'Cuenta']) {
+      await p.getByRole('link', { name: pestana, exact: true }).click();
       await p.waitForTimeout(700);
       if (await p.getByText('Tu sesión venció').count()) break;
     }
@@ -282,6 +268,43 @@ const casos = {
     await p
       .getByRole('heading', { name: 'Tu sesión venció' })
       .waitFor({ state: 'hidden', timeout: 10000 });
+  },
+
+  'cuenta-y-ayuda': async ({ ir, p }) => {
+    // Pagos registrados: el reporte del trabajo aparece como reportado, nunca como verificado.
+    await ir('/cuenta/pagos/', 'efectivo-reportado');
+    await p.getByText('Reportado (sin verificar)').first().waitFor();
+    await p.getByRole('button', { name: /^Ver más/ }).first().click();
+    await p.getByText('Lo reportaste vos').waitFor();
+    if (await p.getByText(/Agregar tarjeta/i).count()) throw new Error('aparece "Agregar tarjeta"');
+    // Direcciones: guardar una con nombre y elegirla al pedir.
+    await ir('/cuenta/direcciones/', 'varias-propuestas');
+    await p.getByRole('button', { name: 'Agregar una dirección' }).click();
+    await p.getByLabel('Dirección').fill('Calle Inventada 742');
+    await p.getByRole('button', { name: 'Guardar la dirección' }).click();
+    await p.getByText('Calle Inventada 742').waitFor();
+    await p.getByRole('link', { name: 'Inicio', exact: true }).click();
+    await p.getByRole('link', { name: 'Plomería' }).click();
+    await p.waitForURL('**/pedir/**');
+    await p.getByRole('button', { name: /Urgencia/ }).click();
+    await p.getByLabel('Contalo con tus palabras').fill('Gotea la canilla del baño.');
+    await p.getByRole('button', { name: 'Seguir' }).click();
+    await p.getByRole('button', { name: 'Trabajo', pressed: false }).click();
+    if ((await p.getByLabel('Dirección').inputValue()) !== 'Calle Inventada 742')
+      throw new Error('elegir la dirección guardada no completa el formulario');
+    await p.getByRole('button', { name: 'Principal', pressed: false }).click();
+    if ((await p.getByLabel('Dirección').inputValue()) === 'Calle Inventada 742')
+      throw new Error('volver a la principal no cambia la dirección');
+    // Ayuda: la respuesta, "¿te sirvió?" y otra pregunta.
+    await ir('/ayuda/', 'varias-propuestas');
+    await p.getByRole('link', { name: '¿Cómo le pago al especialista?' }).click();
+    await p.getByRole('heading', { name: '¿Cómo le pago al especialista?' }).waitFor();
+    await p.getByRole('button', { name: 'No', exact: true }).click();
+    await p.getByText('¡Gracias por contarnos!').waitFor();
+    await p.getByRole('link', { name: 'Escribile al equipo' }).waitFor();
+    await p.getByRole('link', { name: '¿Puedo borrar mi cuenta?' }).click();
+    await p.getByRole('heading', { name: '¿Puedo borrar mi cuenta?' }).waitFor();
+    await p.getByRole('button', { name: 'Sí', exact: true }).waitFor();
   },
 
   'baja-solicitada': async ({ ir, p, panel }) => {
@@ -326,7 +349,7 @@ const casos = {
     };
     try {
       await caso({ ir, p, panel });
-      await p.screenshot({ path: `${CARPETA}/esc-${id}.png` });
+      await p.screenshot({ path: `${CARPETA}/esc-${id}.jpg`, type: 'jpeg', quality: 72 });
       const reales = errores.filter((e) => !/status of (4\d\d|5\d\d)/.test(e));
       console.log(
         `✔ ${id}${reales.length ? '  (errores de consola: ' + reales.join(' | ') + ')' : ''}`,

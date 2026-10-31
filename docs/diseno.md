@@ -1,0 +1,234 @@
+# Sistema visual de Handyx (usuario) · Fase 3
+
+## Rediseño · lotes 3.1 y 3.2 (vigente)
+
+Desde el rediseño ([`rediseno.md`](rediseno.md)) la app usa **el mismo kit visual que la demo de la landing**, no uno
+parecido:
+
+- **`npm run kit`** (`scripts/kit.mjs`) copia `demo-app.css` (`.hd-*`), las piezas `.app-*` de `main.css` y
+  `demo-usuario.css` (`.du-*`) de `Handy-landing-page-fe` a `src/styles/kit/` con cambios mecánicos (ámbito `.hx`,
+  `.app` → `.hx-app`). Esos archivos **no se editan**: llevan el encabezado "GENERADO" (lo verifica una prueba) y
+  Prettier los ignora. Si la demo cambia, se vuelve a sincronizar.
+- **`src/styles/kit/ajustes.css`** es lo propio de la app: escala, estructura de app nativa, enlaces en lugar de botones,
+  foco, contraste, objetivos de 44 px, texto del sistema al 200 % y convivencia con las pantallas sin rediseñar.
+- **Escala**: el kit está en `em` y la demo mide 22,5 em de ancho. En la app, `.hx` toma `clamp(1.0625rem, 4.444vw,
+1.2rem)`: la misma proporción que la demo, pero respetando el tamaño de letra de la persona. Títulos grandes, barra y
+  pestañas tienen techo por ancho (`min(…, vw)`) para crecer sin partir palabras.
+- **Estructura**: `MarcoApp` sin cabecera fija; la pantalla ocupa el alto y solo se desplaza su cuerpo, como una app
+  nativa. Componentes en `src/components/hx.tsx`: `Pantalla` (arriba fijo, cuerpo desplazable o no, pie fijo),
+  `CabeceraInicio` (solo en Inicio), `Barra` ("← Título", con el h1), `NavApp` (4 pestañas, desde `NAVEGACION`),
+  `AvatarHx`, `ChipsVerificacion` (solo datos reales), `ChipEstado` ("Estado: …" para lectores), `Marcado` y `entra(i)`
+  (entrada en cascada, como la demo).
+- **Pantalla de carga**: `Splash.tsx` + `splash.css`, HTML y CSS puros en la primera pintura (secuencia en
+  `screens/rediseno-3-1/splash-secuencia.jpg`): ondas de color desde el centro (amarillo, azul vivo, azul), los Handys
+  entran saltando, las letras de "Handyx" (recortes del logotipo real) caen de a una delante de ellos, que quedan
+  asomados y agarrados de su letra y se balancean; confeti de mosaicos y salida en círculo hacia la app. Dura 2,95 s, se
+  saltea con un toque, no aparece con "reducir movimiento" ni en navegadores automatizados (salvo `?splash=1`).
+- **HandIA** (`/handia/`, como `u-handia`): chat a pantalla completa, sugiere el rubro con "Rubro detectado", la persona
+  confirma y elige "Pedir para hoy" o "Programar turno"; el pedido llega precargado desde un borrador en memoria.
+- **Flujos a pantalla completa** (lote 3.2: acceso, registro, onboarding), en `src/components/acceso.tsx`: `Flujo`
+  (volver, barra de progreso con "Paso n de N", título grande con marcador, el paso que entra de costado, pie fijo; con
+  `onSubmit` es un formulario y al cambiar de paso el foco va al primer campo), `BotonHx` (botón del kit con "Un
+  momento…"), `CampoContrasena` (ver/ocultar con `aria-pressed` y medidor con texto, nunca solo color) y `Escena` (un
+  Handy sobre un mosaico de color). Los campos son los `Campo` de siempre: dentro de `.pantalla` toman el aspecto del
+  kit (`ajustes.css`), así que una pantalla se rediseña sin tocar su validación.
+- **Bienvenida**: azul con el mosaico de la marca, logo en blanco, 3 tarjetas deslizables (carrusel con
+  `role="region"`, puntos de 44 px con `aria-current`) y "Crear cuenta" / "Ya tengo cuenta".
+- **Mapa** (`MapaHx`): `elegir` (la persona mueve el mapa y el pin queda fijo en el centro, como en las apps de
+  delivery; se levanta mientras se mueve) y `ver` (tu casa con el pin rojo de la demo, pulso mientras se busca,
+  especialista aproximado solo si hay dato). Estilo de la demo: tierra gris clara, calles blancas, mar celeste con costa
+  amarilla, plazas verdes, barrios en mayúsculas espaciadas. Sin datos, el SVG de la demo con el rótulo "Mapa
+  ilustrativo". Atribución "© OpenStreetMap" como texto con enlace.
+- **Pedir** (lote 3.4, `/pedir/`, sin barra de pestañas): una decisión por pantalla dentro de `Flujo`: rubro con su
+  Handy (`HandyRubro`) › para cuándo (`.du-opcion` de u-opciones) › día en tira y franjas en mosaicos (u-programar; las
+  franjas de hoy que ya pasaron, deshabilitadas) › contanos con los tiles de resumen y fotos (`useFotos` conserva las
+  fotos entre pasos) › dirección con el mapa › revisar con "Cambiar" en cada dato y "Pedir presupuestos".
+- **Búsqueda** (`PedidoBuscando`, como u-buscando): mapa con tu casa y el pulso, botón volver flotante, "Buscando en
+  {barrio}", hoja azul con el estado, las tres tarjetas que esperan propuestas, hasta cuándo sigue la búsqueda (nunca
+  cuándo llega alguien) y las acciones; "Nadie respondió todavía" con el Handy roto y "El equipo de Handy busca por vos".
+- **Propuesta** (lote 3.5, como u-perfil): héroe azul con avatar, verificaciones reales (o "Sin verificaciones
+  todavía") y trabajos con Handyx; rubros; qué incluye; ticket azul con el total final, el desglose, el horario y la
+  vigencia; contrapropuesta y chat como filas; historial de la negociación. Pie fijo con Rechazar (izquierda, contorno
+  rojo) y Aceptar (derecha). "Elegir" desde la tarjeta abre la confirmación.
+- **Confirmá el turno** (como u-confirmar, en una hoja): ticket con quién, qué, cuándo, dónde y la plata; cómo se paga
+  (Mercado Pago o efectivo, informativo: se elige al terminar); **`DeslizarConfirmar`** (`Deslizar.tsx`): hay que llevar
+  la perilla al 90 % del recorrido, vuelve si se suelta antes o si el servidor rechaza, quieto (sin brillos que apuren)
+  y siempre acompañado del botón "Sí, acepto estas condiciones" (WCAG 2.5.7).
+- **Trabajo** (lote 3.6, `Trabajo.tsx`): mientras está activo, el seguimiento de u-seguimiento (mapa con tu casa, el
+  horario en un chip, hoja azul con el paso actual en una tira de 4: Confirmado › En camino › Llegó › Trabajando, lo
+  acordado desplegable, etapas de la obra, acciones y el especialista con el chat al pie). Sin tiempos de llegada ni
+  ubicación de nadie. Al terminar: revisar y confirmar (la obra, etapa por etapa) y recién entonces "¡Listo, quedó
+  arreglado!" con el ticket del pago (reportado ≠ verificado), pagar, calificar y reclamo.
+- **Pago**: tickets por trabajo o etapa, métodos como tarjetas, deslizar para confirmar con el botón de siempre al lado y
+  el comprobante del registro (no es una factura).
+- **Reseña** (`/trabajos/resena/`, como u-resena): estrellas, chips de lo mejor o lo que estuvo mal y comentario sin
+  datos personales; solo de trabajos confirmados.
+- **Actividad** (lote 3.7, `Actividad.tsx`): título grande y segmentos En curso · Agenda · Historial; en curso, "Espera
+  tu respuesta" arriba (propuestas para elegir, trabajos para confirmar) y "En marcha"; agenda con el calendario y el día;
+  tarjetas con franja de u-turnos (`TarjetaPedido.tsx`).
+- **Mensajes** (u-mensajes): filas con avatar, rubros, momento y no leídos; HandIA y Soporte al final. **Chat** (u-chat):
+  cabecera del especialista con "Ver el trabajo/pedido", burbujas, propuestas en la conversación, respuestas rápidas
+  según el momento (completan el mensaje, no lo mandan) y el compositor con foto.
+- **Soporte** (`/soporte/`, u-soporte): chat con el equipo de Handy; lo atiende una persona, sin IA ni plazos.
+- **Avisos** (u-notificaciones): tarjetas con ícono por tipo, "nuevo" con punto y texto.
+- **Cuenta** (lote 3.8, u-cuenta): avatar con nombre y barrio, la tarifa con su contador (tarjeta con franja), instalar
+  como tarjeta amarilla con Handy, accesos en dos grupos (Cuenta · Configuración) y "Cerrar sesión" fantasma en rojo.
+- **Datos personales** (u-datos): lista de solo lectura (lo que falta dice "Sin completar") y "Editar mis datos" abre el
+  formulario en la misma pantalla. **Direcciones**: tarjetas con franja (la principal se edita en datos; las otras se
+  quitan) y, al pedir, chips para elegir una.
+- **Pagos registrados** (u-pagos sin tarjetas): resumen verificados / sin verificar y la hoja azul "Tus movimientos" con
+  tarjetas plegables (quién lo registró, reportado, verificado).
+- **Centro de ayuda** (u-ayuda): pastillas azules y, al pie, soporte, reclamos y HandIA. **Respuesta**
+  (u-ayuda-detalle): pregunta en azul, respuesta con atajo, "¿Te sirvió?" (No · Sí, sin rojo ni verde por contraste) y
+  otras preguntas en pastillas chicas.
+- **Tarifa, privacidad, avisos del celular y eliminar cuenta**: barra del kit, notas con ícono, datos en tarjeta gris,
+  textos legales plegables, interruptor con `role="switch"` y la baja con su estado paso a paso.
+- **Movimiento** (lote 3.9): al navegar, fundido corto; la tarjeta tocada crece hasta el encabezado del detalle (marcar
+  el origen con `data-vt-origen` y el destino con `data-vt-destino`). El título grande de las pestañas se compacta al
+  bajar. Todo se apaga con "reducir movimiento" y nada anima botones de aceptar o pagar.
+- **Hoja azul arrastrable** (`useHojaAzul` en `gestos.tsx`): tres alturas; la manija es un botón (toque, arrastre,
+  flechas). Las hojas de diálogo bajan con el dedo para cerrarse.
+- **Estados del sistema**: `Cargando` con `forma` (lista, detalle, mapa), `ErrorEstado` con Handy roto, `EstadoSistema`
+  (404, sin conexión) y el aviso de versión nueva.
+- **Galería**: `/diseno/` (solo vista de prueba) reúne color, tipografía, botones, chips, mosaicos, avatares, hoja azul,
+  avisos, Handys e íconos.
+- **Diferencias deliberadas con la demo**: verificaciones reales en lugar de "Verificado" genérico, tarifa 0 % hasta el
+  10/12, HandIA sin fotos y con datos personales tachados, "Consultar" en lugar de "Ver perfil" hasta que exista el perfil (3.5) y
+  "Comparar" para ver todas las propuestas lado a lado sin destacar ninguna.
+
+Comparaciones demo/app y galería: [`screens/rediseno-3-1/`](screens/rediseno-3-1/).
+
+## Antes del rediseño (sigue valiendo para las pantallas que todavía no se rehicieron)
+
+Fuente de marca: `Handy-landing-page-fe` (`src/brand/tokens.ts`, `src/styles/demo-app.css`, `/demo/`). Esta app no inventa
+otra marca: reusa logo, Archivo/DM Sans, Handys, íconos de línea, botones táctiles, mosaicos, marcador amarillo y barra azul.
+
+## Tokens (`src/styles/tokens.css`)
+
+Dos capas. Las pantallas y componentes usan **solo la capa semántica**; una prueba (`tests/diseno.test.ts`) falla si
+aparece un color hex fuera de `tokens.css`.
+
+| Grupo       | Tokens                                                                                       | Uso                                                                 |
+| ----------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Superficies | `--sup-app`, `--sup-base`, `--sup-tarjeta`, `--sup-hundida`, `--sup-mosaico`, `--sup-marca`  | fondo de página, tarjeta, caja de condiciones, mosaicos, panel azul |
+| Texto       | `--texto-titulo`, `--texto-cuerpo`, `--texto-suave` (5,3:1), `--texto-sobre-marca`           | jerarquía de lectura                                                |
+| Acciones    | `--accion-primaria`, `--accion-destacada`, `--accion-neutra`, `--accion-peligro` (+ `-base`) | botones táctiles: color de cara y de base que se hunde              |
+| Estados     | `--estado-{ok,alerta,error,info,neutro}` + `-fondo` + `-borde`                               | avisos y pastillas, siempre con texto e ícono                       |
+| Importes    | `--importe-total`                                                                            | el total de cada bloque, en azul, con cifras tabulares              |
+| Tipografía  | `--t-xs … --t-2xl`, `--peso-*`                                                               | escala 1,2                                                          |
+| Espaciado   | `--esp-1 … --esp-8` (base 4)                                                                 |                                                                     |
+| Elevación   | `--elev-1`, `--elev-2`, `--elev-tactil`                                                      | tarjetas, hojas, base de botones                                    |
+| Íconos      | `--icono-sm/md/lg`, `--toque-min` (44 px)                                                    |                                                                     |
+| Movimiento  | `--dur-rapida` (120 ms), `--dur-media` (220 ms), `--curva`                                   | se anulan con `prefers-reduced-motion`                              |
+
+Contrastes medidos (WCAG 2.x): texto suave sobre blanco 5,3:1; blanco sobre azul 7,0:1; blanco sobre `--estado-ok` 6,5:1;
+`--estado-ok` sobre su fondo 5,7:1; `--estado-alerta` sobre su fondo 5,4:1; `--accion-peligro` sobre blanco 6,5:1; etiquetas
+inactivas de la barra 5,0:1 (antes 4,2:1). El verde y el rojo de marca no llegan a 4,5:1 con texto chico y quedan solo
+como acento.
+
+## Componentes
+
+| Componente                                      | Dónde                                          | Regla                                                                                      |
+| ----------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `Encabezado` (`Titulo.tsx`)                     | toda pantalla interna                          | botón de volver con destino fijo y nombre accesible ("Volver a…"), título y bajada         |
+| `.boton-icono`                                  | cabecera (avisos) y volver                     | 48 × 48 px, táctil como en la demo; contador de avisos en amarillo                         |
+| `PanelPrioridad` (inicio)                       | inicio                                         | **una** prioridad por vez: trabajo en curso › propuestas › pedido buscando › próximo turno |
+| `Avatar`, `PerfilProfesional`, `Verificaciones` | propuestas, trabajo, hojas                     | iniciales (sin fotos en el contrato); verificaciones solo las que manda el backend         |
+| `Desglose`                                      | detalle de propuesta, hoja de aceptar, trabajo | precio del especialista + tarifa de Handy (`usuarioBp`, calculada por el servidor) = total |
+| `Condiciones`                                   | tarjeta y detalle de propuesta                 | horario y vigencia en una caja propia, separados del precio                                |
+| `TarjetaPropuesta`                              | lista de propuestas y chat                     | total grande, desglose en una línea, condiciones, alcance; **no acepta ni rechaza**        |
+| `.decision`                                     | detalle de propuesta                           | ver abajo                                                                                  |
+| `Hoja` (con `handy` opcional)                   | confirmaciones                                 | la acción destructiva se confirma en rojo lleno; la ilustración ayuda a leer dos veces     |
+
+## Jerarquía de una decisión (aceptar / rechazar)
+
+1. **Qué se acepta**, antes que el botón: total, desglose, horario, vigencia y alcance.
+2. **Rechazar** a la izquierda, **contorno rojo + cruz**. **Aceptar** a la derecha, **azul lleno + check**. Se distinguen
+   por ícono, texto, relleno y posición, no solo por color, y los separa un hueco de 12 px.
+3. Ninguno actúa directo: los dos abren una hoja de confirmación ("Sí, acepto estas condiciones" / "Sí, rechazar") con el
+   resumen. El botón se deshabilita mientras se envía, y el reintento usa la misma clave de idempotencia.
+4. Contrapropuesta y chat quedan debajo, como caminos alternativos, sin competir con la decisión.
+5. La tarjeta de la lista nunca acepta: solo "Ver y responder".
+
+## Comparación sin rankings
+
+Las propuestas se listan **por llegada** ("No es una recomendación ni un ranking"). La tabla compara total, precio,
+tarifa, horario, alcance, verificaciones y vigencia, sin destacar ninguna fila. No se usan "el mejor", "recomendado",
+"más barato", "top", "matriculado" ni "verificado por Handy" (prueba en `tests/diseno.test.ts`). "Verificado" solo
+aparece si `especialista.verificaciones` lo trae; si no, "Todavía sin verificaciones registradas".
+
+## Responsive (lote 3.2)
+
+| Ancho / forma                       | Diseño                                                                                                                        |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| < 768 px (360, 390)                 | columna completa, barra azul inferior                                                                                         |
+| 768–1023 px (768, 820)              | columna de 600 px centrada; las hojas pasan a diálogo centrado (sin manija)                                                   |
+| ≥ 1024 px                           | la barra pasa a ser una columna de navegación a la izquierda (232 px); contenido hasta 704 px; el rótulo de prueba no es fijo |
+| Horizontal con poco alto (≤ 500 px) | barra compacta (ícono y texto en fila, 52 px), cabecera más baja, rótulo de prueba no fijo                                    |
+| Texto del sistema al 200 %          | filas de datos, desglose y pestañas pasan a dos líneas; títulos cortan palabras con guion; nada se sale de la pantalla        |
+
+El compositor del chat se apoya siempre sobre la barra (`--barra-alto`, que vale 0 en escritorio).
+
+## Accesibilidad (lote 3.2)
+
+- **Saltar al contenido**: primer foco de cada pantalla, visible solo con teclado.
+- **Foco al navegar**: va al h1 de la pantalla nueva (también si todavía estaba cargando). Cada h1 pone el **título de la
+  pestaña** ("Propuesta · Handyx"), que es lo que anuncia el anunciador de rutas de Next.
+- **Hojas**: diálogos modales nativos (`showModal`); el foco arranca en el **título**, nunca en el botón de confirmar (un
+  Enter apurado no acepta ni rechaza); Escape cierra y el foco vuelve al botón que la abrió; Tab no sale de la hoja.
+- **Formularios**: al enviar con errores, el foco va al primer campo inválido; cada error está asociado con
+  `aria-describedby` y se anuncia (`role="alert"`).
+- **Estados**: las pastillas se leen "Estado: Pendiente"; Aceptar y Rechazar se describen con el resumen de la decisión
+  (total y horario).
+- **Objetivos táctiles ≥ 44 px** en todo control, incluidos desplegables, enlaces sueltos, días del calendario a 360 px y
+  el panel de prueba. Los enlaces dentro de un párrafo son la excepción "en línea" de WCAG 2.5.8.
+- **Calendario**: cada día se llama "20 · Viernes 20/11, con trabajos" (el número visible está en el nombre).
+- **Abreviaturas**: "Aire acond." se lee "Aire acondicionado".
+- **Movimiento reducido**: todas las transiciones y animaciones se anulan.
+
+Auditoría: `tests/e2e/accesibilidad.cjs` (axe-core + chequeos propios) y `tests/e2e/teclado.cjs`. Resultados en `docs/qa.md`.
+
+## Movimiento (lote 3.3)
+
+Funcional y corto (120–220 ms, `--dur-*`): orienta, no decora ni apura.
+
+| Qué                              | Movimiento                                     | Para qué                                 |
+| -------------------------------- | ---------------------------------------------- | ---------------------------------------- |
+| Pantalla nueva o datos cargados  | aparece (opacidad, 220 ms)                     | marca que el contenido cambió            |
+| Propuestas y tarjetas que llegan | suben 8 px y aparecen                          | señala lo nuevo en una lista             |
+| Hoja / diálogo                   | sube desde abajo (celular) o aparece (tablet+) | muestra de dónde viene y que es temporal |
+| Búsqueda en curso                | tres puntos que laten junto al texto           | indica actividad, **no** un tiempo       |
+| Botones táctiles y mosaicos      | se hunden al tocar                             | confirma el toque                        |
+
+Reglas (vigiladas en `tests/pwa.test.ts`): nunca se animan botones de aceptar/pagar ni el bloque de decisión; sin sonido
+ni vibración; `prefers-reduced-motion` anula animaciones, transiciones y el fondo de las hojas.
+
+## PWA y sin conexión (lote 3.3)
+
+- **Manifest** (`src/app/manifest.ts` → `/manifest.webmanifest`): Handyx, `standalone`, empieza en `/inicio/`, azul de
+  marca, es-AR, íconos de la landing 192/512 (normales y adaptables: la gota cae dentro de la zona segura), atajos a
+  Pedir y Mis pedidos. Chromium la da por instalable (sin errores de instalabilidad).
+- **Instalar**: el aviso automático del navegador se retiene; la persona instala desde Cuenta ("Instalá Handyx en este
+  celular"). En iPhone, la ayuda explica "Compartir › Agregar a inicio".
+- **Service worker** (`public/sw.js`, sin dependencias, se registra solo en el build de producción):
+  - guarda solo archivos públicos del mismo origen: páginas exportadas (por ruta, **sin la query**, así no quedan ids),
+    JS/CSS con hash, fuentes, imágenes, íconos e ilustraciones de estados;
+  - **nunca** guarda la API, pedidos que no sean GET, respuestas con error ni datos de una persona; no encola ni reenvía
+    nada (sin `sync`);
+  - navegación: primero la red; sin red, la página guardada; si no está, `/sin-conexion/`.
+- **Sin conexión**: aviso fijo "Sin conexión. Lo que intentes hacer no se envía ni se guarda hasta que vuelva." Las
+  pantallas guardadas abren, pero sus datos fallan a la vista (error con Reintentar), y toda acción falla sin dar nada por
+  hecho: aceptar no crea el trabajo, el mensaje queda "No se envió". Al volver la red, las pantallas recargan sus datos.
+  El mock respeta lo mismo (`navigator.onLine === false` → `no_disponible`).
+- **Despliegue** (Fase 5): servir `sw.js` con `Cache-Control: no-cache` y `manifest.webmanifest` como
+  `application/manifest+json`; si cambia la lógica del service worker, subir su `VERSION`.
+
+## Capturas
+
+Catálogo de todas las pantallas y estados (66 capturas + los 18 escenarios): [`docs/screens/capturas/`](screens/capturas/README.md),
+regenerable con `npm run capturas`. Antes/después del lote 3.1 en `docs/screens/lote-3-1/` y responsive del 3.2 en
+`docs/screens/lote-3-2/`.
+
+## Pendiente fuera de la Fase 3
+
+- Lectores de pantalla y zoom reales en iOS/Android, instalación real en los dos celulares: lote 5.2.

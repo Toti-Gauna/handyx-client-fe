@@ -1,0 +1,3307 @@
+/* Ajustes propios de la app sobre el kit de la demo (kit/app.css, kit/hd.css y kit/usuario.css se generan con
+   scripts/kit.mjs y no se editan). Acá va lo que la demo no necesita y la app sí: tamaño real, desplazamiento,
+   enlaces en lugar de botones, foco, contraste, objetivos táctiles y convivencia con las pantallas que todavía no se
+   rediseñaron. */
+
+/* ── Escala: el kit está en em y la demo mide 22,5 em de ancho. En la app, el texto base sale del ancho de la
+   pantalla, con piso y techo en rem (respeta el tamaño de letra que elige la persona). ─────────────────────── */
+.hx {
+  --hx-ancho: 480px;
+  font-size: clamp(1.0625rem, 4.444vw, 1.2rem); /* 4,444vw = ancho / 22,5, como la demo */
+}
+
+/* ── Estructura: rótulo de prueba y aviso de red arriba; la app ocupa el resto, como una app nativa. ─────── */
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+.hx {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: var(--hx-ancho);
+  margin-inline: auto;
+  background: var(--sup-base);
+}
+@media (min-width: 768px) {
+  .hx {
+    box-shadow: var(--elev-1);
+  }
+}
+.hx .hx-app {
+  color: var(--hd-tinta);
+}
+
+/* Cuerpo de la app: lo que no tiene cabecera ni barra propias se desplaza solo. */
+.hx-cuerpo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  font-size: 1rem; /* las pantallas sin rediseñar siguen en rem */
+}
+.hx-cuerpo::-webkit-scrollbar {
+  display: none;
+}
+/* Pantallas sin rediseñar (todavía con los componentes de antes): margen y espacio para la barra. */
+.hx-cuerpo:not(:has(> .pantalla)) {
+  padding: 12px 16px 24px;
+}
+/* Pantallas del kit: la propia pantalla reparte arriba / desplazable / pie. */
+.hx-cuerpo:has(> .pantalla) {
+  overflow: hidden;
+  font-size: inherit;
+}
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.pantalla__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.pantalla__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Cabecera de Inicio ─────────────────────────────────────────────────────────────────────────────────── */
+.hx .app-cabecera__fila {
+  padding-top: max(0.7em, env(safe-area-inset-top));
+}
+.hx .app-logo img {
+  height: 2.1em;
+  width: auto;
+}
+/* Los cuadrados de la cabecera: objetivos de 44 px como mínimo y con base táctil. */
+.hx .app-cuadrado {
+  position: relative;
+  min-width: 44px;
+  min-height: 44px;
+  box-shadow: 0 0.22em 0 var(--hd-azul-hondo);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.hx .app-cuadrado:active {
+  transform: translateY(0.22em);
+  box-shadow: 0 0 0 var(--hd-azul-hondo);
+}
+
+/* ── Barra inferior: en la app son enlaces. Contraste del texto inactivo ≥ 4,5:1 (la demo usa 0,6). ──────── */
+.hx .app-nav {
+  padding-bottom: max(0.9em, env(safe-area-inset-bottom));
+}
+.hx .app-nav__item {
+  position: relative;
+  flex: 1;
+  min-height: 48px;
+  justify-content: center;
+  color: rgb(255 255 255 / 0.82);
+  text-decoration: none;
+  border-radius: 0.8em;
+}
+.hx .app-nav__item--activo {
+  color: var(--texto-sobre-marca);
+}
+.hx .app-nav__item--activo::after {
+  content: '';
+  position: absolute;
+  bottom: 0.05em;
+  left: 50%;
+  width: 0.4em;
+  height: 0.4em;
+  margin-left: -0.2em;
+  border-radius: 50%;
+  background: var(--color-amarillo);
+}
+.hx .app-nav__item:focus-visible {
+  outline: 3px solid var(--color-amarillo);
+  outline-offset: 2px;
+}
+
+/* ── Enlaces con aspecto de botón o tarjeta del kit ────────────────────────────────────────────────────── */
+.hx a.hd-boton,
+.hx a.hd-mosaico,
+.hx a.du-quiero,
+.hx a.du-proximo__ticket,
+.hx a.du-oferta__btn,
+.hx a.du-oferta__consultar,
+.hx a.du-handia,
+.hx a.hd-chip,
+.hx a.du-atras {
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.hx a.hd-boton {
+  color: var(--b-texto);
+}
+.hx a.hd-boton:active {
+  transform: translateY(0.28em);
+  box-shadow: 0 0 0 var(--b-base);
+}
+.hx a.hd-mosaico:active,
+.hx button.hd-mosaico:active {
+  transform: scale(0.97);
+}
+.hx a:focus-visible,
+.hx button:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 2px;
+}
+.hx .du-hoja-azul a:focus-visible,
+.hx .du-hoja-azul button:focus-visible {
+  outline-color: var(--color-amarillo);
+}
+
+/* Chip de dirección y otros chips tocables: 44 px de alto. */
+.hx .du-direccion {
+  min-height: 44px;
+}
+
+/* Barra "← Título": el botón de volver de la demo mide 2,55 em (≥ 44 px con la escala de la app). */
+.hx .du-atras {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ── Títulos: el h1 de cada pantalla recibe el foco al navegar (sin contorno: no es un control). ───────── */
+.hx h1:focus {
+  outline: none;
+}
+
+/* ── Movimiento reducido: también lo que la app agrega. ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hx .app-cuadrado,
+  .hx a.hd-boton,
+  .hx a.hd-mosaico {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* La barra "← Título" lleva el h1 de la pantalla. */
+.du-barra__textos h1 {
+  margin: 0;
+  font: inherit;
+}
+
+/* Rótulo de la vista de prueba: una sola línea (la explicación completa está en el panel). */
+.aviso-prueba {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 12px;
+  font-weight: 600;
+}
+.aviso-prueba .panel-prueba__abrir {
+  margin: 0;
+}
+
+/* Encabezado de las pantallas todavía sin rediseñar: barra de la demo + bajada alineada con el título. */
+.encabezado-hx {
+  margin: 4px 0 14px;
+  font-size: 1.0625rem;
+}
+.encabezado-hx .encabezado__bajada {
+  margin: 6px 0 0 calc(2.55em + 0.75em);
+  font-size: 1rem;
+}
+
+/* Reglas del kit escritas para <button> que en la app son enlaces. */
+.hx a.du-handia {
+  display: flex;
+  align-items: center;
+  gap: 0.85em;
+  padding: 0.75em 0.85em 0.75em 0.75em;
+  border-radius: 1.35em;
+  color: var(--texto-sobre-marca);
+  overflow: hidden;
+}
+.hx a.hd-tarjeta:active {
+  transform: translateY(0.3em);
+  box-shadow: 0 0 0 var(--hd-azul-hondo);
+}
+.hx a.du-proximo__ticket:active {
+  transform: scale(0.98);
+}
+
+/* Tickets de Inicio: nombre en una línea y acción sin cortes. */
+.hx .du-proximo__quien strong {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.hx .du-proximo__ver {
+  white-space: nowrap;
+}
+.hx .du-proximo__abajo strong {
+  min-width: 0;
+}
+.pantalla__resto {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+/* La hoja azul que llena la pantalla desplaza su lista por dentro. */
+.hx .du-hoja-azul--llena {
+  color: var(--texto-sobre-marca);
+}
+.hx .du-hoja-azul--llena .du-lista {
+  flex: 1;
+  min-height: 0;
+}
+.du-hoja-azul__titulo h2 {
+  margin: 0;
+  font: inherit;
+}
+
+/* ── Propuestas: selector de vista, comparación y anteriores (no están en la demo) ──────────────────────── */
+.du-vistas {
+  gap: 0.5em;
+}
+.du-vistas .hd-chip {
+  min-height: 44px;
+  padding-inline: 0.9em;
+  font-size: 0.74em;
+  font-weight: 800;
+}
+.du-comparar {
+  overflow-x: auto;
+  border-radius: 1.2em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-tinta);
+  box-shadow: var(--hd-sombra-1);
+}
+.du-comparar table {
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.72em;
+}
+.du-comparar th,
+.du-comparar td {
+  min-width: 9.5em;
+  padding: 0.75em 0.85em;
+  border-bottom: 1px solid var(--hd-linea);
+  text-align: left;
+  vertical-align: top;
+}
+.du-comparar thead th {
+  font-family: var(--hd-titulos);
+  font-weight: 900;
+  font-size: 1.05em;
+}
+.du-comparar tbody th {
+  position: sticky;
+  left: 0;
+  min-width: 7.5em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-suave);
+  font-weight: 700;
+}
+.du-comparar .hd-precio {
+  font-size: 1.2em;
+}
+.du-comparar .hd-chip {
+  margin: 0 0.3em 0.3em 0;
+}
+.du-anteriores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+.du-anteriores > summary {
+  color: var(--texto-sobre-marca);
+  font-size: 0.8em;
+}
+.du-anteriores[open] > summary {
+  margin-bottom: 0.75em;
+}
+.du-anteriores > .du-oferta + .du-oferta {
+  margin-top: 0.75em;
+}
+.du-oferta__sobre .hd-chip {
+  margin-left: auto;
+}
+.hx .du-hoja-azul .du-hoja-azul__nota a {
+  color: var(--color-amarillo);
+  font-weight: 800;
+}
+/* Botones de la franja de la tarjeta: 44 px. */
+.hx .du-oferta__btn {
+  min-height: 44px;
+}
+
+/* ── Base de la landing dentro de las pantallas rediseñadas (las viejas siguen con la suya) ─────────────── */
+.pantalla :where(h1, h2, h3, p, dl, dd, figure),
+.app-cabecera :where(p) {
+  margin: 0;
+}
+.pantalla :where(h1, h2, h3) {
+  font-family: var(--fuente-titulos);
+  color: inherit;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.pantalla :where(p) {
+  text-wrap: pretty;
+}
+.pantalla :where(img, svg) {
+  display: block;
+  max-width: 100%;
+}
+.pantalla {
+  line-height: 1.2;
+}
+/* El kit marca el chip elegido en azul; sobre la hoja azul, el elegido va en amarillo. */
+.du-hoja-azul .du-vistas .hd-chip[aria-pressed='true'] {
+  background: var(--hd-amarillo);
+  color: var(--hd-tinta);
+}
+.hx a.du-oferta__btn--azul {
+  color: var(--texto-sobre-marca);
+}
+
+/* ── Galería /diseno/ (solo vista de prueba) ───────────────────────────────────────────────────────────── */
+.galeria {
+  gap: 1.6em;
+}
+.galeria__seccion {
+  gap: 0.8em;
+}
+.galeria__colores,
+.galeria__iconos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5em, 1fr));
+  gap: 0.8em;
+}
+.galeria__color,
+.galeria__icono {
+  display: grid;
+  justify-items: center;
+  gap: 0.35em;
+  font-size: 0.7em;
+  text-align: center;
+}
+.galeria__color i {
+  width: 3.4em;
+  height: 3.4em;
+  border-radius: 1em;
+  box-shadow: inset 0 0 0 1px rgb(14 29 54 / 0.12);
+}
+.galeria__icono .icono {
+  width: 1.8em;
+  height: 1.8em;
+  color: var(--hd-azul);
+}
+.galeria__fila,
+.galeria__handys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em;
+}
+.galeria__handy {
+  display: flex;
+  gap: 0.4em;
+}
+.galeria__handy img {
+  width: auto;
+  height: 4.5em;
+}
+.galeria__hoja {
+  border-radius: 1.9em;
+}
+
+/* Texto del sistema grande (hasta 200 %): títulos que cortan palabra y filas que se parten en vez de salirse. */
+.pantalla :where(h1, h2, h3, strong),
+.encabezado-hx :where(h1, strong) {
+  overflow-wrap: anywhere;
+}
+.hx .app-cabecera__fila,
+.hx .du-oferta__chips,
+.hx .du-barra {
+  flex-wrap: wrap;
+}
+.hx .du-oferta__chips .hd-chip {
+  white-space: normal;
+}
+.hx .du-direccion {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+}
+.hx .du-direccion span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Techo por ancho de pantalla para lo más grande y para la barra: crecen con el texto del sistema pero sin partir
+   palabras ni pisarse (como el texto dinámico de iOS en títulos y pestañas). En tamaño normal no cambian. */
+.hx .hd-titulo--grande,
+.hx .du-inicio__titulo {
+  font-size: min(1.62em, 10.5vw);
+}
+.hx .du-barra__textos strong {
+  font-size: min(1.14em, 7.5vw);
+}
+.hx .app-nav__item {
+  font-size: min(0.66em, 4vw);
+}
+.hx .app-nav__item .icono {
+  width: min(2.3em, 8vw);
+  height: min(2.3em, 8vw);
+}
+
+/* ── HandIA y chats con el kit ──────────────────────────────────────────────────────────────────────────── */
+.hx .du-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.hx .du-chat__mensajes {
+  flex: 1;
+  min-height: 0;
+}
+.hx h1.hd-chat-cabecera__quien {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  font-family: var(--fuente);
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+/* El campo de la demo es un dibujo; en la app es un campo de verdad. */
+.hx input.du-escribir__campo {
+  min-height: 44px;
+  border: 0;
+  color: var(--hd-tinta);
+  font: inherit;
+  font-size: 0.8em;
+  white-space: normal;
+}
+.hx input.du-escribir__campo::placeholder {
+  color: var(--hd-suave);
+}
+.hx input.du-escribir__campo:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 1px;
+}
+.hx .du-escribir__enviar {
+  min-width: 44px;
+  min-height: 44px;
+}
+.hx .du-escribir__enviar:disabled {
+  opacity: 0.45;
+}
+.hx .du-rapida {
+  min-height: 44px;
+}
+/* En HandIA las opciones se acomodan en filas (con texto grande no quedan fuera de la pantalla). */
+.hx .du-rapidas--envolver {
+  flex-wrap: wrap;
+}
+.hx .du-rapidas--envolver .du-rapida {
+  max-width: 100%;
+  white-space: normal;
+  text-align: start;
+}
+.du-handia-nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin-top: 0.2em;
+  color: var(--hd-azul-hondo);
+  font-weight: 700;
+}
+.du-handia-nota .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.du-handia-aviso {
+  align-self: stretch;
+}
+
+/* ── Flujos a pantalla completa (lote 3.2: acceso, registro, onboarding) ─────────────────────────── */
+.du-flujo {
+  background: var(--sup-tarjeta);
+}
+.du-flujo__barra {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  min-height: 3.4em;
+  padding: 0.6em 1em 0.2em;
+  flex: none;
+}
+.du-flujo .du-atras {
+  width: 44px;
+  height: 44px;
+}
+.du-flujo__progreso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  flex: 1;
+  min-width: 0;
+}
+.du-flujo__pista {
+  display: block;
+  height: 0.42em;
+  border-radius: 1em;
+  background: var(--hd-linea);
+  overflow: hidden;
+}
+.du-flujo__pista > i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--hd-azul);
+  transition: width 0.35s var(--hd-curva);
+}
+.du-flujo__progreso small {
+  color: var(--hd-suave);
+  font-size: 0.66em;
+  font-weight: 800;
+}
+.du-flujo__cuerpo {
+  padding: 0.6em 1.1em 1.4em;
+}
+.du-flujo__paso {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  animation: hx-paso-entra 0.32s var(--hd-curva) both;
+}
+@keyframes hx-paso-entra {
+  from {
+    opacity: 0;
+    transform: translateX(1.2em);
+  }
+}
+.du-flujo__titulo {
+  font-size: min(1.62em, 10.5vw);
+  outline: none;
+}
+.du-flujo__sub {
+  margin-top: -0.4em;
+  color: var(--hd-suave);
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.du-flujo__pie {
+  gap: 0.5em;
+}
+.du-flujo__pie .hd-boton--fantasma {
+  min-height: 44px;
+}
+.du-flujo .du-escena {
+  margin: 0.2em 0 -0.2em;
+}
+.du-escena--amarillo .du-escena__fondo {
+  background: var(--hd-amarillo);
+}
+.du-escena__handy {
+  position: relative;
+  width: auto;
+  height: 7.4em;
+}
+
+/* Campos de siempre (Campo, Aviso, opción) con el aspecto del kit dentro de las pantallas rediseñadas. */
+.pantalla .campo {
+  gap: 0.4em;
+  margin: 0;
+}
+.pantalla .campo__etiqueta {
+  color: var(--hd-tinta);
+  font-size: 0.74em;
+  font-weight: 800;
+}
+.pantalla .entrada {
+  min-height: 2.9em;
+  padding: 0.55em 0.85em;
+  border: 2px solid transparent;
+  border-radius: 0.9em;
+  background: var(--hd-fondo-2);
+  box-shadow: inset 0 0 0 1px var(--hd-mosaico-hondo);
+  font-size: max(16px, 0.9em);
+  font-weight: 700;
+}
+.pantalla .entrada:focus-visible {
+  border-color: var(--hd-azul);
+  background: var(--sup-tarjeta);
+}
+.pantalla .entrada[aria-invalid='true'] {
+  border-color: var(--hd-error);
+}
+.pantalla .campo__ayuda,
+.pantalla .campo__error {
+  font-size: 0.7em;
+}
+.pantalla .aviso {
+  margin: 0;
+  border-radius: 1em;
+  font-size: 0.76em;
+}
+.pantalla .opcion {
+  margin: 0;
+  border-radius: 1em;
+  font-size: 0.82em;
+}
+
+/* Contraseña con ver/ocultar y medidor. */
+.du-clave {
+  position: relative;
+  display: block;
+}
+.du-clave .entrada {
+  padding-right: 3.2em;
+}
+.du-clave__ver {
+  position: absolute;
+  top: 50%;
+  right: 0.25em;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 0.8em;
+  color: var(--hd-suave);
+  transform: translateY(-50%);
+}
+.du-clave__ver[aria-pressed='true'] {
+  color: var(--hd-azul);
+}
+.du-clave__ver .icono {
+  width: 1.3em;
+  height: 1.3em;
+}
+.du-fuerza {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.du-fuerza__barras {
+  display: flex;
+  gap: 0.25em;
+  flex: 1;
+}
+.du-fuerza__barras > i {
+  flex: 1;
+  height: 0.34em;
+  border-radius: 1em;
+  background: var(--hd-linea);
+  transition: background-color 0.25s ease;
+}
+.du-fuerza small {
+  min-width: 6.5em;
+  color: var(--hd-tinta);
+  font-size: 0.68em;
+  font-weight: 800;
+  text-align: end;
+}
+.du-fuerza--0 .du-fuerza__barras > i:nth-child(-n + 1) {
+  background: var(--hd-error);
+}
+.du-fuerza--1 .du-fuerza__barras > i:nth-child(-n + 1) {
+  background: var(--hd-naranja);
+}
+.du-fuerza--2 .du-fuerza__barras > i:nth-child(-n + 2) {
+  background: var(--hd-azul-vivo);
+}
+.du-fuerza--3 .du-fuerza__barras > i {
+  background: var(--hd-exito);
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-flujo__paso {
+    animation: none;
+  }
+  .du-flujo__pista > i {
+    transition: none;
+  }
+}
+
+/* El marco público muestra su logo solo en las pantallas que todavía no son a pantalla completa. */
+.hx-app:has(> .hx-cuerpo > .pantalla) > .app-cabecera {
+  display: none;
+}
+
+/* ── Bienvenida ─────────────────────────────────────────────────────────────────────────────────────── */
+.du-bienvenida-app {
+  background-color: var(--hd-azul);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect x='4' y='4' width='40' height='40' rx='11' fill='white' fill-opacity='0.07'/%3E%3C/svg%3E");
+  background-size: 2.6em 2.6em;
+  color: var(--texto-sobre-marca);
+}
+.du-bienvenida-app__arriba {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35em;
+  padding: 1.4em 1em 0.2em;
+  flex: none;
+}
+.du-bienvenida-app__logo {
+  margin: 0;
+  line-height: 0;
+}
+.du-bienvenida-app__logo img {
+  width: 8.6em;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+.du-bienvenida-app__arriba p {
+  color: rgb(255 255 255 / 0.86);
+  font-size: 0.74em;
+  font-weight: 700;
+}
+.du-carril-bienvenida {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.du-carril-bienvenida::-webkit-scrollbar {
+  display: none;
+}
+.du-carril-bienvenida:focus-visible {
+  outline: 3px solid var(--hd-amarillo);
+  outline-offset: -3px;
+}
+.du-carril-bienvenida__tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7em;
+  flex: 0 0 100%;
+  padding: 0.6em 1.6em;
+  text-align: center;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.du-carril-bienvenida__escena {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 11em;
+  height: min(11em, 32dvh);
+}
+.du-carril-bienvenida__escena > i {
+  position: absolute;
+  inset: 8% 4%;
+  border-radius: 2.2em;
+  background: var(--hd-azul-vivo);
+  transform: rotate(-5deg);
+}
+.du-carril-bienvenida__tarjeta:nth-child(2) .du-carril-bienvenida__escena > i {
+  background: var(--hd-amarillo);
+  transform: rotate(4deg);
+}
+.du-carril-bienvenida__tarjeta:nth-child(3) .du-carril-bienvenida__escena > i {
+  background: rgb(255 255 255 / 0.16);
+}
+.du-carril-bienvenida__escena img {
+  position: relative;
+  width: auto;
+  max-width: 90%;
+  height: min(9em, 26dvh);
+  animation: hx-flotar 3.2s ease-in-out infinite;
+}
+@keyframes hx-flotar {
+  50% {
+    transform: translateY(-0.35em) rotate(-2deg);
+  }
+}
+.du-carril-bienvenida__tarjeta .hd-titulo {
+  font-size: min(1.62em, 10.5vw);
+}
+.du-bienvenida-app mark {
+  color: var(--hd-tinta);
+}
+.du-carril-bienvenida__tarjeta p {
+  max-width: 19em;
+  color: rgb(255 255 255 / 0.9);
+  font-size: 0.82em;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.du-puntos {
+  display: flex;
+  justify-content: center;
+  flex: none;
+}
+.du-puntos__punto {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+}
+.du-puntos__punto > i {
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 1em;
+  background: rgb(255 255 255 / 0.45);
+  transition:
+    width 0.25s var(--hd-curva),
+    background-color 0.25s ease;
+}
+.du-puntos__punto[aria-current='true'] > i {
+  width: 1.6em;
+  background: var(--hd-amarillo);
+}
+.du-puntos__punto:focus-visible {
+  outline: 3px solid var(--hd-amarillo);
+  outline-offset: -6px;
+  border-radius: 1em;
+}
+.du-bienvenida-app__pie {
+  gap: 0.6em;
+  background: transparent;
+  box-shadow: none;
+}
+.hx .du-boton-borde {
+  --b-fondo: transparent;
+  --b-base: transparent;
+  --b-texto: var(--texto-sobre-marca);
+  box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.75);
+}
+.du-bienvenida-app__nota {
+  color: rgb(255 255 255 / 0.86);
+  font-size: 0.66em;
+  font-weight: 600;
+  text-align: center;
+}
+.hx a.du-bienvenida-app__mapa {
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  color: var(--texto-sobre-marca);
+  font-size: 0.72em;
+  font-weight: 800;
+  text-decoration: underline;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-carril-bienvenida__escena img {
+    animation: none;
+  }
+  .du-puntos__punto > i {
+    transition: none;
+  }
+}
+
+/* Email ya elegido (ingresar, revisá tu email): chip con "Cambiar". */
+.du-email-elegido {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding: 0.2em 0.3em 0.2em 0.85em;
+  border-radius: 1em;
+  background: var(--hd-azul-tinte);
+  color: var(--hd-tinta);
+  font-size: 0.82em;
+  font-weight: 800;
+}
+.du-email-elegido > span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.du-email-elegido .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+  color: var(--hd-azul);
+}
+.du-email-elegido button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.7em;
+  border-radius: 0.8em;
+  color: var(--hd-azul);
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+/* Registro: código, aceptaciones, textos legales y "¡Listo!" con la tarifa. */
+.pantalla .entrada.du-codigo {
+  font-family: var(--hd-titulos);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.du-aceptar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.du-textos {
+  border-radius: 1em;
+  background: var(--hd-fondo-2);
+  font-size: 0.8em;
+}
+.du-textos > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1em;
+  color: var(--hd-azul);
+  font-weight: 800;
+  cursor: pointer;
+}
+.du-textos[open] {
+  padding-bottom: 1em;
+}
+.du-textos > :not(summary) {
+  margin: 0.6em 1em 0;
+}
+.du-textos h2 {
+  margin: 0 0 0.3em;
+  color: var(--hd-tinta);
+  font-size: 1em;
+}
+.du-textos p {
+  margin: 0 0 0.5em;
+  line-height: 1.45;
+}
+.du-listo .du-escena__handy {
+  height: 6.4em;
+}
+.du-fee {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7em;
+}
+.du-fee > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+.du-fee strong {
+  color: var(--hd-tinta);
+  font-size: 0.86em;
+}
+.du-fee small {
+  color: var(--hd-tinta);
+  font-size: 0.72em;
+  line-height: 1.4;
+}
+.du-fee__ico {
+  display: grid;
+  place-items: center;
+  width: 2.3em;
+  height: 2.3em;
+  border-radius: 0.8em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-azul);
+  flex: none;
+}
+.du-fee__ico .icono {
+  width: 1.2em;
+  height: 1.2em;
+}
+.du-nota--permiso {
+  color: var(--hd-suave);
+  font-size: 0.74em;
+  line-height: 1.45;
+}
+.pantalla .form-ubicacion {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+.pantalla .form-ubicacion > .campo__ayuda {
+  margin-top: -0.6em;
+}
+/* Pantallas bajas (celulares chicos, teclado abierto) y apaisadas: todo más compacto; si igual no entra, se desplaza. */
+@media (max-height: 720px) {
+  .du-bienvenida-app__arriba {
+    padding-top: 0.8em;
+  }
+  .du-bienvenida-app__logo img {
+    width: 6.6em;
+  }
+  .du-carril-bienvenida__tarjeta {
+    gap: 0.45em;
+  }
+  .du-carril-bienvenida__escena {
+    height: 22dvh;
+  }
+  .du-carril-bienvenida__escena img {
+    height: 17dvh;
+  }
+  .du-bienvenida-app__pie {
+    gap: 0.4em;
+    padding-top: 0.4em;
+  }
+}
+@media (max-height: 520px) {
+  .du-bienvenida-app {
+    overflow-y: auto;
+  }
+  .du-carril-bienvenida {
+    flex: none;
+  }
+  .du-carril-bienvenida__escena {
+    height: 6.5em;
+  }
+  .du-carril-bienvenida__escena img {
+    height: 5.4em;
+  }
+}
+
+/* ── Mapa (lote 3.3) ──────────────────────────────────────────────────────────────────────────────── */
+.mapa-hx {
+  position: relative;
+  overflow: hidden;
+  min-height: 9em;
+  border-radius: 1.2em;
+  background: var(--hd-mosaico);
+  isolation: isolate;
+}
+.mapa-hx__lienzo,
+.mapa-hx__lienzo.maplibregl-map,
+.mapa-hx__ilustrado {
+  position: absolute;
+  inset: 0;
+}
+.mapa-hx__lienzo:focus-visible,
+.mapa-hx .maplibregl-canvas:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: -3px;
+}
+.mapa-hx--cargando .mapa-hx__lienzo {
+  background: linear-gradient(90deg, var(--hd-mosaico), var(--hd-fondo-2), var(--hd-mosaico));
+  background-size: 200% 100%;
+  animation: hx-mapa-cargando 1.4s linear infinite;
+}
+@keyframes hx-mapa-cargando {
+  to {
+    background-position: -200% 0;
+  }
+}
+/* El pin rojo de la demo (casa) en HTML, para el mapa vivo y la mira de "elegir". */
+.mapa-hx__pin {
+  position: relative;
+  display: block;
+  width: 1.7em;
+  height: 1.7em;
+  border: 0.16em solid var(--sup-tarjeta);
+  border-radius: 50% 50% 50% 0;
+  background: var(--hd-error);
+  box-shadow: 0 0.3em 0.7em rgb(14 29 54 / 0.3);
+  transform: rotate(-45deg);
+}
+.mapa-hx__pin::after {
+  content: '';
+  position: absolute;
+  inset: 32%;
+  border-radius: 50%;
+  background: var(--sup-tarjeta);
+}
+.mapa-hx__mira {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  justify-items: center;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+.mapa-hx__mira .mapa-hx__pin {
+  transition: transform 0.18s var(--hd-curva);
+}
+.mapa-hx__mira > i {
+  width: 0.5em;
+  height: 0.22em;
+  margin-top: 0.15em;
+  border-radius: 50%;
+  background: rgb(14 29 54 / 0.35);
+}
+.mapa-hx__mira--moviendo .mapa-hx__pin {
+  transform: translateY(-0.5em) rotate(-45deg);
+}
+.mapa-hx__casa {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.mapa-hx__casa > i {
+  display: none;
+}
+.mapa-hx__casa--pulso > i {
+  position: absolute;
+  bottom: -2.6em;
+  display: block;
+  width: 6em;
+  height: 6em;
+  border: 0.1em solid rgb(31 87 168 / 0.45);
+  border-radius: 50%;
+  background: rgb(31 87 168 / 0.1);
+  transform: scale(0);
+  animation: hx-mapa-pulso 2.7s ease-out infinite;
+}
+.mapa-hx__casa--pulso > i:nth-child(2) {
+  animation-delay: 0.9s;
+}
+.mapa-hx__casa--pulso > i:nth-child(3) {
+  animation-delay: 1.8s;
+}
+@keyframes hx-mapa-pulso {
+  70% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+.mapa-hx__esp {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border: 0.18em solid var(--sup-tarjeta);
+  border-radius: 50%;
+  background: var(--hd-azul);
+  color: var(--texto-sobre-marca);
+  font-family: var(--hd-titulos);
+  font-size: 0.8em;
+  font-weight: 900;
+  box-shadow: 0 0 0 0.4em rgb(255 255 255 / 0.55);
+  transition: transform 0.6s var(--hd-curva);
+}
+.mapa-hx__atribucion,
+.mapa-hx__rotulo {
+  position: absolute;
+  z-index: 3;
+  right: 0.5em;
+  bottom: 0.5em;
+  margin: 0;
+  padding: 0.15em 0.55em;
+  border-radius: 0.6em;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--hd-tinta);
+  font-size: 0.6em;
+  font-weight: 700;
+}
+.mapa-hx__atribucion a {
+  color: var(--hd-azul);
+}
+.mapa-hx__rotulo {
+  left: 0.5em;
+  right: auto;
+}
+.mapa-hx--ilustrado .mapa-hx__mira {
+  top: calc(50% + 0.6em);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mapa-hx--cargando .mapa-hx__lienzo,
+  .mapa-hx__casa--pulso > i {
+    animation: none;
+  }
+  .mapa-hx__mira .mapa-hx__pin,
+  .mapa-hx__esp {
+    transition: none;
+  }
+}
+.form-ubicacion__mapa {
+  height: 13em;
+}
+.form-ubicacion > .form-ubicacion__mapa + .campo__ayuda {
+  margin-top: -0.6em;
+}
+.detalle-mapa {
+  height: 11em;
+  margin: 12px 0;
+}
+.galeria__mapas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+}
+.galeria__mapa {
+  height: 14em;
+}
+
+/* ── Lote 3.4 · Inicio y pedir ───────────────────────────────────────────────────────────────────── */
+/* El Handy de cada rubro, en el lugar del ícono de los mosaicos. */
+.hx-handy-rubro {
+  width: auto;
+  height: 3.3em;
+  max-width: 3.8em;
+  object-fit: contain;
+  animation: none;
+  transition: transform 0.35s var(--hd-resorte);
+}
+.hx-handy-rubro--icono {
+  display: grid;
+  place-items: center;
+  width: 2.9em;
+  border-radius: 1em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-azul);
+}
+.hx-handy-rubro--icono .icono {
+  width: 1.8em;
+  height: 1.8em;
+}
+:where(.hx) .hd-mosaico:hover .hx-handy-rubro,
+:where(.hx) .hd-mosaico:focus-visible .hx-handy-rubro {
+  transform: translateY(-0.15em) rotate(-4deg);
+}
+.hx button.du-direccion {
+  font: inherit;
+  cursor: pointer;
+}
+.du-direccion-mapa {
+  height: 12em;
+  margin-bottom: 12px;
+}
+
+/* Pedir (u-opciones, u-programar, u-describir de la demo) dentro de un flujo. */
+.du-flujo .du-bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+.du-flujo .du-dias {
+  margin-inline: -1.1em;
+  padding: 0.1em 1.1em 0.4em;
+}
+.hx .du-dia,
+.hx .du-franja,
+.hx .du-opcion,
+.hx .du-otra {
+  min-height: 44px;
+}
+.hx .du-franja:disabled {
+  opacity: 0.4;
+  box-shadow: none;
+}
+.du-pedido-de {
+  vertical-align: middle;
+}
+.du-pedido-de .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-flujo .du-rubros {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.hx .du-rubro[aria-pressed='true'] {
+  background: var(--hd-azul-tinte);
+  box-shadow:
+    inset 0 0 0 0.14em var(--hd-azul),
+    0 0.26em 0 var(--hd-mosaico-hondo);
+}
+.du-revisar {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+  padding: 0.2em 0.9em;
+}
+.du-revisar__fila {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15em 0.6em;
+  padding: 0.65em 0;
+  border-bottom: 1px solid var(--hd-linea);
+}
+.du-revisar__fila:last-child {
+  border-bottom: 0;
+}
+.du-revisar dt {
+  grid-column: 1;
+  color: var(--hd-suave);
+  font-size: 0.68em;
+  font-weight: 800;
+}
+.du-revisar dd {
+  grid-column: 1;
+  margin: 0;
+  color: var(--hd-tinta);
+  font-size: 0.82em;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.du-revisar__cambiar {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 0.4em;
+  color: var(--hd-azul);
+  font-size: 0.74em;
+  font-weight: 800;
+  text-decoration: underline;
+}
+.du-mas[open] > :not(summary) {
+  margin-top: 0.8em;
+}
+/* Fotos del pedido dentro de las pantallas rediseñadas. */
+.pantalla .fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pantalla .du-bloque > div > .boton {
+  width: 100%;
+}
+
+/* Búsqueda (u-buscando): el mapa llena lo que deja la hoja azul. */
+.hx-cuerpo > .du-buscando {
+  background: var(--hd-mosaico);
+}
+.du-buscando .du-mapa-zona {
+  margin: 0 0 -1.9em;
+  min-height: 9em;
+}
+.du-buscando__mapa {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  border-radius: 0;
+}
+.du-buscando__sin-mapa {
+  position: absolute;
+  inset: 0;
+  background: var(--hd-mosaico);
+}
+.hx .du-buscando .du-flotante {
+  z-index: 4;
+  top: 1em;
+  width: 44px;
+  height: 44px;
+  background: var(--sup-tarjeta);
+}
+.du-buscando .du-mapa-chip {
+  z-index: 4;
+  top: 1.2em;
+  max-width: calc(100% - 6em);
+}
+.du-buscando__hoja {
+  max-height: 72%;
+  overflow-y: auto;
+}
+.du-buscando__titulo {
+  display: block;
+  margin: 0;
+  color: var(--texto-sobre-marca);
+  font-size: min(1.3em, 8vw);
+}
+.du-buscando__titulo mark {
+  color: var(--hd-tinta);
+  background: linear-gradient(transparent 52%, var(--hd-amarillo) 52% 92%, transparent 92%);
+}
+.du-buscando__handy {
+  align-self: center;
+  width: auto;
+  height: 4.6em;
+  margin-top: -0.2em;
+}
+.du-buscando__pedido {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0;
+  color: rgb(255 255 255 / 0.92);
+  font-size: 0.72em;
+  font-weight: 700;
+}
+.du-buscando__pedido .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.du-buscando .du-hoja-azul__nota {
+  margin: 0;
+  font-size: 0.72em;
+  color: rgb(255 255 255 / 0.9);
+}
+.du-buscando__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+  margin: 0;
+  padding: 0.55em 0.75em;
+  border-radius: 0.9em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-error);
+  font-size: 0.74em;
+  font-weight: 700;
+}
+.du-buscando__error .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.du-buscando__acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+}
+.du-buscando__cancelar {
+  min-height: 44px;
+  color: var(--texto-sobre-marca);
+  font-size: 0.78em;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+/* ── Lote 3.5 · Propuestas y decisión ────────────────────────────────────────────────────────────── */
+.du-propuesta .du-heroe {
+  background: var(--hd-azul);
+}
+.du-heroe__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35em;
+}
+.du-heroe > small {
+  color: rgb(255 255 255 / 0.88);
+  font-size: 0.72em;
+  font-weight: 700;
+}
+.du-propuesta .du-heroe .hd-avatar--grande {
+  box-shadow: 0 0 0 0.25em rgb(255 255 255 / 0.9);
+}
+.du-propuesta__sobre {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.du-propuesta__alcance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.du-propuesta__alcance small {
+  color: var(--hd-suave);
+  font-size: 0.66em;
+  font-weight: 800;
+}
+.du-propuesta__alcance p {
+  margin: 0;
+  color: var(--hd-tinta);
+  font-size: 0.84em;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.du-precio__abajo strong {
+  font-weight: 800;
+}
+.du-cadena {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0.7em 0.9em;
+  list-style: none;
+}
+.du-cadena li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  font-size: 0.78em;
+}
+.du-cadena li[aria-current='true'] strong {
+  color: var(--hd-azul);
+}
+.du-cadena span {
+  color: var(--hd-suave);
+  font-size: 0.9em;
+}
+.du-perfil .du-pie .decision__botones {
+  margin-top: 0;
+}
+/* Confirmar el turno (u-confirmar) dentro de la hoja. */
+.du-confirmar {
+  font-size: 0.95rem;
+}
+.du-confirmar__plata {
+  margin: 0;
+}
+.du-confirmar__plata dd {
+  margin: 0;
+  font-weight: 800;
+}
+.du-pagos--info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-pagos--info .du-pago {
+  box-shadow: none;
+}
+.du-confirmar__pago-nota {
+  margin: 0;
+  color: var(--hd-suave);
+  font-size: 0.85rem;
+}
+.du-confirmar__acciones {
+  margin-top: 8px;
+}
+
+/* Deslizá para confirmar: pista verde con la perilla blanca. Quieto hasta que la persona lo arrastra. */
+.du-deslizar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 3.6rem;
+  margin: 12px 0 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--hd-exito-tinte);
+  box-shadow: inset 0 0 0 2px var(--hd-exito);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.du-deslizar__relleno {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--hd-exito);
+  transition: width 0.25s var(--hd-curva);
+}
+.du-deslizar__texto {
+  position: relative;
+  padding-left: 3rem;
+  color: var(--hd-tinta);
+  font-weight: 800;
+}
+.du-deslizar__perilla {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  display: grid;
+  place-items: center;
+  width: calc(3.6rem - 8px);
+  height: calc(3.6rem - 8px);
+  border-radius: 50%;
+  background: var(--sup-tarjeta);
+  color: var(--hd-exito);
+  box-shadow: 0 0.15rem 0.5rem rgb(14 29 54 / 0.25);
+  cursor: grab;
+  touch-action: none;
+  transition: transform 0.25s var(--hd-curva);
+}
+.du-deslizar__perilla .icono {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.du-deslizar--arrastrando .du-deslizar__perilla,
+.du-deslizar--arrastrando .du-deslizar__relleno {
+  cursor: grabbing;
+  transition: none;
+}
+.du-deslizar--cargando {
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-deslizar__relleno,
+  .du-deslizar__perilla {
+    transition: none;
+  }
+}
+.hx a.hd-fila {
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.hx a.hd-fila strong {
+  color: var(--hd-azul);
+}
+.du-heroe__chips {
+  max-width: 100%;
+}
+.du-heroe__chips .hd-chip {
+  max-width: 100%;
+  height: auto;
+  white-space: normal;
+  text-align: start;
+}
+
+/* ── Lote 3.6 · Trabajo en curso y cierre ────────────────────────────────────────────────────────── */
+.hx-cuerpo > .du-seguimiento-hx {
+  background: var(--hd-mosaico);
+}
+.du-seguimiento-hx .du-mapa-zona {
+  margin: 0 0 -1.9em;
+  min-height: 7em;
+}
+.hx .du-seguimiento-hx .du-flotante {
+  z-index: 4;
+  top: 1em;
+  width: 44px;
+  height: 44px;
+  background: var(--sup-tarjeta);
+}
+.du-seguimiento-hx .du-mapa-chip {
+  z-index: 4;
+  top: 1.2em;
+  max-width: calc(100% - 6em);
+  height: auto;
+  white-space: normal;
+}
+.du-seg-hx {
+  max-height: 68%;
+  padding-bottom: 0;
+}
+.du-seg-hx__scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 0.6em;
+}
+.du-pasos-seg {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.3em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-pasos-seg li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  color: rgb(255 255 255 / 0.7);
+  font-size: 0.64em;
+  font-weight: 800;
+}
+.du-pasos-seg i {
+  display: grid;
+  place-items: center;
+  height: 0.55em;
+  border-radius: 1em;
+  background: rgb(255 255 255 / 0.22);
+}
+.du-pasos-seg .icono {
+  display: none;
+}
+.du-pasos-seg .is-hecho i {
+  background: var(--hd-amarillo);
+}
+.du-pasos-seg .is-actual {
+  color: var(--texto-sobre-marca);
+}
+.du-pasos-seg .is-actual i {
+  background: var(--sup-tarjeta);
+}
+.du-seg-hx .aviso {
+  color: var(--hd-tinta);
+}
+.du-seg-hx__acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.hx a.du-buscando__cancelar {
+  display: grid;
+  place-items: center;
+}
+.du-seg-hx__pie {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin: 0 -1.2em;
+  padding: 0.7em 1.2em max(0.9em, calc(env(safe-area-inset-bottom, 0px) + 0.5em));
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+  flex: none;
+}
+.du-seg-hx__pie > span:not(.hd-avatar) {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.du-seg-hx__pie small {
+  color: rgb(255 255 255 / 0.8);
+  font-size: 0.66em;
+}
+.du-seg-hx__pie strong {
+  font-size: 0.86em;
+}
+.hx .du-seg-hx__chat {
+  width: 44px;
+  height: 44px;
+}
+/* Lo acordado: tarjeta o desplegable (en la hoja azul). */
+.du-acordado {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  color: var(--hd-tinta);
+}
+.du-acordado > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+}
+.du-acordado > summary::-webkit-details-marker {
+  display: none;
+}
+.du-acordado > summary > span:first-child {
+  display: flex;
+  flex-direction: column;
+}
+.du-acordado > summary small,
+.du-acordado__aceptado {
+  color: var(--hd-suave);
+  font-size: 0.68em;
+  font-weight: 700;
+}
+.du-acordado__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--hd-azul);
+  font-size: 0.74em;
+  font-weight: 800;
+}
+.du-acordado__ver .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-acordado[open] .du-acordado__ver .icono {
+  transform: rotate(180deg);
+}
+.du-acordado__titulo {
+  margin: 0;
+  font-size: 0.95em;
+}
+.du-acordado__plata {
+  margin: 0;
+}
+.du-acordado__plata dd {
+  margin: 0;
+  font-weight: 800;
+}
+.du-acordado__dato {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+}
+.du-acordado__dato .icono {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--hd-azul);
+}
+.du-acordado__dato span {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.78em;
+}
+.du-acordado__alcance {
+  margin: 0;
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.du-acordado__antes {
+  font-size: 0.74em;
+}
+.du-acordado__antes summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--hd-azul);
+  font-weight: 800;
+  cursor: pointer;
+}
+/* Etapas de una obra. */
+.du-etapas-obra {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.du-seg-hx .du-etapas-obra .du-sobre {
+  color: rgb(255 255 255 / 0.85);
+}
+.du-etapas-obra ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-etapa-obra {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  padding: 0.7em 0.85em;
+  border-radius: 1em;
+  background: var(--sup-tarjeta);
+  color: var(--hd-tinta);
+}
+.du-etapa-obra__fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  font-size: 0.82em;
+}
+.du-etapa-obra__monto {
+  color: var(--hd-suave);
+  font-size: 0.74em;
+  font-weight: 700;
+}
+/* Historial del trabajo. */
+.du-historial-trabajo {
+  font-size: 0.78em;
+}
+.du-historial-trabajo summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.du-seg-hx .du-historial-trabajo summary {
+  color: var(--texto-sobre-marca);
+}
+.du-historial-trabajo ol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  margin: 0;
+  padding: 0 0 0 1em;
+}
+.du-historial-trabajo li span {
+  display: block;
+  opacity: 0.8;
+  font-size: 0.9em;
+}
+/* Cierre (u-terminado). */
+.du-cierre .du-escena {
+  margin-bottom: -0.4em;
+}
+.du-cierre__titulo {
+  font-size: min(1.5em, 9vw);
+}
+.du-cierre__estado {
+  margin: -0.4em 0 0;
+}
+.du-cierre__roto {
+  align-self: center;
+  width: auto;
+  height: 5.5em;
+}
+.du-cierre__pago-nota {
+  margin: 0;
+  color: var(--hd-suave);
+  font-size: 0.72em;
+  line-height: 1.4;
+}
+.du-ticket__total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25em;
+}
+/* Pago al especialista. */
+.du-pago-objetivo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+}
+.du-pago-objetivo__metodo {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0;
+  font-size: 0.78em;
+  font-weight: 700;
+}
+.du-pago-objetivo__metodo .icono {
+  width: 1.2em;
+  height: 1.2em;
+  color: var(--hd-azul);
+}
+.du-pago-objetivo__explica {
+  margin: 0;
+  color: var(--hd-suave);
+  font-size: 0.72em;
+  line-height: 1.4;
+}
+.du-pago-objetivo__comprobante {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  align-self: flex-start;
+  min-height: 44px;
+  color: var(--hd-azul);
+  font-size: 0.76em;
+  font-weight: 800;
+  text-decoration: underline;
+}
+.du-pago-objetivo__comprobante .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-pagos--elegir {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 8px 0;
+  padding: 0;
+  border: 0;
+}
+.du-pagos--elegir .du-pago {
+  position: relative;
+  cursor: pointer;
+}
+.du-pagos--elegir input {
+  position: absolute;
+  top: 0.7em;
+  right: 0.7em;
+  width: 1.2em;
+  height: 1.2em;
+  accent-color: var(--hd-azul);
+}
+.du-pagos--elegir .du-pago:has(input:checked) {
+  background: var(--hd-azul-tinte);
+  box-shadow:
+    inset 0 0 0 0.14em var(--hd-azul),
+    0 0.24em 0 var(--hd-mosaico-hondo);
+}
+.du-pagos--elegir .du-pago:has(input:focus-visible) {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 2px;
+}
+.du-pagos--elegir small {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+.du-pago-hoja__que {
+  margin: 0;
+}
+.du-comprobante__datos {
+  margin: 0;
+}
+.du-comprobante__datos dd {
+  margin: 0;
+  font-weight: 800;
+  text-align: end;
+}
+/* Reseña (u-resena). */
+.du-resena-hx__quien {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  text-align: center;
+}
+.du-estrellas-hx {
+  display: flex;
+  justify-content: center;
+  gap: 0.3em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.du-estrella-hx {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 1em;
+  color: var(--hd-mosaico-hondo);
+  transition: transform 0.2s var(--hd-resorte);
+}
+.du-estrella-hx .icono {
+  width: 2em;
+  height: 2em;
+}
+.du-estrella-hx[aria-pressed='true'] {
+  color: var(--hd-amarillo-hondo);
+}
+.du-estrella-hx[aria-pressed='true'] .icono {
+  fill: var(--hd-amarillo);
+}
+:where(.hx) .du-estrella-hx:active {
+  transform: scale(0.9);
+}
+.du-resena-hx__ayuda {
+  margin: -0.4em 0 0;
+  color: var(--hd-suave);
+  font-size: 0.76em;
+  font-weight: 700;
+  text-align: center;
+}
+.du-resena-hx__chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.du-resena-hx__chips .hd-chips {
+  justify-content: center;
+}
+.hx .du-chip-voto {
+  min-height: 44px;
+}
+.hx .du-chip-voto[aria-pressed='true'] {
+  background: var(--hd-azul);
+  color: var(--texto-sobre-marca);
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-estrella-hx {
+    transition: none;
+  }
+}
+/* Objetivos de 44 px y texto al 200 % en el cierre. */
+.hx .du-pie .hd-boton--fantasma {
+  min-height: 44px;
+}
+.du-escena__fondo {
+  max-width: 100%;
+}
+.hx .hd-precio--grande {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* ── Lote 3.7 · Actividad, mensajes y soporte ────────────────────────────────────────────────────── */
+.du-actividad__cabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 1em 1.1em 0.6em;
+  flex: none;
+}
+.du-actividad__cabeza h1 {
+  margin: 0;
+}
+.du-segmentos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25em;
+  padding: 0.25em;
+  border-radius: 1.1em;
+  background: var(--hd-mosaico);
+}
+.du-segmentos__tab {
+  min-height: 44px;
+  border-radius: 0.9em;
+  color: var(--hd-suave);
+  font-size: 0.78em;
+  font-weight: 800;
+}
+.du-segmentos__tab[aria-selected='true'] {
+  background: var(--sup-tarjeta);
+  color: var(--hd-azul);
+  box-shadow: var(--hd-sombra-1);
+}
+.du-actividad__panel {
+  padding-top: 0.4em;
+}
+.du-actividad__espera {
+  color: var(--hd-azul);
+}
+.du-lista-tarjetas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-tarjeta-hx .du-tarjeta__datos small {
+  overflow-wrap: anywhere;
+}
+.du-tarjeta-hx .du-tarjeta__der {
+  align-items: flex-end;
+}
+.hx a.du-tarjeta__franja {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+  min-height: 44px;
+  text-decoration: none;
+}
+.du-actividad__calendario {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.du-vacio-hx {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+  padding: 1.6em 1em;
+  text-align: center;
+}
+.du-vacio-hx .hd-handy {
+  width: auto;
+  height: 5em;
+}
+.du-vacio-hx__texto {
+  margin: 0 0 0.4em;
+  color: var(--hd-suave);
+  font-size: 0.82em;
+}
+.du-segmentos__tab {
+  text-align: center;
+}
+.du-tarjeta-hx .du-tarjeta__datos strong {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+/* Chat con un especialista (u-chat). */
+.du-conversacion .du-chat__mensajes {
+  margin: 0;
+  list-style: none;
+}
+.du-conversacion__ver {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  min-height: 44px;
+  padding: 0 0.6em;
+  color: var(--hd-azul);
+  font-size: 0.72em;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.du-conversacion__propuesta {
+  align-self: stretch;
+}
+.du-conversacion__sistema {
+  align-self: center;
+}
+.du-burbuja__meta {
+  display: block;
+  margin-top: 0.25em;
+  font-size: 0.7em;
+  opacity: 0.75;
+}
+.du-burbuja--error {
+  background: var(--hd-error);
+}
+.du-burbuja__error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 0.3em;
+  font-size: 0.8em;
+}
+.du-burbuja__error button {
+  min-height: 44px;
+  padding: 0 0.5em;
+  color: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+}
+.du-burbuja__foto {
+  display: block;
+  max-width: 12em;
+  border-radius: 0.8em;
+}
+.hx .du-escribir__foto {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  background: var(--hd-mosaico);
+  color: var(--hd-tinta);
+  flex: none;
+}
+.du-escribir__foto .icono {
+  width: 1.2em;
+  height: 1.2em;
+}
+.hx textarea.du-escribir__campo {
+  flex: 1;
+  min-height: 44px;
+  max-height: 6em;
+  padding: 0.6em 0.9em;
+  border: 0;
+  border-radius: 1.4em;
+  background: var(--hd-fondo-2);
+  color: var(--hd-tinta);
+  font: inherit;
+  font-size: max(16px, 0.9em);
+  resize: none;
+}
+.hx textarea.du-escribir__campo:focus-visible {
+  outline: 3px solid var(--color-azul-personajes);
+  outline-offset: 1px;
+}
+/* Lista de mensajes (u-mensajes). */
+.du-chats-hx {
+  margin: 0;
+  padding: 0.2em 0.6em;
+  list-style: none;
+}
+.hx a.du-chat-fila {
+  min-height: 3.4em;
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.du-chat-fila .du-ia-avatar img {
+  width: auto;
+  height: 100%;
+}
+/* Avisos (u-notificaciones). */
+.du-avisos-hx__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hx button.du-aviso-card {
+  width: 100%;
+  min-height: 44px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.du-aviso-card__texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15em;
+  min-width: 0;
+}
+.du-aviso-card__texto small {
+  color: var(--hd-suave);
+  font-size: 0.78em;
+}
+.du-aviso-card--nuevo .du-aviso-card__texto strong::before {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.35em;
+  border-radius: 50%;
+  background: var(--hd-azul);
+  vertical-align: middle;
+}
+.du-aviso-card--leido {
+  opacity: 0.85;
+}
+/* Agenda en Actividad: los días del calendario no bajan de 44 px en 360 px. */
+.du-actividad .cal__grilla {
+  gap: 2px;
+}
+.du-actividad .du-cuerpo {
+  padding-inline: 0.9em;
+}
+/* "Ver el trabajo/pedido" en la cabecera del chat: con texto grande, baja de línea en vez de salirse. */
+.du-conversacion__ver {
+  min-width: 0;
+  white-space: normal;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+/* ── Cuenta y ayuda (rediseño 3.8) ───────────────────────────────────── */
+.du-cuenta {
+  gap: 1.1em;
+}
+.du-yo__textos h1 {
+  margin: 0;
+}
+.du-aviso-cuenta {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.8em 1em;
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.du-aviso-cuenta > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.du-aviso-cuenta small {
+  font-size: 0.78em;
+}
+.du-cuenta .hd-lista,
+.du-pastillas,
+.du-puntos-hx,
+.du-direccion__tipos,
+.du-elegir-direccion {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  list-style: none;
+}
+.du-cuenta-hx__salir {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35em;
+}
+.du-nota--centro {
+  justify-content: center;
+  text-align: center;
+}
+/* Datos personales: etiqueta arriba, valor abajo; lo que falta, en gris (nunca inventado). */
+.du-fila-dato {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.15em;
+}
+.du-fila-dato dt {
+  color: var(--hd-suave);
+  font-size: 0.72em;
+}
+.du-fila-dato dd {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.du-falta {
+  color: var(--hd-suave);
+  font-style: italic;
+}
+.du-datos-hx__lista {
+  margin: 0;
+  padding: 0.6em 1em;
+}
+.du-datos-hx__lista dt,
+.du-datos-hx__lista dd {
+  margin: 0;
+}
+.du-datos-hx__lista .hd-dato > :last-child {
+  white-space: normal;
+  text-align: end;
+  overflow-wrap: anywhere;
+}
+.du-form-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+.du-form-perfil__botones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-top: 0.6em;
+}
+/* Direcciones */
+.du-direccion__quitar {
+  width: 100%;
+  border: 0;
+  color: var(--hd-error);
+  cursor: pointer;
+}
+.du-direccion__quitar:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.du-direccion__tipos legend,
+.du-elegir-direccion legend {
+  padding: 0;
+  margin-bottom: 0.5em;
+}
+.du-elegir-direccion {
+  margin-bottom: 0.8em;
+}
+.du-direccion__tipos .hd-chip,
+.du-elegir-direccion .hd-chip {
+  min-height: 44px;
+}
+/* Pagos registrados (sin tarjetas) */
+.du-pagos-hx {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+}
+.du-pagos-hx__resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.85em 1em;
+}
+.du-pagos-hx__cifras {
+  display: flex;
+  gap: 1.4em;
+  margin: 0;
+}
+.du-pagos-hx__cifras span {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+.du-pagos-hx__cifras strong {
+  font-family: var(--hd-titulos);
+  font-size: 1.5em;
+  font-weight: 900;
+  color: var(--hd-azul);
+}
+.du-pagos-hx__cifras small {
+  color: var(--hd-suave);
+  font-size: 0.8em;
+}
+.du-mov-tarjeta {
+  color: var(--hd-tinta);
+}
+.du-mov-hx__estado {
+  padding: 0 0.85em 0.55em;
+}
+.du-mov-hx__ver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  min-height: 44px;
+  font-size: 0.76em;
+  font-weight: 700;
+  color: var(--hd-azul);
+}
+.du-mov-hx__ver .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+.du-tarjeta__franja--plegable {
+  width: 100%;
+  border: 0;
+  cursor: pointer;
+}
+/* Tarifa y demo */
+.du-tarifa-hx__hero {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  padding: 1em;
+}
+.du-tarifa-hx__handy {
+  width: auto;
+  height: 5.2em;
+  flex: none;
+}
+.du-tarifa-hx__titulo {
+  margin: 0 0 0.35em;
+  font-family: var(--hd-titulos);
+  font-stretch: 110%;
+  font-size: 1.05em;
+  line-height: 1.2;
+}
+.du-tarifa-hx__titulo strong {
+  font-size: 1.35em;
+  font-weight: 900;
+}
+.du-tarifa-hx__hero p {
+  margin: 0 0 0.3em;
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.du-puntos-hx {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+/* Privacidad: textos plegables */
+.du-legal-hx {
+  border-radius: 1.1em;
+  background: var(--hd-fondo-2);
+  margin-bottom: 0.5em;
+  overflow: hidden;
+}
+.du-legal-hx summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  min-height: 44px;
+  padding: 0.6em 1em;
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+.du-legal-hx summary::-webkit-details-marker {
+  display: none;
+}
+.du-legal-hx summary span {
+  flex: 1;
+}
+.du-legal-hx summary .icono {
+  width: 1.15em;
+  height: 1.15em;
+  color: var(--hd-azul);
+  flex: none;
+}
+.du-legal-hx[open] summary .icono:last-child {
+  transform: rotate(180deg);
+}
+.du-legal-hx__cuerpo {
+  padding: 0 1em 0.8em;
+  font-size: 0.82em;
+  line-height: 1.5;
+}
+/* Avisos del celular */
+.du-avisos-cel-hx__hero {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+}
+.du-avisos-cel-hx__hero .hd-handy {
+  width: auto;
+  height: 4.6em;
+  flex: none;
+}
+.du-avisos-cel-hx__hero p {
+  margin: 0;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+.du-interruptor-hx {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.8em 1em;
+  cursor: pointer;
+}
+.du-interruptor-hx__texto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.du-interruptor-hx__texto small {
+  color: var(--hd-suave);
+  font-size: 0.78em;
+}
+.du-interruptor-hx__control {
+  appearance: none;
+  position: relative;
+  width: 3.1em;
+  height: 1.8em;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--hd-linea);
+  cursor: pointer;
+  flex: none;
+  transition: background-color 0.2s ease;
+}
+.du-interruptor-hx__control::after {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  left: 0.2em;
+  width: 1.4em;
+  height: 1.4em;
+  border-radius: 50%;
+  background: var(--sup-tarjeta);
+  box-shadow: 0 0.1em 0.3em rgb(14 29 54 / 0.25);
+  transition: transform 0.2s ease;
+}
+.du-interruptor-hx__control:checked {
+  background: var(--hd-exito);
+}
+.du-interruptor-hx__control:checked::after {
+  transform: translateX(1.3em);
+}
+.du-interruptor-hx__control:disabled {
+  opacity: 0.6;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-interruptor-hx__control,
+  .du-interruptor-hx__control::after {
+    transition: none;
+  }
+}
+/* Centro de ayuda */
+.du-ayuda {
+  gap: 1em;
+}
+.du-pastillas li {
+  display: flex;
+}
+.du-pastilla {
+  min-height: 44px;
+  text-decoration: none;
+}
+.du-respuesta__pregunta {
+  margin: 0;
+}
+.du-respuesta__cuerpo .hd-boton {
+  align-self: flex-start;
+}
+.du-sirvio h2 {
+  margin: 0;
+}
+.du-sirvio__botones .hd-boton {
+  min-height: 44px;
+}
+.du-sirvio__gracias-hx {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+}
+.du-ayuda__pie .hd-boton {
+  width: 100%;
+}
+/* Eliminar cuenta */
+.du-baja-hx__intro {
+  margin: 0 0 0.6em;
+  font-size: 0.9em;
+  line-height: 1.45;
+  font-weight: 600;
+}
+.du-baja-hx__estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6em;
+  padding: 1em;
+}
+.du-baja-hx__estado > p {
+  margin: 0;
+  font-size: 0.86em;
+  line-height: 1.45;
+}
+.du-baja-hx__estado .du-datos-hx__lista {
+  align-self: stretch;
+  padding: 0;
+}
+.du-baja-hx__pasos {
+  display: flex;
+  gap: 0.4em;
+  align-self: stretch;
+  margin: 0.2em 0;
+  padding: 0;
+  list-style: none;
+}
+.du-baja-hx__pasos li {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  font-size: 0.7em;
+  text-align: center;
+  color: var(--hd-suave);
+}
+.du-baja-hx__pasos i {
+  display: grid;
+  place-items: center;
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  border: 0.14em solid var(--hd-linea);
+  background: var(--sup-tarjeta);
+}
+.du-baja-hx__pasos .icono {
+  width: 1em;
+  height: 1em;
+}
+.du-baja-hx__pasos .is-hecho,
+.du-baja-hx__pasos .is-actual {
+  color: var(--hd-tinta);
+  font-weight: 700;
+}
+.du-baja-hx__pasos .is-hecho i,
+.du-baja-hx__pasos .is-actual i {
+  border-color: var(--hd-exito);
+  background: var(--hd-exito);
+  color: var(--texto-sobre-marca);
+}
+/* Botón blanco con borde sobre fondo claro (el .du-boton-borde de la app es el de las hojas azules). */
+.hx .du-boton-claro-hx {
+  box-shadow:
+    inset 0 0 0 0.1em var(--hd-linea),
+    0 0.28em 0 var(--hd-linea);
+}
+.hx .du-respuesta__pregunta {
+  color: var(--texto-sobre-marca);
+}
+.hx .hd-boton--fantasma,
+.du-mov-tarjeta .du-tarjeta__franja {
+  min-height: 44px;
+}
+.du-yo__textos {
+  min-width: 0;
+}
+.du-yo__textos h1 {
+  overflow-wrap: anywhere;
+}
+.du-yo__textos .hd-chip {
+  max-width: 100%;
+  white-space: normal;
+}
+.du-tarifa-hx__titulo strong {
+  white-space: nowrap;
+}
+/* La franja plegable de los movimientos: margen sobre los 44 px (el redondeo a 390 px la dejaba en 43,9). */
+.du-mov-tarjeta .du-tarjeta__franja {
+  min-height: 48px;
+}
+
+/* ── Lote 3.9 · Pulido premium ───────────────────────────────────────────────────────────────────── */
+/* Transiciones de pantalla (transicion.ts): fundido corto con un leve ascenso; la barra de pestañas queda quieta y la
+   tarjeta tocada crece hasta el encabezado del detalle. Con "reducir movimiento" no hay ninguna. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.22s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-new(root) {
+  animation-name: hx-vt-entrar;
+}
+@keyframes hx-vt-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em);
+  }
+}
+.hx .app-nav {
+  view-transition-name: hx-nav;
+}
+html.vt-entrando [data-vt-destino] {
+  view-transition-name: hx-tarjeta;
+}
+::view-transition-group(hx-tarjeta) {
+  animation-duration: 0.34s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+::view-transition-old(hx-tarjeta),
+::view-transition-new(hx-tarjeta) {
+  height: 100%;
+  object-fit: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+/* Título grande de las pestañas que se compacta al bajar (como la demo). Solo donde el navegador lo soporta: es un
+   detalle visual, ligado al desplazamiento (no se mueve solo). */
+@supports (animation-timeline: scroll()) {
+  .pantalla {
+    timeline-scope: --hx-desplazamiento;
+  }
+  .pantalla__scroll {
+    scroll-timeline: --hx-desplazamiento block;
+  }
+  .du-actividad__cabeza h1 {
+    animation: hx-compactar linear both;
+    animation-timeline: --hx-desplazamiento;
+    animation-range: 0 4.5em;
+  }
+  .du-actividad__cabeza {
+    animation: hx-cabeza-sombra linear both;
+    animation-timeline: --hx-desplazamiento;
+    animation-range: 0 4.5em;
+  }
+}
+@keyframes hx-compactar {
+  to {
+    font-size: 1.35em;
+  }
+}
+@keyframes hx-cabeza-sombra {
+  to {
+    box-shadow: 0 0.6em 1.2em -1em rgb(14 29 54 / 0.35);
+  }
+}
+.du-actividad__cabeza {
+  position: relative;
+  z-index: 1;
+  background: var(--sup-tarjeta);
+}
+/* Hoja azul arrastrable (gestos.tsx): la manija es un botón de 44 px; tres alturas sobre el mapa. */
+.du-manija-hx {
+  display: grid;
+  place-items: center;
+  align-self: center;
+  width: 5.5em;
+  min-height: 44px;
+  margin: -0.9em 0 -0.6em;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  flex: none;
+}
+.du-manija-hx span {
+  width: 2.8em;
+  height: 0.3em;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.55);
+}
+.du-manija-hx:active {
+  cursor: grabbing;
+}
+.du-manija-hx:focus-visible span {
+  background: var(--hd-amarillo);
+}
+.du-hoja-hx {
+  transform: translateY(var(--hx-arrastre, 0));
+  transition:
+    max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.2s ease;
+}
+.du-hoja-hx[data-arrastrando] {
+  transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hx .du-hoja-hx[data-altura='baja'] {
+  max-height: 10.5em;
+  overflow: hidden;
+}
+.hx .du-hoja-hx[data-altura='alta'] {
+  max-height: calc(100% - 4.6em);
+}
+/* Hojas de diálogo: bajar desde la manija las cierra. */
+.hoja__manija--arrastre {
+  box-sizing: content-box;
+  padding: 0.9em 2em;
+  margin: -0.9em auto calc(12px - 0.9em);
+  background-clip: content-box;
+  cursor: grab;
+  touch-action: none;
+}
+.hoja__cuerpo {
+  transition: transform 0.2s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .du-hoja-hx,
+  .hoja__cuerpo {
+    transition: none;
+  }
+}
+/* Esqueletos con la forma de la pantalla que viene (ui.tsx · Cargando). */
+.esqueletos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: 1em 1.1em;
+}
+.esqueletos .esqueleto {
+  display: block;
+  height: 0.85em;
+  margin: 0;
+  border-radius: 0.6em;
+}
+.esqueleto--corta {
+  width: 60%;
+}
+.esqueleto--titulo {
+  width: 70%;
+  height: 1.5em !important;
+}
+.esqueleto--icono {
+  width: 2.6em;
+  height: 2.6em !important;
+  border-radius: 0.9em !important;
+  flex: none;
+}
+.esqueletos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.esqueletos__tarjeta {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 1em;
+  border-radius: 1.3em;
+  background: var(--sup-tarjeta);
+  box-shadow: inset 0 0 0 1px var(--hd-linea);
+}
+.esqueletos__tarjeta > span,
+.esqueletos__fila {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.esqueletos__detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9em;
+}
+.esqueleto--heroe {
+  height: 9em !important;
+  border-radius: 1.6em !important;
+}
+.esqueletos--mapa {
+  padding: 0;
+}
+.esqueletos__mapa {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 24em;
+  background: var(--hd-mosaico);
+}
+.esqueletos__hoja {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  padding: 0.8em 1.2em 1.4em;
+  border-radius: 1.9em 1.9em 0 0;
+  background: var(--hd-azul);
+}
+.esqueletos__hoja .esqueleto {
+  background: rgb(255 255 255 / 0.18);
+  animation: hx-latir 1.4s ease-in-out infinite;
+}
+.esqueleto--manija {
+  align-self: center;
+  width: 2.8em;
+  height: 0.3em !important;
+}
+.esqueleto--boton {
+  height: 2.8em !important;
+  border-radius: 1em !important;
+}
+@keyframes hx-latir {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .esqueletos__hoja .esqueleto {
+    animation: none;
+  }
+}
+/* Error con un Handy roto, en el kit. */
+.estado-hx {
+  gap: 0.6em;
+}
+.estado-hx__titulo {
+  margin: 0;
+  text-align: center;
+}
+.estado-hx__texto {
+  margin: 0;
+  max-width: 22em;
+  text-align: center;
+  line-height: 1.45;
+}
+/* Versión nueva (Pwa.tsx · AvisoVersion): tarjeta oscura sobre la barra de pestañas; nunca recarga sola. Vive fuera de
+   .hx (en el layout raíz), así que usa los tokens globales. */
+.aviso-version-contenedor {
+  position: fixed;
+  inset: auto 0 calc(env(safe-area-inset-bottom, 0px) + 6.2em);
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  padding: 0 0.8em;
+  pointer-events: none;
+}
+.aviso-version {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em 0.8em;
+  width: min(100%, 26em);
+  padding: 0.8em 1em;
+  border-radius: 1.3em;
+  background: var(--color-tinta);
+  color: var(--texto-sobre-marca);
+  font-size: 0.95rem;
+  box-shadow: 0 0.8em 2em -0.8em rgb(14 29 54 / 0.6);
+  pointer-events: auto;
+  animation: aparecer 0.3s ease-out both;
+}
+.aviso-version > .icono {
+  width: 1.4em;
+  height: 1.4em;
+  color: var(--color-amarillo);
+  flex: none;
+}
+.aviso-version p {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.15em;
+  min-width: 12em;
+  margin: 0;
+}
+.aviso-version small {
+  opacity: 0.85;
+}
+.aviso-version__botones {
+  display: flex;
+  gap: 0.4em;
+  margin-left: auto;
+}
+.aviso-version__si,
+.aviso-version__no {
+  min-height: 44px;
+  padding: 0 1em;
+  border: 0;
+  border-radius: 0.9em;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.aviso-version__si {
+  background: var(--color-amarillo);
+  color: var(--color-tinta);
+}
+.aviso-version__no {
+  background: transparent;
+  color: var(--texto-sobre-marca);
+  text-decoration: underline;
+}
+.aviso-version__si:focus-visible,
+.aviso-version__no:focus-visible {
+  outline: 3px solid var(--color-amarillo);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .aviso-version {
+    animation: none;
+  }
+}
+/* Sin conexión: franja en el kit (tinta y amarillo). */
+.aviso-red {
+  align-items: center;
+  border-radius: 0 0 1.1em 1.1em;
+  font-weight: 600;
+}
+/* Pantallas del sistema (Sistema.tsx): sin conexión y página que no existe. */
+.sistema-hx__cuerpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  padding: 1.5em 1.4em;
+  text-align: center;
+}
+.sistema-hx__titulo {
+  margin: 0.4em 0 0;
+  font-size: 1.6em;
+}
+.sistema-hx__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  max-width: 24em;
+  line-height: 1.5;
+}
+.sistema-hx__texto p {
+  margin: 0;
+}
+.sistema-hx__suave {
+  color: var(--hd-suave);
+  font-size: 0.9em;
+}
+.sistema-hx .du-pie .hd-boton--fantasma {
+  min-height: 44px;
+}
+/* Detalle del pedido fuera de la búsqueda (con propuestas, contratado, cancelado, vencido). */
+.du-pedido-hx .du-cuerpo {
+  gap: 0.9em;
+}
+.du-pedido-hx__estado {
+  display: flex;
+}
+.du-pedido-hx__aviso {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.9em 1em;
+}
+.du-pedido-hx__aviso > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.du-pedido-hx__aviso small {
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+.du-pedido-hx__handy {
+  height: 3.4em;
+  flex: none;
+}
+.du-pedido-hx__mapa .detalle-mapa {
+  height: 11em;
+  border-radius: 1.4em;
+  overflow: hidden;
+}
+.du-pedido-hx__datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.9em 1em;
+}
+.du-pedido-hx__datos .du-datos-hx__lista {
+  padding: 0;
+}
+.du-pedido-hx__descripcion {
+  margin: 0;
+  line-height: 1.45;
+}
+/* Reclamos y vuelta del pago (3.9). */
+.du-reclamo-hx .du-cuerpo {
+  gap: 0.9em;
+}
+.du-reclamo-hx__detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 0.9em 1em;
+}
+.du-reclamo-hx__texto {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+.du-reclamo-hx__fecha {
+  color: var(--hd-suave);
+}
+.du-reclamo-hx__enlaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+}
+.du-reclamo-hx__enlaces .hd-boton {
+  flex: 1 1 9em;
+}
+.du-reclamo-hx__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+.du-linea-hx {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.du-linea-hx li {
+  position: relative;
+  display: flex;
+  gap: 0.8em;
+  padding-bottom: 1em;
+}
+.du-linea-hx li:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 1.2em;
+  bottom: 0;
+  left: 0.45em;
+  width: 0.12em;
+  background: var(--hd-linea);
+}
+.du-linea-hx i {
+  width: 1em;
+  height: 1em;
+  margin-top: 0.15em;
+  border-radius: 50%;
+  border: 0.18em solid var(--hd-azul);
+  background: var(--sup-tarjeta);
+  flex: none;
+}
+.du-linea-hx .is-actual i {
+  background: var(--hd-azul);
+}
+.du-linea-hx span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+}
+.du-linea-hx small {
+  color: var(--hd-suave);
+  font-size: 0.8em;
+}
+.du-retorno-hx__texto {
+  margin: 0;
+  text-align: center;
+  line-height: 1.5;
+}
+.du-reclamos-hx .du-tarjeta__datos .hd-chip {
+  align-self: flex-start;
+  margin-top: 0.3em;
+}
+/* Filas que son enlaces: texto en tinta, como la demo (el azul queda para los íconos). */
+.hx a.hd-fila {
+  color: var(--hd-tinta);
+  text-decoration: none;
+}
+.du-pedido-hx__reclamo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  font-size: 0.82em;
+  font-weight: 700;
+  color: var(--hd-azul);
+}
+.du-pedido-hx__reclamo .icono {
+  width: 1.1em;
+  height: 1.1em;
+}
+/* Hoja achicada: solo el título (y el pie del seguimiento); lo demás se oculta del todo hasta que se agranda, para que
+   nada quede recortado a medias (ni para la vista ni para un lector de pantalla). */
+.du-seg-hx[data-altura='baja'] .du-seg-hx__scroll > :not(h1),
+.du-buscando__hoja[data-altura='baja'] > :not(.du-manija-hx):not(h1) {
+  display: none;
+}

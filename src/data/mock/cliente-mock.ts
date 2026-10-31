@@ -67,7 +67,8 @@ export function crearClienteMock(opciones: OpcionesMock = {}): ClienteMock {
     async llamar<I extends EndpointId>(id: I, llamada: Llamada<I> = {}): Promise<RespuestaDe<I>> {
       const ep = endpoint(id);
       await esperar(latencia, llamada.senal);
-      if (!entorno.red)
+      // Sin red simulada desde el panel o sin conexión real del navegador: el mock falla igual que el adaptador HTTP.
+      if (!entorno.red || (typeof navigator !== 'undefined' && navigator.onLine === false))
         throw new ErrorCliente({ codigo: 'no_disponible', mensaje: MENSAJES_LOCALES.sinRed });
       const falla = opciones.fallas?.[id];
       if (falla)

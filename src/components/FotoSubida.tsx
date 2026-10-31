@@ -18,18 +18,12 @@ interface Item {
   error?: string;
 }
 
-/** Fotos privadas (JPG, PNG o WebP, hasta 5 MB). Cada una se sube sola; si falla se puede reintentar o quitar. */
-export function FotoSubida({
-  max = 5,
-  onCambio,
-  etiqueta = 'Agregar fotos',
-}: {
-  max?: number;
-  onCambio: (ids: string[]) => void;
-  etiqueta?: string;
-}) {
+/**
+ * Estado de las fotos que se suben: vive en quien lo crea, así un flujo por pasos no pierde las fotos al cambiar de paso
+ * (se lo pasa a `FotoSubida` con `estado`).
+ */
+export function useFotos(onCambio: (ids: string[]) => void, max = 5) {
   const [items, setItems] = useState<Item[]>([]);
-  const entrada = useRef<HTMLInputElement>(null);
   const [aviso, setAviso] = useState<string | null>(null);
 
   function publicar(lista: Item[]) {
@@ -61,7 +55,7 @@ export function FotoSubida({
   }
 
   function elegir(archivos: FileList | null) {
-    if (!archivos?.length) return;
+    if (!archivos?.length) return false;
     setAviso(null);
     let lista = [...items];
     for (const archivo of Array.from(archivos)) {
@@ -82,8 +76,38 @@ export function FotoSubida({
       void subir(item, lista);
     }
     publicar(lista);
-    if (entrada.current) entrada.current.value = '';
+    return true;
   }
+
+  return {
+    items,
+    aviso,
+    max,
+    elegir,
+    quitar: (clave: string) => publicar(items.filter((x) => x.clave !== clave)),
+    reintentar: (i: Item) =>
+      void subir(
+        { ...i, estado: 'subiendo' },
+        items.map((x) => (x.clave === i.clave ? { ...x, estado: 'subiendo' } : x)),
+      ),
+  };
+}
+
+/** Fotos privadas (JPG, PNG o WebP, hasta 5 MB). Cada una se sube sola; si falla se puede reintentar o quitar. */
+export function FotoSubida({
+  max = 5,
+  onCambio,
+  etiqueta = 'Agregar fotos',
+  estado,
+}: {
+  max?: number;
+  onCambio: (ids: string[]) => void;
+  etiqueta?: string;
+  estado?: ReturnType<typeof useFotos>;
+}) {
+  const interno = useFotos(onCambio, max);
+  const { items, aviso, elegir, quitar, reintentar } = estado ?? interno;
+  const entrada = useRef<HTMLInputElement>(null);
 
   return (
     <div>
@@ -99,16 +123,7 @@ export function FotoSubida({
                 <span role="alert">
                   No se subió
                   <br />
-                  <button
-                    type="button"
-                    className="enlace-tarjeta"
-                    onClick={() =>
-                      void subir(
-                        { ...i, estado: 'subiendo' },
-                        items.map((x) => (x.clave === i.clave ? { ...x, estado: 'subiendo' } : x)),
-                      )
-                    }
-                  >
+                  <button type="button" className="enlace-tarjeta" onClick={() => reintentar(i)}>
                     Reintentar
                   </button>
                 </span>
@@ -117,7 +132,7 @@ export function FotoSubida({
                 type="button"
                 className="foto__quitar"
                 aria-label={`Quitar ${i.archivo.name}`}
-                onClick={() => publicar(items.filter((x) => x.clave !== i.clave))}
+                onClick={() => quitar(i.clave)}
               >
                 <Icono nombre="cerrar" />
               </button>
@@ -139,10 +154,12 @@ export function FotoSubida({
         accept={TIPOS_MEDIA.join(',')}
         multiple
         hidden
-        onChange={(e) => elegir(e.target.files)}
+        onChange={(e) => {
+          if (elegir(e.target.files) && entrada.current) entrada.current.value = '';
+        }}
         aria-label={etiqueta}
       />
-      {items.length < max ? (
+      {items.length < (estado ?? interno).max ? (
         <Boton variante="claro" icono="camara" chico onClick={() => entrada.current?.click()}>
           {etiqueta}
         </Boton>

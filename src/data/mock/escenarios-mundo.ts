@@ -35,7 +35,8 @@ const UBICACION = {
   direccion: 'Calle Ficticia 1650',
   referencia: null,
   origen: 'manual' as const,
-  coordenadas: null,
+  // Punto público de La Perla, marcado en el mapa (no es la casa de nadie).
+  coordenadas: { lat: -37.9905, lng: -57.5475, precisionMetros: 25 },
 };
 
 const PERFIL = {

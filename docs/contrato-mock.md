@@ -51,3 +51,5 @@ El "servidor" simulado (`src/data/mock/`) reproduce las reglas de `docs/state-ma
 5. La sesión vencida responde `sesion_vencida` en todas las llamadas hasta reingresar.
 6. Las notificaciones no traen texto: el cliente lo arma a partir de `tipo`.
 7. Edad mínima 18 años (supuesto a confirmar con Legal).
+8. **HandIA** no está en el contrato v1: la vista de prueba usa `src/data/handia.ts` (reglas locales, sin IA). En la
+   Fase 4 el BE suma `handiaMensaje` (texto ya tachado de datos personales, sin fotos) y la pantalla pasa a usarlo.

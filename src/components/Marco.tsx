@@ -1,23 +1,28 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
+import { FocoAlNavegar } from './FocoAlNavegar';
 
-/** Columna de app: cabecera con el logo, contenido y (con sesión) la barra azul inferior. */
-export function Marco({ children, barra = false }: { children: React.ReactNode; barra?: boolean }) {
+/** Marco de las pantallas públicas (acceso). El lote 3.2 del rediseño las rehace a pantalla completa. */
+export function Marco({ children }: { children: React.ReactNode }) {
   return (
-    <div className="app">
-      <header className="app__cabecera">
-        <Image
-          className="app__logo"
-          src="/img/logo-handyx.webp"
-          alt="Handyx"
-          width={128}
-          height={28}
-          priority
-        />
-      </header>
-      <main id="contenido" className={barra ? 'app__cuerpo' : 'app__cuerpo app__cuerpo--sin-barra'}>
-        <Suspense>{children}</Suspense>
-      </main>
+    <div className="hx">
+      <a className="saltar" href="#contenido">
+        Saltar al contenido
+      </a>
+      <FocoAlNavegar />
+      <div className="hx-app">
+        <header className="app-cabecera app-cabecera--blanca">
+          <div className="app-cabecera__fila">
+            <span className="app-logo">
+              <Image src="/img/logo-handyx.webp" alt="Handyx" width={720} height={158} priority />
+              <small aria-hidden="true">Soluciones, no problemas</small>
+            </span>
+          </div>
+        </header>
+        <main id="contenido" className="hx-cuerpo">
+          <Suspense>{children}</Suspense>
+        </main>
+      </div>
     </div>
   );
 }

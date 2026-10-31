@@ -47,7 +47,8 @@ export function datosIniciales(ahora: string = AHORA_DEMO): DatosMock {
           direccion: 'Calle Ficticia 1650',
           referencia: null,
           origen: 'manual',
-          coordenadas: null,
+          // Punto público de La Perla, marcado en el mapa (no es la casa de nadie).
+          coordenadas: { lat: -37.9905, lng: -57.5475, precisionMetros: 25 },
         },
       },
       perfilVersion: 1,
@@ -60,7 +61,7 @@ export function datosIniciales(ahora: string = AHORA_DEMO): DatosMock {
         },
         {
           documento: 'privacidad',
-          version: 'privacidad-demo-2026-11',
+          version: 'privacidad-demo-2026-11-v2',
           aceptadaEn: '2026-11-10T13:00:00.000Z',
         },
       ],

@@ -17,7 +17,7 @@ export const INVITACION_PRUEBA = 'DEMO2026';
 /** Versiones de los textos vigentes (provisionales hasta el aviso definitivo de Legal). */
 export const VERSIONES_TEXTOS = {
   terminos: 'terminos-demo-2026-11',
-  privacidad: 'privacidad-demo-2026-11',
+  privacidad: 'privacidad-demo-2026-11-v2',
 } as const;
 
 export const iso = (ms: number): string => new Date(ms).toISOString();

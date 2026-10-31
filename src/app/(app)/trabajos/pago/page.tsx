@@ -2,9 +2,12 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { BotonHx } from '@/components/acceso';
+import { DeslizarConfirmar } from '@/components/Deslizar';
+import { Barra, ChipEstado, Pantalla, entra } from '@/components/hx';
+import { Icono } from '@/components/Icono';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, Boton, Cargando, Datos, ErrorEstado, Hoja, Pastilla, Vacio } from '@/components/ui';
+import { Aviso, Boton, Cargando, ErrorEstado, Hoja, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import type { RegistroPago } from '@/contracts/v1/servicio';
 import { esVistaDePrueba } from '@/data';
@@ -53,7 +56,7 @@ export default function Pago() {
         }}
       />
     );
-  if (!trabajo.datos || !pagos.datos) return <Cargando />;
+  if (!trabajo.datos || !pagos.datos) return <Cargando forma="detalle" />;
   return <Contenido t={trabajo.datos} pagos={pagos.datos.items} recargar={pagos.recargar} />;
 }
 
@@ -70,6 +73,7 @@ function Contenido({
   const accion = useEnvio();
   const [objetivo, setObjetivo] = useState<Objetivo | null>(null);
   const [metodo, setMetodo] = useState<Metodo>('efectivo');
+  const [comprobante, setComprobante] = useState<string | null>(null);
   const objetivos: Objetivo[] = t.etapas.length
     ? t.etapas.map((e) => ({
         etapaId: e.id,
@@ -80,7 +84,7 @@ function Contenido({
   const ultimo = (o: Objetivo) => [...pagos].reverse().find((p) => p.etapaId === o.etapaId) ?? null;
   const puedePagar = ['en_curso', 'terminado_por_especialista', 'finalizado'].includes(t.estado);
 
-  async function pagar(o: Objetivo) {
+  async function pagar(o: Objetivo): Promise<boolean> {
     const r = await accion.enviar(
       'pagoReportar',
       {
@@ -89,17 +93,18 @@ function Contenido({
       },
       `${o.etapaId}|${metodo}|${o.centavos}`,
     );
-    if (!r?.ok) return;
+    if (!r?.ok) return false;
     if (metodo === 'efectivo') {
       setObjetivo(null);
       recargar();
-      return;
+      return true;
     }
     const c = await accion.enviar('pagoCheckout', { parametros: { id: r.datos.id } }, r.datos.id);
-    if (!c?.ok) return;
+    if (!c?.ok) return false;
     // En la vista de prueba no se abre Mercado Pago de verdad: se pasa directo a la pantalla de retorno.
     if (esVistaDePrueba) ir(ruta('/pagos/retorno/', { id: r.datos.id }));
     else window.location.assign(c.datos.url);
+    return true;
   }
   async function reintentar(p: RegistroPago) {
     const c = await accion.enviar(
@@ -114,153 +119,158 @@ function Contenido({
   }
 
   const gate = accion.error?.codigo === 'funcion_inactiva';
+  const comprobanteDe = comprobante ? pagos.find((x) => x.id === comprobante) : null;
+  const tituloDe = (etapaId: string | null) =>
+    objetivos.find((o) => o.etapaId === etapaId)?.titulo ?? 'Trabajo completo';
   return (
-    <>
-      <Titulo texto="Pago al ==especialista==" />
-      <p>
-        <Enlace className="enlace-tarjeta" href={ruta('/trabajos/detalle/', { id: t.id })}>
-          ← Volver al trabajo
-        </Enlace>
-      </p>
-      <Aviso tipo="info" titulo="Pagás directo, sin pasar por Handy">
-        <p>
-          Le pagás al especialista, por Mercado Pago o en efectivo. Handy no recibe ni reparte ese
-          dinero.
+    <Pantalla
+      arriba={
+        <Barra
+          titulo="Pago al ==especialista=="
+          volver={{ href: ruta('/trabajos/detalle/', { id: t.id }), etiqueta: 'Volver al trabajo' }}
+          sub={t.especialista.nombrePublico}
+          icono="usuario"
+        />
+      }
+      clase="du-pago-pantalla"
+    >
+      <div className="du-cuerpo">
+        <p className="du-nota" {...entra(1)}>
+          <Icono nombre="billetera" />
+          <span>
+            <strong>Pagás directo, sin pasar por Handy.</strong> Le pagás al especialista, por
+            Mercado Pago o en efectivo. Handy no recibe ni reparte ese dinero. La tarifa de Handy es{' '}
+            {pesos(t.acuerdo.comisionHandy.importe.centavos)} (
+            {porcentaje(t.acuerdo.comisionHandy.bp)}) durante la demo: el servicio se paga entero.
+          </span>
         </p>
-        <p>
-          La comisión de Handy es <strong>{pesos(t.acuerdo.comisionHandy.importe.centavos)}</strong>{' '}
-          ({porcentaje(t.acuerdo.comisionHandy.bp)}) durante la demo. Eso no significa que el
-          trabajo sea gratis: el servicio se paga entero.
-        </p>
-      </Aviso>
-      {!puedePagar ? (
-        <Aviso tipo="alerta">
-          El pago se registra cuando el trabajo está en curso o terminado.
-        </Aviso>
-      ) : null}
+        {!puedePagar ? (
+          <Aviso tipo="alerta">
+            El pago se registra cuando el trabajo está en curso o terminado.
+          </Aviso>
+        ) : null}
 
-      {objetivos.map((o) => {
-        const p = ultimo(o);
-        const e = p ? etiquetaPago(p) : null;
-        const cerrado = p !== null && ['pendiente', 'reportado', 'verificado'].includes(p.estado);
-        return (
-          <section key={o.etapaId ?? 'todo'} className="tarjeta" aria-label={o.titulo}>
-            <div className="tarjeta__cuerpo">
-              <div className="tarjeta__fila">
-                <strong className="tarjeta__titulo" style={{ margin: 0 }}>
-                  {o.titulo}
-                </strong>
-                {e ? (
-                  <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-                    {e.texto}
-                  </Pastilla>
-                ) : (
-                  <Pastilla tono="gris">Sin pago registrado</Pastilla>
-                )}
-              </div>
-              <p className="importe" style={{ margin: '6px 0' }}>
-                {pesos(o.centavos)}
-              </p>
-              {p ? (
-                <>
-                  <Datos
-                    filas={[
-                      [
-                        'Método',
-                        p.metodo === 'efectivo'
+        {objetivos.map((o, i) => {
+          const p = ultimo(o);
+          const cerrado = p !== null && ['pendiente', 'reportado', 'verificado'].includes(p.estado);
+          return (
+            <section
+              key={o.etapaId ?? 'todo'}
+              className="hd-ticket du-ticket du-ticket--pago"
+              aria-label={o.titulo}
+              {...entra(2 + i)}
+            >
+              <div className="hd-ticket__papel">
+                <div className="du-ticket__total">
+                  <small className="hd-sobre">{o.titulo}</small>
+                  <span className="hd-precio hd-precio--grande">{pesos(o.centavos)}</span>
+                  {p ? (
+                    <ChipEstado e={etiquetaPago(p)} />
+                  ) : (
+                    <span className="hd-chip hd-chip--mini">Sin pago registrado</span>
+                  )}
+                </div>
+                <div className="hd-ticket__corte" />
+                <div className="du-ticket__abajo du-pago-objetivo">
+                  {p ? (
+                    <>
+                      <p className="du-pago-objetivo__metodo">
+                        <Icono nombre={p.metodo === 'efectivo' ? 'billetera' : 'tarjeta'} />
+                        {p.metodo === 'efectivo'
                           ? 'Efectivo'
-                          : 'Mercado Pago (directo al especialista)',
-                      ],
-                      ['Registrado', p.reportadoEn ? cuando(p.reportadoEn) : '—'],
-                      ['Verificado', p.verificadoEn ? cuando(p.verificadoEn) : 'Todavía no'],
-                    ]}
-                  />
-                  <p className="texto-suave" style={{ margin: '8px 0 0' }}>
-                    {EXPLICA[p.estado]}
-                  </p>
-                </>
-              ) : null}
-              <div className="acciones">
-                {p?.estado === 'pendiente' && p.metodo === 'mercado_pago_directo' ? (
-                  <Enlace
-                    className="boton boton--claro"
-                    href={ruta('/pagos/retorno/', { id: p.id })}
-                  >
-                    Ver el estado del pago
-                  </Enlace>
-                ) : null}
-                {p?.estado === 'fallido' && p.metodo === 'mercado_pago_directo' ? (
-                  <Boton
-                    icono="reintentar"
-                    cargando={accion.pendiente}
-                    onClick={() => reintentar(p)}
-                  >
-                    Volver a intentar el pago
-                  </Boton>
-                ) : null}
-                {puedePagar && !cerrado && p?.estado !== 'fallido' ? (
-                  <Boton
-                    onClick={() => {
-                      accion.limpiar();
-                      setObjetivo(o);
-                    }}
-                  >
-                    Pagar
-                  </Boton>
-                ) : null}
-                {puedePagar && p?.estado === 'fallido' ? (
-                  <Boton
-                    variante="claro"
-                    onClick={() => {
-                      accion.limpiar();
-                      setObjetivo(o);
-                    }}
-                  >
-                    Pagar de otra forma
-                  </Boton>
-                ) : null}
+                          : 'Mercado Pago (directo al especialista)'}
+                        {p.reportadoEn ? ` · ${cuando(p.reportadoEn)}` : ''}
+                      </p>
+                      <p className="du-pago-objetivo__explica">{EXPLICA[p.estado]}</p>
+                      <button
+                        type="button"
+                        className="du-pago-objetivo__comprobante"
+                        onClick={() => setComprobante(p.id)}
+                      >
+                        <Icono nombre="etiqueta" />
+                        Ver comprobante
+                      </button>
+                    </>
+                  ) : null}
+                  {p?.estado === 'pendiente' && p.metodo === 'mercado_pago_directo' ? (
+                    <Enlace
+                      className="hd-boton hd-boton--claro"
+                      href={ruta('/pagos/retorno/', { id: p.id })}
+                    >
+                      Ver el estado del pago
+                    </Enlace>
+                  ) : null}
+                  {p?.estado === 'fallido' && p.metodo === 'mercado_pago_directo' ? (
+                    <BotonHx
+                      icono="reintentar"
+                      cargando={accion.pendiente}
+                      onClick={() => reintentar(p)}
+                    >
+                      Volver a intentar el pago
+                    </BotonHx>
+                  ) : null}
+                  {puedePagar && !cerrado && p?.estado !== 'fallido' ? (
+                    <BotonHx
+                      variante="exito"
+                      onClick={() => {
+                        accion.limpiar();
+                        setObjetivo(o);
+                      }}
+                    >
+                      Pagar
+                    </BotonHx>
+                  ) : null}
+                  {puedePagar && p?.estado === 'fallido' ? (
+                    <BotonHx
+                      variante="claro"
+                      onClick={() => {
+                        accion.limpiar();
+                        setObjetivo(o);
+                      }}
+                    >
+                      Pagar de otra forma
+                    </BotonHx>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          </section>
-        );
-      })}
+            </section>
+          );
+        })}
+      </div>
 
       <Hoja abierta={objetivo !== null} onCerrar={() => setObjetivo(null)} titulo="¿Cómo le pagás?">
         {objetivo ? (
           <>
-            <p>
+            <p className="du-pago-hoja__que">
               <strong>{objetivo.titulo}</strong> · {pesos(objetivo.centavos)}
             </p>
-            <fieldset style={{ border: 0, padding: 0 }}>
+            <fieldset className="du-pagos du-pagos--elegir">
               <legend className="sr-only">Método de pago</legend>
-              <label className="opcion">
+              <label className="du-pago">
                 <input
                   type="radio"
                   name="metodo"
                   checked={metodo === 'efectivo'}
                   onChange={() => setMetodo('efectivo')}
                 />
-                <span>
-                  <span className="opcion__titulo">Efectivo</span>
-                  <span className="opcion__texto">
-                    Le pagás en mano. Lo registramos como “reportado” hasta que se verifique.
-                  </span>
+                <span className="du-pago__ico">
+                  <Icono nombre="billetera" />
                 </span>
+                <strong>Efectivo</strong>
+                <small>Le pagás en mano. Queda “reportado” hasta que se verifique.</small>
               </label>
-              <label className="opcion">
+              <label className="du-pago">
                 <input
                   type="radio"
                   name="metodo"
                   checked={metodo === 'mercado_pago_directo'}
                   onChange={() => setMetodo('mercado_pago_directo')}
                 />
-                <span>
-                  <span className="opcion__titulo">Mercado Pago</span>
-                  <span className="opcion__texto">
-                    Pagás en el sitio de Mercado Pago, directo al especialista. No pedimos ni
-                    guardamos datos de tu tarjeta.
-                  </span>
+                <span className="du-pago__ico">
+                  <Icono nombre="tarjeta" />
                 </span>
+                <strong>Mercado Pago</strong>
+                <small>Directo al especialista. No pedimos ni guardamos datos de tu tarjeta.</small>
               </label>
             </fieldset>
             {gate ? (
@@ -273,17 +283,86 @@ function Contenido({
             {metodo === 'efectivo' ? (
               <Aviso tipo="alerta">Registrá el pago solo si ya se lo diste al especialista.</Aviso>
             ) : null}
+            <DeslizarConfirmar
+              key={metodo}
+              texto={metodo === 'efectivo' ? 'Deslizá si ya le pagaste' : 'Deslizá para ir a pagar'}
+              textoCargando="Un momento…"
+              cargando={accion.pendiente}
+              onConfirmar={() => pagar(objetivo)}
+            />
             <div className="acciones">
-              <Boton cargando={accion.pendiente} onClick={() => pagar(objetivo)}>
+              <Boton
+                variante="claro"
+                cargando={accion.pendiente}
+                onClick={() => void pagar(objetivo)}
+              >
                 {metodo === 'efectivo' ? 'Ya le pagué en efectivo' : 'Ir a Mercado Pago'}
               </Boton>
-              <Boton variante="claro" onClick={() => setObjetivo(null)}>
+              <Boton variante="texto" onClick={() => setObjetivo(null)}>
                 Volver
               </Boton>
             </div>
           </>
         ) : null}
       </Hoja>
-    </>
+
+      <Hoja
+        abierta={comprobanteDe !== null && comprobanteDe !== undefined}
+        onCerrar={() => setComprobante(null)}
+        titulo="Comprobante del registro"
+      >
+        {comprobanteDe ? (
+          <>
+            <div className="hd-ticket du-ticket du-comprobante">
+              <div className="hd-ticket__papel">
+                <div className="du-ticket__total">
+                  <small className="hd-sobre">{tituloDe(comprobanteDe.etapaId)}</small>
+                  <span className="hd-precio hd-precio--grande">
+                    {pesos(comprobanteDe.monto.centavos)}
+                  </span>
+                  <ChipEstado e={etiquetaPago(comprobanteDe)} />
+                </div>
+                <div className="hd-ticket__corte" />
+                <dl className="du-ticket__abajo du-comprobante__datos">
+                  <div className="hd-dato">
+                    <dt>Especialista</dt>
+                    <dd>{t.especialista.nombrePublico}</dd>
+                  </div>
+                  <div className="hd-dato">
+                    <dt>Método</dt>
+                    <dd>{comprobanteDe.metodo === 'efectivo' ? 'Efectivo' : 'Mercado Pago'}</dd>
+                  </div>
+                  <div className="hd-dato">
+                    <dt>Registrado</dt>
+                    <dd>{comprobanteDe.reportadoEn ? cuando(comprobanteDe.reportadoEn) : '—'}</dd>
+                  </div>
+                  <div className="hd-dato">
+                    <dt>Verificado</dt>
+                    <dd>
+                      {comprobanteDe.verificadoEn
+                        ? cuando(comprobanteDe.verificadoEn)
+                        : 'Todavía no'}
+                    </dd>
+                  </div>
+                  <div className="hd-dato">
+                    <dt>Código</dt>
+                    <dd className="codigo">{comprobanteDe.id.slice(-8).toUpperCase()}</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <p className="texto-suave">
+              {EXPLICA[comprobanteDe.estado]} No es una factura: es el registro de Handyx de lo que
+              se informó. La factura, si corresponde, la emite el especialista.
+            </p>
+            <div className="acciones">
+              <Boton variante="claro" onClick={() => setComprobante(null)}>
+                Cerrar
+              </Boton>
+            </div>
+          </>
+        ) : null}
+      </Hoja>
+    </Pantalla>
   );
 }

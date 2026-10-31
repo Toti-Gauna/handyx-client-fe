@@ -36,7 +36,12 @@ describe('guardas de seguridad del front', () => {
     const usadas = new Set(
       archivos('src').flatMap((a) => readFileSync(a, 'utf8').match(/NEXT_PUBLIC_[A-Z_]+/g) ?? []),
     );
-    expect([...usadas].sort()).toEqual(['NEXT_PUBLIC_API_BASE_URL', 'NEXT_PUBLIC_ENTORNO']);
+    // NEXT_PUBLIC_MAPA_DATOS no se configura: lo fija next.config.ts (¿estaba el archivo del mapa al compilar?).
+    expect([...usadas].sort()).toEqual([
+      'NEXT_PUBLIC_API_BASE_URL',
+      'NEXT_PUBLIC_ENTORNO',
+      'NEXT_PUBLIC_MAPA_DATOS',
+    ]);
   });
 });
 

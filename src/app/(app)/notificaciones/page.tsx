@@ -1,10 +1,12 @@
 'use client';
 
+import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
 import { Icono } from '@/components/Icono';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, EstadoConsulta, Vacio } from '@/components/ui';
+import { Barra, Pantalla, entra } from '@/components/hx';
+import type { NombreIcono } from '@/components/trazos';
+import { Aviso, EstadoConsulta } from '@/components/ui';
 import type { Notificacion, TIPOS_NOTIFICACION } from '@/contracts/v1/servicio';
 import { cliente } from '@/data';
 import { useConsulta } from '@/data/hooks';
@@ -28,6 +30,22 @@ const TEXTO: Record<(typeof TIPOS_NOTIFICACION)[number], string> = {
   pago_verificado: 'Se verificó un pago',
   reclamo_actualizado: 'Tu reclamo tuvo novedades',
   baja_actualizada: 'Novedades de la eliminación de tu cuenta',
+};
+
+const ICONO: Partial<Record<(typeof TIPOS_NOTIFICACION)[number], NombreIcono>> = {
+  propuesta_recibida: 'etiqueta',
+  propuesta_vencida: 'reloj',
+  propuesta_aceptada: 'check',
+  propuesta_rechazada: 'cerrar',
+  busqueda_sin_respuesta: 'lupa',
+  busqueda_manual_iniciada: 'lupa',
+  mensaje_nuevo: 'chat',
+  trabajo_en_camino: 'caminar',
+  trabajo_llego: 'pin',
+  trabajo_terminado: 'checkCirculo',
+  pago_verificado: 'billetera',
+  reclamo_actualizado: 'escudo',
+  baja_actualizada: 'usuario',
 };
 
 function destino(n: Aviso_): string {
@@ -67,60 +85,74 @@ export default function Avisos() {
   }
 
   return (
-    <>
-      <Titulo texto="Tus ==avisos==" />
-      {push === 'pendiente' ? (
-        <Aviso tipo="info" titulo="¿Querés que te avisemos en el celular?">
-          <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
-            Activar avisos del celular
-          </Enlace>
-        </Aviso>
-      ) : push === 'denegado' || push === 'ios_sin_instalar' || push === 'no_soportado' ? (
-        <Aviso tipo="info">
-          Los avisos del celular no están activos. No pasa nada: los ves acá cuando abrís la app.{' '}
-          <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
-            Más info
-          </Enlace>
-        </Aviso>
-      ) : null}
-      <EstadoConsulta consulta={lista}>
-        {(d) =>
-          d.items.length === 0 ? (
-            <Vacio
-              titulo="No tenés avisos"
-              texto="Acá aparecen las propuestas, los mensajes y las novedades de tus trabajos."
-              handy="/img/handy-gota.webp"
-            />
-          ) : (
-            <ul className="lista-tarjetas">
-              {d.items.map((n) => (
-                <li key={n.id}>
-                  <button
-                    type="button"
-                    className="tarjeta tarjeta--enlace"
-                    style={{ width: '100%', textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
-                    onClick={() => void abrir(n)}
-                  >
-                    <div className="tarjeta__cuerpo tarjeta__fila">
-                      <span>
-                        <strong className="tarjeta__titulo" style={{ margin: 0 }}>
-                          {n.leidaEn ? '' : '● '}
-                          {TEXTO[n.tipo]}
-                          {n.leidaEn ? '' : ' (nuevo)'}
-                        </strong>
-                        <span className="texto-suave" style={{ display: 'block' }}>
+    <Pantalla
+      arriba={
+        <Barra
+          titulo="Tus ==avisos=="
+          volver={{ href: '/inicio/', etiqueta: 'Volver al inicio' }}
+        />
+      }
+      clase="du-avisos-hx"
+    >
+      <div className="du-cuerpo">
+        {push === 'pendiente' ? (
+          <Aviso tipo="info" titulo="¿Querés que te avisemos en el celular?">
+            <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
+              Activar avisos del celular
+            </Enlace>
+          </Aviso>
+        ) : push === 'denegado' || push === 'ios_sin_instalar' || push === 'no_soportado' ? (
+          <Aviso tipo="info">
+            Los avisos del celular no están activos. No pasa nada: los ves acá cuando abrís la app.{' '}
+            <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
+              Más info
+            </Enlace>
+          </Aviso>
+        ) : null}
+        <EstadoConsulta consulta={lista}>
+          {(d) =>
+            d.items.length === 0 ? (
+              <div className="du-vacio-hx">
+                <Image
+                  className="hd-handy"
+                  src="/img/handy-lamparita.webp"
+                  alt=""
+                  width={202}
+                  height={346}
+                />
+                <p className="hd-titulo hd-titulo--chico">No tenés avisos</p>
+                <p className="du-vacio-hx__texto">
+                  Acá aparecen las propuestas, los mensajes y las novedades de tus trabajos.
+                </p>
+              </div>
+            ) : (
+              <ul className="du-avisos-hx__lista">
+                {d.items.map((n, i) => (
+                  <li key={n.id} {...entra(i + 1)}>
+                    <button
+                      type="button"
+                      className={`du-aviso-card du-aviso-card--${n.leidaEn ? 'leido' : 'nuevo'}`}
+                      onClick={() => void abrir(n)}
+                    >
+                      <span className="du-aviso-card__ico" aria-hidden="true">
+                        <Icono nombre={ICONO[n.tipo] ?? 'campana'} />
+                      </span>
+                      <span className="du-aviso-card__texto">
+                        <strong>{TEXTO[n.tipo]}</strong>
+                        <small>
                           {cuando(n.creadaEn)}
-                        </span>
+                          {n.leidaEn ? '' : ' · nuevo'}
+                        </small>
                       </span>
                       <Icono nombre="derecha" />
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )
-        }
-      </EstadoConsulta>
-    </>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </EstadoConsulta>
+      </div>
+    </Pantalla>
   );
 }
