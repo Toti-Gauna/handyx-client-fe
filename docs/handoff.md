@@ -1,8 +1,10 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 y 4.2** (esquema compartido; acceso y cuenta
-reales), probados contra PostgreSQL local aislado; detalle en `handyx-client-be/docs/handoff.md`, rama
-`fase-4-backend`. **Sigue el 4.3** (pedidos y propuestas reales). Esquema canónico: el de `fase-4-backend` (Ignacio,
+**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1, 4.2 y 4.3** (esquema compartido; acceso y cuenta;
+pedidos y propuestas con idempotencia y aceptación concurrente), probados contra PostgreSQL local aislado; detalle en
+`handyx-client-be/docs/handoff.md`, rama `fase-4-backend` (commit `dc581dd`). **Sigue el 4.4** (chat, agenda, trabajos
+y reclamos reales). Siguen sin contrato, fuera del 4.3: `favoritos` (especialistas guardados), el historial general y la
+zona del especialista; se proponen como cambio de contrato cuando se retomen. Esquema canónico: el de `fase-4-backend` (Ignacio,
 31/10). La Fase 3 (rediseño, lotes 3.1 a 3.9) está completa ([`docs/plan.md`](plan.md)).
 Fecha: 30/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el PR de
 esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la Fase 3.

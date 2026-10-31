@@ -27,7 +27,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                        | 3.9  | Pulido premium y QA (transiciones, gestos, capturas)               | Opus 5.5 · high   | ✅ listo · mock probado en navegador     |
 | 4 · BE y DB conectados | 4.1  | Esquema compartido y migraciones (base aislada)                    | Opus 5.5 · high   | ✅ listo · probado en base local aislada |
 |                        | 4.2  | Auth, cuenta y privacidad reales                                   | Opus 5.5 · high   | ✅ listo · probado en base local aislada |
-|                        | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)           | Opus 5.5 · high   | pendiente                                |
+|                        | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)           | Opus 5.5 · high   | ✅ listo · probado en base local aislada |
 |                        | 4.4  | Chat, agenda, trabajos y reclamos reales                           | Opus 5.5 · high   | pendiente                                |
 |                        | 4.5  | Pago directo, fee y métricas (o gate concreto)                     | Opus 5.5 · high   | pendiente                                |
 |                        | 4.6  | Integración con Especialista y regresión                           | Opus 5.5 · high   | pendiente                                |
