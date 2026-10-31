@@ -18,7 +18,9 @@ segmentos dinámicos `[id]`.
   `src/components/hx.tsx` y el markup `.hd-*`/`.du-*` de la demo; guía en `docs/diseno.md`, plan en `docs/rediseno.md`.
   No inventar otra marca.
   Español rioplatense con voseo, pesos `$ 45.000`, "verificado" solo con dato real, sin "matriculado", sin prometer
-  inmediatez ni ETA.
+  inmediatez ni ETA en la búsqueda ni en las propuestas. Única excepción (decisión de Ignacio del 31/10, contrato
+  `1.0.0-draft.2`): el viaje en vivo del especialista en camino muestra posición, trayecto y la llegada estimada **que
+  calcula el servidor**, solo mientras se comparte; nunca una estimación propia del front.
 - **Datos**: la vista de prueba es un servidor simulado completo (`src/data/mock/`, 54 endpoints, 18 escenarios): una regla de negocio nueva va primero en `docs/state-machines.md` y en `tests/servidor-mock.test.ts`. Las pantallas solo usan `cliente` de `src/data` (interfaz `ClienteApi`). Nunca `fetch` directo ni fixtures
   importados. Con `NEXT_PUBLIC_API_BASE_URL` el cliente es HTTP y **nunca** cae a mocks; sin ella es la vista de prueba
   rotulada. Un build de producción sin API falla.
@@ -40,7 +42,7 @@ segmentos dinámicos `[id]`.
   propia app (`public/mapa/mdp.pmtiles`, se genera con `npm run mdp:datos`, no se versiona) y fuentes propias en
   `public/mapa/fuentes/`. **Nada de terceros** (ni teselas, ni claves, ni geocodificadores). Sin el archivo, el mapa
   ilustrado de la demo rotulado "Mapa ilustrativo": nunca una geografía inventada. Atribución de OpenStreetMap visible.
-  El pin elige un punto solo cuando la persona mueve el mapa; nunca tiempos de llegada.
+  El pin elige un punto solo cuando la persona mueve el mapa; tiempos de llegada solo los del viaje en vivo (servidor).
 - **PWA**: `public/sw.js` guarda solo archivos públicos del mismo origen (páginas por ruta, sin query); nunca la API,
   escrituras ni datos, y no encola acciones. Sin conexión nada se da por hecho. Si cambia su lógica, subir `VERSION`; todo
   archivo de la precarga tiene que existir (lo prueba `tests/pwa.test.ts`). Nunca animar botones de aceptar/pagar.

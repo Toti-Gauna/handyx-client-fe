@@ -31,6 +31,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                        | 4.4  | Chat, agenda, trabajos y reclamos reales                           | Opus 5.5 · high   | ✅ listo · probado en base local aislada |
 |                        | 4.5  | Pago directo, fee y métricas (o gate concreto)                     | Opus 5.5 · high   | pendiente                                |
 |                        | 4.6  | Integración con Especialista y regresión                           | Opus 5.5 · high   | pendiente                                |
+|                        | 4.7  | Viaje en vivo en la PWA (contrato `1.0.0-draft.2`, SSE)            | Opus 5.5 · high   | pendiente                                |
 | 5 · Deploy             | 5.1  | Readiness, CI y deploy de prueba                                   | Sonnet 5.5 · high | pendiente                                |
 |                        | 5.2  | Testing integrado en dos celulares                                 | Sonnet 5.5 · high | pendiente                                |
 |                        | 5.3  | Deploy web final y rollback                                        | Sonnet 5.5 · high | pendiente                                |

@@ -1,13 +1,17 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.4** (esquema compartido; acceso y cuenta;
-pedidos y propuestas con idempotencia y aceptación concurrente; trabajos y agenda, cambios de acuerdo, chat, reclamos y
-avisos), probados contra PostgreSQL local aislado; detalle en `handyx-client-be/docs/handoff.md`, rama `fase-4-backend`.
-**Sigue el 4.5** (pago directo, fee y métricas). Siguen sin contrato: `favoritos` (especialistas guardados), el
-historial general y la zona del especialista; se proponen como cambio de contrato cuando se retomen. Para producto: con
-la API real el chat no muestra mensajes de sistema ("Acuerdo aceptado") como el simulado, y se puede seguir chateando
-con un especialista aunque el pedido se haya contratado con otro (igual que el simulado). Esquema canónico: el de
-`fase-4-backend` (Ignacio, 31/10). La Fase 3 (rediseño, lotes 3.1 a 3.9) está completa ([`docs/plan.md`](plan.md)).
+**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.4 sobre el esquema conciliado.** Decisión de
+Ignacio (31/10): el esquema canónico es el de la sesión de especialista (`claude/pensive-hypatia-jajjgm`, conciliado con
+el nuestro), y lo de `fase-4-backend` se rehízo encima en la rama **`fase-4-backend-conciliado`** de
+`handyx-client-be` (commit `cffccef`; `fase-4-backend` queda como referencia). Acceso y cuenta; pedidos y propuestas
+con idempotencia y aceptación concurrente; trabajos y agenda, cambios de acuerdo, chat (con mensajes del sistema),
+reclamos y avisos, probados contra PostgreSQL local aislado; detalle en `handyx-client-be/docs/handoff.md` de esa rama.
+**Contrato `1.0.0-draft.2`** (también decisión de Ignacio): el viaje en vivo muestra posición, trayecto y llegada
+estimada del servidor; reemplaza la decisión 7 del rediseño y quedó en `AGENTS.md`. Copiarlo acá y armar la pantalla es
+el lote nuevo **4.7** (el mock necesita los dos endpoints nuevos y su pantalla en el mapa). **Sigue el 4.5** (pago
+directo, fee y métricas). Siguen sin contrato: `favoritos`, el historial general y la zona del especialista. Para
+producto: se puede seguir chateando con un especialista aunque el pedido se haya contratado con otro (igual que el
+simulado). La Fase 3 (rediseño, lotes 3.1 a 3.9) está completa ([`docs/plan.md`](plan.md)).
 Fecha: 31/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el
 PR de esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la
 Fase 4.
