@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { ErrorCliente } from './cliente.ts';
+import { revisarContrato } from './compatibilidad.ts';
 import { crearClienteHttp } from './http/cliente-http.ts';
 import { datosIniciales } from './mock/fixtures.ts';
 import { crearClienteMock } from './mock/cliente-mock.ts';
@@ -163,5 +164,129 @@ describe('adaptador mock', () => {
     expect(texto).toMatch(/de000000-0000-4000-8000-/);
     expect(texto).toContain('Ficticia');
     expect(texto).not.toMatch(/@(?!example\.test)[a-z0-9-]+\.[a-z]/i);
+  });
+});
+
+describe('transmisión en vivo (SSE) del adaptador HTTP', () => {
+  const TRABAJO = '3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f';
+  const viaje = (estado: 'compartiendo' | 'terminado') => ({
+    trabajoId: TRABAJO,
+    destino: { lat: -37.99, lng: -57.55 },
+    estado,
+    trayecto: null,
+    ultimaPosicion:
+      estado === 'compartiendo'
+        ? { punto: { lat: -37.98, lng: -57.56 }, precisionM: 10, en: '2026-11-17T15:05:00.000Z' }
+        : null,
+    distanciaRestanteM: estado === 'compartiendo' ? 1200 : null,
+    llegadaEstimada: estado === 'compartiendo' ? '2026-11-17T15:12:00.000Z' : null,
+  });
+
+  /** EventSource falso: guarda la URL y las opciones y deja disparar eventos. */
+  function fuenteFalsa() {
+    const creadas: Falsa[] = [];
+    class Falsa {
+      readyState = 0;
+      onerror: (() => void) | null = null;
+      cerrada = false;
+      private oyentes = new Map<string, (e: MessageEvent<string>) => void>();
+      constructor(
+        readonly url: string,
+        readonly init: { withCredentials?: boolean },
+      ) {
+        creadas.push(this);
+      }
+      addEventListener(tipo: string, f: (e: MessageEvent<string>) => void) {
+        this.oyentes.set(tipo, f);
+      }
+      close() {
+        this.cerrada = true;
+        this.readyState = 2;
+      }
+      emitir(tipo: string, data: unknown) {
+        this.oyentes.get(tipo)?.({ data: JSON.stringify(data) } as MessageEvent<string>);
+      }
+      fallar(estado: 0 | 2) {
+        this.readyState = estado;
+        this.onerror?.();
+      }
+    }
+    return { Clase: Falsa as unknown as typeof EventSource, creadas };
+  }
+
+  it('abre con la cookie, valida cada viaje y cierra al terminar', () => {
+    const { Clase, creadas } = fuenteFalsa();
+    const api = crearClienteHttp({ baseUrl: BASE, fetch: fetchFalso({}).fn, EventSource: Clase });
+    const recibidos: string[] = [];
+    const errores: string[] = [];
+    api.escuchar(
+      'trabajoViajeEnVivo',
+      { parametros: { id: TRABAJO } },
+      { alMensaje: (v) => recibidos.push(v.estado), alError: (e) => errores.push(e.codigo) },
+    );
+    const f = creadas[0]!;
+    expect(f.url).toBe(`${BASE}/v1/trabajos/${TRABAJO}/viaje/eventos`);
+    expect(f.init).toEqual({ withCredentials: true });
+    f.emitir('viaje', viaje('compartiendo'));
+    f.emitir('viaje', { ...viaje('compartiendo'), extra: 1 }); // fuera de contrato: error y cierra
+    expect(recibidos).toEqual(['compartiendo']);
+    expect(errores).toEqual(['error_interno']);
+    expect(f.cerrada).toBe(true);
+
+    const otra = crearClienteHttp({ baseUrl: BASE, fetch: fetchFalso({}).fn, EventSource: Clase });
+    const fin: string[] = [];
+    otra.escuchar(
+      'trabajoViajeEnVivo',
+      { parametros: { id: TRABAJO } },
+      { alMensaje: (v) => fin.push(v.estado), alError: () => undefined },
+    );
+    creadas[1]!.emitir('viaje', viaje('terminado'));
+    expect(fin).toEqual(['terminado']);
+    expect(creadas[1]!.cerrada).toBe(true);
+  });
+
+  it('un corte que reintenta solo se avisa como recuperable; uno que cierra pregunta el motivo por JSON', async () => {
+    const { Clase, creadas } = fuenteFalsa();
+    const { fn } = fetchFalso({
+      [`GET /v1/trabajos/${TRABAJO}/viaje`]: () =>
+        json(404, { error: 'no_encontrado', mensaje: 'No lo encontramos.', requestId: REQ }),
+    });
+    const api = crearClienteHttp({ baseUrl: BASE, fetch: fn, EventSource: Clase });
+    const errores: ErrorCliente[] = [];
+    api.escuchar(
+      'trabajoViajeEnVivo',
+      { parametros: { id: TRABAJO } },
+      { alMensaje: () => undefined, alError: (e) => errores.push(e) },
+    );
+    creadas[0]!.fallar(0);
+    expect(errores[0]?.recuperable).toBe(true);
+    creadas[0]!.fallar(2);
+    await vi.waitFor(() => expect(errores).toHaveLength(2));
+    expect(errores[1]).toMatchObject({ codigo: 'no_encontrado' });
+    expect(errores[1]?.recuperable).toBe(false);
+  });
+
+  it('una transmisión no se puede "llamar"', async () => {
+    const api = crearClienteHttp({ baseUrl: BASE, fetch: fetchFalso({}).fn });
+    await expect(api.llamar('trabajoViajeEnVivo', { parametros: { id: TRABAJO } })).rejects.toThrow(
+      /escuchar/,
+    );
+  });
+});
+
+describe('compatibilidad con la API real', () => {
+  it('compara la versión del contrato del servidor con la compilada', async () => {
+    const con = (contrato: string) => ({ llamar: async () => ({ contrato }) }) as never;
+    expect(await revisarContrato(con('1.0.0-draft.3'), '1.0.0-draft.3')).toBe('compatible');
+    expect(await revisarContrato(con('1.0.0-draft.4'), '1.0.0-draft.3')).toBe('incompatible');
+  });
+
+  it('si no se puede preguntar, no bloquea (cada pantalla muestra su error)', async () => {
+    const caida = {
+      llamar: async () => {
+        throw new ErrorCliente({ codigo: 'no_disponible', mensaje: 'x' });
+      },
+    } as never;
+    expect(await revisarContrato(caida)).toBe('sin_respuesta');
   });
 });

@@ -35,6 +35,7 @@ import {
 import { locales } from '../media.ts';
 import { TOKEN_RECUPERACION_PRUEBA as TOKEN_PRUEBA } from '../prueba.ts';
 import { poblarBase } from './escenarios-mundo.ts';
+import { viajeDe } from './viaje.ts';
 import {
   HORA,
   MIN,
@@ -164,6 +165,15 @@ const pedidoPropio = (m: Mundo, id: string): Pedido =>
   (() => {
     throw noEncontrado(m);
   })();
+/** El viaje en vivo de un trabajo propio. Sin un punto exacto de la casa no hay mapa de viaje (409, como el servidor). */
+function viajeDelTrabajo(m: Mundo, id: string) {
+  const t = trabajoPropio(m, id);
+  const destino = m.pedidos.find((p) => p.id === t.pedidoId)?.ubicacion.coordenadas;
+  if (!destino)
+    throw falla(m, 'conflicto', 'Este trabajo no tiene un punto en el mapa para seguir el viaje.');
+  return viajeDe(m, t, destino);
+}
+
 const trabajoPropio = (m: Mundo, id: string): Trabajo =>
   m.trabajos.find((t) => t.id === id) ??
   (() => {
@@ -598,6 +608,9 @@ export const MANEJADORES: Record<EndpointId, Manejador> = {
     return paginar([...lista].sort(porFecha), r.q);
   },
   trabajo: (m, r) => trabajoPropio(m, r.p.id ?? ''),
+  trabajoViaje: (m, r) => viajeDelTrabajo(m, r.p.id ?? ''),
+  // La vista de prueba no abre conexiones: `escuchar` del adaptador mock llama a esto cada pocos segundos.
+  trabajoViajeEnVivo: (m, r) => viajeDelTrabajo(m, r.p.id ?? ''),
   trabajoEventos: (m, r) => {
     const t = trabajoPropio(m, r.p.id ?? '');
     return paginar(

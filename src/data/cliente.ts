@@ -12,9 +12,28 @@ export interface Llamada<I extends EndpointId> {
   readonly senal?: AbortSignal;
 }
 
+/** Endpoints de transmisión en vivo (Server-Sent Events) del contrato: se escuchan, no se llaman. */
+export type EndpointVivo = 'trabajoViajeEnVivo';
+
+export interface Escucha<I extends EndpointVivo> {
+  /** Cada mensaje trae el recurso completo (el último manda), ya validado contra el contrato. */
+  alMensaje(datos: RespuestaDe<I>): void;
+  /**
+   * La transmisión falló. Con `recuperable` (red, límite, servidor) puede volver sola o la pantalla puede pasar a
+   * consultar cada tanto; sin él (404, 409, sesión) ya está cerrada.
+   */
+  alError(error: ErrorCliente): void;
+}
+
 export interface ClienteApi {
   readonly modo: 'mock' | 'http';
   llamar<I extends EndpointId>(id: I, llamada?: Llamada<I>): Promise<RespuestaDe<I>>;
+  /** Abre una transmisión en vivo. Devuelve cómo cerrarla (al salir de la pantalla). */
+  escuchar<I extends EndpointVivo>(
+    id: I,
+    llamada: Pick<Llamada<I>, 'parametros'>,
+    escucha: Escucha<I>,
+  ): () => void;
 }
 
 type CampoRechazado = NonNullable<ErrorApi['campos']>[number];
@@ -71,4 +90,5 @@ export const MENSAJES_LOCALES = {
   tiempo: 'El servidor tardó demasiado. Probá de nuevo.',
   fueraDeContrato: 'Recibimos una respuesta inesperada. Probá de nuevo en un rato.',
   mockPendiente: 'Esta parte de la vista de prueba todavía no tiene datos ficticios.',
+  vivoCortado: 'Se cortó la actualización en vivo. Seguimos mirando cada unos segundos.',
 } as const;

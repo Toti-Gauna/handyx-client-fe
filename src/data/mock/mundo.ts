@@ -106,6 +106,7 @@ export function crearMundo(
     respuestaChat: {},
     trabajos: [],
     eventos: {},
+    viajes: {},
     conversaciones: [],
     mensajes: [],
     pagos: [],

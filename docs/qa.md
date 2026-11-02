@@ -31,10 +31,14 @@ Otros recorridos (también en `npm run e2e`) y herramientas del rediseño:
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `tests/e2e/pwa.cjs`      | Instalable, caché sin datos, sin conexión sin éxitos ficticios, pantalla de carga                                                                                                                                                                 |
 | `tests/e2e/handia.cjs`   | HandIA: rubro sugerido, datos personales tachados antes de enviar, sin fotos                                                                                                                                                                      |
-| `tests/e2e/mapa.cjs`     | Mapa con el extracto de prueba: elegir con el pin, sin terceros, respaldo ilustrado                                                                                                                                                               |
+| `tests/e2e/mapa.cjs`     | Mapa con el extracto de prueba: elegir con el pin, sin terceros, respaldo ilustrado; viaje en vivo (un solo marcador que avanza, recorrido encuadrado, llegada estimada del servidor, nada al llegar)                                             |
 | `tests/e2e/pulido.cjs`   | Lote 3.9: transición tarjeta → detalle, hoja azul de tres alturas (toque, arrastre, flechas), hoja que se cierra deslizando, título que se compacta, versión nueva sin recarga sola, 404 y sin conexión, sin transiciones con movimiento reducido |
 | `tests/e2e/capturas.cjs` | Catálogo de capturas (`npm run capturas`); falla si alguna pantalla del mapa (`src/mapa/pantallas.ts`) queda sin captura                                                                                                                          |
 | `tests/e2e/comparar.cjs` | Comparación lado a lado con la demo de la landing (`npm run comparar`, necesita la demo construida en `LANDING_DIST`)                                                                                                                             |
+
+Contra la API real (no están en `npm run e2e`; ver [`docs/conexion-api.md`](conexion-api.md)): `npm run api:verificar --
+--api <origen> --app <origen>` (solo lee: orígenes, mismo sitio, versión, CORS, cookie, SSE) y
+`INVITACION=<código> node tests/e2e/api-real.cjs` con un build que apunte a un BE propio.
 
 ## Resultados (29/10/2026, Chromium 390 px, local)
 

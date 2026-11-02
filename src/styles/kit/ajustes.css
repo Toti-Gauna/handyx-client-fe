@@ -1709,7 +1709,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.35em;
-  color: rgb(255 255 255 / 0.7);
+  /* 0.85 sobre el azul de marca = 5,6:1 (con 0.7 quedaba en 4,3:1, debajo de AA para texto chico). */
+  color: rgb(255 255 255 / 0.85);
   font-size: 0.64em;
   font-weight: 800;
 }

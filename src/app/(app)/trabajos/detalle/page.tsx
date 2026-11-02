@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { BotonHx, Escena } from '@/components/acceso';
 import { AvatarHx, Barra, ChipEstado, Pantalla, entra } from '@/components/hx';
+import { iniciales } from '@/components/Propuesta';
 import { Icono } from '@/components/Icono';
 import { MapaHx } from '@/components/MapaHx';
 import { useHojaAzul } from '@/components/gestos';
@@ -19,9 +20,10 @@ import {
 } from '@/components/Trabajo';
 import { Aviso, Boton, Cargando, ErrorEstado, Hoja, Vacio } from '@/components/ui';
 import type { Trabajo } from '@/contracts/v1/propuestas';
-import { useConsulta, useEnvio } from '@/data/hooks';
+import { useConsulta, useEnvio, useViaje } from '@/data/hooks';
 import { pesos } from '@/domain/dinero';
 import { RUBROS_INFO, etiquetaPago, etiquetaTrabajo } from '@/domain/etiquetas';
+import { textosViaje } from '@/domain/viaje';
 
 const MOTIVOS = [
   { id: 'cambio_de_planes', texto: 'Cambié de planes' },
@@ -41,7 +43,8 @@ const ACTIVOS: readonly Trabajo['estado'][] = PASOS.map((p) => p.estado);
 
 /**
  * Trabajo contratado (rediseño 3.6). Mientras está activo, el seguimiento de la demo: tu casa en el mapa y la hoja azul
- * con el paso actual (sin tiempos de llegada y sin seguir la ubicación de nadie). Cuando el especialista termina, se
+ * con el paso actual. Sin tiempos de llegada propios ni seguimiento de tu ubicación; la única excepción es el viaje en
+ * vivo (4.7): mientras viene en camino y comparte, su posición, el recorrido y la llegada estimada que manda el servidor. Cuando el especialista termina, se
  * revisa y se confirma; recién confirmado, "¡Listo, quedó arreglado!" con el pago y la reseña.
  */
 export default function DetalleTrabajo() {
@@ -60,6 +63,9 @@ export default function DetalleTrabajo() {
     pedidoId ? { parametros: { id: pedidoId }, consulta: { limite: 50 } } : null,
     { cada: 6_000 },
   );
+  // Viaje en vivo (4.7): solo mientras está en camino; posición, recorrido y llegada estimada los manda el servidor.
+  const enCamino = trabajo.datos?.estado === 'en_camino';
+  const vivo = useViaje(id, enCamino);
   const accion = useEnvio();
   const [hoja, setHoja] = useState<'cancelar' | 'terminar' | null>(null);
   const hojaAzul = useHojaAzul();
@@ -231,9 +237,11 @@ export default function DetalleTrabajo() {
       en_sitio: `${esp} llegó a tu casa`,
       en_curso: `${esp} está trabajando`,
     }[t.estado as Activo];
+    const enViaje = textosViaje(vivo.viaje, vivo.error, vivo.enVivo);
+    const compartiendo = vivo.viaje?.estado === 'compartiendo' ? vivo.viaje : null;
     const nota = {
       agendado: 'Cuando salga para tu casa, te avisamos.',
-      en_camino: 'Va en el horario que acordaron. Cuando llegue, lo marca él desde su celular.',
+      en_camino: enViaje.nota,
       en_sitio: 'Lo marcó él desde su celular al llegar.',
       en_curso:
         'Si te propone algún cambio o adicional, te avisamos: hasta que lo aceptes, no cambia nada.',
@@ -246,8 +254,18 @@ export default function DetalleTrabajo() {
             <MapaHx
               modo="ver"
               centro={casa.coordenadas}
-              etiqueta="Mapa: tu casa, donde es el trabajo"
+              etiqueta={
+                compartiendo
+                  ? `Mapa: tu casa y ${esp}, que viene en camino`
+                  : 'Mapa: tu casa, donde es el trabajo'
+              }
               clase="du-buscando__mapa"
+              especialista={
+                compartiendo?.ultimaPosicion
+                  ? { ...compartiendo.ultimaPosicion.punto, iniciales: iniciales(esp) }
+                  : null
+              }
+              trayecto={compartiendo?.trayecto?.linea ?? null}
             />
           ) : (
             <div className="du-buscando__sin-mapa" aria-hidden="true" />
@@ -257,7 +275,7 @@ export default function DetalleTrabajo() {
           </Enlace>
           <span className="hd-chip hd-chip--noche du-mapa-chip" {...entra(1, 'pop')}>
             <Icono nombre="reloj" />
-            {horarioAcordado(t)}
+            {(t.estado === 'en_camino' ? enViaje.chip : null) ?? horarioAcordado(t)}
           </span>
         </div>
         <section
@@ -287,6 +305,18 @@ export default function DetalleTrabajo() {
               <Icono nombre="info" />
               <span>{nota}</span>
             </p>
+            {t.estado === 'en_camino' && enViaje.detalle ? (
+              <p className="du-hoja-azul__nota">
+                <Icono nombre="pin" />
+                <span>{enViaje.detalle}</span>
+              </p>
+            ) : null}
+            {t.estado === 'en_camino' && enViaje.corte ? (
+              <p className="du-hoja-azul__nota" role="status">
+                <Icono nombre="alerta" />
+                <span>{enViaje.corte}</span>
+              </p>
+            ) : null}
             {avisoCambio}
             {avisoError}
             <Acordado t={t} desplegable />
@@ -328,7 +358,10 @@ export default function DetalleTrabajo() {
             </div>
             <p className="du-hoja-azul__nota">
               <Icono nombre="escudo" />
-              <span>Nosotros no seguimos tu ubicación ni la del especialista.</span>
+              <span>
+                Nosotros no seguimos tu ubicación. La del especialista se ve solo mientras viene en
+                camino y la comparte.
+              </span>
             </p>
             <HistorialTrabajo eventos={eventos.datos?.items ?? null} />
           </div>

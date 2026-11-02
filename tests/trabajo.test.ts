@@ -1,11 +1,13 @@
-// Trabajo en curso y cierre (lote 3.6): seguimiento sin ETA, festejo después del hecho, pago, comprobante y reseña.
+// Trabajo en curso y cierre (lote 3.6; viaje en vivo 4.7): seguimiento sin ETA propia, festejo después del hecho, pago, comprobante y reseña.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
+import { distanciaAprox, textosViaje } from '../src/domain/viaje.ts';
 
 const leer = (f: string) => readFileSync(f, 'utf8');
 const detalle = leer('src/app/(app)/trabajos/detalle/page.tsx');
 const pago = leer('src/app/(app)/trabajos/pago/page.tsx');
 const resena = leer('src/app/(app)/trabajos/resena/page.tsx');
+const viajeTxt = leer('src/domain/viaje.ts');
 const SIN_ETA = /llegar[áa] en|\bETA\b|tarda(r[áa])? \d|minutos? de distancia|llega en \d/i;
 
 describe('seguimiento', () => {
@@ -14,10 +16,87 @@ describe('seguimiento', () => {
     expect(detalle).toMatch(/aria-current=\{i === actual \? 'step' : undefined\}/);
   });
 
-  it('sin tiempos de llegada ni seguimiento de ubicación', () => {
+  it('sin tiempos de llegada propios ni seguimiento de tu ubicación', () => {
     expect(detalle).not.toMatch(SIN_ETA);
-    expect(detalle).toMatch(/Nosotros no seguimos tu ubicación ni la del especialista/);
-    expect(detalle).toMatch(/lo marca él desde su celular/);
+    expect(viajeTxt).not.toMatch(SIN_ETA);
+    expect(detalle).toMatch(
+      /Nosotros no seguimos tu ubicación\. La del especialista se ve solo mientras viene en\s+camino y la comparte/,
+    );
+    // Ni reloj ni cuentas propias: la llegada estimada y lo que falta llegan del servidor.
+    for (const f of [detalle, viajeTxt]) {
+      expect(f).not.toMatch(/Date\.now|new Date\(\)|duracionS|\/\s*VELOCIDAD/);
+    }
+  });
+
+  it('el viaje en vivo solo en camino y solo mientras comparte (decisión del 31/10)', () => {
+    expect(detalle).toMatch(/useViaje\(id, enCamino\)/);
+    expect(detalle).toMatch(/const enCamino = trabajo\.datos\?\.estado === 'en_camino';/);
+    expect(detalle).toMatch(/vivo\.viaje\?\.estado === 'compartiendo' \? vivo\.viaje : null/);
+    expect(detalle).toMatch(/trayecto=\{compartiendo\?\.trayecto\?\.linea \?\? null\}/);
+  });
+});
+
+describe('textos del viaje en vivo', () => {
+  const instante = '2026-11-18T13:42:00.000Z';
+  const base = {
+    trabajoId: 'de000000-0000-4000-8000-000000000001',
+    destino: { lat: -38, lng: -57.55 },
+  };
+  const vacio = {
+    trayecto: null,
+    ultimaPosicion: null,
+    distanciaRestanteM: null,
+    llegadaEstimada: null,
+  };
+
+  it('compartiendo: lo que falta y la llegada estimada del servidor, en hora de Buenos Aires', () => {
+    const v = textosViaje(
+      {
+        ...base,
+        estado: 'compartiendo',
+        trayecto: null,
+        ultimaPosicion: null,
+        distanciaRestanteM: 1234,
+        llegadaEstimada: instante,
+      },
+      null,
+      true,
+    );
+    expect(v.chip).toBe('Llegada estimada 10:42');
+    expect(v.detalle).toMatch(/^Faltan 1,2 km · llegada estimada 10:42\. La estima Handyx/);
+    expect(v.nota).toMatch(/Está compartiendo su ubicación/);
+    expect(v.corte).toBeNull();
+  });
+
+  it('sin compartir, terminado o sin datos: el horario acordado, sin hora de llegada', () => {
+    for (const viaje of [
+      { ...base, ...vacio, estado: 'sin_compartir' as const },
+      { ...base, ...vacio, estado: 'terminado' as const },
+      null,
+    ]) {
+      const v = textosViaje(viaje, null, true);
+      expect(v.chip).toBeNull();
+      expect(v.detalle).toBeNull();
+      expect(v.nota).toMatch(/Va en el horario que acordaron/);
+    }
+    expect(textosViaje({ ...base, ...vacio, estado: 'sin_compartir' }, null, true).nota).toMatch(
+      /Todavía no compartió su ubicación/,
+    );
+  });
+
+  it('un corte se avisa y un pedido sin punto en el mapa lo explica', () => {
+    const corte = { codigo: 'no_disponible', mensaje: 'Se cortó.', recuperable: true };
+    expect(textosViaje(null, corte, false).corte).toBe('Se cortó.');
+    expect(textosViaje(null, corte, true).corte).toBeNull();
+    const sinPunto = { codigo: 'conflicto', mensaje: 'x', recuperable: false };
+    expect(textosViaje(null, sinPunto, false).nota).toMatch(/no tiene un punto en el mapa/);
+  });
+
+  it('distancias aproximadas', () => {
+    expect(distanciaAprox(12)).toBe('unos 50 m');
+    expect(distanciaAprox(374)).toBe('unos 350 m');
+    expect(distanciaAprox(999)).toBe('unos 1000 m');
+    expect(distanciaAprox(2460)).toBe('2,5 km');
   });
 });
 

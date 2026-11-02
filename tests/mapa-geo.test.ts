@@ -94,7 +94,7 @@ describe('privacidad del mapa', () => {
     expect(sw).not.toMatch(/pmtiles|\/mapa\//);
   });
 
-  it('el seguimiento no muestra tiempos de llegada', () => {
+  it('el seguimiento no muestra tiempos de llegada propios (los del viaje en vivo son del servidor)', () => {
     const trabajo = readFileSync('src/app/(app)/trabajos/detalle/page.tsx', 'utf8');
     expect(trabajo).not.toMatch(/llega en|minutos? de distancia|\bETA\b/i);
   });

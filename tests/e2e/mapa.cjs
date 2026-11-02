@@ -2,7 +2,8 @@
 //   node tests/e2e/mapa.cjs [carpeta-de-capturas]
 // 1. Sin el archivo del mapa (lo normal en desarrollo): el mapa ilustrado, rotulado, sin pedir nada que no existe.
 // 2. Con el mapa SINTÉTICO de tests/fixtures (servido en lugar de /mapa/mdp.pmtiles, con lecturas por rango):
-//    MapLibre dibuja con el estilo Handyx, el pin elige un punto al mover el mapa, el pedido que busca muestra el pulso.
+//    MapLibre dibuja con el estilo Handyx, el pin elige un punto al mover el mapa, el pedido que busca muestra el pulso
+//    y el trabajo en camino, el viaje en vivo (posición, recorrido y llegada estimada del servidor).
 const { chromium } = require('playwright');
 const fs = require('node:fs');
 
@@ -140,6 +141,43 @@ async function irADireccion(p) {
     await p.screenshot({ path: `${CARPETA}/mapa-buscando.png` });
     await axe(p, 'pedido buscando con mapa');
     ok(errores.length === 0, `buscando: sin errores${errores.length ? ': ' + errores.join(' | ') : ''}`);
+    await p.close();
+  }
+
+  // 4. Viaje en vivo (lote 4.7): con el especialista en camino, su posición y el recorrido que manda el servidor
+  //    (en la vista de prueba, el simulado); la llegada estimada es la del servidor y lo que falta va bajando.
+  {
+    const { p, errores } = await pagina(b, true);
+    await p.goto(BASE + '/pedidos/?escenario=programado', { waitUntil: 'networkidle' });
+    await p.locator('main a[href*="/trabajos/detalle/"]').first().click();
+    await p.locator('#seg-titulo').waitFor();
+    await p.getByRole('button', { name: 'Panel de prueba' }).click();
+    await p.getByRole('button', { name: /Avanza el trabajo/ }).click();
+    await p.keyboard.press('Escape');
+    await p.locator('.mapa-hx--vivo .mapa-hx__esp').waitFor({ timeout: 15000 });
+    ok(true, 'viaje en vivo: el especialista aparece en el mapa');
+    const capas = await p.evaluate(() => {
+      const lienzo = document.querySelector('.mapa-hx--vivo');
+      return lienzo ? [...lienzo.querySelectorAll('canvas')].length : 0;
+    });
+    ok(capas > 0, 'viaje en vivo: MapLibre dibuja (con el recorrido)');
+    await p.getByText(/^Llegada estimada \d{2}:\d{2}$/).waitFor({ timeout: 8000 });
+    ok(true, 'viaje en vivo: chip con la llegada estimada del servidor');
+    await p.getByText(/^Faltan /).waitFor();
+    const donde = () => p.locator('.mapa-hx__esp').evaluate((e) => e.style.transform);
+    const antes = await donde();
+    await p.waitForTimeout(4500);
+    ok((await donde()) !== antes, 'viaje en vivo: el especialista avanza con cada posición del servidor');
+    ok((await p.locator('.mapa-hx__esp').count()) === 1, 'viaje en vivo: un solo marcador (se mueve, no se duplica)');
+    await p.screenshot({ path: `${CARPETA}/mapa-viaje-en-vivo.png` });
+    await axe(p, 'viaje en vivo');
+    // Llegó: deja de mostrarse la posición y vuelve el horario acordado.
+    await p.getByRole('button', { name: 'Panel de prueba' }).click();
+    await p.getByRole('button', { name: /Avanza el trabajo/ }).click();
+    await p.keyboard.press('Escape');
+    await p.locator('.mapa-hx__esp').waitFor({ state: 'detached', timeout: 10000 });
+    ok((await p.getByText(/Llegada estimada/).count()) === 0, 'al llegar no queda posición ni llegada estimada');
+    ok(errores.length === 0, `viaje: sin errores${errores.length ? ': ' + errores.join(' | ') : ''}`);
     await p.close();
   }
 

@@ -26,6 +26,9 @@ Errores siempre como `ErrorCliente` (`codigo`, `mensaje` seguro, `requestId`, `c
 
 `credentials: 'include'`, `cache: 'no-store'`, `redirect: 'error'`, timeout 15 s. Escrituras: pide el CSRF previo si
 no hay, manda `X-CSRF-Token` e `Idempotency-Key`. Valida la respuesta contra el contrato: fuera de contrato = error.
+Transmisiones (`formato: 'sse'`, hoy solo `trabajoViajeEnVivo`): `cliente.escuchar()` abre un `EventSource` con
+credenciales y valida cada mensaje; si se corta, `useViaje` consulta `trabajoViaje` cada 5 s. Al abrir la app compara
+`/v1/version` con el contrato compilado. Cómo conectarlo: [`docs/conexion-api.md`](conexion-api.md).
 
 ## Adaptador mock
 
@@ -40,6 +43,9 @@ El "servidor" simulado (`src/data/mock/`) reproduce las reglas de `docs/state-ma
 - **Panel de prueba**: botón en el rótulo amarillo. Representa lo que en producción hacen el especialista, Operations, el proveedor de pagos y el reloj. No existe con una API real.
 - **Cuenta y datos de prueba (ficticios)**: `usuaria@example.test` / `handyx-demo-1234`, invitación `DEMO2026`; ids `de000000-…`.
 - **Contraparte automática**: ofertas a los ~8 s de crear un pedido (salvo "pedidos sin respuesta"); respuesta a una contrapropuesta a los 45 s (acepta si es ≥ 85 % del precio; si no, ofrece el punto medio); respuesta en el chat a los 6 s.
+- **Viaje en vivo**: al pasar a `en_camino` el especialista ficticio sale ~1,5 km al noroeste y avanza por un recorrido en
+  ele a ~23 km/h según el reloj del mundo; `escuchar` manda una posición cada 2 s y cierra en `terminado`. Sin punto en
+  el mapa, 409 `conflicto`.
 - **Mercado Pago**: `checkoutActivo` apagado por defecto (gate); con la ruta aprobada, `pagoReportar` crea el pago `pendiente` y `pagoCheckout` devuelve la URL. En la vista de prueba no se abre Mercado Pago: se pasa a la pantalla de retorno y el panel simula la confirmación o el rechazo.
 
 ## Decisiones del mock que el servidor real tiene que confirmar (Fase 4)

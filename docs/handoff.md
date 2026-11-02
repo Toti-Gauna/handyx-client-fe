@@ -1,6 +1,20 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.6 sobre el esquema conciliado.** Decisión de
+**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.7; sigue la Fase 5 (deploy, con autorización).**
+
+**Lote 4.7 · Viaje en vivo y conexión preparada (02/11/2026).** El seguimiento del trabajo en camino muestra la posición
+del especialista, el recorrido y la llegada estimada **que manda el servidor**, solo mientras comparte
+(`src/domain/viaje.ts` arma los textos, sin calcular tiempos; `MapaHx` dibuja el recorrido y encuadra según su tamaño
+real; la nota fija es `status` y lo que falta no se anuncia en cada actualización). Datos: `cliente.escuchar()` por SSE
+(`EventSource` con credenciales) con respaldo JSON cada 5 s; la vista de prueba simula el viaje con el reloj del mundo.
+Arreglos de paso: el marcador del especialista se duplicaba en cada posición (promesas cruzadas) y el texto de los pasos
+del seguimiento no llegaba a AA (4,3:1 → 5,6:1). **Conexión con la API real lista sin cambiar código**
+([`docs/conexion-api.md`](conexion-api.md)): aviso si el contrato del servidor no coincide, `npm run api:verificar`
+(orígenes, mismo sitio, CORS, cookie, SSE) y `tests/e2e/api-real.cjs`; ensayado contra `handyx-client-be` local con la
+base aislada (verificador 17 ✔; registro con invitación real y sesión en cookie HttpOnly). **Requisito para la Fase 5:**
+PWA y API bajo el mismo dominio (`app.` y `api.`), porque la cookie es `SameSite=Lax` host-only.
+
+**Lotes 4.1 a 4.6 sobre el esquema conciliado.** Decisión de
 Ignacio (31/10): el esquema canónico es el de la sesión de especialista (`claude/pensive-hypatia-jajjgm`, conciliado con
 el nuestro), y lo de `fase-4-backend` se rehízo encima en la rama **`fase-4-backend-conciliado`** de
 `handyx-client-be` (commit `a3fd8bd`, ya con el contrato `1.0.0-draft.3` de la sesión de especialista;
@@ -11,11 +25,11 @@ integración) y métricas sin datos personales, probados contra PostgreSQL local
 especialista**: las dos APIs contra la misma base recorren el servicio de punta a punta (6 flujos, incluida una carrera); detalle en `handyx-client-be/docs/handoff.md` de esa rama.
 **Contrato `1.0.0-draft.2`** (también decisión de Ignacio): el viaje en vivo muestra posición, trayecto y llegada
 estimada del servidor; reemplaza la decisión 7 del rediseño y quedó en `AGENTS.md`. Copiarlo acá y armar la pantalla es
-el lote nuevo **4.7** (el mock necesita los dos endpoints nuevos y su pantalla en el mapa). **Sigue el 4.7** (viaje en vivo en la PWA) o la Fase 5. Abierto para Ignacio: qué comisión copia el acuerdo (la vigente al crear la propuesta, acá;
+el lote **4.7** (listo, arriba). Abierto para Ignacio: qué comisión copia el acuerdo (la vigente al crear la propuesta, acá;
 la vigente al aceptar, en la API de especialista). Siguen sin contrato: `favoritos`, el historial general y la zona del especialista. Para
 producto: se puede seguir chateando con un especialista aunque el pedido se haya contratado con otro (igual que el
 simulado). La Fase 3 (rediseño, lotes 3.1 a 3.9) está completa ([`docs/plan.md`](plan.md)).
-Fecha: 31/10/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el
+Fecha: 02/11/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el
 PR de esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la
 Fase 4.
 

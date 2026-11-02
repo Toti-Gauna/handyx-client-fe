@@ -487,7 +487,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     ],
     estados: [
       'agendado',
-      'en_camino',
+      'en_camino (viaje en vivo: sin_compartir | compartiendo | terminado)',
       'en_sitio ("Llegué" del especialista)',
       'en_curso',
       'terminado_por_especialista',
@@ -500,14 +500,17 @@ export const PANTALLAS: readonly Pantalla[] = [
       'trabajoConfirmarFin',
       'etapaConfirmar',
       'trabajoCancelar',
+      'trabajoViaje',
+      'trabajoViajeEnVivo',
     ],
-    entidades: ['jobs', 'job_events'],
+    entidades: ['jobs', 'job_events', 'trips', 'trip_positions'],
     pruebas: [
       'el acuerdo no cambia sin otra propuesta aceptada',
       'cada cambio de estado tiene actor y fecha',
+      'posición, recorrido y llegada estimada solo del servidor y solo mientras comparte',
     ],
     demo: ['u-seguimiento', 'u-terminado'],
-    nota: 'Sin seguimiento de ubicación en segundo plano: "Llegué" lo marca el especialista.',
+    nota: 'Viaje en vivo (4.7, SSE con respaldo cada 5 s): solo en camino y mientras el especialista comparte; nada de tu ubicación. "Llegué" lo marca el especialista.',
   }),
   p({
     id: 'trabajo-cambiar',

@@ -47,8 +47,9 @@ import {
   ReportePagoEntrada,
   RespuestaReclamoEntrada,
 } from './servicio.ts';
+import { Viaje } from './viaje.ts';
 
-export const VERSION_CONTRATO = '1.0.0-draft.1';
+export const VERSION_CONTRATO = '1.0.0-draft.3';
 
 export type Metodo = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
@@ -67,6 +68,8 @@ export interface Endpoint {
   readonly estado: 200 | 201 | 202 | 204;
   readonly errores: readonly CodigoError[];
   readonly fase: 4;
+  /** `sse`: la respuesta es `text/event-stream` y `respuesta` es el esquema de cada mensaje (ver SSE_VIAJE). */
+  readonly formato?: 'json' | 'sse';
 }
 
 const CsrfToken = z.object({ csrfToken: z.string().min(32).max(256) }).strict();
@@ -530,6 +533,31 @@ export const ENDPOINTS = [
     respuesta: paginado(EventoTrabajo),
     estado: 200,
     errores: recurso,
+  }),
+  e({
+    id: 'trabajoViaje',
+    metodo: 'GET',
+    ruta: '/v1/trabajos/{id}/viaje',
+    resumen:
+      'Viaje del especialista en camino: posición exacta, trayecto y llegada estimada (solo las partes del trabajo)',
+    acceso: 'sesion',
+    idempotente: true,
+    respuesta: Viaje,
+    estado: 200,
+    errores: [...recurso, 'conflicto'],
+  }),
+  e({
+    id: 'trabajoViajeEnVivo',
+    metodo: 'GET',
+    ruta: '/v1/trabajos/{id}/viaje/eventos',
+    resumen:
+      'El mismo viaje en vivo (Server-Sent Events): un `Viaje` completo por cada posición; cierra al terminar el viaje',
+    acceso: 'sesion',
+    idempotente: true,
+    respuesta: Viaje,
+    formato: 'sse',
+    estado: 200,
+    errores: [...recurso, 'conflicto', 'limite'],
   }),
   e({
     id: 'trabajoConfirmarFin',

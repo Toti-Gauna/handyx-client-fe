@@ -58,6 +58,7 @@ npm run dev                 # http://127.0.0.1:5175 (vista de prueba sin .env)
 npm run build && npm run preview   # export estático en out/ servido como Hostinger (127.0.0.1:5176)
 npm run lint | typecheck | test | format:check | mapa:check | contracts:check
 npm run e2e                 # navegador real (requiere Playwright y `npm run preview`); ver docs/qa.md
+npm run api:verificar -- --api <origen> --app <origen>   # conexión con la API real (docs/conexion-api.md)
 npm run capturas            # catálogo de pantallas y estados en docs/screens/capturas/
 ```
 

@@ -19,6 +19,7 @@ import type {
   EspecialistaResumen,
   Etapa,
 } from '../../contracts/v1/index.ts';
+import type { ViajeSimulado } from './viaje.ts';
 
 export type Conv = z.output<typeof Conversacion>;
 export type Evento = z.output<typeof EventoTrabajo>;
@@ -85,6 +86,8 @@ export interface Mundo {
   respuestaChat: Record<string, number>;
   trabajos: Trabajo[];
   eventos: Record<string, Evento[]>;
+  /** Viajes en vivo de la vista de prueba, por trabajo (src/data/mock/viaje.ts). */
+  viajes: Record<string, ViajeSimulado>;
   conversaciones: Conv[];
   mensajes: Mensaje[];
   pagos: RegistroPago[];

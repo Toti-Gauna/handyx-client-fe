@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { cliente } from '@/data';
+import { revisarContrato } from '@/data/compatibilidad';
 import { Icono } from './Icono';
 import { enLinea, enLineaServidor, suscribirRed } from './red';
 import {
@@ -78,6 +80,37 @@ export function AvisoVersion() {
             </button>
           </span>
         </div>
+      ) : null}
+    </div>
+  );
+}
+
+/**
+ * Solo con la API real: si la versión del contrato del servidor no es la que compiló esta app, se avisa una vez (estado
+ * `api_incompatible` de la bienvenida). No bloquea ni reintenta solo: el servidor y la app se publican juntos.
+ */
+export function AvisoContrato() {
+  const [incompatible, setIncompatible] = useState(false);
+  useEffect(() => {
+    if (cliente.modo !== 'http') return;
+    let vigente = true;
+    void revisarContrato(cliente).then((r) => {
+      if (vigente) setIncompatible(r === 'incompatible');
+    });
+    return () => {
+      vigente = false;
+    };
+  }, []);
+  return (
+    <div role="status" aria-live="polite" className="aviso-red-contenedor">
+      {incompatible ? (
+        <p className="aviso-red">
+          <Icono nombre="alerta" />
+          <span>
+            <strong>Handyx se está actualizando.</strong> Esta versión de la app no coincide con la
+            del servidor: cerrala y volvé a abrirla en unos minutos.
+          </span>
+        </p>
       ) : null}
     </div>
   );

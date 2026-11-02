@@ -1,6 +1,6 @@
 // Reglas del "servidor" simulado: son las que la vista de prueba le enseña a los 18 escenarios y las que el
 // servidor real (Fase 4) tiene que cumplir. Reloj congelado: solo avanza con acciones de prueba.
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ESCENARIOS } from '../src/mapa/escenarios.ts';
 import { PANTALLAS } from '../src/mapa/pantallas.ts';
 import { ErrorCliente } from '../src/data/cliente.ts';
@@ -633,5 +633,100 @@ describe('trabajo, chat, pagos y reclamos', () => {
     );
     const ok = await api.llamar('media', { cuerpo: form('image/webp', 2048) });
     expect(ok.url.startsWith('https://')).toBe(true);
+  });
+});
+
+describe('viaje en vivo (contrato 1.0.0-draft.2)', () => {
+  afterEach(() => vi.useRealTimers());
+
+  async function agendado() {
+    const api = crear('programado');
+    const t = (await api.llamar('trabajos')).items.find((x) => x.estado === 'agendado');
+    if (!t) throw new Error('falta el trabajo agendado');
+    return { api, id: t.id };
+  }
+
+  it('sin compartir antes de salir; en camino, posición, trayecto y llegada del servidor; al llegar, sin rastro', async () => {
+    const { api, id } = await agendado();
+    const antes = await api.llamar('trabajoViaje', { parametros: { id } });
+    expect(antes).toMatchObject({
+      estado: 'sin_compartir',
+      ultimaPosicion: null,
+      llegadaEstimada: null,
+    });
+
+    api.ejecutar('trabajo_siguiente'); // en camino
+    const v1 = await api.llamar('trabajoViaje', { parametros: { id } });
+    expect(v1.estado).toBe('compartiendo');
+    expect(v1.trayecto?.linea.at(-1)).toEqual(v1.destino);
+    expect(v1.distanciaRestanteM).toBe(v1.trayecto?.distanciaM);
+    expect(Date.parse(v1.llegadaEstimada ?? '')).toBeGreaterThan(
+      Date.parse(v1.ultimaPosicion?.en ?? ''),
+    );
+
+    api.ejecutar('reloj_5m');
+    const v2 = await api.llamar('trabajoViaje', { parametros: { id } });
+    expect(v2.distanciaRestanteM!).toBeLessThan(v1.distanciaRestanteM!);
+    expect(v2.ultimaPosicion?.punto).not.toEqual(v1.ultimaPosicion?.punto);
+    // La llegada estimada es la del servidor: no cambia porque el reloj avance.
+    expect(v2.llegadaEstimada).toBe(v1.llegadaEstimada);
+
+    api.ejecutar('trabajo_siguiente'); // llegó
+    const despues = await api.llamar('trabajoViaje', { parametros: { id } });
+    expect(despues).toMatchObject({
+      estado: 'terminado',
+      trayecto: null,
+      ultimaPosicion: null,
+      distanciaRestanteM: null,
+      llegadaEstimada: null,
+    });
+  });
+
+  it('un trabajo ajeno es 404 y uno sin punto en el mapa, 409', async () => {
+    const { api, id } = await agendado();
+    expect(await codigo(api.llamar('trabajoViaje', { parametros: { id: CLAVE } }))).toBe(
+      'no_encontrado',
+    );
+    const t = api.mundo.trabajos.find((x) => x.id === id)!;
+    const pedido = api.mundo.pedidos.find((p) => p.id === t.pedidoId)!;
+    pedido.ubicacion = { ...pedido.ubicacion, coordenadas: null };
+    expect(await codigo(api.llamar('trabajoViaje', { parametros: { id } }))).toBe('conflicto');
+  });
+
+  it('la transmisión manda el viaje completo cada pocos segundos y cierra al terminar', async () => {
+    vi.useFakeTimers();
+    const { api, id } = await agendado();
+    api.ejecutar('trabajo_siguiente');
+    const recibidos: string[] = [];
+    const errores: string[] = [];
+    const cerrar = api.escuchar(
+      'trabajoViajeEnVivo',
+      { parametros: { id } },
+      { alMensaje: (v) => recibidos.push(v.estado), alError: (e) => errores.push(e.codigo) },
+    );
+    await vi.advanceTimersByTimeAsync(4_100);
+    expect(recibidos.length).toBeGreaterThanOrEqual(2);
+    expect(new Set(recibidos)).toEqual(new Set(['compartiendo']));
+    api.ejecutar('trabajo_siguiente'); // llegó
+    await vi.advanceTimersByTimeAsync(2_100);
+    expect(recibidos.at(-1)).toBe('terminado');
+    const total = recibidos.length;
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(recibidos).toHaveLength(total);
+    expect(errores).toEqual([]);
+    cerrar();
+  });
+
+  it('la transmisión de un trabajo ajeno falla una vez y no reintenta', async () => {
+    vi.useFakeTimers();
+    const { api } = await agendado();
+    const errores: string[] = [];
+    api.escuchar(
+      'trabajoViajeEnVivo',
+      { parametros: { id: CLAVE } },
+      { alMensaje: () => undefined, alError: (e) => errores.push(e.codigo) },
+    );
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(errores).toEqual(['no_encontrado']);
   });
 });

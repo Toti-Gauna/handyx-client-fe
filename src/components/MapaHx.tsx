@@ -49,6 +49,18 @@ async function hayDatos(origen: string): Promise<boolean> {
   }
 }
 
+/**
+ * Márgenes del encuadre del viaje según el tamaño real del mapa (arriba quedan el botón de volver y el chip; abajo, el
+ * borde de la hoja azul). Si no entran, MapLibre no encuadra nada: nunca más del 40 % de cada lado.
+ */
+function margenDeEncuadre(caja: HTMLElement) {
+  const alto = caja.clientHeight;
+  const ancho = caja.clientWidth;
+  const v = (px: number) => Math.min(px, Math.floor(alto * 0.2));
+  const h = Math.min(36, Math.floor(ancho * 0.2));
+  return { top: v(64), bottom: v(44), left: h, right: h };
+}
+
 const sinMovimiento = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -70,7 +82,8 @@ function elementoEspecialista(iniciales: string): HTMLElement {
 /**
  * - `elegir`: la persona mueve el mapa y el pin queda fijo en el centro (como en las apps de delivery); al soltar avisa
  *   el punto (`onMover`) y el barrio más cercano (`onBarrio`).
- * - `ver`: fijo, con tu casa en el centro; `pulso` mientras se busca; `especialista` (aproximado) solo si hay dato.
+ * - `ver`: fijo, con tu casa en el centro; `pulso` mientras se busca; `especialista` solo si hay dato del servidor
+ *   (en el viaje en vivo, su posición; `trayecto`, el recorrido por las calles).
  */
 export function MapaHx({
   centro,
@@ -78,6 +91,7 @@ export function MapaHx({
   zoom = 16,
   pulso = false,
   especialista = null,
+  trayecto = null,
   onMover,
   onBarrio,
   onEstado,
@@ -89,6 +103,8 @@ export function MapaHx({
   zoom?: number;
   pulso?: boolean;
   especialista?: (Punto & { iniciales: string }) | null;
+  /** Recorrido que calculó el servidor (viaje en vivo): se dibuja y el mapa encuadra casa, especialista y recorrido. */
+  trayecto?: readonly Punto[] | null;
   onMover?: (p: PuntoElegido) => void;
   onBarrio?: (barrio: string | null) => void;
   onEstado?: (e: EstadoMapa) => void;
@@ -98,6 +114,10 @@ export function MapaHx({
   const caja = useRef<HTMLDivElement>(null);
   const mapa = useRef<MapaLibre | null>(null);
   const marcadorEsp = useRef<Marker | null>(null);
+  // La clase del marcador, del mismo import que armó el mapa: así el marcador del especialista se mueve en el acto, sin
+  // promesas que se crucen entre una posición y la siguiente (y sin dejar marcadores huérfanos).
+  const ClaseMarcador = useRef<typeof Marker | null>(null);
+  const encuadre = useRef<string | null>(null);
   const avisos = useRef({ onMover, onBarrio, onEstado });
   const [inicial] = useState(() => ({ centro, zoom, modo, pulso }));
   const [estado, setEstado] = useState<EstadoMapa>('cargando');
@@ -149,6 +169,7 @@ export function MapaHx({
         return;
       }
       mapa.current = m;
+      ClaseMarcador.current = maplibre.Marker;
       m.touchZoomRotate.disableRotation();
       m.keyboard.disableRotation();
       if (!elegir)
@@ -201,13 +222,16 @@ export function MapaHx({
       cancelado = true;
       mapa.current?.remove();
       mapa.current = null;
+      marcadorEsp.current = null;
+      encuadre.current = null;
     };
   }, [inicial]);
 
   // Cuando el centro cambia desde afuera ("usar mi ubicación"), el mapa va hasta ahí.
   useEffect(() => {
     const m = mapa.current;
-    if (!m) return;
+    // Con un viaje en pantalla manda su encuadre (casa + especialista + recorrido), no el centro.
+    if (!m || encuadre.current !== null) return;
     const c = m.getCenter();
     if (distanciaMetros({ lat: c.lat, lng: c.lng }, centro) < 3) return;
     m.easeTo({ center: [centro.lng, centro.lat], duration: sinMovimiento() ? 0 : 600 });
@@ -222,13 +246,73 @@ export function MapaHx({
       marcadorEsp.current = null;
       return;
     }
-    void import('maplibre-gl').then(({ Marker: M }) => {
-      marcadorEsp.current ??= new M({
-        element: elementoEspecialista(especialista.iniciales),
-      }).addTo(m);
-      marcadorEsp.current.setLngLat([especialista.lng, especialista.lat]);
-    });
+    const M = ClaseMarcador.current;
+    if (!M) return;
+    marcadorEsp.current ??= new M({ element: elementoEspecialista(especialista.iniciales) })
+      .setLngLat([especialista.lng, especialista.lat])
+      .addTo(m);
+    marcadorEsp.current.setLngLat([especialista.lng, especialista.lat]);
   }, [especialista, estado]);
+
+  // Recorrido del viaje en vivo: línea azul (con borde blanco) y un encuadre por recorrido nuevo (no en cada posición,
+  // para que el mapa no salte); con "reducir movimiento", sin animación.
+  useEffect(() => {
+    const m = mapa.current;
+    if (!m || estado !== 'vivo') return;
+    const capas = ['viaje-borde', 'viaje-linea'];
+    if (!trayecto || trayecto.length < 2) {
+      for (const c of capas) if (m.getLayer(c)) m.removeLayer(c);
+      if (m.getSource('viaje')) m.removeSource('viaje');
+      encuadre.current = null;
+      return;
+    }
+    const datos = {
+      type: 'Feature' as const,
+      properties: {},
+      geometry: {
+        type: 'LineString' as const,
+        coordinates: trayecto.map((p) => [p.lng, p.lat]),
+      },
+    };
+    const fuente = m.getSource('viaje') as { setData?: (d: unknown) => void } | undefined;
+    if (fuente?.setData) fuente.setData(datos);
+    else {
+      m.addSource('viaje', { type: 'geojson', data: datos });
+      m.addLayer({
+        id: 'viaje-borde',
+        type: 'line',
+        source: 'viaje',
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: { 'line-color': '#FFFFFF', 'line-width': 9 },
+      });
+      m.addLayer({
+        id: 'viaje-linea',
+        type: 'line',
+        source: 'viaje',
+        layout: { 'line-cap': 'round', 'line-join': 'round' },
+        paint: { 'line-color': '#1F57A8', 'line-width': 5 },
+      });
+    }
+    const primero = trayecto[0]!;
+    const ultimo = trayecto.at(-1)!;
+    const clave = `${trayecto.length}|${primero.lat},${primero.lng}|${ultimo.lat},${ultimo.lng}`;
+    if (encuadre.current === clave) return;
+    encuadre.current = clave;
+    const puntos = [...trayecto, centro, ...(especialista ? [especialista] : [])];
+    const lats = puntos.map((p) => p.lat);
+    const lngs = puntos.map((p) => p.lng);
+    m.fitBounds(
+      [
+        [Math.min(...lngs), Math.min(...lats)],
+        [Math.max(...lngs), Math.max(...lats)],
+      ],
+      {
+        padding: margenDeEncuadre(m.getContainer()),
+        maxZoom: 16.5,
+        duration: sinMovimiento() ? 0 : 700,
+      },
+    );
+  }, [trayecto, especialista, centro, estado]);
 
   return (
     <div

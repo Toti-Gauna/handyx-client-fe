@@ -5,5 +5,6 @@ export * from './fee.ts';
 export * from './pedidos.ts';
 export * from './propuestas.ts';
 export * from './servicio.ts';
+export * from './viaje.ts';
 export * from './estados.ts';
 export * from './endpoints.ts';
