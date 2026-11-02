@@ -102,6 +102,7 @@ completa; hojas y modales, solo lo visible; algunas pantallas también a 1280 px
 | Pantalla o estado | Captura |
 | --- | --- |
 | trabajo-seguimiento | [trabajo-seguimiento-390.jpg](trabajo-seguimiento-390.jpg) |
+| trabajo-en-camino | [trabajo-en-camino-390.jpg](trabajo-en-camino-390.jpg) |
 | trabajo-lo-acordado | [trabajo-lo-acordado-390.jpg](trabajo-lo-acordado-390.jpg) |
 | trabajo-falta-confirmacion | [trabajo-falta-confirmacion-390.jpg](trabajo-falta-confirmacion-390.jpg) |
 | trabajo-obra-por-etapas | [trabajo-obra-por-etapas-390.jpg](trabajo-obra-por-etapas-390.jpg) |

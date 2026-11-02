@@ -122,6 +122,7 @@ const CAPTURAS = [
     await p.waitForTimeout(1200);
   }]],
   ['Trabajo', 'trabajo-seguimiento', E('/pedidos/', 'programado'), [clic('main a[href*="/trabajos/detalle/"]')], { vista: true }],
+  ['Trabajo', 'trabajo-en-camino', E('/pedidos/', 'programado'), [clic('main a[href*="/trabajos/detalle/"]'), panel(/Avanza el trabajo/), async (p) => { await p.getByText(/^Faltan /).waitFor(); }], { vista: true }],
   ['Trabajo', 'trabajo-lo-acordado', E('/pedidos/', 'programado'), [clic('main a[href*="/trabajos/detalle/"]'), clic('.du-acordado > summary')], { vista: true }],
   ['Trabajo', 'trabajo-falta-confirmacion', E(`/trabajos/detalle/?id=${P}05`, 'efectivo-reportado'), [], { vista: true }],
   ['Trabajo', 'trabajo-obra-por-etapas', E('/pedidos/', 'obra-por-etapas'), [tocar('link', /Especialista 3/)], { vista: true }],
