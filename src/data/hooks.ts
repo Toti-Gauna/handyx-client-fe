@@ -185,3 +185,66 @@ export function useParametroDeFragmento(nombre: string): string | null {
     () => null,
   );
 }
+
+export interface ViajeEnVivo {
+  /** El último viaje que mandó el servidor (o `null` mientras no llegó ninguno). */
+  readonly viaje: RespuestaDe<'trabajoViaje'> | null;
+  readonly error: ErrorCliente | null;
+  /** La transmisión en vivo está andando; si no, se consulta cada {@link CADA_VIAJE_MS} hasta que vuelva. */
+  readonly enVivo: boolean;
+}
+
+/** Respaldo cuando se corta la transmisión: una consulta cada estos milisegundos. */
+export const CADA_VIAJE_MS = 5_000;
+
+interface FotoViaje {
+  readonly clave: string;
+  readonly viaje: RespuestaDe<'trabajoViaje'> | null;
+  readonly error: ErrorCliente | null;
+  readonly enVivo: boolean;
+}
+
+/**
+ * Viaje en vivo del especialista (contrato 1.0.0-draft.2): escucha la transmisión del servidor mientras `activo` (el
+ * trabajo está en camino) y la cierra al salir de la pantalla. Si la transmisión se corta por algo recuperable (red,
+ * límite), consulta el viaje cada pocos segundos hasta que vuelva; si no se recupera (404, 409, sesión), lo informa.
+ * Posición, trayecto y llegada estimada salen siempre del servidor: la pantalla no estima nada.
+ */
+export function useViaje(trabajoId: string | null, activo: boolean): ViajeEnVivo {
+  const clave = trabajoId && activo ? trabajoId : null;
+  const [foto, setFoto] = useState<FotoViaje | null>(null);
+
+  useEffect(() => {
+    if (!clave) return;
+    return cliente.escuchar(
+      'trabajoViajeEnVivo',
+      { parametros: { id: clave } },
+      {
+        alMensaje: (viaje) => setFoto({ clave, viaje, error: null, enVivo: true }),
+        alError: (error) => {
+          avisarSiSesion(error);
+          setFoto((previa) => ({
+            clave,
+            viaje: previa?.clave === clave ? previa.viaje : null,
+            error,
+            enVivo: false,
+          }));
+        },
+      },
+    );
+  }, [clave]);
+
+  const vigente = foto?.clave === clave ? foto : null;
+  const respaldo = vigente !== null && !vigente.enVivo && vigente.error?.recuperable === true;
+  const consulta = useConsulta(
+    'trabajoViaje',
+    clave && respaldo ? { parametros: { id: clave } } : null,
+    { cada: CADA_VIAJE_MS },
+  );
+  if (!vigente) return { viaje: null, error: null, enVivo: false };
+  return {
+    viaje: respaldo && consulta.datos ? consulta.datos : vigente.viaje,
+    error: vigente.error,
+    enVivo: vigente.enVivo,
+  };
+}

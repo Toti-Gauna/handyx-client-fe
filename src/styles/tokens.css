@@ -1,5 +1,8 @@
-/* Tokens de marca de Handy, copiados de Handy-landing-page-fe/src/brand/tokens.ts (misma fuente que el portal). */
+/* Tokens de Handyx. Dos capas:
+   1. Marca: copiados de Handy-landing-page-fe/src/brand/tokens.ts (misma fuente que la landing y el portal).
+   2. Semánticos: el rol de cada valor en la app. Las pantallas y componentes usan solo esta capa. */
 :root {
+  /* ── 1. Marca ─────────────────────────────────────────────────────────────────────────────────── */
   --color-azul: #1f57a8;
   --color-azul-ui: #4a72b0;
   --color-azul-personajes: #2f6bff;
@@ -24,7 +27,103 @@
   --radio-xl: 36px;
   --radio-pastilla: 999px;
 
-  /* Fuentes empaquetadas con @fontsource: el portal no pide recursos a terceros. */
+  /* Fuentes empaquetadas con @fontsource: la app no pide recursos a terceros. */
   --fuente: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fuente-titulos: 'Archivo Variable', 'Archivo', 'Arial Black', system-ui, sans-serif;
+
+  /* ── 2. Semánticos ────────────────────────────────────────────────────────────────────────────── */
+
+  /* Superficies */
+  --sup-app: #f4f5f8; /* fuera de la columna de la app */
+  --sup-base: var(--color-fondo); /* fondo de pantalla */
+  --sup-tarjeta: #ffffff;
+  --sup-hundida: #f3f5f9; /* cajas dentro de tarjetas (condiciones, horario) */
+  --sup-mosaico: var(--color-mosaico);
+  --sup-marca: var(--color-azul); /* barra inferior, paneles azules */
+  --sup-marca-tinte: #e9eff9;
+  --sup-esqueleto-brillo: #f6f6f6;
+
+  /* Texto */
+  --texto-titulo: var(--color-tinta);
+  --texto-cuerpo: var(--color-texto);
+  --texto-suave: var(--color-texto-suave); /* 5.3:1 sobre blanco */
+  --texto-sobre-marca: #ffffff;
+  --texto-enlace: var(--color-azul);
+  --texto-deshabilitado: #a8b0c0; /* solo controles deshabilitados (exentos de contraste), siempre con otra señal */
+
+  /* Líneas */
+  --linea: #e6e9ef;
+  --linea-fuerte: var(--color-borde);
+  --linea-foco: var(--color-azul-personajes);
+
+  /* Acciones. Aceptar/confirmar y rechazar/cancelar nunca se distinguen solo por color:
+     también cambian ícono (check / cruz), texto, relleno (lleno / contorno) y posición. */
+  --accion-primaria: var(--color-azul);
+  --accion-primaria-base: #143e7e;
+  --accion-destacada: var(--color-amarillo);
+  --accion-destacada-base: #d8d65e;
+  --accion-neutra: var(--color-mosaico);
+  --accion-neutra-base: #d3d6dc;
+  --accion-peligro: #b3261e; /* 6.5:1 sobre blanco (el rojo de marca no llega a 4.5:1 en texto chico) */
+  --accion-peligro-base: #7f1b15;
+
+  /* Estados (siempre con texto e ícono además del color) */
+  --estado-ok: #146c3f;
+  --estado-ok-fondo: #e6f5ec;
+  --estado-alerta: #8a5a00;
+  --estado-alerta-fondo: #fff5d6;
+  --estado-error: var(--accion-peligro);
+  --estado-error-fondo: #fdecea;
+  --estado-info: var(--color-azul);
+  --estado-info-fondo: var(--sup-marca-tinte);
+  --estado-info-borde: #c3d3ee;
+  --estado-ok-borde: #b7e2c6;
+  --estado-alerta-borde: #f2d58b;
+  --estado-error-borde: #f2b8b4;
+  --estado-neutro: #4b5568;
+  --estado-neutro-fondo: #eef0f4;
+
+  /* Importes: el total siempre en la escala más grande del bloque y con cifras tabulares. */
+  --importe-total: var(--color-azul);
+
+  /* Tipografía (escala 1.2) */
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-md: 1rem;
+  --t-lg: 1.2rem;
+  --t-xl: 1.5rem;
+  --t-2xl: clamp(1.6rem, 6vw, 2rem);
+  --peso-texto: 400;
+  --peso-medio: 600;
+  --peso-fuerte: 800;
+  --peso-titulo: 900;
+
+  /* Espaciado (base 4) */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 20px;
+  --esp-6: 24px;
+  --esp-8: 32px;
+
+  /* Elevación */
+  --elev-1: 0 1px 3px rgb(14 29 54 / 0.06), 0 8px 22px -8px rgb(14 29 54 / 0.16);
+  --elev-2: 0 2px 6px rgb(14 29 54 / 0.08), 0 16px 32px -12px rgb(14 29 54 / 0.24);
+  --elev-tactil: 5px; /* altura de la base que se hunde en botones táctiles */
+
+  /* Íconos y objetivos táctiles */
+  --icono-sm: 18px;
+  --icono-md: 24px;
+  --icono-lg: 30px;
+  --toque-min: 44px;
+
+  /* Movimiento: funcional y corto. Con prefers-reduced-motion se anula (app.css). */
+  --dur-rapida: 120ms;
+  --dur-media: 220ms;
+  --curva: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Capas */
+  --capa-barra: 20;
+  --capa-aviso-prueba: 30;
 }

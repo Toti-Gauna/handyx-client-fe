@@ -146,6 +146,8 @@ export const TIPOS_NOTIFICACION = [
   'trabajo_en_camino',
   'trabajo_llego',
   'trabajo_terminado',
+  /** El especialista canceló antes de empezar (lote 5.6 del bloque 4), siempre con motivo. */
+  'trabajo_cancelado',
   'pago_verificado',
   'reclamo_actualizado',
   'baja_actualizada',

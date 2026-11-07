@@ -1,0 +1,99 @@
+# Deploy automático de la PWA en Hostinger (https://handyx.pro). Ver docs/deploy-hostinger.md.
+# En cada push a fase-3-diseno o main: chequea, compila el export estático y lo publica en public_html.
+#   1) SSH + rsync (preferido): con clave, verificando la huella del servidor; borra lo que sobra.
+#   2) FTPS (respaldo, si el plan no tiene SSH): con usuario y contraseña.
+# Hoy publica la vista de prueba (NEXT_PUBLIC_ENTORNO=preview, sin API). Para la app real, cambiar las variables del
+# repositorio HX_ENTORNO=produccion y HX_API_BASE_URL=https://api.handyx.pro (el build falla si falta la API).
+# Credenciales: secretos del repositorio (nunca en el código). Sin ellos, compila pero no sube nada.
+name: Deploy Hostinger
+on:
+  push:
+    branches: [main, fase-3-diseno]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: hostinger
+      url: https://handyx.pro
+    env:
+      HAY_SSH: ${{ secrets.HOSTINGER_SSH_HOST != '' && secrets.HOSTINGER_SSH_USER != '' && secrets.HOSTINGER_SSH_KEY != '' && secrets.HOSTINGER_SSH_KNOWN_HOSTS != '' }}
+      HAY_FTP: ${{ secrets.HOSTINGER_FTP_HOST != '' && secrets.HOSTINGER_FTP_USER != '' && secrets.HOSTINGER_FTP_PASSWORD != '' }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Nada se publica si algo falla.
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - name: Build
+        env:
+          NEXT_PUBLIC_ENTORNO: ${{ vars.HX_ENTORNO || 'preview' }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.HX_API_BASE_URL }}
+        run: npm run build
+      - name: Comprobar el export
+        run: |
+          for f in index.html 404.html .htaccess sw.js manifest.webmanifest; do
+            test -f "out/$f" || { echo "Falta out/$f"; exit 1; }
+          done
+          echo "$(find out -type f | wc -l) archivos listos para subir"
+
+      - name: Avisar si faltan las credenciales
+        if: env.HAY_SSH != 'true' && env.HAY_FTP != 'true'
+        run: echo "::warning::Faltan los secretos de Hostinger (SSH o FTP); se compiló pero no se subió nada. Ver docs/deploy-hostinger.md."
+
+      - name: Subir a Hostinger (SSH + rsync)
+        if: env.HAY_SSH == 'true'
+        env:
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+          SSH_PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
+          DESTINO: ${{ vars.HOSTINGER_SSH_DIR || 'domains/handyx.pro/public_html' }}
+        run: |
+          set -euo pipefail
+          # Guarda contra un destino equivocado: rsync --delete borra lo que no está en el build.
+          case "$DESTINO" in
+            */public_html) ;;
+            *) echo "::error::HOSTINGER_SSH_DIR tiene que terminar en /public_html (es: $DESTINO)"; exit 1 ;;
+          esac
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/hostinger
+          chmod 600 ~/.ssh/hostinger
+          # Solo se conecta si la huella del servidor coincide con la guardada (nada de aceptar cualquiera).
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          SSH="ssh -i $HOME/.ssh/hostinger -p $SSH_PORT -o BatchMode=yes -o StrictHostKeyChecking=yes -o IdentitiesOnly=yes"
+          $SSH "$SSH_USER@$SSH_HOST" "test -d '$DESTINO'" || { echo "::error::No existe $DESTINO en el servidor"; exit 1; }
+          # .well-known lo usa el certificado SSL: no se toca.
+          rsync -rlz --delete-after --exclude='.well-known/' --exclude='.ftp-deploy-sync-state.json' \
+            -e "$SSH" out/ "$SSH_USER@$SSH_HOST:$DESTINO/"
+          echo "Publicado en https://handyx.pro"
+      - name: Borrar la clave del runner
+        if: always()
+        run: rm -f ~/.ssh/hostinger
+
+      - name: Subir a Hostinger (FTPS, respaldo)
+        if: env.HAY_SSH != 'true' && env.HAY_FTP == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_HOST }}
+          username: ${{ secrets.HOSTINGER_FTP_USER }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ${{ vars.HOSTINGER_FTP_PROTOCOLO || 'ftps' }}
+          port: 21
+          local-dir: ./out/
+          # La cuenta FTP apunta directo al public_html de handyx.pro: se sube a su raíz.
+          server-dir: ${{ vars.HOSTINGER_DIR || './' }}

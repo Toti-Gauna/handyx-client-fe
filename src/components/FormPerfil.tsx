@@ -5,28 +5,21 @@ import { GENEROS, type PerfilUsuario } from '@/contracts/v1/cuenta';
 import { useEnvio } from '@/data/hooks';
 import { GENEROS_ETIQUETA, NACIONALIDADES, erroresDe, nombrePais } from '@/domain/formularios';
 import { FormUbicacion, aUbicacion, deUbicacion, type UbicacionForm } from './FormUbicacion';
+import { BotonHx } from './acceso';
 import { useSesion } from './SesionProvider';
-import { Aviso, Boton, Campo, Pasos } from './ui';
+import { Aviso, Boton, Campo } from './ui';
 
-const TITULOS = ['Tus datos', 'Sobre vos', 'Dónde estás'] as const;
+/** Grupos del perfil: 1 nombre y apellido · 2 nacimiento, nacionalidad y género · 3 ubicación. */
+export type GrupoPerfil = 1 | 2 | 3;
 
 /**
- * Perfil operativo (PROD-15): nombre, apellido, fecha de nacimiento, nacionalidad, género y ubicación real.
- * Por pasos al registrarse (con "completar después") o completo al editar. Sin DNI, CUIT ni certificados.
+ * Estado y guardado del perfil operativo (PROD-15): nombre, apellido, fecha de nacimiento, nacionalidad, género y
+ * ubicación real. Sin DNI, CUIT ni certificados. Lo usan el onboarding por pasos y "Mis datos".
  */
-export function FormPerfil({
-  modo,
-  alTerminar,
-  alPosponer,
-}: {
-  modo: 'pasos' | 'completo';
-  alTerminar: () => void;
-  alPosponer?: () => void;
-}) {
+export function usePerfil() {
   const { sesion, recargar } = useSesion();
   const p = sesion.perfil;
-  const { enviar, pendiente, error, limpiar } = useEnvio();
-  const [paso, setPaso] = useState(1);
+  const envio = useEnvio();
   const [nombre, setNombre] = useState(p.nombre ?? '');
   const [apellido, setApellido] = useState(p.apellido ?? '');
   const [nacimiento, setNacimiento] = useState(p.fechaNacimiento ?? '');
@@ -34,61 +27,76 @@ export function FormPerfil({
   const [genero, setGenero] = useState<PerfilUsuario['genero'] | ''>(p.genero ?? '');
   const [ubicacion, setUbicacion] = useState<UbicacionForm>(deUbicacion(p.ubicacion));
   const [local, setLocal] = useState<Record<string, string>>({});
-  const [guardado, setGuardado] = useState(false);
-  const errores = { ...erroresDe(error), ...local };
-  const completo = modo === 'completo';
+  // Versión que devolvió el último guardado: el paso siguiente puede guardar antes de que la sesión se recargue.
+  const [guardada, setGuardada] = useState(sesion.perfilVersion);
+  const version = Math.max(guardada, sesion.perfilVersion);
 
-  function validar(pasos: readonly number[]): Record<string, string> {
+  function validar(grupos: readonly GrupoPerfil[]): Record<string, string> {
     const n: Record<string, string> = {};
-    if (pasos.includes(1)) {
+    if (grupos.includes(1)) {
       if (!nombre.trim()) n.nombre = 'Escribí tu nombre.';
       if (!apellido.trim()) n.apellido = 'Escribí tu apellido.';
     }
-    if (pasos.includes(2)) {
+    if (grupos.includes(2)) {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(nacimiento))
         n.fechaNacimiento = 'Elegí tu fecha de nacimiento.';
       if (!genero) n.genero = 'Elegí una opción.';
     }
-    if (pasos.includes(3)) {
+    if (grupos.includes(3)) {
       if (!ubicacion.ciudad.trim()) n.ciudad = 'Escribí tu ciudad.';
       if (!ubicacion.direccion.trim()) n.direccion = 'Escribí tu dirección.';
     }
     return n;
   }
 
-  async function guardar(pasos: readonly number[]) {
-    const n = validar(pasos);
+  /** Valida y guarda los grupos indicados. true si quedó guardado. */
+  async function guardar(grupos: readonly GrupoPerfil[]): Promise<boolean> {
+    const n = validar(grupos);
     setLocal(n);
-    setGuardado(false);
     if (Object.keys(n).length) return false;
-    const cuerpo: Record<string, unknown> = { version: sesion.perfilVersion };
-    if (pasos.includes(1))
+    const cuerpo: Record<string, unknown> = { version };
+    if (grupos.includes(1))
       Object.assign(cuerpo, { nombre: nombre.trim(), apellido: apellido.trim() });
-    if (pasos.includes(2))
+    if (grupos.includes(2))
       Object.assign(cuerpo, { fechaNacimiento: nacimiento, nacionalidad, genero });
-    if (pasos.includes(3)) Object.assign(cuerpo, { ubicacion: aUbicacion(ubicacion) });
-    const r = await enviar('perfil', { cuerpo: cuerpo as never }, JSON.stringify(cuerpo));
+    if (grupos.includes(3)) Object.assign(cuerpo, { ubicacion: aUbicacion(ubicacion) });
+    const r = await envio.enviar('perfil', { cuerpo: cuerpo as never }, JSON.stringify(cuerpo));
     if (r?.ok) {
+      setGuardada(r.datos.perfilVersion);
       recargar();
       return true;
     }
     return false;
   }
 
-  async function siguiente() {
-    if (!(await guardar([paso]))) return;
-    if (paso < 3) setPaso(paso + 1);
-    else alTerminar();
-  }
+  return {
+    valores: { nombre, apellido, nacimiento, nacionalidad, genero, ubicacion },
+    set: { setNombre, setApellido, setNacimiento, setNacionalidad, setGenero, setUbicacion },
+    errores: { ...erroresDe(envio.error), ...local },
+    guardar,
+    pendiente: envio.pendiente,
+    error: envio.error,
+    limpiar: envio.limpiar,
+    recargar,
+  };
+}
 
-  async function guardarTodo(e: React.FormEvent) {
-    e.preventDefault();
-    if (await guardar([1, 2, 3])) setGuardado(true);
-  }
+export type Perfil = ReturnType<typeof usePerfil>;
 
-  const campos = (pasos: readonly number[]) => (
+/** Campos de uno o más grupos del perfil (mismos campos en el onboarding y en "Mis datos"). */
+export function CamposPerfil({
+  perfil,
+  grupos,
+  geo,
+}: {
+  perfil: Perfil;
+  grupos: readonly GrupoPerfil[];
+  geo?: React.ComponentProps<typeof FormUbicacion>['geo'];
+}) {
+  const { valores: v, set, errores } = perfil;
+  return (
     <>
-      {pasos.includes(1) ? (
+      {grupos.includes(1) ? (
         <>
           <Campo etiqueta="Nombre" error={errores.nombre} requerido>
             {(c) => (
@@ -96,8 +104,8 @@ export function FormPerfil({
                 {...c}
                 className="entrada"
                 autoComplete="given-name"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
+                value={v.nombre}
+                onChange={(e) => set.setNombre(e.target.value)}
               />
             )}
           </Campo>
@@ -107,14 +115,14 @@ export function FormPerfil({
                 {...c}
                 className="entrada"
                 autoComplete="family-name"
-                value={apellido}
-                onChange={(e) => setApellido(e.target.value)}
+                value={v.apellido}
+                onChange={(e) => set.setApellido(e.target.value)}
               />
             )}
           </Campo>
         </>
       ) : null}
-      {pasos.includes(2) ? (
+      {grupos.includes(2) ? (
         <>
           <Campo
             etiqueta="Fecha de nacimiento"
@@ -128,8 +136,8 @@ export function FormPerfil({
                 className="entrada"
                 type="date"
                 autoComplete="bday"
-                value={nacimiento}
-                onChange={(e) => setNacimiento(e.target.value)}
+                value={v.nacimiento}
+                onChange={(e) => set.setNacimiento(e.target.value)}
               />
             )}
           </Campo>
@@ -138,8 +146,8 @@ export function FormPerfil({
               <select
                 {...c}
                 className="entrada"
-                value={nacionalidad}
-                onChange={(e) => setNacionalidad(e.target.value)}
+                value={v.nacionalidad}
+                onChange={(e) => set.setNacionalidad(e.target.value)}
               >
                 {NACIONALIDADES.map((n) => (
                   <option key={n} value={n}>
@@ -154,8 +162,8 @@ export function FormPerfil({
               <select
                 {...c}
                 className="entrada"
-                value={genero}
-                onChange={(e) => setGenero(e.target.value as PerfilUsuario['genero'])}
+                value={v.genero}
+                onChange={(e) => set.setGenero(e.target.value as PerfilUsuario['genero'])}
               >
                 <option value="">Elegí una opción</option>
                 {GENEROS.map((g) => (
@@ -168,20 +176,23 @@ export function FormPerfil({
           </Campo>
         </>
       ) : null}
-      {pasos.includes(3) ? (
-        <FormUbicacion valor={ubicacion} onCambio={setUbicacion} errores={errores} />
+      {grupos.includes(3) ? (
+        <FormUbicacion
+          valor={v.ubicacion}
+          onCambio={set.setUbicacion}
+          errores={errores}
+          {...(geo ? { geo } : {})}
+        />
       ) : null}
     </>
   );
+}
 
-  const avisoError =
-    error && !Object.keys(erroresDe(error)).length ? (
-      <Aviso tipo="error" titulo="No pudimos guardar">
-        {error.mensaje}
-      </Aviso>
-    ) : null;
-  const conflicto =
-    error?.conflicto === 'version' ? (
+/** Avisos de error y de conflicto de versión al guardar el perfil. */
+export function ErroresPerfil({ perfil }: { perfil: Perfil }) {
+  const { error, limpiar, recargar } = perfil;
+  if (error?.conflicto === 'version')
+    return (
       <Aviso tipo="alerta" titulo="Tu perfil cambió en otro lado">
         <Boton
           chico
@@ -194,50 +205,44 @@ export function FormPerfil({
           Actualizar
         </Boton>
       </Aviso>
-    ) : null;
-
-  if (completo)
-    return (
-      <form onSubmit={guardarTodo} noValidate>
-        {campos([1, 2, 3])}
-        {conflicto ?? avisoError}
-        {guardado ? (
-          <Aviso tipo="ok" rol="status">
-            Guardamos tus datos.
-          </Aviso>
-        ) : null}
-        <div className="acciones">
-          <Boton type="submit" cargando={pendiente}>
-            Guardar cambios
-          </Boton>
-        </div>
-      </form>
     );
+  if (error && !Object.keys(erroresDe(error)).length)
+    return (
+      <Aviso tipo="error" titulo="No pudimos guardar">
+        {error.mensaje}
+      </Aviso>
+    );
+  return null;
+}
 
+/** "Datos personales": el perfil completo en un formulario. */
+export function FormPerfil({
+  onGuardado,
+  onCancelar,
+}: {
+  onGuardado?: () => void;
+  onCancelar?: () => void;
+}) {
+  const perfil = usePerfil();
   return (
     <form
-      onSubmit={(e) => {
+      className="du-form-perfil"
+      onSubmit={async (e) => {
         e.preventDefault();
-        void siguiente();
+        if (await perfil.guardar([1, 2, 3])) onGuardado?.();
       }}
       noValidate
     >
-      <Pasos actual={paso} total={3} titulo={TITULOS[paso - 1] ?? ''} />
-      {campos([paso])}
-      {conflicto ?? avisoError}
-      <div className="acciones">
-        <Boton type="submit" cargando={pendiente}>
-          {paso < 3 ? 'Guardar y seguir' : 'Terminar'}
-        </Boton>
-        {paso > 1 ? (
-          <Boton variante="claro" onClick={() => setPaso(paso - 1)}>
-            Volver
-          </Boton>
-        ) : null}
-        {alPosponer ? (
-          <Boton variante="texto" onClick={alPosponer}>
-            Completar después
-          </Boton>
+      <CamposPerfil perfil={perfil} grupos={[1, 2, 3]} />
+      <ErroresPerfil perfil={perfil} />
+      <div className="du-form-perfil__botones">
+        <BotonHx type="submit" icono="check" cargando={perfil.pendiente}>
+          Guardar cambios
+        </BotonHx>
+        {onCancelar ? (
+          <BotonHx variante="fantasma" onClick={onCancelar} disabled={perfil.pendiente}>
+            Cancelar
+          </BotonHx>
         ) : null}
       </div>
     </form>

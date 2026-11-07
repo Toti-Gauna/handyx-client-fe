@@ -5,8 +5,9 @@ import { useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
 import { FotoSubida } from '@/components/FotoSubida';
 import { Enlace, ruta } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, Boton, Campo, Cargando, ErrorEstado, Pastilla, Vacio } from '@/components/ui';
+import { BotonHx } from '@/components/acceso';
+import { Barra, ChipEstado, Pantalla, entra } from '@/components/hx';
+import { Aviso, Campo, Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { ACTOR_TEXTO, CATEGORIAS_RECLAMO, ESTADOS_RECLAMO_TEXTO } from '@/domain/etiquetas';
 import { cuando } from '@/domain/fechas';
@@ -27,7 +28,7 @@ export default function DetalleReclamo() {
         </Enlace>
       </Vacio>
     );
-  if (r.estado === 'cargando') return <Cargando />;
+  if (r.estado === 'cargando') return <Cargando forma="detalle" />;
   if (r.estado === 'error' && r.error)
     return <ErrorEstado error={r.error} onReintentar={r.recargar} />;
   const x = r.datos;
@@ -52,19 +53,36 @@ export default function DetalleReclamo() {
   }
 
   return (
-    <>
-      <Titulo texto="Tu ==reclamo==" />
-      <p>
+    <Pantalla
+      arriba={
+        <Barra
+          titulo="Tu reclamo"
+          volver={{ href: '/reclamos/', etiqueta: 'Volver a tus reclamos' }}
+          sub={CATEGORIAS_RECLAMO[x.categoria]}
+          icono="alerta"
+        />
+      }
+      pie={
+        x.estado === 'esperando_usuario' ? (
+          <BotonHx type="submit" form="form-reclamo" icono="enviar" cargando={accion.pendiente}>
+            Enviar respuesta
+          </BotonHx>
+        ) : undefined
+      }
+      clase="du-reclamo-hx"
+    >
+      <div className="du-cuerpo">
         {e ? (
-          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-            {e.texto}
-          </Pastilla>
+          <div {...entra(1)}>
+            <ChipEstado e={e} vivo />
+          </div>
         ) : null}
-      </p>
-      <section className="tarjeta">
-        <div className="tarjeta__cuerpo">
-          <p className="tarjeta__titulo">{CATEGORIAS_RECLAMO[x.categoria]}</p>
-          <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{x.detalle}</p>
+        <section
+          className="hd-tarjeta hd-tarjeta--gris du-reclamo-hx__detalle"
+          data-vt-destino
+          {...entra(1)}
+        >
+          <p className="du-reclamo-hx__texto">{x.detalle}</p>
           {x.adjuntos.length ? (
             <ul className="fotos">
               {x.adjuntos.map((a) => (
@@ -74,63 +92,65 @@ export default function DetalleReclamo() {
               ))}
             </ul>
           ) : null}
-          <p className="texto-suave" style={{ margin: '8px 0 0' }}>
-            Abierto {cuando(x.creadoEn)}
-          </p>
-        </div>
-      </section>
-      <div className="acciones" style={{ marginTop: 0 }}>
-        <Enlace className="boton boton--claro" href={ruta('/pedidos/detalle/', { id: x.pedidoId })}>
-          Ver el pedido
-        </Enlace>
-        {x.trabajoId ? (
+          <small className="du-reclamo-hx__fecha">Abierto {cuando(x.creadoEn)}</small>
+        </section>
+        <div className="du-reclamo-hx__enlaces" {...entra(2)}>
           <Enlace
-            className="boton boton--claro"
-            href={ruta('/trabajos/detalle/', { id: x.trabajoId })}
+            className="hd-boton hd-boton--blanco du-boton-claro-hx"
+            href={ruta('/pedidos/detalle/', { id: x.pedidoId })}
           >
-            Ver el trabajo
+            Ver el pedido
           </Enlace>
+          {x.trabajoId ? (
+            <Enlace
+              className="hd-boton hd-boton--blanco du-boton-claro-hx"
+              href={ruta('/trabajos/detalle/', { id: x.trabajoId })}
+            >
+              Ver el trabajo
+            </Enlace>
+          ) : null}
+        </div>
+
+        {x.estado === 'esperando_usuario' ? (
+          <form id="form-reclamo" className="du-reclamo-hx__form" onSubmit={responder} noValidate>
+            <Aviso tipo="alerta" titulo="Necesitamos más información" rol="status">
+              Respondé acá para que sigamos con la revisión.
+            </Aviso>
+            <Campo etiqueta="Tu respuesta" error={local} requerido>
+              {(c) => (
+                <textarea
+                  {...c}
+                  className="entrada"
+                  maxLength={2000}
+                  value={detalle}
+                  onChange={(ev) => setDetalle(ev.target.value)}
+                />
+              )}
+            </Campo>
+            <FotoSubida onCambio={setAdjuntos} etiqueta="Agregar fotos" />
+            {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
+          </form>
         ) : null}
+
+        <section className="du-bloque" aria-labelledby="historial-t" {...entra(3)}>
+          <h2 id="historial-t" className="hd-sobre du-sobre">
+            Historial
+          </h2>
+          <ol className="du-linea-hx">
+            {[...x.historial].reverse().map((h, i) => (
+              <li key={`${h.ocurridoEn}-${i}`} className={i === 0 ? 'is-actual' : ''}>
+                <i aria-hidden="true" />
+                <span>
+                  <strong>{ESTADOS_RECLAMO_TEXTO[h.a]?.texto ?? h.a}</strong>
+                  <small>
+                    {cuando(h.ocurridoEn)} · {ACTOR_TEXTO[h.actor] ?? h.actor}
+                  </small>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
-
-      {x.estado === 'esperando_usuario' ? (
-        <form onSubmit={responder} noValidate>
-          <Aviso tipo="alerta" titulo="Necesitamos más información" rol="status">
-            Respondé acá para que sigamos con la revisión.
-          </Aviso>
-          <Campo etiqueta="Tu respuesta" error={local} requerido>
-            {(c) => (
-              <textarea
-                {...c}
-                className="entrada"
-                maxLength={2000}
-                value={detalle}
-                onChange={(ev) => setDetalle(ev.target.value)}
-              />
-            )}
-          </Campo>
-          <FotoSubida onCambio={setAdjuntos} etiqueta="Agregar fotos" />
-          {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
-          <div className="acciones">
-            <Boton type="submit" cargando={accion.pendiente}>
-              Enviar respuesta
-            </Boton>
-          </div>
-        </form>
-      ) : null}
-
-      <h2 className="subtitulo">Historial</h2>
-      <ol className="linea">
-        {[...x.historial].reverse().map((h, i) => (
-          <li key={`${h.ocurridoEn}-${i}`} className="linea__item">
-            <strong>{ESTADOS_RECLAMO_TEXTO[h.a]?.texto ?? h.a}</strong>
-            <br />
-            <span className="linea__quien">
-              {cuando(h.ocurridoEn)} · {ACTOR_TEXTO[h.actor] ?? h.actor}
-            </span>
-          </li>
-        ))}
-      </ol>
-    </>
+    </Pantalla>
   );
 }

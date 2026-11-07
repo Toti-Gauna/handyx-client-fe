@@ -47,9 +47,9 @@ export function Calendario({
         >
           <Icono nombre="izquierda" />
         </button>
-        <h3 className="cal__mes" aria-live="polite">
+        <h2 className="cal__mes" aria-live="polite">
           {nombreMes(anio, mes)}
-        </h3>
+        </h2>
         <button
           type="button"
           className="cal__nav"
@@ -74,7 +74,7 @@ export function Calendario({
               type="button"
               className={`cal__dia${f === hoy ? ' cal__dia--hoy' : ''}`}
               aria-pressed={f === valor}
-              aria-label={`${fechaLarga(f)}${f === hoy ? ', hoy' : ''}${marcas?.has(f) ? ', con trabajos' : ''}`}
+              aria-label={`${partes(f).dia} · ${fechaLarga(f)}${f === hoy ? ', hoy' : ''}${marcas?.has(f) ? ', con trabajos' : ''}`}
               disabled={sinPasados && esPasada(f, hoy)}
               onClick={() => onElegir(f)}
             >

@@ -3,7 +3,14 @@
 import type { CodigoError } from '../../contracts/v1/comunes.ts';
 import { ESTADO_HTTP } from '../../contracts/v1/comunes.ts';
 import { type EndpointId, type RespuestaDe, endpoint } from '../../contracts/v1/endpoints.ts';
-import { type ClienteApi, ErrorCliente, type Llamada, MENSAJES_LOCALES } from '../cliente.ts';
+import {
+  type ClienteApi,
+  type EndpointVivo,
+  ErrorCliente,
+  type Escucha,
+  type Llamada,
+  MENSAJES_LOCALES,
+} from '../cliente.ts';
 import { escenarioDeUrl, prueba } from '../prueba.ts';
 import { camposDeZod } from '../validacion.ts';
 import { CONSTRUCTORES, aplicarEscenario } from './escenarios-mundo.ts';
@@ -33,6 +40,9 @@ export interface ClienteMock extends ClienteApi {
   readonly entorno: { red: boolean };
 }
 
+/** Cada cuánto manda una posición el especialista ficticio de la vista de prueba. */
+export const INTERVALO_VIVO_MS = 2_000;
+
 const esperar = (ms: number, senal?: AbortSignal) =>
   new Promise<void>((resolver, rechazar) => {
     if (ms <= 0) return resolver();
@@ -58,7 +68,7 @@ export function crearClienteMock(opciones: OpcionesMock = {}): ClienteMock {
   const latencia = opciones.latenciaMs ?? 350;
   const entorno = { red: true };
 
-  return {
+  const cliente: ClienteMock = {
     modo: 'mock',
     mundo: m,
     acciones: ACCIONES,
@@ -67,7 +77,8 @@ export function crearClienteMock(opciones: OpcionesMock = {}): ClienteMock {
     async llamar<I extends EndpointId>(id: I, llamada: Llamada<I> = {}): Promise<RespuestaDe<I>> {
       const ep = endpoint(id);
       await esperar(latencia, llamada.senal);
-      if (!entorno.red)
+      // Sin red simulada desde el panel o sin conexión real del navegador: el mock falla igual que el adaptador HTTP.
+      if (!entorno.red || (typeof navigator !== 'undefined' && navigator.onLine === false))
         throw new ErrorCliente({ codigo: 'no_disponible', mensaje: MENSAJES_LOCALES.sinRed });
       const falla = opciones.fallas?.[id];
       if (falla)
@@ -115,5 +126,51 @@ export function crearClienteMock(opciones: OpcionesMock = {}): ClienteMock {
       if (claveCache) m.idem.set(claveCache, structuredClone(respuesta));
       return respuesta as RespuestaDe<I>;
     },
+    /**
+     * La transmisión en vivo de la vista de prueba: sin conexión real, pide el recurso cada `INTERVALO_VIVO_MS` por el
+     * mismo camino que `llamar` (sesión, red simulada, fallas y validación del contrato) y para al terminar o ante un
+     * error que no se recupera solo.
+     */
+    escuchar<I extends EndpointVivo>(
+      id: I,
+      llamada: Pick<Llamada<I>, 'parametros'>,
+      escucha: Escucha<I>,
+    ): () => void {
+      let activa = true;
+      let reloj: ReturnType<typeof setTimeout> | undefined;
+      const vuelta = async () => {
+        if (!activa) return;
+        try {
+          const datos = await cliente.llamar(id, { parametros: llamada.parametros ?? {} });
+          if (!activa) return;
+          escucha.alMensaje(datos);
+          if ((datos as { estado?: string }).estado === 'terminado') {
+            activa = false;
+            return;
+          }
+        } catch (e) {
+          if (!activa) return;
+          const error =
+            e instanceof ErrorCliente
+              ? e
+              : new ErrorCliente({
+                  codigo: 'error_interno',
+                  mensaje: MENSAJES_LOCALES.fueraDeContrato,
+                });
+          escucha.alError(error);
+          if (!error.recuperable) {
+            activa = false;
+            return;
+          }
+        }
+        reloj = setTimeout(() => void vuelta(), INTERVALO_VIVO_MS);
+      };
+      void vuelta();
+      return () => {
+        activa = false;
+        clearTimeout(reloj);
+      };
+    },
   };
+  return cliente;
 }

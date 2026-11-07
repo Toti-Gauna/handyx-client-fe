@@ -19,6 +19,32 @@ export function erroresDe(error: ErrorCliente | null): Record<string, string> {
 
 export const esEmail = (v: string): boolean => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
+/** Mínimo del contrato (Contrasena): 10 caracteres. */
+export const CONTRASENA_MINIMA = 10;
+
+/**
+ * Medidor de contraseña (orientativo, en el navegador; el BE valida lo suyo). 0: no llega al mínimo; 1-3: aceptable,
+ * buena, muy buena según largo y variedad. Repeticiones y secuencias obvias quedan en "aceptable".
+ */
+export function fuerzaContrasena(c: string): { nivel: 0 | 1 | 2 | 3; texto: string } {
+  if (c.length < CONTRASENA_MINIMA)
+    return {
+      nivel: 0,
+      texto: c
+        ? `Muy corta: faltan ${CONTRASENA_MINIMA - c.length}`
+        : `Al menos ${CONTRASENA_MINIMA} caracteres`,
+    };
+  const obvia =
+    /^(.)\1+$/.test(c) || /^(0123456789|1234567890|contrasena|password|qwerty)/i.test(c);
+  let puntos = 0;
+  if (c.length >= 14) puntos++;
+  if (/[a-z]/.test(c) && /[A-Z]/.test(c)) puntos++;
+  if (/\d/.test(c)) puntos++;
+  if (/[^A-Za-z0-9]/.test(c)) puntos++;
+  if (obvia || puntos === 0) return { nivel: 1, texto: 'Aceptable' };
+  return puntos >= 3 ? { nivel: 3, texto: 'Muy buena' } : { nivel: 2, texto: 'Buena' };
+}
+
 export const GENEROS_ETIQUETA: Record<string, string> = {
   mujer: 'Mujer',
   varon: 'Varón',

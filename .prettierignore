@@ -9,3 +9,10 @@ src/contracts
 # Generado por npm run mapa
 docs/screens/matriz.md
 tests/e2e
+docs/screens/capturas/README.md
+docs/screens/comparacion/README.md
+src/styles/kit/app.css
+src/styles/kit/hd.css
+src/styles/kit/usuario.css
+# Copia del worker de MapLibre (scripts/mapa-worker.mjs)
+public/mapa/maplibre-gl-worker.js

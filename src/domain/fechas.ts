@@ -101,6 +101,11 @@ export const fechaLarga = (f: FechaISO) => {
 /** "Mié 18" */
 export const fechaCorta = (f: FechaISO) =>
   `${mayuscula(fmt({ weekday: 'short' }).format(instante(f)).replace('.', ''))} ${partes(f).dia}`;
+/** "20/03/1990" (fechas sin día de la semana, como el nacimiento). */
+export const fechaNumerica = (f: FechaISO) => {
+  const { anio, mes, dia } = partes(f);
+  return `${dos(dia)}/${dos(mes)}/${anio}`;
+};
 /** "noviembre 2026" → "Noviembre 2026" */
 export const nombreMes = (anio: number, mes: number) =>
   mayuscula(fmt({ month: 'long', year: 'numeric' }).format(instante(iso(anio, mes, 1)))).replace(
