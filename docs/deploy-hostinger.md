@@ -4,49 +4,70 @@ Publica la PWA en **https://handyx.pro** como **vista de prueba**: datos fictici
 prueba. No crea cuentas ni guarda datos de nadie (todo vive en la memoria del navegador). La app real necesita la API
 (`handyx-client-be` en Render + Neon, bajo `api.handyx.pro`): ver [`conexion-api.md`](conexion-api.md).
 
-Decisiones de Ignacio (07/11/2026): vista de prueba en handyx.pro, deploy automático con GitHub Actions.
+Decisiones de Ignacio (07/11/2026): vista de prueba en handyx.pro, deploy automático con GitHub Actions por SSH.
 
 ## Cómo funciona
 
 `.github/workflows/deploy-hostinger.yml` corre en cada push a `fase-3-diseno` o `main` (y a mano desde la pestaña
 **Actions** cuando el archivo esté en `main`): `npm ci` → lint, typecheck y pruebas → `npm run build` → comprueba el
-export → lo sube por **FTPS** al `public_html` de handyx.pro. Solo sube lo que cambió (guarda un archivo de estado,
-`.ftp-deploy-sync-state.json`, que el `.htaccess` no deja leer). Si algo falla, no se publica nada. Sin las
-credenciales, compila igual pero no sube y deja un aviso amarillo.
+export → lo publica en el `public_html` de handyx.pro. Si algo falla, no se publica nada. Sin credenciales, compila igual
+y deja un aviso amarillo.
+
+- **SSH + rsync (preferido)**: entra con una clave (no contraseña), solo si la huella del servidor coincide con la
+  guardada, sube lo que cambió y borra lo que sobra (menos `.well-known/`, que usa el SSL). Se niega a correr si el
+  destino no termina en `/public_html`.
+- **FTPS (respaldo)**: solo si no hay secretos de SSH (planes sin SSH). No borra lo que no subió.
 
 `public/.htaccess` (sale en `out/.htaccess`): página 404, HTTPS obligatorio, sin listado de carpetas, tipos MIME del
 manifiesto y del mapa, caché correcta (HTML y `sw.js` siempre se revisan, `_next/static` un año) y cabeceras de
 seguridad. Todo lo que depende de un módulo va dentro de `<IfModule>`: si el servidor no lo tiene, se ignora.
 
-## Configuración (una sola vez)
+## Configuración por SSH (una sola vez, desde Windows)
 
-1. **Hostinger → cuenta FTP.** hPanel → Sitios web → handyx.pro → **Archivos → Cuentas FTP** → crear una cuenta
-   nueva (por ejemplo `deploy`) con contraseña larga y con el **directorio** = el `public_html` de handyx.pro. En esa
-   misma pantalla figura el **host FTP** (una IP o `ftp.handyx.pro`).
-2. **Hostinger → limpiar `public_html`.** En el Administrador de archivos, borrar lo que traiga por defecto
-   (`default.php`): el deploy no borra archivos que no subió él. Si hay algo que sirva, descargarlo antes.
-3. **Hostinger → SSL.** Seguridad → SSL: certificado activo para handyx.pro (gratis; si no está, "Instalar SSL").
-4. **GitHub → secretos.** Repositorio `handyx-client-fe` → **Settings → Secrets and variables → Actions → New
-   repository secret**, tres veces:
+1. **Hostinger → activar SSH.** hPanel → Sitios web → handyx.pro → **Avanzado → Acceso SSH** → Habilitar. Anotar
+   **IP**, **puerto** (normalmente `65002`) y **usuario** (`u123456789`). Si esa opción no aparece, el plan no tiene
+   SSH: usar la configuración por FTP de abajo.
+2. **Crear una clave solo para el deploy** (PowerShell; cuando pida frase de contraseña, Enter dos veces):
 
-   | Nombre                   | Valor                                            |
-   | ------------------------ | ------------------------------------------------ |
-   | `HOSTINGER_FTP_HOST`     | el host FTP del paso 1                           |
-   | `HOSTINGER_FTP_USER`     | el usuario completo (p. ej. `u123456789.deploy`) |
-   | `HOSTINGER_FTP_PASSWORD` | la contraseña de esa cuenta                      |
+   ```powershell
+   ssh-keygen -t ed25519 -C "github-actions-handyx" -f $HOME\.ssh\handyx_deploy
+   Get-Content $HOME\.ssh\handyx_deploy.pub | Set-Clipboard
+   ```
 
-   Nunca en el código, en `.env` versionados ni en el chat.
+3. **Hostinger → cargar la clave pública.** En **Acceso SSH → Claves SSH → Agregar**, pegar lo copiado (empieza con
+   `ssh-ed25519`).
+4. **Huella del servidor** (para que GitHub solo se conecte a Hostinger y no a un impostor; cambiar la IP):
 
-5. **Primer deploy.** Actions → **Deploy Hostinger** → el último run → **Re-run all jobs** (o hacer cualquier push a
-   `fase-3-diseno`). Tarda 2 a 4 minutos.
+   ```powershell
+   ssh-keyscan -p 65002 145.0.0.0 | Set-Clipboard
+   ```
 
-Variables opcionales (Settings → Secrets and variables → Actions → **Variables**):
+5. **GitHub → secretos.** Repositorio `handyx-client-fe` → **Settings → Secrets and variables → Actions → New
+   repository secret**:
 
-| Variable                        | Para qué                                                                            |
-| ------------------------------- | ----------------------------------------------------------------------------------- |
-| `HOSTINGER_FTP_PROTOCOLO`       | `ftp` si el servidor no acepta FTPS (el error dice "TLS"/"SSL"); por defecto `ftps` |
-| `HOSTINGER_DIR`                 | otra carpeta de destino si la cuenta FTP no apunta directo a `public_html`          |
-| `HX_ENTORNO`, `HX_API_BASE_URL` | para la app real: `produccion` y `https://api.handyx.pro`                           |
+   | Nombre                      | Valor                                                                              |
+   | --------------------------- | ---------------------------------------------------------------------------------- |
+   | `HOSTINGER_SSH_HOST`        | la IP del paso 1                                                                   |
+   | `HOSTINGER_SSH_USER`        | el usuario (`u123456789`)                                                          |
+   | `HOSTINGER_SSH_KEY`         | la clave **privada**: `Get-Content $HOME\.ssh\handyx_deploy -Raw \| Set-Clipboard` |
+   | `HOSTINGER_SSH_KNOWN_HOSTS` | lo copiado en el paso 4                                                            |
+
+   Si el puerto no es `65002`, crear la **variable** (pestaña Variables) `HOSTINGER_SSH_PORT`. Si la carpeta del sitio
+   no es `domains/handyx.pro/public_html`, la variable `HOSTINGER_SSH_DIR` (tiene que terminar en `/public_html`).
+   La clave privada no se comparte ni se sube a ningún lado más: si se filtra, borrarla en Hostinger y crear otra.
+
+6. **SSL.** Seguridad → SSL: certificado activo para handyx.pro (gratis; si no está, "Instalar SSL").
+7. **Primer deploy.** Actions → **Deploy Hostinger** → el último run → **Re-run all jobs**. Tarda 2 a 4 minutos.
+
+## Configuración por FTP (solo si el plan no tiene SSH)
+
+1. hPanel → handyx.pro → **Archivos → Cuentas FTP** → cuenta nueva (p. ej. `deploy`) con directorio = el
+   `public_html` de handyx.pro. Anotar el host FTP y el usuario completo (`u123456789.deploy`).
+2. En el Administrador de archivos, borrar lo que traiga `public_html` por defecto (`default.php`).
+3. Secretos `HOSTINGER_FTP_HOST`, `HOSTINGER_FTP_USER` y `HOSTINGER_FTP_PASSWORD`. Si el error dice "TLS"/"SSL",
+   variable `HOSTINGER_FTP_PROTOCOLO` = `ftp`.
+
+Variables para la app real (más adelante): `HX_ENTORNO` = `produccion` y `HX_API_BASE_URL` = `https://api.handyx.pro`.
 
 ## Comprobar
 
