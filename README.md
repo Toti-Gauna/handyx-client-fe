@@ -36,4 +36,4 @@ npm run format:check && npm run lint && npm run typecheck && npm test && npm run
 
 [Plan](docs/plan.md) · [Handoff](docs/handoff.md) · [QA](docs/qa.md) · [Inventario](docs/inventario.md) ·
 [Mapa inicial](docs/screens/mapa-inicial.md) · [Matriz](docs/screens/matriz.md) ·
-[Contrato mock/HTTP](docs/contrato-mock.md) · [ADR-0001 Next export](docs/adr/ADR-0001-nextjs-export-estatico.md)
+[Contrato mock/HTTP](docs/contrato-mock.md) · [ADR-0001 Next export](docs/adr/ADR-0001-nextjs-export-estatico.md) · [Despliegue en Hostinger](docs/despliegue-hostinger.md)
