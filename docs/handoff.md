@@ -2,6 +2,9 @@
 
 **Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.7; sigue la Fase 5 (deploy, con autorización).**
 
+**Siguiente para HandIA:** plan por fases H0–H7 en [`handia-premium-plan.md`](handia-premium-plan.md) (modo voz estilo
+ChatGPT Voice con los Handys, chat premium, agente, cámara, OpenAI + ElevenLabs). H1 espera las imágenes de ChatGPT.
+
 **Rama `handia-premium` (07/11/2026, pedido de Ignacio: "HandIA superpremium, con modo voz").** Sale de `fase-3-diseno`
 y no dispara el deploy. HandIA conversa como un especialista antes de cotizar, **todo en el celular, sin IA externa**:
 `src/domain/handia-motor.ts` (estado → respuestas y opciones; lo usan igual el chat y la voz) con las guías de
