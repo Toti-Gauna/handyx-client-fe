@@ -11,12 +11,12 @@ def miniatura(f):
     raiz=re.sub(r'<helmet>[\s\S]*?</helmet>','',raiz).strip()
     raiz=re.sub(r' tabindex="\d+"','',raiz)
     raiz=re.sub(r'<a ','<span ',raiz).replace('</a>','</span>')
-    raiz=re.sub(r'<button ','<span ',raiz).replace('</button>','</span>')
+    raiz=re.sub(r'<button ','<span data-b="1" ',raiz).replace('</button>','</span>')
     raiz=re.sub(r' role="(button|switch|tab|tablist|radio|radiogroup|checkbox|listbox|option|img|dialog|toolbar|progressbar|status|note|group)"','',raiz)
-    raiz=re.sub(r'<input([^>]*?) value="([^"]*)"([^>]*)>', r'<span\1\3>\2</span>', raiz)
-    raiz=re.sub(r'<input([^>]*?) placeholder="([^"]*)"([^>]*)>', r'<span\1\3>\2</span>', raiz)
-    raiz=re.sub(r'<input([^>]*)>', r'<span\1></span>', raiz)
-    raiz=re.sub(r'<textarea([^>]*)>(.*?)</textarea>', r'<span\1>\2</span>', raiz, flags=re.S)
+    raiz=re.sub(r'<input([^>]*?) value="([^"]*)"([^>]*)>', r'<span data-i="1"\1\3>\2</span>', raiz)
+    raiz=re.sub(r'<input([^>]*?) placeholder="([^"]*)"([^>]*)>', r'<span data-i="1"\1\3>\2</span>', raiz)
+    raiz=re.sub(r'<input([^>]*)>', r'<span data-i="1"\1></span>', raiz)
+    raiz=re.sub(r'<textarea([^>]*)>(.*?)</textarea>', r'<span data-i="1"\1>\2</span>', raiz, flags=re.S)
     raiz=re.sub(r'<(/?)(label|details|summary)\b', r'<\1span', raiz)
     raiz=re.sub(r' (readonly|open|disabled)(?=[ >])', '', raiz)
     raiz=re.sub(r' data-[cfx]="1"','',raiz)
@@ -46,6 +46,7 @@ def recorrido(archivo, titulo, sub, pasos):
     html=f'''<div style="width: {W}px; height: {H}px; box-sizing: border-box; background: #F6F7F9; font-family: 'DM Sans', system-ui, sans-serif; color: {TINTA}; position: relative; overflow: hidden">
   <div style="position: absolute; left: 40px; top: 32px; display: flex; flex-direction: column; gap: 6px">{etiqueta("RECORRIDO CON PANTALLAS", AZUL)}<h1 style="margin: 0; {TIT}; font-size: 34px; line-height: 1">{titulo}</h1><span style="font-size: 14px; color: {SUAVE}">{sub}</span></div>
   <div style="position: absolute; right: 40px; top: 40px; display: flex; gap: 14px; font-size: 12px; color: {SUAVE}"><span style="display: inline-flex; gap: 6px; align-items: center"><span style="width: 18px; height: 12px; border-radius: 4px; background: {AMARILLO}"></span>Lo que pasa entre pantallas</span><span style="display: inline-flex; gap: 6px; align-items: center"><span style="width: 18px; height: 12px; border-radius: 4px; background: {AZUL}"></span>Orden del recorrido</span></div>
+  <style>[data-b]{{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;text-align:center;font:inherit}}[data-b][style*="text-align: left"]{{justify-content:flex-start;text-align:left}}[data-i]{{display:flex;align-items:center;box-sizing:border-box}}</style>
   {"".join(bloques)}
 </div>'''
     doc=documento(titulo,'').replace(f'<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FFFFFF; font-family: \'DM Sans\', system-ui, sans-serif; color: {TINTA}; overflow: hidden; position: relative">\n\n</div>', html).replace('{"width":390,"height":844}', f'{{"width":{W},"height":{H}}}')

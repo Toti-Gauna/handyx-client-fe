@@ -48,852 +48,852 @@
    "x": 0,
    "y": 10696,
    "w": 1770,
-   "h": 1582,
+   "h": 1610,
    "title": "Recorrido · Del turno al pago"
   },
   "RC-Obra.dc.html": {
    "x": 0,
-   "y": 12478,
+   "y": 12506,
    "w": 1770,
    "h": 1554,
    "title": "Recorrido · Una obra de varios días"
   },
   "RC-Mensajes.dc.html": {
    "x": 0,
-   "y": 14232,
+   "y": 14260,
    "w": 1770,
    "h": 1554,
    "title": "Recorrido · Mensajes y tarjetas"
   },
   "RC-Hogar.dc.html": {
    "x": 0,
-   "y": 15986,
+   "y": 16014,
    "w": 1770,
    "h": 1742,
    "title": "Recorrido · Mi hogar"
   },
   "RC-Herramientas.dc.html": {
    "x": 0,
-   "y": 17928,
+   "y": 17956,
    "w": 1770,
    "h": 1554,
    "title": "Recorrido · Herramientas, 3D y AR"
   },
   "RC-Camino.dc.html": {
    "x": 0,
-   "y": 19682,
+   "y": 19710,
    "w": 1770,
    "h": 792,
    "title": "Recorrido · Camino del hogar"
   },
   "RC-Actividad.dc.html": {
    "x": 0,
-   "y": 20674,
+   "y": 20702,
    "w": 1770,
    "h": 792,
    "title": "Recorrido · Actividad y avisos"
   },
   "RC-Cuenta.dc.html": {
    "x": 0,
-   "y": 21666,
+   "y": 21694,
    "w": 1770,
    "h": 1732,
    "title": "Recorrido · Cuenta, ayuda y errores"
   },
   "FL-Mapa.dc.html": {
    "x": 0,
-   "y": 23998,
+   "y": 24026,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Mapa de la app"
   },
   "FL-Acceso.dc.html": {
    "x": 0,
-   "y": 24884,
+   "y": 24912,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Acceso y alta"
   },
   "FL-Pedir.dc.html": {
    "x": 0,
-   "y": 25770,
+   "y": 25798,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Pedir con HandIA"
   },
   "FL-Propuestas.dc.html": {
    "x": 0,
-   "y": 26656,
+   "y": 26684,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Propuestas y aceptar"
   },
   "FL-Seguimiento.dc.html": {
    "x": 0,
-   "y": 27542,
+   "y": 27570,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Seguimiento y pago"
   },
   "FL-Obra.dc.html": {
    "x": 0,
-   "y": 28428,
+   "y": 28456,
    "w": 1346,
    "h": 550,
    "title": "Flujo · Obra de varios días"
   },
   "FL-Equipo.dc.html": {
    "x": 0,
-   "y": 29138,
+   "y": 29166,
    "w": 1346,
    "h": 550,
    "title": "Flujo · Obra en equipo"
   },
   "FL-Mensajes.dc.html": {
    "x": 0,
-   "y": 29848,
+   "y": 29876,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Mensajes y tarjetas"
   },
   "FL-Hogar.dc.html": {
    "x": 0,
-   "y": 30734,
+   "y": 30762,
    "w": 1346,
    "h": 902,
    "title": "Flujo · Mi hogar"
   },
   "FL-Herramientas.dc.html": {
    "x": 0,
-   "y": 31796,
+   "y": 31824,
    "w": 1346,
    "h": 902,
    "title": "Flujo · Herramientas y AR"
   },
   "FL-Camino.dc.html": {
    "x": 0,
-   "y": 32858,
+   "y": 32886,
    "w": 1346,
    "h": 726,
    "title": "Flujo · Camino del hogar"
   },
   "FL-Cuenta.dc.html": {
    "x": 0,
-   "y": 33744,
+   "y": 33772,
    "w": 1346,
    "h": 902,
    "title": "Flujo · Cuenta y ayuda"
   },
   "A-Bienvenida.dc.html": {
    "x": 0,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Bienvenida"
   },
   "A-Entrar.dc.html": {
    "x": 470,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Cómo entrar"
   },
   "A-Codigo.dc.html": {
    "x": 940,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Código"
   },
   "A-Segunda.dc.html": {
    "x": 1410,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Segunda verificación"
   },
   "A-Datos.dc.html": {
    "x": 1880,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Tus datos"
   },
   "A-Zona.dc.html": {
    "x": 2350,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Tu zona"
   },
   "A-Avisos.dc.html": {
    "x": 2820,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Avisos"
   },
   "A-Casa.dc.html": {
    "x": 3290,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Armá tu casa"
   },
   "A-CasaAmbientes.dc.html": {
    "x": 3760,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Tu casa: ambientes"
   },
   "A-CasaEquipos.dc.html": {
    "x": 4230,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Tu casa: equipos"
   },
   "A-CasaFotos.dc.html": {
    "x": 4700,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Tu casa: fotos"
   },
   "A-Listo.dc.html": {
    "x": 5170,
-   "y": 35306,
+   "y": 35334,
    "w": 390,
    "h": 844,
    "title": "A · Cuenta lista"
   },
   "I-Inicio.dc.html": {
    "x": 0,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 1200,
    "title": "I · Inicio"
   },
   "I-HandIA.dc.html": {
    "x": 470,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA"
   },
   "I-HandIAChat.dc.html": {
    "x": 940,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA: conversación"
   },
   "I-HandIAPiensa.dc.html": {
    "x": 1410,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA pensando"
   },
   "I-HandIAFicha.dc.html": {
    "x": 1880,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA: tu pedido"
   },
   "I-Voz.dc.html": {
    "x": 2350,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA voz: te escucha"
   },
   "I-VozHabla.dc.html": {
    "x": 2820,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA voz: te responde"
   },
   "I-VozAjustes.dc.html": {
    "x": 3290,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · HandIA voz: ajustes"
   },
   "I-Avisos.dc.html": {
    "x": 3760,
-   "y": 36570,
+   "y": 36598,
    "w": 390,
    "h": 844,
    "title": "I · Avisos"
   },
   "P-Rubro.dc.html": {
    "x": 0,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: rubro"
   },
   "P-Que.dc.html": {
    "x": 470,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: qué pasa"
   },
   "P-Fotos.dc.html": {
    "x": 940,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: fotos"
   },
   "P-Anotar.dc.html": {
    "x": 1410,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Anotar la foto"
   },
   "P-Medir.dc.html": {
    "x": 1880,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Medir con la cámara"
   },
   "P-Cuando.dc.html": {
    "x": 2350,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: cuándo"
   },
   "P-Fecha.dc.html": {
    "x": 2820,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: fecha y franja"
   },
   "P-Zona.dc.html": {
    "x": 3290,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: zona"
   },
   "P-Revisar.dc.html": {
    "x": 3760,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedir: revisar"
   },
   "P-Publicado.dc.html": {
    "x": 4230,
-   "y": 38190,
+   "y": 38218,
    "w": 390,
    "h": 844,
    "title": "P · Pedido publicado"
   },
   "C-Buscando.dc.html": {
    "x": 0,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 844,
    "title": "C · Tu pedido"
   },
   "C-Propuestas.dc.html": {
    "x": 470,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 1900,
    "title": "C · Propuestas"
   },
   "C-Comparar.dc.html": {
    "x": 940,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 900,
    "title": "C · Comparar propuestas"
   },
   "C-Detalle.dc.html": {
    "x": 1410,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 1420,
    "title": "C · Propuesta de Julián"
   },
   "C-Visita.dc.html": {
    "x": 1880,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 1020,
    "title": "C · Visita de Martín"
   },
   "C-Certificados.dc.html": {
    "x": 2350,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 1300,
    "title": "C · Perfil de Julián"
   },
   "C-Cambios.dc.html": {
    "x": 2820,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 930,
    "title": "C · Pedir cambios"
   },
   "C-Rechazar.dc.html": {
    "x": 3290,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 844,
    "title": "C · Rechazar la propuesta"
   },
   "C-Aceptar.dc.html": {
    "x": 3760,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 844,
    "title": "C · Confirmar la propuesta"
   },
   "C-Aceptada.dc.html": {
    "x": 4230,
-   "y": 39454,
+   "y": 39482,
    "w": 390,
    "h": 844,
    "title": "C · Turno confirmado"
   },
   "S-Agendado.dc.html": {
    "x": 0,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Turno agendado"
   },
   "S-EnCamino.dc.html": {
    "x": 470,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · En camino"
   },
   "S-Llego.dc.html": {
    "x": 940,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Llegó el especialista"
   },
   "S-Trabajando.dc.html": {
    "x": 1410,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 900,
    "title": "S · Trabajando"
   },
   "S-Adicional.dc.html": {
    "x": 1880,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 900,
    "title": "S · Aprobar un adicional"
   },
   "S-AntesDespues.dc.html": {
    "x": 2350,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Antes y después"
   },
   "S-LadoALado.dc.html": {
    "x": 2820,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Lado a lado"
   },
   "S-Informe.dc.html": {
    "x": 3290,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Informe del trabajo"
   },
   "S-Conformidad.dc.html": {
    "x": 3760,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Conformidad"
   },
   "S-Pagar.dc.html": {
    "x": 4230,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
-   "h": 844,
+   "h": 900,
    "title": "S · Pagar"
   },
   "S-PagoInformado.dc.html": {
    "x": 4700,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Pago informado"
   },
   "S-Resena.dc.html": {
    "x": 5170,
-   "y": 41774,
+   "y": 41802,
    "w": 390,
    "h": 844,
    "title": "S · Reseña"
   },
   "O-Propuesta.dc.html": {
    "x": 0,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Propuesta de obra"
   },
   "O-Obra.dc.html": {
    "x": 470,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Obra"
   },
   "O-Dia.dc.html": {
    "x": 940,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Jornada de obra"
   },
   "O-Repuesto.dc.html": {
    "x": 1410,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Repuesto para aprobar"
   },
   "O-Fecha.dc.html": {
    "x": 1880,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Cambio de fecha"
   },
   "O-Grupo.dc.html": {
    "x": 2350,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Chat de la obra"
   },
   "O-Pagos.dc.html": {
    "x": 2820,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Pagos de la obra"
   },
   "O-Gastado.dc.html": {
    "x": 3290,
-   "y": 43094,
+   "y": 43122,
    "w": 390,
    "h": 844,
    "title": "O · Lo gastado en la obra"
   },
   "M-Mensajes.dc.html": {
    "x": 0,
-   "y": 44358,
+   "y": 44386,
    "w": 390,
    "h": 844,
    "title": "M · Mensajes"
   },
   "M-Chat.dc.html": {
    "x": 470,
-   "y": 44358,
+   "y": 44386,
    "w": 390,
    "h": 844,
    "title": "M · Chat con Julián"
   },
   "M-Seleccion.dc.html": {
    "x": 940,
-   "y": 44358,
+   "y": 44386,
    "w": 390,
    "h": 844,
    "title": "M · Seleccionar mensajes"
   },
   "M-Presupuesto.dc.html": {
    "x": 1410,
-   "y": 44358,
+   "y": 44386,
    "w": 390,
    "h": 844,
    "title": "M · Presupuesto en el chat"
   },
   "M-Adjuntar.dc.html": {
    "x": 1880,
-   "y": 44358,
+   "y": 44386,
    "w": 390,
    "h": 844,
    "title": "M · Sumar al chat"
   },
   "M-Soporte.dc.html": {
    "x": 2350,
-   "y": 44358,
+   "y": 44386,
    "w": 390,
    "h": 844,
    "title": "M · Soporte de Handyx"
   },
   "H-Hogar.dc.html": {
    "x": 0,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 900,
    "title": "H · Mi hogar"
   },
   "H-MiCasa.dc.html": {
    "x": 470,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 1040,
    "title": "H · Mi casa"
   },
   "H-Ambiente.dc.html": {
    "x": 940,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 1220,
    "title": "H · Baño"
   },
   "H-Equipo.dc.html": {
    "x": 1410,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 1000,
    "title": "H · Calefón"
   },
   "H-Sumar.dc.html": {
    "x": 1880,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 900,
    "title": "H · Sumar a tu casa"
   },
   "H-Rompio.dc.html": {
    "x": 2350,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 980,
    "title": "H · Algo se rompió"
   },
   "H-Compartir.dc.html": {
    "x": 2820,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Compartir de Mi hogar"
   },
   "H-Compartido.dc.html": {
    "x": 3290,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Lo que compartiste"
   },
   "H-Recordatorios.dc.html": {
    "x": 3760,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Recordatorios"
   },
   "H-Historial.dc.html": {
    "x": 4230,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Historial de la casa"
   },
   "H-Garantias.dc.html": {
    "x": 4700,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Informes y garantías"
   },
   "H-Modelo3D.dc.html": {
    "x": 5170,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Modelo 3D y medidas"
   },
   "H-AR.dc.html": {
    "x": 5640,
-   "y": 45622,
+   "y": 45650,
    "w": 390,
    "h": 844,
    "title": "H · Ver en AR"
   },
   "T-Herramientas.dc.html": {
    "x": 0,
-   "y": 47262,
+   "y": 47290,
    "w": 390,
    "h": 844,
    "title": "T · Herramientas"
   },
   "T-Medir.dc.html": {
    "x": 470,
-   "y": 47262,
+   "y": 47290,
    "w": 390,
    "h": 844,
    "title": "T · Medir"
   },
   "T-Nivel.dc.html": {
    "x": 940,
-   "y": 47262,
+   "y": 47290,
    "w": 390,
    "h": 844,
    "title": "T · Nivel"
   },
   "T-Linterna.dc.html": {
    "x": 1410,
-   "y": 47262,
+   "y": 47290,
    "w": 390,
    "h": 844,
    "title": "T · Linterna y lupa"
   },
   "T-Escanear.dc.html": {
    "x": 1880,
-   "y": 47262,
+   "y": 47290,
    "w": 390,
    "h": 844,
    "title": "T · Escanear en 3D"
   },
   "T-Destino.dc.html": {
    "x": 2350,
-   "y": 47262,
+   "y": 47290,
    "w": 390,
    "h": 844,
    "title": "T · A dónde lo mandás"
   },
   "G-Camino.dc.html": {
    "x": 0,
-   "y": 48526,
+   "y": 48554,
    "w": 390,
    "h": 844,
    "title": "G · Camino del hogar"
   },
   "G-Insignias.dc.html": {
    "x": 470,
-   "y": 48526,
+   "y": 48554,
    "w": 390,
    "h": 844,
    "title": "G · Insignias"
   },
   "G-Insignia.dc.html": {
    "x": 940,
-   "y": 48526,
+   "y": 48554,
    "w": 390,
    "h": 844,
    "title": "G · Insignia Al día"
   },
   "G-Beneficios.dc.html": {
    "x": 1410,
-   "y": 48526,
+   "y": 48554,
    "w": 390,
    "h": 844,
    "title": "G · Beneficios"
   },
   "G-Hito.dc.html": {
    "x": 1880,
-   "y": 48526,
+   "y": 48554,
    "w": 390,
    "h": 844,
    "title": "G · ¡Insignia nueva!"
   },
   "X-Actividad.dc.html": {
    "x": 0,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Actividad"
   },
   "X-Cuenta.dc.html": {
    "x": 470,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Tu cuenta"
   },
   "X-Datos.dc.html": {
    "x": 940,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Tus datos"
   },
   "X-Seguridad.dc.html": {
    "x": 1410,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Seguridad"
   },
   "X-Pagos.dc.html": {
    "x": 1880,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Pagos registrados"
   },
   "X-Privacidad.dc.html": {
    "x": 2350,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Privacidad"
   },
   "X-Ayuda.dc.html": {
    "x": 2820,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Ayuda"
   },
   "X-Respuesta.dc.html": {
    "x": 3290,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Respuesta de ayuda"
   },
   "X-Error.dc.html": {
    "x": 3760,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Algo se rompió"
   },
   "X-SinConexion.dc.html": {
    "x": 4230,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · Estás sin conexión"
   },
   "X-NoEncontrado.dc.html": {
    "x": 4700,
-   "y": 49790,
+   "y": 49818,
    "w": 390,
    "h": 844,
    "title": "X · No encontramos esta página"
@@ -963,7 +963,7 @@
   },
   "tituloFlujos": {
    "x": 0,
-   "y": 23698,
+   "y": 23726,
    "text": "Flujos de la app",
    "kind": "title1",
    "maxW": 1800,
@@ -971,7 +971,7 @@
   },
   "notaFlujos": {
    "x": 1500,
-   "y": 23998,
+   "y": 24026,
    "w": 420,
    "size": 24,
    "fill": "yellow",
@@ -979,7 +979,7 @@
   },
   "titulo0": {
    "x": 0,
-   "y": 35006,
+   "y": 35034,
    "text": "A · Acceso y alta",
    "kind": "title1",
    "maxW": 5640,
@@ -987,7 +987,7 @@
   },
   "nota0": {
    "x": 5680,
-   "y": 35306,
+   "y": 35334,
    "w": 380,
    "size": 24,
    "fill": "blue",
@@ -995,7 +995,7 @@
   },
   "titulo1": {
    "x": 0,
-   "y": 36270,
+   "y": 36298,
    "text": "I · Inicio y HandIA",
    "kind": "title1",
    "maxW": 4230,
@@ -1003,7 +1003,7 @@
   },
   "nota1": {
    "x": 4270,
-   "y": 36570,
+   "y": 36598,
    "w": 380,
    "size": 24,
    "fill": "yellow",
@@ -1011,7 +1011,7 @@
   },
   "titulo2": {
    "x": 0,
-   "y": 37890,
+   "y": 37918,
    "text": "P · Pedir un servicio",
    "kind": "title1",
    "maxW": 4700,
@@ -1019,7 +1019,7 @@
   },
   "nota2": {
    "x": 4740,
-   "y": 38190,
+   "y": 38218,
    "w": 380,
    "size": 24,
    "fill": "blue",
@@ -1027,7 +1027,7 @@
   },
   "titulo3": {
    "x": 0,
-   "y": 39154,
+   "y": 39182,
    "text": "C · Recibir y comparar propuestas",
    "kind": "title1",
    "maxW": 4700,
@@ -1035,7 +1035,7 @@
   },
   "nota3": {
    "x": 4740,
-   "y": 39454,
+   "y": 39482,
    "w": 380,
    "size": 24,
    "fill": "green",
@@ -1043,7 +1043,7 @@
   },
   "titulo4": {
    "x": 0,
-   "y": 41474,
+   "y": 41502,
    "text": "S · Seguimiento, informe y pago",
    "kind": "title1",
    "maxW": 5640,
@@ -1051,7 +1051,7 @@
   },
   "nota4": {
    "x": 5680,
-   "y": 41774,
+   "y": 41802,
    "w": 380,
    "size": 24,
    "fill": "green",
@@ -1059,7 +1059,7 @@
   },
   "titulo5": {
    "x": 0,
-   "y": 42794,
+   "y": 42822,
    "text": "O · Obras de varios días y en equipo",
    "kind": "title1",
    "maxW": 3760,
@@ -1067,7 +1067,7 @@
   },
   "nota5": {
    "x": 3800,
-   "y": 43094,
+   "y": 43122,
    "w": 380,
    "size": 24,
    "fill": "green",
@@ -1075,7 +1075,7 @@
   },
   "titulo6": {
    "x": 0,
-   "y": 44058,
+   "y": 44086,
    "text": "M · Mensajes",
    "kind": "title1",
    "maxW": 2820,
@@ -1083,7 +1083,7 @@
   },
   "nota6": {
    "x": 2860,
-   "y": 44358,
+   "y": 44386,
    "w": 380,
    "size": 24,
    "fill": "blue",
@@ -1091,7 +1091,7 @@
   },
   "titulo7": {
    "x": 0,
-   "y": 45322,
+   "y": 45350,
    "text": "H · Mi hogar",
    "kind": "title1",
    "maxW": 6110,
@@ -1099,7 +1099,7 @@
   },
   "nota7": {
    "x": 6150,
-   "y": 45622,
+   "y": 45650,
    "w": 380,
    "size": 24,
    "fill": "teal",
@@ -1107,7 +1107,7 @@
   },
   "titulo8": {
    "x": 0,
-   "y": 46962,
+   "y": 46990,
    "text": "T · Herramientas compartidas",
    "kind": "title1",
    "maxW": 2820,
@@ -1115,7 +1115,7 @@
   },
   "nota8": {
    "x": 2860,
-   "y": 47262,
+   "y": 47290,
    "w": 380,
    "size": 24,
    "fill": "teal",
@@ -1123,7 +1123,7 @@
   },
   "titulo9": {
    "x": 0,
-   "y": 48226,
+   "y": 48254,
    "text": "G · Camino del hogar",
    "kind": "title1",
    "maxW": 2350,
@@ -1131,7 +1131,7 @@
   },
   "nota9": {
    "x": 2390,
-   "y": 48526,
+   "y": 48554,
    "w": 380,
    "size": 24,
    "fill": "yellow",
@@ -1139,7 +1139,7 @@
   },
   "titulo10": {
    "x": 0,
-   "y": 49490,
+   "y": 49518,
    "text": "X · Actividad, cuenta, ayuda y errores",
    "kind": "title1",
    "maxW": 5170,
@@ -1147,7 +1147,7 @@
   },
   "nota10": {
    "x": 5210,
-   "y": 49790,
+   "y": 49818,
    "w": 380,
    "size": 24,
    "fill": "gray",

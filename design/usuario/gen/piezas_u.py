@@ -413,6 +413,59 @@ def ciudad(w=390, h=430):
             f'<path d="M0 {h-66} q20 -8 40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0 t40 0" stroke="#4A7CC7" stroke-width="3" fill="none"></path></svg>')
 
 
+def _skyline(w, h, base, color='#2B65B8', ventanas=True, semilla=0):
+    """Edificios de la costa (como la bienvenida), recortados abajo de la escena."""
+    out = ''
+    for k, (x, alto, an) in enumerate([(0, 120, 46), (50, 84, 40), (94, 140, 52), (150, 70, 38), (192, 110, 48), (244, 90, 42), (290, 130, 50), (344, 76, 46)]):
+        if x > w: break
+        y = base - alto
+        out += f'<rect x="{x}" y="{y}" width="{an}" height="{alto}" fill="{color}"></rect>'
+        if ventanas:
+            for fy in range(int(y) + 12, base - 8, 22):
+                for fx in range(x + 7, x + an - 9, 13):
+                    on = ((fx * 7 + fy * 3 + semilla) % 5) == 0
+                    out += f'<rect x="{fx}" y="{fy}" width="6" height="9" fill="{AMARILLO if on else "#4A7CC7"}"></rect>'
+    return out
+
+
+def escena_publicado(w=390, h=300):
+    """«¡Pedido publicado!»: el pedido sale de tu casa y le llega a especialistas de la zona (sin personajes)."""
+    cx, cy = w / 2, 128
+    ondas = ''.join(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="rgba(255,255,255,{op})" stroke-width="2" stroke-dasharray="6 8"></circle>' for r, op in [(78, 0.45), (112, 0.3), (146, 0.18)])
+    pin = lambda x, y, txt: (f'<g transform="translate({x} {y})"><path d="M0 18 C-12 6 -14 -2 -14 -6 a14 14 0 0 1 28 0 c0 4 -2 12 -14 24Z" fill="{AMARILLO}" stroke="{TINTA}" stroke-width="2"></path>'
+                             f'<text x="0" y="-2" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="11" font-weight="900" fill="{TINTA}">{txt}</text></g>')
+    hoja = (f'<g transform="translate({cx - 46} {cy - 58})"><rect width="92" height="116" rx="14" fill="#FFFFFF"></rect><rect x="12" y="14" width="34" height="34" rx="10" fill="{TINTE}"></rect>'
+            f'<path d="M20 26h12a5 5 0 0 1 5 5v3M23 22h6M26 22v4M37 34h6v4" stroke="{AZUL}" stroke-width="2.5" fill="none" stroke-linecap="round"></path>'
+            f'<rect x="12" y="60" width="68" height="7" rx="3.5" fill="#C9D3E6"></rect><rect x="12" y="74" width="52" height="7" rx="3.5" fill="#C9D3E6"></rect><rect x="12" y="92" width="40" height="12" rx="6" fill="{AMARILLO}"></rect>'
+            f'<circle cx="80" cy="12" r="14" fill="{EXITO}" stroke="#FFFFFF" stroke-width="3"></circle><path d="M73 12l5 5 9-10" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g>')
+    estrellas = ''.join(f'<path d="M{x} {y-6}l1.8 4.2 4.2 1.8-4.2 1.8-1.8 4.2-1.8-4.2-4.2-1.8 4.2-1.8Z" fill="{AMARILLO}" opacity="0.9"></path>' for x, y in [(52, 46), (338, 62), (300, 190), (78, 200)])
+    return (f'<svg aria-hidden="true" width="{w}" height="{h}" viewBox="0 0 {w} {h}" style="position: absolute; left: 0; top: 0; display: block">'
+            f'<rect width="{w}" height="{h}" fill="{AZUL}"></rect>{_skyline(w, h, h, "#2A63B5", True, 3)}<rect y="{h - 18}" width="{w}" height="18" fill="#173F7C"></rect>'
+            f'{ondas}{estrellas}{pin(cx - 118, cy - 40, "JO")}{pin(cx + 124, cy - 18, "DH")}{pin(cx + 70, cy + 104, "SR")}{hoja}</svg>')
+
+
+def escena_arreglado(w=390, h=380):
+    """«¡Quedó arreglado!»: la casa con su sello de listo, sol y destellos (sin personajes)."""
+    cx = w / 2
+    casa = (f'<g transform="translate({cx - 80} 70)"><path d="M80 0 L160 62 V160 H0 V62 Z" fill="#FFFFFF"></path><path d="M80 0 L160 62 H0 Z" fill="#DCE7F7"></path>'
+            f'<rect x="58" y="96" width="44" height="64" rx="6" fill="{TINTE}"></rect><circle cx="94" cy="130" r="3" fill="{AZUL}"></circle>'
+            f'<rect x="18" y="82" width="30" height="30" rx="5" fill="{AMARILLO}"></rect><rect x="112" y="82" width="30" height="30" rx="5" fill="{AMARILLO}"></rect>'
+            f'<path d="M33 82v30M18 97h30M127 82v30M112 97h30" stroke="#C9C85A" stroke-width="2"></path>'
+            f'<circle cx="148" cy="14" r="26" fill="{EXITO}" stroke="#FFFFFF" stroke-width="5"></circle><path d="M136 14l8 8 15-16" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></g>')
+    destellos = ''.join(f'<path d="M{x} {y-9}l2.6 6.4 6.4 2.6-6.4 2.6-2.6 6.4-2.6-6.4-6.4-2.6 6.4-2.6Z" fill="{AMARILLO}"></path>' for x, y in [(60, 70), (330, 110), (86, 190), (318, 210)])
+    return (f'<svg aria-hidden="true" width="{w}" height="{h}" viewBox="0 0 {w} {h}" style="position: absolute; left: 0; top: 0; display: block">'
+            f'<rect width="{w}" height="{h}" fill="{AZUL}"></rect><circle cx="{w - 70}" cy="54" r="26" fill="{AMARILLO}" opacity="0.95"></circle>'
+            f'{_skyline(w, h, h - 40, "#2A63B5", True, 1)}<rect y="{h - 40}" width="{w}" height="40" fill="#173F7C"></rect>{destellos}{casa}</svg>')
+
+
+def sello_listo(tam=120):
+    """Ilustración chica de «listo» para pantallas blancas (casa con check), sin personajes."""
+    return (f'<svg role="img" aria-label="Trabajo terminado" width="{tam}" height="{tam}" viewBox="0 0 120 120" style="display: block">'
+            f'<circle cx="60" cy="60" r="58" fill="{TINTE}"></circle><path d="M60 26 L94 52 V92 H26 V52 Z" fill="#FFFFFF" stroke="{AZUL}" stroke-width="3" stroke-linejoin="round"></path>'
+            f'<rect x="50" y="66" width="20" height="26" rx="3" fill="{TINTE}" stroke="{AZUL}" stroke-width="2.5"></rect>'
+            f'<circle cx="88" cy="32" r="16" fill="{AZUL}" stroke="#FFFFFF" stroke-width="3"></circle><path d="M80 32l6 6 10-11" stroke="#FFFFFF" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>')
+
+
 def casa_iso(w=300, h=210, etq='Modelo 3D de tu casa (ilustración)'):
     return (f'<svg role="img" aria-label="{etq}" width="{w}" height="{h}" viewBox="0 0 300 210" style="display: block">'
             f'<path d="M150 20 L270 80 L150 140 L30 80Z" fill="#DCE6F2" stroke="{AZUL}" stroke-width="2"></path>'

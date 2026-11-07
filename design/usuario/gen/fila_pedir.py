@@ -125,7 +125,7 @@ guardar_u('P-Revisar.dc.html', 'Pedir: revisar', barra('Revisar y publicar', 'P-
     + fijo(btn('Publicar el pedido', 'P-Publicado.dc.html', 'enviar')))
 
 # P-Publicado
-guardar_u('P-Publicado.dc.html', 'Pedido publicado', f'''  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 290px; background: {AZUL}; border-radius: 0 0 36px 36px; display: flex; align-items: center; justify-content: center"><span style="width: 170px; height: 170px; border-radius: 50%; background: rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: center">{img("cano", 110, 120)}</span></div>
+guardar_u('P-Publicado.dc.html', 'Pedido publicado', f'''  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 290px; border-radius: 0 0 36px 36px; overflow: hidden">{escena_publicado(390, 290)}</div>
 ''' + cont(titulo('¡Pedido ', 'publicado', '!', size=34, sub='Se lo mostramos a especialistas verificados de Plomería cerca de tu zona.')
            + tarjeta(f'<ol aria-label="Qué sigue" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">'
                      + ''.join(f'<li style="display: flex; gap: 12px; align-items: center">{mosaico_ic(ic, 36, fondo=f, color=c, radio=12, iconsize=18)}<span style="display: flex; flex-direction: column"><strong style="font-size: 15px">{t}</strong><span style="font-size: 13px; color: {SUAVE}">{s}</span></span></li>'

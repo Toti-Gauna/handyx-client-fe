@@ -103,20 +103,34 @@ guardar_u('S-Informe.dc.html', 'Informe del trabajo', barra('Informe', 'S-Trabaj
 
 # S-Conformidad
 guardar_u('S-Conformidad.dc.html', 'Conformidad', barra('Conformidad', 'S-Informe.dc.html') + cont(
-    f'<div style="display: flex; justify-content: center; padding: 6px 0">{img("cano", 120, 130)}</div>'
+    f'<div style="display: flex; justify-content: center; padding: 6px 0">{sello_listo(124)}</div>'
     + titulo('¿Quedó ', 'arreglado', '?', size=32, sub='Con un toque confirmás que el trabajo terminó. Después pagás directo a Julián.')
     + tarjeta(f'<div style="display: flex; justify-content: space-between; font-size: 14px"><span>Acuerdo</span><strong>$ 45.000</strong></div><div style="display: flex; justify-content: space-between; font-size: 14px"><span>Adicional aprobado</span><strong>$ 9.500</strong></div><div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px solid {BORDE}"><strong style="font-size: 15px">A pagarle a Julián</strong>{monto("$ 54.500", 26)}</div>'), gap=12)
     + fijo(btn('Sí, quedó bien', 'S-Pagar.dc.html', 'pulgar', 'verde'), btn('Hay un problema', 'M-Soporte.dc.html', var='rojo')))
 
-# S-Pagar
-medio = lambda ic, t, sub, on: f'<button type="button" role="radio" aria-checked="{"true" if on else "false"}" style="display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 10px 14px; border-radius: 18px; background: #FFFFFF; border: {"2px solid " + AZUL if on else "1px solid " + BORDE}; box-shadow: {"0 3px 0 " + HONDO if on else "none"}; text-align: left; font-family: \'DM Sans\', sans-serif; color: {TINTA}">{mosaico_ic(ic, 44, radio=14, iconsize=22)}<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{t}</strong><span style="font-size: 13px; color: {SUAVE}">{sub}</span></span></button>'
-guardar_u('S-Pagar.dc.html', 'Pagar', barra('Pagar a Julián', 'S-Conformidad.dc.html') + cont(
-    f'<section style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 18px; border-radius: 24px; background: {MOSAICO}">{etiqueta("TOTAL ACORDADO")}{monto("$ 54.500", 46)}<span style="font-size: 13px; color: {SUAVE}">$ 45.000 + adicional $ 9.500</span></section>'
-    + etiqueta('¿CÓMO LE PAGÁS?')
-    + f'<div role="radiogroup" aria-label="Cómo pagás" style="display: flex; flex-direction: column; gap: 8px">{medio("tarjeta2", "Mercado Pago", "Te llevamos al cobro de Julián", True)}{medio("efectivo", "Efectivo", "Le pagás en mano", False)}</div>'
-    + aviso('El pago va directo a Julián. Handyx no recibe ni reparte la plata. Tarifa de servicio: 0 % hasta el 10/12.', 'billete', 'gris')
-    + aviso('Volver de Mercado Pago no confirma el pago: lo confirmamos cuando llega el aviso de Mercado Pago o cuando Julián lo marca.', 'info'), gap=10)
-    + fijo(btn('Pagar con Mercado Pago', 'S-PagoInformado.dc.html'), btn('Pagué en efectivo', 'S-PagoInformado.dc.html', var='contorno')))
+# S-Pagar: total claro, a quién le pagás, dos medios como tarjetas grandes y qué pasa después, en ese orden.
+def medio(ic, t, sub, on, extra=''):
+    marca = (f'<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; box-sizing: border-box; border-radius: 50%; background: {AZUL}; display: flex; align-items: center; justify-content: center">{svg(IC["check"], "#FFFFFF", 14, 3)}</span>' if on
+             else f'<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; box-sizing: border-box; border-radius: 50%; border: 2px solid #C7CDD8"></span>')
+    est = f'background: {TINTE}; border: 2px solid {AZUL}; box-shadow: 0 3px 0 {HONDO}' if on else f'background: #FFFFFF; border: 1px solid {BORDE}'
+    return (f'<button type="button" role="radio" aria-checked="{"true" if on else "false"}" style="display: flex; align-items: center; gap: 12px; width: 100%; box-sizing: border-box; min-height: 72px; padding: 12px 14px; border-radius: 20px; {est}; font-family: \'DM Sans\', sans-serif; text-align: left; color: {TINTA}">'
+            f'{mosaico_ic(ic, 44, fondo="#FFFFFF" if on else TINTE, color=AZUL, radio=14, iconsize=21)}<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px">{t}</strong><span style="font-size: 12px; color: {SUAVE}">{sub}</span>{extra}</span>{marca}</button>')
+
+
+guardar_u('S-Pagar.dc.html', 'Pagar', barra('Pagar', 'S-Conformidad.dc.html', sub='Canilla del baño') + cont(
+    tarjeta_azul(f'<div style="display: flex; align-items: center; gap: 12px">{avatar("julian", 44)}<span style="flex: 1; display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 700; color: #DCE7F7">Le pagás a</span><strong style="font-size: 16px">Julián Ortiz</strong></span>{chip("Conformidad dada", "check", "amarillo")}</div>'
+                 f'<div style="height: 1px; background: rgba(255,255,255,0.22)"></div>'
+                 f'<div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px"><span style="display: flex; justify-content: space-between; color: #DCE7F7"><span>Acuerdo</span><span>$ 45.000</span></span><span style="display: flex; justify-content: space-between; color: #DCE7F7"><span>Adicional aprobado</span><span>$ 9.500</span></span></div>'
+                 f'<div style="display: flex; justify-content: space-between; align-items: baseline"><strong style="font-size: 15px">Total</strong>{monto("$ 54.500", 34, "#FFFFFF")}</div>')
+    + f'<h2 style="margin: 4px 0 0; font-size: 16px; font-weight: 800">¿Cómo le pagás?</h2>'
+    + f'<div role="radiogroup" aria-label="Cómo le pagás" style="display: flex; flex-direction: column; gap: 10px">'
+    + medio('tarjeta2', 'Mercado Pago', 'Te llevamos al cobro de Julián', True, f'<span style="align-self: flex-start; margin-top: 4px">{chip("Se verifica solo", "escudo", "blanco")}</span>')
+    + medio('efectivo', 'Efectivo', 'Le pagás en mano y lo informás acá', False) + '</div>'
+    + f'<ol aria-label="Qué pasa después" style="list-style: none; margin: 0; padding: 12px 14px; border-radius: 18px; background: {GRIS2}; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.35">'
+    + ''.join(f'<li style="display: flex; gap: 10px; align-items: flex-start"><span style="width: 20px; height: 20px; flex: none; border-radius: 50%; background: {AZUL}; color: #FFFFFF; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center">{n}</span><span>{t}</span></li>'
+              for n, t in [(1, 'Pagás en Mercado Pago, directo a Julián.'), (2, 'Volver a la app no confirma nada: esperamos el aviso de Mercado Pago.'), (3, 'Cuando llega, el pago queda verificado en tu historial.')])
+    + '</ol>' + f'<p style="margin: 0; font-size: 12px; line-height: 1.4; color: {SUAVE}">Handyx no recibe ni reparte la plata. Tarifa de servicio: 0 % hasta el 10/12/2026.</p>', gap=12)
+    + fijo(btn('Pagar $ 54.500 con Mercado Pago', 'S-PagoInformado.dc.html', 'tarjeta2')), alto=900)
 
 # S-PagoInformado
 guardar_u('S-PagoInformado.dc.html', 'Pago informado', barra('Pago', 'S-Pagar.dc.html') + cont(
@@ -127,8 +141,8 @@ guardar_u('S-PagoInformado.dc.html', 'Pago informado', barra('Pago', 'S-Pagar.dc
     + fijo(btn('Dejar una reseña', 'S-Resena.dc.html', 'estrella'), btn('Listo', 'X-Actividad.dc.html', var='contorno')))
 
 # S-Resena: hoja que sube sobre «¡Quedó arreglado!» (como Uber): estrellas grandes, chips y comentario opcional.
-fondo_ok = (f'  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 380px; background: {AZUL}; border-radius: 0 0 36px 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #FFFFFF">'
-            f'{img("cano", 120, 130)}<span style="{TIT}; font-size: 28px">¡Quedó arreglado!</span><span style="font-size: 14px; color: #DCE7F7">Pago informado · $ 54.500</span></div>\n')
+fondo_ok = (f'  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 380px; border-radius: 0 0 36px 36px; overflow: hidden">{escena_arreglado(390, 380)}'
+            f'<span style="position: absolute; left: 0; right: 0; bottom: 70px; text-align: center; {TIT}; font-size: 28px; color: #FFFFFF">¡Quedó arreglado!</span></div>\n')
 star = lambda k: f'<button type="button" aria-label="{k} de 5" aria-pressed="true" style="width: 54px; height: 54px; border: 0; background: none; display: flex; align-items: center; justify-content: center">{svg(IC["estrella_llena"], NARANJA, 40)}</button>'
 chip_b = lambda t, on=False: f'<button type="button" aria-pressed="{"true" if on else "false"}" style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: {"2px solid " + AZUL if on else "1.5px solid " + BORDE}; background: {TINTE if on else "#FFFFFF"}; color: {HONDO if on else TINTA}; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 800">{t}</button>'
 guardar_u('S-Resena.dc.html', 'Reseña', oscurecer(fondo_ok)

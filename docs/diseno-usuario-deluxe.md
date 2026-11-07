@@ -43,6 +43,16 @@ colores, íconos y componentes copiados de nuevo a `design/usuario/gen/piezas*.p
 Quedan 103 pantallas y 12 flujos; los chequeos siguen en 0 en las 116 piezas. Lo de Mi hogar compartido por pedido
 también necesita contrato nuevo (abajo).
 
+## Cuarta ronda (07/11): ilustraciones propias, comparar, pagar y textos centrados
+
+- «¡Pedido publicado!», «¡Quedó arreglado!» (detrás de la reseña), «¡Listo!» y la conformidad usan escenas SVG
+  propias en el estilo de la bienvenida (ciudad, casa con sello, pedido que llega a especialistas), sin personajes.
+- Comparar: la mejor en perfil y precio en una tarjeta breve (nota y una frase), sin gráficos de barras.
+- Pagar: tarjeta azul con a quién le pagás, el desglose y el total; dos medios como tarjetas grandes; «qué pasa
+  después» en 3 pasos; un solo botón principal («Pagar $ 54.500 con Mercado Pago»).
+- Recorridos: los botones convertidos en las miniaturas recuperan el centrado y el ancho (los textos de HandIA voz, la
+  reseña y la tarjeta de Mercado Pago ya no se corren ni se salen).
+
 ## Tercera ronda (07/11): sin invitación y recorridos con pantallas
 
 - **Registro directo, sin invitación** (decisión de Ignacio: en las demos cerradas la gente se registra de una). Se

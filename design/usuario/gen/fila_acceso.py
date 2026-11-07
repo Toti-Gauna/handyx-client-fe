@@ -117,7 +117,7 @@ guardar_u('A-CasaFotos.dc.html', 'Tu casa: fotos', barra('Tu casa', 'A-CasaEquip
     + fijo(btn('Guardar mi casa', 'A-Listo.dc.html', 'check'), btn('Lo completo después', 'A-Listo.dc.html', var='contorno')))
 
 # A-Listo
-guardar_u('A-Listo.dc.html', 'Cuenta lista', f'''  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 300px; background: {AZUL}; border-radius: 0 0 36px 36px; display: flex; align-items: flex-end; justify-content: center">{img("grupo", 300, 200, "margin-bottom: 26px")}</div>
+guardar_u('A-Listo.dc.html', 'Cuenta lista', f'''  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 300px; background: {AZUL}; border-radius: 0 0 36px 36px; overflow: hidden">{escena_arreglado(390, 300).replace("¡", "")}</div>
 ''' + cont(titulo('¡Listo, ', 'Lucía', '!', size=34, sub='Ya podés pedir tu primer arreglo.')
            + tarjeta(f'{etiqueta("TARIFA DE SERVICIO")}<span style="display: flex; align-items: baseline; gap: 8px">{monto("0 %", 34)}<span style="font-size: 14px; font-weight: 700; color: {TEXTO}">hasta el 10/12/2026</span></span>'
                      + texto('Durante la demo no hay tarifa de servicio. Si algo cambia, te avisamos antes. El trabajo lo pagás directo al especialista: Handyx no recibe ni reparte la plata.', 13),

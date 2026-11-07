@@ -78,13 +78,10 @@ guardar_u('C-Propuestas.dc.html', 'Propuestas', barra('Propuestas', 'C-Buscando.
     + fijo(btn('Comparar lado a lado', 'C-Comparar.dc.html', 'columnas', 'contorno')), alto=1900)
 
 # C-Comparar (con «La mejor en perfil y precio» por promedio, no por elección)
-pesos = [('Precio', 30), ('Reseñas', 25), ('Verificaciones', 20), ('Garantía', 15), ('Fecha', 10)]
-barras = ''.join(f'<span style="display: grid; grid-template-columns: 96px 1fr 34px; align-items: center; gap: 8px; font-size: 12px; font-weight: 700"><span>{t}</span><span style="height: 8px; border-radius: 4px; background: rgba(14,29,54,0.12); overflow: hidden"><span style="display: block; width: {v}%; height: 100%; background: {TINTA}"></span></span><span style="text-align: right">{p} %</span></span>'
-                 for (t, p), v in zip(pesos, [86, 98, 100, 75, 100]))
 ganadora = tarjeta_amarilla(
-    f'<div style="display: flex; align-items: center; gap: 12px">{mosaico_ic("trofeo", 44, fondo="#FFFFFF", color=TINTA, radio=14, iconsize=22)}<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px">LA MEJOR EN PERFIL Y PRECIO</span><strong style="{TIT}; font-size: 20px">Julián Ortiz</strong></span><span style="display: flex; flex-direction: column; align-items: flex-end">{monto("8,7", 30)}<span style="font-size: 11px; font-weight: 800">de 10</span></span></div>'
-    f'<div style="display: flex; flex-direction: column; gap: 6px; padding-top: 4px">{barras}</div>'
-    f'<span style="font-size: 12px; line-height: 1.4">Gana por promedio, con los mismos pesos para todas. No es una recomendación ni una publicidad: elegís vos.</span>')
+    f'<div style="display: flex; align-items: center; gap: 12px">{avatar("julian", 48)}<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; letter-spacing: 1.2px">{svg(IC["trofeo"], TINTA, 14)}LA MEJOR EN PERFIL Y PRECIO</span><strong style="{TIT}; font-size: 20px">Julián Ortiz</strong></span><span style="display: flex; flex-direction: column; align-items: flex-end">{monto("8,7", 28)}<span style="font-size: 11px; font-weight: 800">de 10</span></span></div>'
+    f'<span style="font-size: 14px; line-height: 1.4">Buen precio con materiales incluidos, las mejores reseñas y las dos verificaciones.</span>'
+    f'<span style="font-size: 12px; line-height: 1.35">Sale de un promedio con las mismas reglas para todas. Elegís vos.</span>')
 cols = [('julian', '$ 45.000', 'Jue 19<br>10 a 12 h', 'Incluidos', '90 días', '2', '4,9 · 23', '8,7'),
         ('diego', '$ 41.000', 'Vie 20<br>14 a 16 h', 'Aparte', '60 días', '1', '4,7 · 11', '7,4'),
         ('sofia', '$ 49.500', 'Jue 19<br>16 a 18 h', 'Incluidos', '120 días', '2', '5,0 · 6', '8,1')]
