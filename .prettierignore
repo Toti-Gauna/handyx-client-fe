@@ -16,3 +16,6 @@ src/styles/kit/hd.css
 src/styles/kit/usuario.css
 # Copia del worker de MapLibre (scripts/mapa-worker.mjs)
 public/mapa/maplibre-gl-worker.js
+# Fuente del lienzo de diseño: tableros generados y generadores (design/usuario/README.md).
+design/usuario/project
+design/usuario/gen

@@ -11,6 +11,8 @@ export default defineConfig([
     'next-env.d.ts',
     'node_modules/**',
     'tests/e2e/**',
+    // Fuente del lienzo de diseño (generadores y tableros .dc.html): no es código de la app.
+    'design/**',
     // Copia del worker de MapLibre (scripts/mapa-worker.mjs).
     'public/mapa/maplibre-gl-worker.js',
   ]),

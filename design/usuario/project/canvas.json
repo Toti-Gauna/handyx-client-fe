@@ -1,0 +1,1063 @@
+{
+ "v": 3,
+ "attachments": [],
+ "boards": {
+  "UX-Revision.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1346,
+   "h": 800,
+   "title": "Revisión UX/UI"
+  },
+  "FL-Mapa.dc.html": {
+   "x": 0,
+   "y": 1360,
+   "w": 1346,
+   "h": 726,
+   "title": "Flujo · Mapa de la app"
+  },
+  "FL-Acceso.dc.html": {
+   "x": 0,
+   "y": 2246,
+   "w": 1346,
+   "h": 550,
+   "title": "Flujo · Acceso y alta"
+  },
+  "FL-Pedir.dc.html": {
+   "x": 0,
+   "y": 2956,
+   "w": 1346,
+   "h": 902,
+   "title": "Flujo · Pedir con HandIA"
+  },
+  "FL-Propuestas.dc.html": {
+   "x": 0,
+   "y": 4018,
+   "w": 1346,
+   "h": 726,
+   "title": "Flujo · Propuestas y aceptar"
+  },
+  "FL-Seguimiento.dc.html": {
+   "x": 0,
+   "y": 4904,
+   "w": 1346,
+   "h": 726,
+   "title": "Flujo · Seguimiento y pago"
+  },
+  "FL-Obra.dc.html": {
+   "x": 0,
+   "y": 5790,
+   "w": 1346,
+   "h": 550,
+   "title": "Flujo · Obra de varios días"
+  },
+  "FL-Equipo.dc.html": {
+   "x": 0,
+   "y": 6500,
+   "w": 1346,
+   "h": 550,
+   "title": "Flujo · Obra en equipo"
+  },
+  "FL-Mensajes.dc.html": {
+   "x": 0,
+   "y": 7210,
+   "w": 1346,
+   "h": 726,
+   "title": "Flujo · Mensajes y tarjetas"
+  },
+  "FL-Hogar.dc.html": {
+   "x": 0,
+   "y": 8096,
+   "w": 1346,
+   "h": 726,
+   "title": "Flujo · Mi hogar y mantenimiento"
+  },
+  "FL-Herramientas.dc.html": {
+   "x": 0,
+   "y": 8982,
+   "w": 1346,
+   "h": 902,
+   "title": "Flujo · Herramientas y AR"
+  },
+  "FL-Camino.dc.html": {
+   "x": 0,
+   "y": 10044,
+   "w": 1346,
+   "h": 726,
+   "title": "Flujo · Camino del hogar"
+  },
+  "FL-Cuenta.dc.html": {
+   "x": 0,
+   "y": 10930,
+   "w": 1346,
+   "h": 902,
+   "title": "Flujo · Cuenta y ayuda"
+  },
+  "A-Bienvenida.dc.html": {
+   "x": 0,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Bienvenida"
+  },
+  "A-Invitacion.dc.html": {
+   "x": 470,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Invitación"
+  },
+  "A-Entrar.dc.html": {
+   "x": 940,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Cómo entrar"
+  },
+  "A-Codigo.dc.html": {
+   "x": 1410,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Código"
+  },
+  "A-Segunda.dc.html": {
+   "x": 1880,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Segunda verificación"
+  },
+  "A-Datos.dc.html": {
+   "x": 2350,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Tus datos"
+  },
+  "A-Zona.dc.html": {
+   "x": 2820,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Tu zona"
+  },
+  "A-Avisos.dc.html": {
+   "x": 3290,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Avisos"
+  },
+  "A-Listo.dc.html": {
+   "x": 3760,
+   "y": 12492,
+   "w": 390,
+   "h": 844,
+   "title": "A · Cuenta lista"
+  },
+  "I-Inicio.dc.html": {
+   "x": 0,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · Inicio"
+  },
+  "I-HandIA.dc.html": {
+   "x": 470,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · HandIA"
+  },
+  "I-HandIAPiensa.dc.html": {
+   "x": 940,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · HandIA pensando"
+  },
+  "I-HandIAFicha.dc.html": {
+   "x": 1410,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · HandIA: tu pedido"
+  },
+  "I-Voz.dc.html": {
+   "x": 1880,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · HandIA voz: te escucha"
+  },
+  "I-VozHabla.dc.html": {
+   "x": 2350,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · HandIA voz: te responde"
+  },
+  "I-Avisos.dc.html": {
+   "x": 2820,
+   "y": 13756,
+   "w": 390,
+   "h": 844,
+   "title": "I · Avisos"
+  },
+  "P-Rubro.dc.html": {
+   "x": 0,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: rubro"
+  },
+  "P-Que.dc.html": {
+   "x": 470,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: qué pasa"
+  },
+  "P-Fotos.dc.html": {
+   "x": 940,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: fotos"
+  },
+  "P-Anotar.dc.html": {
+   "x": 1410,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Anotar la foto"
+  },
+  "P-Medir.dc.html": {
+   "x": 1880,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Medir con la cámara"
+  },
+  "P-Cuando.dc.html": {
+   "x": 2350,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: cuándo"
+  },
+  "P-Fecha.dc.html": {
+   "x": 2820,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: fecha y franja"
+  },
+  "P-Zona.dc.html": {
+   "x": 3290,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: zona"
+  },
+  "P-Revisar.dc.html": {
+   "x": 3760,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedir: revisar"
+  },
+  "P-Publicado.dc.html": {
+   "x": 4230,
+   "y": 15020,
+   "w": 390,
+   "h": 844,
+   "title": "P · Pedido publicado"
+  },
+  "C-Buscando.dc.html": {
+   "x": 0,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Tu pedido"
+  },
+  "C-Propuestas.dc.html": {
+   "x": 470,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Propuestas"
+  },
+  "C-Comparar.dc.html": {
+   "x": 940,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Comparar propuestas"
+  },
+  "C-Detalle.dc.html": {
+   "x": 1410,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Propuesta de Julián"
+  },
+  "C-Certificados.dc.html": {
+   "x": 1880,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Certificados de Julián"
+  },
+  "C-Cambios.dc.html": {
+   "x": 2350,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Pedir cambios"
+  },
+  "C-Aceptar.dc.html": {
+   "x": 2820,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Confirmar la propuesta"
+  },
+  "C-Aceptada.dc.html": {
+   "x": 3290,
+   "y": 16284,
+   "w": 390,
+   "h": 844,
+   "title": "C · Turno confirmado"
+  },
+  "S-Agendado.dc.html": {
+   "x": 0,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Turno agendado"
+  },
+  "S-EnCamino.dc.html": {
+   "x": 470,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · En camino"
+  },
+  "S-Llego.dc.html": {
+   "x": 940,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Llegó el especialista"
+  },
+  "S-Trabajando.dc.html": {
+   "x": 1410,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Trabajando"
+  },
+  "S-Adicional.dc.html": {
+   "x": 1880,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Aprobar un adicional"
+  },
+  "S-AntesDespues.dc.html": {
+   "x": 2350,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Antes y después"
+  },
+  "S-LadoALado.dc.html": {
+   "x": 2820,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Lado a lado"
+  },
+  "S-Informe.dc.html": {
+   "x": 3290,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Informe del trabajo"
+  },
+  "S-Conformidad.dc.html": {
+   "x": 3760,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Conformidad"
+  },
+  "S-Pagar.dc.html": {
+   "x": 4230,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Pagar"
+  },
+  "S-PagoInformado.dc.html": {
+   "x": 4700,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Pago informado"
+  },
+  "S-Resena.dc.html": {
+   "x": 5170,
+   "y": 17548,
+   "w": 390,
+   "h": 844,
+   "title": "S · Reseña"
+  },
+  "O-Propuesta.dc.html": {
+   "x": 0,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Propuesta de obra"
+  },
+  "O-Obra.dc.html": {
+   "x": 470,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Obra"
+  },
+  "O-Dia.dc.html": {
+   "x": 940,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Jornada de obra"
+  },
+  "O-Repuesto.dc.html": {
+   "x": 1410,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Repuesto para aprobar"
+  },
+  "O-Fecha.dc.html": {
+   "x": 1880,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Cambio de fecha"
+  },
+  "O-Grupo.dc.html": {
+   "x": 2350,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Chat de la obra"
+  },
+  "O-Pagos.dc.html": {
+   "x": 2820,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Pagos de la obra"
+  },
+  "O-Gastado.dc.html": {
+   "x": 3290,
+   "y": 18812,
+   "w": 390,
+   "h": 844,
+   "title": "O · Lo gastado en la obra"
+  },
+  "M-Mensajes.dc.html": {
+   "x": 0,
+   "y": 20076,
+   "w": 390,
+   "h": 844,
+   "title": "M · Mensajes"
+  },
+  "M-Chat.dc.html": {
+   "x": 470,
+   "y": 20076,
+   "w": 390,
+   "h": 844,
+   "title": "M · Chat con Julián"
+  },
+  "M-Presupuesto.dc.html": {
+   "x": 940,
+   "y": 20076,
+   "w": 390,
+   "h": 844,
+   "title": "M · Presupuesto en el chat"
+  },
+  "M-Adjuntar.dc.html": {
+   "x": 1410,
+   "y": 20076,
+   "w": 390,
+   "h": 844,
+   "title": "M · Sumar al chat"
+  },
+  "M-Soporte.dc.html": {
+   "x": 1880,
+   "y": 20076,
+   "w": 390,
+   "h": 844,
+   "title": "M · Soporte de Handyx"
+  },
+  "H-Hogar.dc.html": {
+   "x": 0,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Mi hogar"
+  },
+  "H-Ambiente.dc.html": {
+   "x": 470,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Baño"
+  },
+  "H-Equipo.dc.html": {
+   "x": 940,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Calefón"
+  },
+  "H-Historial.dc.html": {
+   "x": 1410,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Historial de la casa"
+  },
+  "H-Garantias.dc.html": {
+   "x": 1880,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Informes y garantías"
+  },
+  "H-Recordatorios.dc.html": {
+   "x": 2350,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Recordatorios"
+  },
+  "H-Modelo3D.dc.html": {
+   "x": 2820,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Modelo 3D y medidas"
+  },
+  "H-AR.dc.html": {
+   "x": 3290,
+   "y": 21340,
+   "w": 390,
+   "h": 844,
+   "title": "H · Ver en AR"
+  },
+  "T-Herramientas.dc.html": {
+   "x": 0,
+   "y": 22604,
+   "w": 390,
+   "h": 844,
+   "title": "T · Herramientas"
+  },
+  "T-Medir.dc.html": {
+   "x": 470,
+   "y": 22604,
+   "w": 390,
+   "h": 844,
+   "title": "T · Medir"
+  },
+  "T-Nivel.dc.html": {
+   "x": 940,
+   "y": 22604,
+   "w": 390,
+   "h": 844,
+   "title": "T · Nivel"
+  },
+  "T-Linterna.dc.html": {
+   "x": 1410,
+   "y": 22604,
+   "w": 390,
+   "h": 844,
+   "title": "T · Linterna y lupa"
+  },
+  "T-Escanear.dc.html": {
+   "x": 1880,
+   "y": 22604,
+   "w": 390,
+   "h": 844,
+   "title": "T · Escanear en 3D"
+  },
+  "T-Destino.dc.html": {
+   "x": 2350,
+   "y": 22604,
+   "w": 390,
+   "h": 844,
+   "title": "T · A dónde lo mandás"
+  },
+  "G-Camino.dc.html": {
+   "x": 0,
+   "y": 23868,
+   "w": 390,
+   "h": 844,
+   "title": "G · Camino del hogar"
+  },
+  "G-Insignias.dc.html": {
+   "x": 470,
+   "y": 23868,
+   "w": 390,
+   "h": 844,
+   "title": "G · Insignias"
+  },
+  "G-Insignia.dc.html": {
+   "x": 940,
+   "y": 23868,
+   "w": 390,
+   "h": 844,
+   "title": "G · Insignia Al día"
+  },
+  "G-Beneficios.dc.html": {
+   "x": 1410,
+   "y": 23868,
+   "w": 390,
+   "h": 844,
+   "title": "G · Beneficios"
+  },
+  "G-Hito.dc.html": {
+   "x": 1880,
+   "y": 23868,
+   "w": 390,
+   "h": 844,
+   "title": "G · ¡Insignia nueva!"
+  },
+  "X-Actividad.dc.html": {
+   "x": 0,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Actividad"
+  },
+  "X-Cuenta.dc.html": {
+   "x": 470,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Tu cuenta"
+  },
+  "X-Datos.dc.html": {
+   "x": 940,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Tus datos"
+  },
+  "X-Seguridad.dc.html": {
+   "x": 1410,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Seguridad"
+  },
+  "X-Pagos.dc.html": {
+   "x": 1880,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Pagos registrados"
+  },
+  "X-Privacidad.dc.html": {
+   "x": 2350,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Privacidad"
+  },
+  "X-Ayuda.dc.html": {
+   "x": 2820,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Ayuda"
+  },
+  "X-Respuesta.dc.html": {
+   "x": 3290,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Respuesta de ayuda"
+  },
+  "X-Error.dc.html": {
+   "x": 3760,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Algo se rompió"
+  },
+  "X-SinConexion.dc.html": {
+   "x": 4230,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · Estás sin conexión"
+  },
+  "X-NoEncontrado.dc.html": {
+   "x": 4700,
+   "y": 25132,
+   "w": 390,
+   "h": 844,
+   "title": "X · No encontramos esta página"
+  }
+ },
+ "createdOnFiles": {
+  "at": "2026-11-07T18:00:00Z",
+  "v": 1
+ },
+ "designSystems": [],
+ "launch": {
+  "view": "canvas"
+ },
+ "noteOrder": [
+  "tituloUX",
+  "tituloFlujos",
+  "notaFlujos",
+  "titulo0",
+  "nota0",
+  "titulo1",
+  "nota1",
+  "titulo2",
+  "nota2",
+  "titulo3",
+  "nota3",
+  "titulo4",
+  "nota4",
+  "titulo5",
+  "nota5",
+  "titulo6",
+  "nota6",
+  "titulo7",
+  "nota7",
+  "titulo8",
+  "nota8",
+  "titulo9",
+  "nota9",
+  "titulo10",
+  "nota10"
+ ],
+ "notes": {
+  "tituloUX": {
+   "x": 0,
+   "y": -300,
+   "text": "Handyx · app del usuario",
+   "kind": "title1",
+   "maxW": 1800,
+   "w": 240
+  },
+  "tituloFlujos": {
+   "x": 0,
+   "y": 1060,
+   "text": "Flujos de la app",
+   "kind": "title1",
+   "maxW": 1800,
+   "w": 240
+  },
+  "notaFlujos": {
+   "x": 1500,
+   "y": 1360,
+   "w": 420,
+   "size": 24,
+   "fill": "yellow",
+   "text": "Empezá por «Mapa de la app». Cada caja es una pantalla (se toca para abrirla), un paso del especialista, algo que hace Handyx u Operations u otro profesional."
+  },
+  "titulo0": {
+   "x": 0,
+   "y": 12192,
+   "text": "A · Acceso y alta",
+   "kind": "title1",
+   "maxW": 4230,
+   "w": 240
+  },
+  "nota0": {
+   "x": 4270,
+   "y": 12492,
+   "w": 380,
+   "size": 24,
+   "fill": "blue",
+   "text": "Bienvenida con Mar del Plata en SVG. Invitación, código por email o SMS, Google y Apple; segunda verificación opcional. Datos mínimos y zona aproximada."
+  },
+  "titulo1": {
+   "x": 0,
+   "y": 13456,
+   "text": "I · Inicio y HandIA",
+   "kind": "title1",
+   "maxW": 3290,
+   "w": 240
+  },
+  "nota1": {
+   "x": 3330,
+   "y": 13756,
+   "w": 380,
+   "size": 24,
+   "fill": "yellow",
+   "text": "El Inicio del diseño de la demo, con HandIA como tarjeta y como círculo flotante del medio. Chat, ficha y modo voz con reconocimiento en el dispositivo. Los SVG de pensando y respondiendo son provisionales."
+  },
+  "titulo2": {
+   "x": 0,
+   "y": 14720,
+   "text": "P · Pedir un servicio",
+   "kind": "title1",
+   "maxW": 4700,
+   "w": 240
+  },
+  "nota2": {
+   "x": 4740,
+   "y": 15020,
+   "w": 380,
+   "size": 24,
+   "fill": "blue",
+   "text": "Seis rubros en mosaicos, fotos con anotaciones, medir con la cámara, día y franja en calendario y zona aproximada."
+  },
+  "titulo3": {
+   "x": 0,
+   "y": 15984,
+   "text": "C · Recibir y comparar propuestas",
+   "kind": "title1",
+   "maxW": 3760,
+   "w": 240
+  },
+  "nota3": {
+   "x": 3800,
+   "y": 16284,
+   "w": 380,
+   "size": 24,
+   "fill": "green",
+   "text": "Precio de cada especialista; Handyx sugiere un rango y nunca lo impone. Certificados verificados con dato real. Aceptar, pedir cambios u otro horario."
+  },
+  "titulo4": {
+   "x": 0,
+   "y": 17248,
+   "text": "S · Seguimiento, informe y pago",
+   "kind": "title1",
+   "maxW": 5640,
+   "w": 240
+  },
+  "nota4": {
+   "x": 5680,
+   "y": 17548,
+   "w": 380,
+   "size": 24,
+   "fill": "green",
+   "text": "Viaje en vivo solo mientras se comparte, con llegada del servidor. Antes y después en deslizador y lado a lado. Pago directo: informado ≠ verificado."
+  },
+  "titulo5": {
+   "x": 0,
+   "y": 18512,
+   "text": "O · Obras de varios días y en equipo",
+   "kind": "title1",
+   "maxW": 3760,
+   "w": 240
+  },
+  "nota5": {
+   "x": 3800,
+   "y": 18812,
+   "w": 380,
+   "size": 24,
+   "fill": "green",
+   "text": "Propuesta de obra, días, repuestos y cambios de fecha desde el chat, grupo con el equipo, pagos por etapa según el reparto y total gastado."
+  },
+  "titulo6": {
+   "x": 0,
+   "y": 19776,
+   "text": "M · Mensajes",
+   "kind": "title1",
+   "maxW": 2350,
+   "w": 240
+  },
+  "nota6": {
+   "x": 2390,
+   "y": 20076,
+   "w": 380,
+   "size": 24,
+   "fill": "blue",
+   "text": "Tarjetas que se aceptan o se responden ahí mismo. Nada se manda solo a tus contactos."
+  },
+  "titulo7": {
+   "x": 0,
+   "y": 21040,
+   "text": "H · Mi hogar",
+   "kind": "title1",
+   "maxW": 3760,
+   "w": 240
+  },
+  "nota7": {
+   "x": 3800,
+   "y": 21340,
+   "w": 380,
+   "size": 24,
+   "fill": "teal",
+   "text": "Ficha de la casa con ambientes y equipos, historial, garantías, recordatorios, modelo 3D con medidas y ver en AR un equipo propuesto antes de aceptarlo."
+  },
+  "titulo8": {
+   "x": 0,
+   "y": 22304,
+   "text": "T · Herramientas compartidas",
+   "kind": "title1",
+   "maxW": 2820,
+   "w": 240
+  },
+  "nota8": {
+   "x": 2860,
+   "y": 22604,
+   "w": 380,
+   "size": 24,
+   "fill": "teal",
+   "text": "Medir con la cámara, nivel, linterna y lupa, escanear en 3D. Todo termina en el chat o en el pedido. El teléfono no detecta gas ni tensión."
+  },
+  "titulo9": {
+   "x": 0,
+   "y": 23568,
+   "text": "G · Camino del hogar",
+   "kind": "title1",
+   "maxW": 2350,
+   "w": 240
+  },
+  "nota9": {
+   "x": 2390,
+   "y": 23868,
+   "w": 380,
+   "size": 24,
+   "fill": "yellow",
+   "text": "Gamificación pensada de cero: se avanza cuidando la casa. Insignias y beneficios sin azar, sin rankings ni presión para contratar. Montos y premios en borrador para Legal."
+  },
+  "titulo10": {
+   "x": 0,
+   "y": 24832,
+   "text": "X · Actividad, cuenta, ayuda y errores",
+   "kind": "title1",
+   "maxW": 5170,
+   "w": 240
+  },
+  "nota10": {
+   "x": 5210,
+   "y": 25132,
+   "w": 380,
+   "size": 24,
+   "fill": "gray",
+   "text": "Actividad como pestaña; cuenta desde el avatar. Pagos registrados sin tarjetas, privacidad con HandIA sin datos personales, ayuda premium y errores con Handys."
+  }
+ },
+ "order": [
+  "UX-Revision.dc.html",
+  "FL-Mapa.dc.html",
+  "FL-Acceso.dc.html",
+  "FL-Pedir.dc.html",
+  "FL-Propuestas.dc.html",
+  "FL-Seguimiento.dc.html",
+  "FL-Obra.dc.html",
+  "FL-Equipo.dc.html",
+  "FL-Mensajes.dc.html",
+  "FL-Hogar.dc.html",
+  "FL-Herramientas.dc.html",
+  "FL-Camino.dc.html",
+  "FL-Cuenta.dc.html",
+  "A-Bienvenida.dc.html",
+  "A-Invitacion.dc.html",
+  "A-Entrar.dc.html",
+  "A-Codigo.dc.html",
+  "A-Segunda.dc.html",
+  "A-Datos.dc.html",
+  "A-Zona.dc.html",
+  "A-Avisos.dc.html",
+  "A-Listo.dc.html",
+  "I-Inicio.dc.html",
+  "I-HandIA.dc.html",
+  "I-HandIAPiensa.dc.html",
+  "I-HandIAFicha.dc.html",
+  "I-Voz.dc.html",
+  "I-VozHabla.dc.html",
+  "I-Avisos.dc.html",
+  "P-Rubro.dc.html",
+  "P-Que.dc.html",
+  "P-Fotos.dc.html",
+  "P-Anotar.dc.html",
+  "P-Medir.dc.html",
+  "P-Cuando.dc.html",
+  "P-Fecha.dc.html",
+  "P-Zona.dc.html",
+  "P-Revisar.dc.html",
+  "P-Publicado.dc.html",
+  "C-Buscando.dc.html",
+  "C-Propuestas.dc.html",
+  "C-Comparar.dc.html",
+  "C-Detalle.dc.html",
+  "C-Certificados.dc.html",
+  "C-Cambios.dc.html",
+  "C-Aceptar.dc.html",
+  "C-Aceptada.dc.html",
+  "S-Agendado.dc.html",
+  "S-EnCamino.dc.html",
+  "S-Llego.dc.html",
+  "S-Trabajando.dc.html",
+  "S-Adicional.dc.html",
+  "S-AntesDespues.dc.html",
+  "S-LadoALado.dc.html",
+  "S-Informe.dc.html",
+  "S-Conformidad.dc.html",
+  "S-Pagar.dc.html",
+  "S-PagoInformado.dc.html",
+  "S-Resena.dc.html",
+  "O-Propuesta.dc.html",
+  "O-Obra.dc.html",
+  "O-Dia.dc.html",
+  "O-Repuesto.dc.html",
+  "O-Fecha.dc.html",
+  "O-Grupo.dc.html",
+  "O-Pagos.dc.html",
+  "O-Gastado.dc.html",
+  "M-Mensajes.dc.html",
+  "M-Chat.dc.html",
+  "M-Presupuesto.dc.html",
+  "M-Adjuntar.dc.html",
+  "M-Soporte.dc.html",
+  "H-Hogar.dc.html",
+  "H-Ambiente.dc.html",
+  "H-Equipo.dc.html",
+  "H-Historial.dc.html",
+  "H-Garantias.dc.html",
+  "H-Recordatorios.dc.html",
+  "H-Modelo3D.dc.html",
+  "H-AR.dc.html",
+  "T-Herramientas.dc.html",
+  "T-Medir.dc.html",
+  "T-Nivel.dc.html",
+  "T-Linterna.dc.html",
+  "T-Escanear.dc.html",
+  "T-Destino.dc.html",
+  "G-Camino.dc.html",
+  "G-Insignias.dc.html",
+  "G-Insignia.dc.html",
+  "G-Beneficios.dc.html",
+  "G-Hito.dc.html",
+  "X-Actividad.dc.html",
+  "X-Cuenta.dc.html",
+  "X-Datos.dc.html",
+  "X-Seguridad.dc.html",
+  "X-Pagos.dc.html",
+  "X-Privacidad.dc.html",
+  "X-Ayuda.dc.html",
+  "X-Respuesta.dc.html",
+  "X-Error.dc.html",
+  "X-SinConexion.dc.html",
+  "X-NoEncontrado.dc.html"
+ ],
+ "pages": [],
+ "title": "Handyx · Diseño completo de la app del usuario"
+}
