@@ -1,6 +1,5 @@
 // R4 + R6 · Pantallas en alta de HandIA con la dirección de trabajo (Luz cálida+) y sus puertas de entrada en la app.
 // Maquetas estáticas con datos ficticios: no hay nada clickeable adentro de los teléfonos.
-import Image from 'next/image';
 import type { ReactNode } from 'react';
 import { Icono } from '@/components/Icono';
 import { RUBROS } from '@/contracts/v1/pedidos';
@@ -11,6 +10,7 @@ import {
   AvisoRiesgo,
   BotonPremium,
   BurbujaHandia,
+  CabeceraHandia,
   Dicho,
   Escena,
   type EstadoOrbe,
@@ -20,8 +20,6 @@ import {
   PasosPensando,
   TarjetaVidrio,
 } from '@/components/handia/piezas';
-
-const LAMPARITA = '/img/handy-lamparita.webp';
 
 function Tel({
   titulo,
@@ -119,28 +117,40 @@ function Chat({
 }) {
   return (
     <Escena tipo="chat" className="hxs-llena">
-      <div className="hia-chat-cab">
-        <Icono nombre="atras" className="hia-ico" />
-        <span className="hia-avatar" data-estado={estado}>
-          <Image src={LAMPARITA} alt="" width={202} height={346} />
-        </span>
-        <span className="hia-chat-cab__quien">
-          <strong>HandIA</strong>
-          <small>{sub}</small>
-        </span>
-        <span className="hia-pildora">
-          <Icono nombre="onda" className="hia-ico" /> Voz
-        </span>
-      </div>
+      <CabeceraHandia
+        estado={
+          estado === 'pensando'
+            ? 'pensando'
+            : sub === 'Sin conexión'
+              ? 'sin_conexion'
+              : sub === 'En tu celular'
+                ? 'lista'
+                : 'escribiendo'
+        }
+        texto={sub.replace(/…$/, '')}
+      />
       <div className="hia-hilo">{children}</div>
-      <div className="hia-redactar">
-        <Icono nombre="encuadre" className="hia-ico" />
-        <span className={`hia-redactar__campo${escrito ? ' hia-redactar__campo--escrito' : ''}`}>
+      <div className="hia-composer">
+        <span className="hia-composer__boton">
+          <Icono nombre="mas" className="hia-ico" />
+        </span>
+        <span className={`hxs-composer-campo${escrito ? ' hxs-composer-campo--escrito' : ''}`}>
           {escrito ?? 'Contale a HandIA…'}
         </span>
-        <span className="hia-redactar__mic">
-          <Icono nombre={escrito ? 'enviar' : 'microfono'} className="hia-ico" />
-        </span>
+        {escrito ? (
+          <span className="hia-composer__boton hia-composer__boton--voz">
+            <Icono nombre="enviar" className="hia-ico" />
+          </span>
+        ) : (
+          <>
+            <span className="hia-composer__boton">
+              <Icono nombre="microfono" className="hia-ico" />
+            </span>
+            <span className="hia-composer__boton hia-composer__boton--voz">
+              <Icono nombre="onda" className="hia-ico" />
+            </span>
+          </>
+        )}
       </div>
     </Escena>
   );

@@ -94,3 +94,7 @@ de verdad con el motor de HandIA (en el celular, sin IA externa).
 - El catálogo (sección Pantallas) usa el modo voz nuevo en sus 7 estados y el Inicio nuevo en "Puertas de entrada".
 - Tokens nuevos en `tokens.css` §4 (`--hia-negro`, `--hia-boton-oscuro`, `--hia-cielo-hondo`, `--hia-nube`…); pieza
   `Esfera` en `components/handia/piezas.tsx`; ícono `microfonoNo`.
+- **Cabecera del chat** (pieza `CabeceraHandia`): volver en un botón redondo liviano, en el centro la esfera mini con
+  "HandIA" y el estado debajo (punto + texto: "En tu celular", "Pensando…" con puntos animados, "Armando tu pedido",
+  "Sin conexión"), y a la derecha el botón azul redondo de voz. Fondo blanco translúcido con una línea fina; sin el
+  círculo amarillo. Las pantallas de chat del catálogo usan también la barra para escribir del Inicio.

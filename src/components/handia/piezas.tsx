@@ -210,3 +210,68 @@ export function Esfera({
     </span>
   );
 }
+
+/**
+ * Cabecera del chat de HandIA: volver, la esfera mini con el nombre y el estado en el centro, y el botón de voz.
+ * Con `alVolver` / `alAbrirVoz` son botones; sin ellos, maqueta. El estado se dice con texto (no solo con el punto).
+ */
+export function CabeceraHandia({
+  estado = 'lista',
+  texto,
+  alVolver,
+  alAbrirVoz,
+}: {
+  estado?: 'lista' | 'pensando' | 'escribiendo' | 'sin_conexion';
+  /** Texto propio del estado (p. ej. "Buscando propuestas"); si no, el del estado. */
+  texto?: string;
+  alVolver?: () => void;
+  alAbrirVoz?: () => void;
+}) {
+  const textos = {
+    lista: 'En tu celular',
+    pensando: 'Pensando',
+    escribiendo: 'Armando tu pedido',
+    sin_conexion: 'Sin conexión',
+  } as const;
+  const volver = <Icono nombre="atras" className="hia-ico" />;
+  const voz = <Icono nombre="onda" className="hia-ico" />;
+  return (
+    <div className="hia-cab">
+      {alVolver ? (
+        <button type="button" className="hia-cab__boton" aria-label="Volver" onClick={alVolver}>
+          {volver}
+        </button>
+      ) : (
+        <span className="hia-cab__boton">{volver}</span>
+      )}
+      <span className="hia-cab__centro">
+        <span className="hia-cab__nombre">
+          <Esfera tamano="mini" estado={estado === 'pensando' ? 'pensando' : 'reposo'} />
+          HandIA
+        </span>
+        <span className="hia-cab__estado" data-estado={estado}>
+          {texto ?? textos[estado]}
+          {estado === 'pensando' && (
+            <span className="hia-cab__puntos" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+          )}
+        </span>
+      </span>
+      {alAbrirVoz ? (
+        <button
+          type="button"
+          className="hia-cab__boton hia-cab__boton--voz"
+          aria-label="Modo voz"
+          onClick={alAbrirVoz}
+        >
+          {voz}
+        </button>
+      ) : (
+        <span className="hia-cab__boton hia-cab__boton--voz">{voz}</span>
+      )}
+    </div>
+  );
+}

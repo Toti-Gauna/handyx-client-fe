@@ -8,6 +8,7 @@ import { Icono } from '@/components/Icono';
 import {
   BotonPremium,
   BurbujaHandia,
+  CabeceraHandia,
   Escena,
   type EstadoOrbe,
   Orbe,
@@ -105,15 +106,7 @@ function ChatAVoz() {
     <div className="hxm-demo">
       <div className="hxm-marco" ref={raiz}>
         <Escena tipo="chat" className="hxm-capa hxm-capa--chat">
-          <div className="hia-chat-cab">
-            <span className="hia-chat-cab__quien">
-              <strong>HandIA</strong>
-              <small>En tu celular</small>
-            </span>
-            <span className="hia-pildora">
-              <Icono nombre="onda" className="hia-ico" /> Voz
-            </span>
-          </div>
+          <CabeceraHandia />
           <div className="hia-hilo">
             <BurbujaHandia de="ia">Contame qué pasa en tu casa.</BurbujaHandia>
           </div>

@@ -1830,3 +1830,6 @@ button.hxp-chip {
 .hxs-pantalla .hia-sugerencias {
   overflow: hidden;
 }
+.hxs-composer-campo--escrito {
+  color: var(--texto-titulo);
+}
