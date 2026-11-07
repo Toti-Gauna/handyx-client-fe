@@ -5,10 +5,10 @@ from piezas_u import *  # noqa: F401,F403
 
 
 def radio(titulo_, sub='', on=False, ic=None):
-    borde = f'border: 2px solid {AZUL}; box-shadow: 0 3px 0 {HONDO}' if on else f'border: 1px solid {BORDE}'
+    borde = f'border: 2px solid {AZUL}; background: {TINTE} !important; box-shadow: 0 3px 0 {HONDO}' if on else f'border: 1px solid {BORDE}'
     marca = (f'<span aria-hidden="true" style="width: 24px; height: 24px; flex: none; border-radius: 50%; background: {AZUL}; display: flex; align-items: center; justify-content: center">{svg(IC["check"], "#FFFFFF", 14, 3)}</span>' if on
              else f'<span aria-hidden="true" style="width: 22px; height: 22px; flex: none; border-radius: 50%; border: 2px solid #AEB6C4"></span>')
-    i = mosaico_ic(ic, 40, radio=12, iconsize=20) if ic else ''
+    i = mosaico_ic(ic, 40, fondo='#FFFFFF' if on else TINTE, color=AZUL, radio=12, iconsize=20) if ic else ''
     s = f'<span style="font-size: 13px; color: {SUAVE}">{sub}</span>' if sub else ''
     return (f'<button type="button" role="radio" aria-checked="{"true" if on else "false"}" style="display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 14px; border-radius: 16px; background: #FFFFFF; {borde}; text-align: left; font-family: \'DM Sans\', sans-serif; color: {TINTA}">'
             f'{i}<span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><strong style="font-size: 15px">{titulo_}</strong>{s}</span>{marca}</button>')
@@ -19,22 +19,25 @@ def grupo(label, *items):
 
 
 # P-Rubro
-guardar_u('P-Rubro.dc.html', 'Pedir: rubro', barra('Pedir un arreglo', 'I-Inicio.dc.html', sub='Paso 1 de 7') + cont(
-    pasos(1, 7) + titulo('¿Qué tipo de ', 'arreglo', '?', sub='Elegí el rubro. Si no sabés cuál es, HandIA te ayuda.') + grilla_rubros()
+guardar_u('P-Rubro.dc.html', 'Pedir: rubro', barra('Pedir un arreglo', 'I-Inicio.dc.html') + cont(
+    titulo('¿Qué tipo de ', 'arreglo', '?', sub='Elegí el rubro. Si no sabés cuál es, HandIA te ayuda.') + grilla_rubros()
     + fila_ic('chispas', '¿No sabés qué rubro es?', 'Contale a HandIA lo que pasa', '', 'I-HandIA.dc.html', borde=False)
     + aviso('Por ahora Handyx trabaja con estos seis rubros en Mar del Plata.', 'info', 'gris'), gap=12))
 
-# P-Que
-guardar_u('P-Que.dc.html', 'Pedir: qué pasa', barra('Plomería', 'P-Rubro.dc.html', sub='Paso 2 de 7') + cont(
-    pasos(2, 7) + f'<div style="display: flex; align-items: center; gap: 12px">{mosaico_handy("cano", 64)}{titulo("¿Qué ", "pasa", "?", size=28)}</div>'
+# P-Que: el centro del camino corto (rubro › qué pasa › revisar y publicar). Fotos y medidas, opcionales.
+mini = lambda ic, t, href: f'<a href="{href}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 76px; border-radius: 18px; background: {TINTE}; color: {HONDO}; font-size: 13px; font-weight: 800; text-decoration: none">{svg(IC[ic], AZUL, 22)}{t}</a>'
+guardar_u('P-Que.dc.html', 'Pedir: qué pasa', barra('Plomería', 'I-Inicio.dc.html', sub='Paso 1 de 2') + cont(
+    f'<div style="display: flex; align-items: center; gap: 12px">{mosaico_ic("canilla_ic", 56, fondo=TINTE, color=AZUL, radio=18, iconsize=28)}{titulo("¿Qué ", "pasa", "?", size=28)}</div>'
     + grupo('Qué pasa', radio('Pierde o gotea una canilla', on=True), radio('Se tapó un desagüe'), radio('Pérdida de agua en una pared'), radio('Instalar o cambiar algo'))
-    + f'<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: {TEXTO}">Contalo con tus palabras<textarea readonly rows="3" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid {BORDE}; font-family: \'DM Sans\', sans-serif; font-size: 15px; color: {TINTA}; resize: none">Gotea toda la noche. Ya cerré la llave de paso.</textarea></label>', gap=12)
-    + fijo(btn('Seguir', 'P-Fotos.dc.html')))
+    + f'<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: {TEXTO}">Contalo con tus palabras (opcional)<textarea readonly rows="2" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid {BORDE}; font-family: \'DM Sans\', sans-serif; font-size: 15px; color: {TINTA}; resize: none">Gotea toda la noche. Ya cerré la llave de paso.</textarea></label>'
+    + f'<span style="display: flex; align-items: center; justify-content: space-between">{etiqueta("FOTOS Y MEDIDAS")}{chip("Opcional", None, "gris")}</span>'
+    + f'<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">{mini("camara", "Foto", "P-Fotos.dc.html")}{mini("regla", "Medir", "P-Medir.dc.html")}{mini("hogar", "De Mi hogar", "H-Compartir.dc.html")}</div>', gap=12)
+    + fijo(btn('Revisar y publicar', 'P-Revisar.dc.html', 'flecha'), nota='Si no elegís día, va como «lo antes posible».'))
 
 # P-Fotos
 foto_mini = lambda tipo, etq='', marca='': f'<span style="position: relative; display: block">{foto(tipo, 110, 110, 18)}{marca}</span>'
-guardar_u('P-Fotos.dc.html', 'Pedir: fotos', barra('Fotos', 'P-Que.dc.html', sub='Paso 3 de 7') + cont(
-    pasos(3, 7) + titulo('Sumá ', 'fotos', '', sub='Ayudan a que las propuestas sean más justas. Hasta 6.')
+guardar_u('P-Fotos.dc.html', 'Pedir: fotos', barra('Fotos y medidas', 'P-Que.dc.html', sub='Opcional') + cont(
+    titulo('Sumá ', 'fotos', '', sub='Opcional: ayudan a que las propuestas sean más justas. Hasta 6.')
     + '<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">'
     + foto_mini('canilla', marca=f'<span style="position: absolute; left: 6px; bottom: 6px">{chip("Anotada", "editar", "amarillo")}</span>')
     + foto_mini('humedad')
@@ -42,7 +45,7 @@ guardar_u('P-Fotos.dc.html', 'Pedir: fotos', barra('Fotos', 'P-Que.dc.html', sub
     + fila_botones(btn('Anotar', 'P-Anotar.dc.html', 'editar', 'gris', chico=True), btn('Medir', 'P-Medir.dc.html', 'regla', 'gris', chico=True))
     + aviso('Antes de subirlas les sacamos la ubicación y los datos del teléfono. Que no se vean caras, documentos ni la dirección.', 'escudo')
     + aviso('HandIA no ve tus fotos: van al pedido, para los especialistas.', 'info', 'gris'), gap=12)
-    + fijo(btn('Seguir', 'P-Cuando.dc.html'), btn('Seguir sin fotos', 'P-Cuando.dc.html', var='contorno')))
+    + fijo(btn('Listo', 'P-Revisar.dc.html', 'check')))
 
 # P-Anotar (editor de foto: fondo oscuro permitido)
 herr = ''.join(f'<button type="button" aria-label="{t}"{" aria-pressed=\"true\"" if i == 0 else ""} style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-width: 64px; min-height: 60px; border-radius: 16px; border: 0; background: {"#FFFFFF" if i == 0 else "rgba(255,255,255,0.12)"}; color: {TINTA if i == 0 else "#FFFFFF"}; font-family: \'DM Sans\', sans-serif; font-size: 12px; font-weight: 800">{svg(IC[ic], TINTA if i == 0 else "#FFFFFF", 22)}{t}</button>' for i, (ic, t) in enumerate([('flecha_curva', 'Flecha'), ('circulo', 'Círculo'), ('texto', 'Texto'), ('deshacer', 'Deshacer')]))
@@ -80,39 +83,44 @@ guardar_u('P-Medir.dc.html', 'Medir con la cámara', camara(extra=f'<div style="
   </div>''')
 
 # P-Cuando
-guardar_u('P-Cuando.dc.html', 'Pedir: cuándo', barra('¿Para cuándo?', 'P-Fotos.dc.html', sub='Paso 4 de 7') + cont(
-    pasos(4, 7) + titulo('¿Para ', 'cuándo', '?', sub='Elegís vos. Los especialistas proponen día y precio.')
+guardar_u('P-Cuando.dc.html', 'Pedir: cuándo', barra('¿Para cuándo?', 'P-Revisar.dc.html', sub='Cambiar') + cont(
+    titulo('¿Para ', 'cuándo', '?', sub='Si es urgente, no hace falta el calendario. Los especialistas proponen día y precio.')
     + grupo('Para cuándo', radio('Lo antes posible', 'Le avisamos a especialistas de tu zona; elegís entre las propuestas que lleguen', ic='reloj'),
             radio('Programar un día', 'Elegís el día y la franja que te queden bien', on=True, ic='agenda'),
             radio('Es una obra de varios días', 'Baño, cocina, pintura o ampliación: propuesta por etapas', ic='obra')), gap=12)
-    + fijo(btn('Seguir', 'P-Fecha.dc.html')))
+    + fijo(btn('Elegir el día', 'P-Fecha.dc.html', 'agenda'), btn('Lo antes posible', 'P-Revisar.dc.html', var='contorno')))
 
 # P-Fecha
 franjas = ''.join(f'<button type="button" role="radio" aria-checked="{"true" if on else "false"}" style="min-height: 48px; border-radius: 14px; border: {"0" if on else "1.5px solid " + BORDE}; background: {AZUL if on else "#FFFFFF"}; box-shadow: {"0 3px 0 " + HONDO if on else "none"}; color: {"#FFFFFF" if on else TINTA}; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 800">{t}</button>' for t, on in [('8 a 10 h', False), ('10 a 12 h', True), ('14 a 16 h', False), ('16 a 18 h', False)])
-guardar_u('P-Fecha.dc.html', 'Pedir: fecha y franja', barra('Día y franja', 'P-Cuando.dc.html', sub='Paso 5 de 7') + cont(
-    pasos(5, 7) + f'<div style="display: flex; align-items: center; justify-content: space-between"><span style="{TIT}; font-size: 22px">Noviembre 2026</span><span style="display: flex; gap: 6px">{accion_icono("atras", "Mes anterior")}{accion_icono("flecha", "Mes siguiente")}</span></div>'
+guardar_u('P-Fecha.dc.html', 'Pedir: fecha y franja', barra('Día y franja', 'P-Cuando.dc.html') + cont(
+    f'<div style="display: flex; align-items: center; justify-content: space-between"><span style="{TIT}; font-size: 22px">Noviembre 2026</span><span style="display: flex; gap: 6px">{accion_icono("atras", "Mes anterior")}{accion_icono("flecha", "Mes siguiente")}</span></div>'
     + calendario(19, hoy=17, marcados=(19,)) + etiqueta('FRANJA PREFERIDA')
     + f'<div role="radiogroup" aria-label="Franja" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">{franjas}</div>'
     + aviso('Es tu preferencia: el especialista puede proponerte otro horario y vos decidís.', 'info'), gap=10)
-    + fijo(btn('Seguir · jue 19/11, 10 a 12 h', 'P-Zona.dc.html')))
+    + fijo(btn('Listo · jue 19/11, 10 a 12 h', 'P-Revisar.dc.html', 'check')))
 
 # P-Zona
-guardar_u('P-Zona.dc.html', 'Pedir: zona', barra('¿Dónde?', 'P-Fecha.dc.html', sub='Paso 6 de 7') + mapa(top=64, alto=260, zona=(196, 190, 80))
+guardar_u('P-Zona.dc.html', 'Pedir: zona', barra('¿Dónde?', 'P-Revisar.dc.html', sub='Solo la primera vez') + mapa(top=64, alto=260, zona=(196, 190, 80))
     + f'  <div style="position: absolute; top: 280px; left: 16px">{chip("Zona que ven los especialistas", "ojo", "blanco")}</div>'
-    + cont(pasos(6, 7) + tarjeta(f'{etiqueta("TU DIRECCIÓN")}<strong style="font-size: 17px">Calle De Prueba 123 · La Perla</strong>'
+    + cont(tarjeta(f'{etiqueta("TU DIRECCIÓN")}<strong style="font-size: 17px">Calle De Prueba 123 · La Perla</strong>'
                                  + f'<span style="display: flex; gap: 8px; align-items: center; font-size: 13px; color: {TEXTO}">{svg(IC["candado"], "#137140", 16)}Se comparte solo con el especialista que elijas, al aceptar su propuesta.</span>',
                                  franja('Usar otra dirección', 'X-Datos.dc.html'))
            + campo('Indicaciones para llegar (opcional)', 'Portón verde, timbre 2'), top=340, gap=12)
-    + fijo(btn('Seguir', 'P-Revisar.dc.html')))
+    + fijo(btn('Usar esta dirección', 'P-Revisar.dc.html', 'check')))
 
-# P-Revisar
-fila_r = lambda ic, t, v: f'<div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid {BORDE}">{mosaico_ic(ic, 36, radio=12, iconsize=18)}<span style="flex: 1; font-size: 13px; color: {SUAVE}">{t}</span><strong style="font-size: 14px; text-align: right">{v}</strong></div>'
-guardar_u('P-Revisar.dc.html', 'Pedir: revisar', barra('Revisar', 'P-Zona.dc.html', sub='Paso 7 de 7') + cont(
-    pasos(7, 7) + titulo('Revisá tu ', 'pedido', '', size=28)
-    + tarjeta(f'<div style="display: flex; align-items: center; gap: 12px">{mosaico_handy("cano", 52)}<span style="display: flex; flex-direction: column"><strong style="font-size: 17px">Plomería · canilla que gotea</strong><span style="font-size: 13px; color: {SUAVE}">Gotea toda la noche. Ya cerré la llave de paso.</span></span></div>'
-              + fila_r('foto', 'Fotos', '2 · 1 anotada') + fila_r('agenda', 'Cuándo', 'Jue 19/11 · 10 a 12 h') + fila_r('pin', 'Zona', 'La Perla'), franja('Editar el pedido', 'P-Que.dc.html'))
-    + f'<section style="padding: 14px 16px; border-radius: 20px; background: {MOSAICO}; display: flex; flex-direction: column; gap: 6px">{etiqueta("PRECIO ORIENTATIVO DE HANDYX")}<span style="display: flex; align-items: baseline; gap: 8px">{monto("$ 38.000", 26)}<span style="font-size: 14px; font-weight: 800">a</span>{monto("$ 52.000", 26)}</span>'
-    + texto('Sale de trabajos parecidos en tu zona. Handyx sugiere, nunca impone: cada especialista pone su precio.', 13) + '</section>'
+# P-Revisar: resumen azul (como el informe del especialista), lo que falta se completa ahí mismo y el precio orientativo en noche.
+fila_r = lambda ic, t, v, acc, href: (f'<a href="{href}" style="display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 0; border-top: 1px solid {BORDE}; color: {TINTA}; text-decoration: none">{mosaico_ic(ic, 40, fondo=TINTE, color=AZUL, radio=12, iconsize=19)}'
+                                      f'<span style="flex: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 12px; font-weight: 800; color: {SUAVE}">{t}</span><strong style="font-size: 15px">{v}</strong></span><span style="font-size: 13px; font-weight: 800; color: {AZUL}">{acc}</span></a>')
+guardar_u('P-Revisar.dc.html', 'Pedir: revisar', barra('Revisar y publicar', 'P-Que.dc.html', sub='Paso 2 de 2') + cont(
+    tarjeta_azul(f'<div style="display: flex; align-items: center; gap: 12px"><span style="width: 52px; height: 52px; flex: none; border-radius: 16px; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center">{svg(IC["canilla_ic"], "#FFFFFF", 26)}</span>'
+                 f'<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 800; letter-spacing: 1px; color: {AMARILLO}">TU PEDIDO</span><span style="{TIT}; font-size: 22px; line-height: 1.05">Plomería</span><span style="font-size: 13px; color: #DCE7F7">Pierde o gotea una canilla</span></span></div>'
+                 f'<span style="font-size: 14px; line-height: 1.4">«Gotea toda la noche. Ya cerré la llave de paso.»</span>')
+    + tarjeta(fila_r('reloj', 'Cuándo', 'Lo antes posible', 'Cambiar', 'P-Cuando.dc.html').replace(f'border-top: 1px solid {BORDE}; ', '', 1)
+              + fila_r('pin', 'Dónde', 'Calle De Prueba 123 · guardada', 'Cambiar', 'P-Zona.dc.html')
+              + fila_r('camara', 'Fotos y medidas', '2 fotos · 1 anotada', 'Sumar', 'P-Fotos.dc.html'))
+    + tarjeta_noche(f'<span style="font-size: 11px; font-weight: 800; letter-spacing: 1.5px; color: {AMARILLO}">PRECIO ORIENTATIVO DE HANDYX</span>'
+                    f'<span style="display: flex; align-items: baseline; gap: 8px">{monto("$ 38.000", 28, "#FFFFFF")}<span style="font-size: 14px; color: #C9D3E6">a</span>{monto("$ 52.000", 28, "#FFFFFF")}</span>'
+                    f'<span style="font-size: 13px; line-height: 1.4; color: #C9D3E6">Sale de trabajos parecidos en tu zona. Handyx sugiere, nunca impone: cada especialista pone su precio.</span>')
     + aviso('Tarifa de servicio: 0 % hasta el 10/12/2026. El trabajo lo pagás directo al especialista.', 'billete', 'gris'), gap=12)
     + fijo(btn('Publicar el pedido', 'P-Publicado.dc.html', 'enviar')))
 

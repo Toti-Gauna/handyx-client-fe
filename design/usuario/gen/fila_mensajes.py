@@ -13,7 +13,7 @@ def escribir(placeholder='Escribí un mensaje'):
 
 
 def tarjeta_chat(tipo_ic, tipo, titulo_, sub, acciones, extra=''):
-    a = ''.join(f'<a href="{h}" style="min-height: 48px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; text-decoration: none; {"background: " + VERDE + "; color: #FFFFFF" if v else "color: " + HONDO}; {"border-right: 1px solid " + BORDE if i == 0 else ""}">{t}</a>' for i, (t, h, v) in enumerate(acciones))
+    a = ''.join(f'<a href="{h}" style="min-height: 48px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; text-decoration: none; {"background: " + AZUL + "; color: #FFFFFF" if v else "color: " + HONDO}; {"border-right: 1px solid " + BORDE if i == 0 else ""}">{t}</a>' for i, (t, h, v) in enumerate(acciones))
     return (f'<section style="align-self: flex-start; width: 86%; border-radius: 20px; border: 1px solid {BORDE}; background: #FFFFFF; box-shadow: {ELEV1}; overflow: hidden"><div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 6px">{chip(tipo, tipo_ic, "tinte")}<strong style="font-size: 15px">{titulo_}</strong><span style="font-size: 13px; color: {SUAVE}">{sub}</span>{extra}</div>'
             f'<div style="display: grid; grid-template-columns: repeat({len(acciones)}, minmax(0, 1fr)); border-top: 1px solid {BORDE}">{a}</div></section>')
 
@@ -42,13 +42,13 @@ guardar_u('M-Mensajes.dc.html', 'Mensajes', f'''  <header style="position: absol
     + barra_u('Mensajes'))
 
 # M-Chat (con tarjetas que se aceptan ahí mismo)
-guardar_u('M-Chat.dc.html', 'Chat con Julián', barra('Julián Ortiz', 'M-Mensajes.dc.html', accion_icono('telefono', 'Llamar a Julián', 'M-Chat.dc.html'), sub='Pedido · canilla del baño') + cont(
+guardar_u('M-Chat.dc.html', 'Chat con Julián', barra('Julián Ortiz', 'M-Mensajes.dc.html', accion_icono('telefono', 'Llamar a Julián', 'M-Chat.dc.html'), sub='Pedido · canilla del baño') + chat_abajo(
     f'<span style="align-self: center">{chip("Hoy", None, "gris")}</span>'
     + burbuja('Hola Lucía. Vi las fotos: parece el cuerito y quizás el cartucho.', 'otra', '11:12')
     + tarjeta_chat('billete', 'Propuesta', '$ 45.000 · jue 19/11 de 10 a 12 h', 'Incluye materiales · garantía 90 días', [('Ver', 'C-Detalle.dc.html', False), ('Aceptar', 'C-Aceptar.dc.html', True)])
     + burbuja('¿Podés el viernes temprano? El jueves trabajo.', 'yo', '11:16')
     + tarjeta_chat('agenda', 'Otro horario', 'Vie 20/11 · 8 a 10 h', 'Mismo precio y condiciones', [('Otro día', 'C-Cambios.dc.html', False), ('Aceptar', 'C-Aceptada.dc.html', True)])
-    + f'<span style="align-self: center; font-size: 12px; color: {SUAVE}">Las tarjetas se aceptan acá mismo y quedan en el pedido.</span>', gap=10)
+    + f'<span style="align-self: center; font-size: 12px; color: {SUAVE}">Las tarjetas se aceptan acá mismo y quedan en el pedido.</span>', bottom=96)
     + escribir())
 
 # M-Presupuesto
@@ -81,4 +81,31 @@ guardar_u('M-Soporte.dc.html', 'Soporte de Handyx', barra('Soporte de Handyx', '
     + burbuja('El código del especialista no coincidía y no le abrí.', 'yo', '10:30')
     + f'<div style="display: flex; gap: 8px; align-items: flex-end">{avatar("handyx", 32)}<div style="max-width: 76%; padding: 10px 14px; border-radius: 18px 18px 18px 6px; background: {MOSAICO}; font-size: 14px; line-height: 1.4"><span style="display: block; font-size: 12px; font-weight: 800; color: {HONDO}">Equipo de Soporte</span>Hiciste bien. Ya hablamos con Julián y te reprogramamos el turno sin costo.<span style="display: block; margin-top: 2px; font-size: 11px; color: {SUAVE}; text-align: right">10:34</span></div></div>', gap=10)
     + escribir('Contanos qué pasó'))
+# M-Seleccion: modo selección del chat de la obra. Fila completa resaltada, el check alineado y nada cortado.
+def sel(on):
+    return (f'<span aria-hidden="true" style="width: 26px; height: 26px; flex: none; box-sizing: border-box; border-radius: 50%; {"background: " + AZUL if on else "border: 2px solid #C9CFDA; background: #FFFFFF"}; display: flex; align-items: center; justify-content: center">'
+            f'{svg(IC["check"], "#FFFFFF", 14, 3) if on else ""}</span>')
+
+
+def fila_sel(html, on, label):
+    return (f'<div role="checkbox" aria-checked="{"true" if on else "false"}" aria-label="{label}" tabindex="0" style="display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 20px; {"background: " + TINTE + "; box-shadow: inset 0 0 0 1.5px #BCD0EE" if on else ""}">'
+            f'{sel(on)}<div style="flex: 1; min-width: 0; display: flex; flex-direction: column">{html}</div></div>')
+
+
+cab_sel = f'''  <header style="position: absolute; top: 0; left: 0; right: 0; height: 72px; box-sizing: border-box; padding: 0 12px; background: {AZUL}; display: flex; align-items: center; gap: 10px; color: #FFFFFF">
+    <a href="O-Grupo.dc.html" aria-label="Salir de la selección" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center">{svg(IC['cerrar'], '#FFFFFF', 20, 2.5)}</a>
+    <h1 style="margin: 0; flex: 1; font-size: 18px; font-weight: 800">3 seleccionados</h1>
+    <a href="O-Grupo.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 8px; color: #FFFFFF; font-size: 14px; font-weight: 800; text-decoration: none">Todos</a>
+  </header>'''
+acc = lambda ic, t, color=TINTA, extra='': f'<button type="button" style="flex: 1; min-height: 56px; border: 0; border-radius: 16px; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: \'DM Sans\', sans-serif; font-size: 12px; font-weight: 800; color: {color}; {extra}">{svg(IC[ic], color, 20)}{t}</button>'
+barra_acc = (f'  <div data-f="1" role="toolbar" aria-label="Acciones sobre 3 mensajes" style="position: absolute; left: 12px; right: 12px; bottom: 16px; padding: 6px; border-radius: 24px; background: #FFFFFF; border: 1px solid {BORDE}; box-shadow: 0 2px 6px rgba(14,29,54,0.08), 0 22px 40px -20px rgba(14,29,54,0.5); display: flex; gap: 4px">'
+             + acc('copiar', 'Copiar') + acc('reenviar', 'Reenviar') + acc('chat', 'Responder') + acc('basura', 'Borrar los míos', ROJO) + '</div>')
+guardar_u('M-Seleccion.dc.html', 'Seleccionar mensajes', cab_sel + chat_abajo(
+    f'<span style="align-self: center">{chip("Hoy", None, "gris")}</span>'
+    + fila_sel(burbuja_k('sofia', 'Mañana arranco 8:30 con la pared del lavatorio.', '16:02', ancho='92%'), True, 'Mensaje de Sofía Ruiz, 16:02')
+    + fila_sel(burbuja_k('diego', '¿Hace falta comprar algo más para el tablero?', '16:05', ancho='92%'), False, 'Mensaje de Diego Herrera, 16:05')
+    + fila_sel(burbuja_k('lucia', 'Sí: pegamento × 4. Lo apruebo desde la tarjeta.', '16:12', mio=True, ancho='92%'), True, 'Tu mensaje, 16:12')
+    + fila_sel(burbuja_k('sofia', 'Perfecto, lo veo a la noche y te confirmo.', '16:20', ancho='92%'), True, 'Mensaje de Sofía Ruiz, 16:20')
+    + f'<span style="align-self: center; font-size: 12px; color: {SUAVE}">Borrar solo quita tus mensajes. Las tarjetas no se borran.</span>', bottom=100)
+    + barra_acc)
 print('mensajes ok')

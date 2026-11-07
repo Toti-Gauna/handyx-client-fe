@@ -2,9 +2,11 @@
 # Mismo sistema visual: fondo blanco, cabecera azul redondeada en las raíz, barra compacta en el resto, pestañas de
 # vidrio flotantes (con HandIA como círculo en el medio), mosaicos grises, tarjetas con franja «Ver …», botones con base,
 # una acción fija abajo, chips con ícono y texto, montos en Archivo 900 ensanchado y una palabra con marcador por título.
+import re
 import sys
 sys.path.insert(0, 'usuario/gen')
 from piezas2 import *  # noqa: F401,F403
+burbuja_k = burbuja  # burbuja del especialista (avatar, nombre, reacciones); la de abajo es la simple
 
 VERDE = '#137140'; VERDE_H = '#0B4F2C'; ROJO = '#A8261C'; GRIS2 = '#F4F5F7'
 
@@ -59,11 +61,33 @@ GENTE.update({
  'pablo': ('PV', 'Pablo Vega', '#E7D9F5', '#5B3A8C'),
  'carla': ('CI', 'Carla Ibáñez', '#F6D7A7', TINTA),
  'handyx': ('H', 'Soporte Handyx', NOCHE, '#FFFFFF'),
+ 'martin': ('MS', 'Martín Sosa', NOCHE, '#FFFFFF'),
+})
+
+IC.update({
+ 'canilla_ic': '<path d="M4 8h9a3 3 0 0 1 3 3v2"></path><path d="M7 5h4M9 5v3"></path><path d="M14 13h4v3"></path><path d="M16 19.5c0 .8-.6 1.5-1.4 1.5s-1.4-.7-1.4-1.5c0-.9 1.4-2.5 1.4-2.5s1.4 1.6 1.4 2.5Z"></path>',
+ 'ajustes': '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle>',
+ 'abajo': '<path d="M6 9l6 6 6-6"></path>',
+ 'personas': '<circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><circle cx="17" cy="9" r="2.6"></circle><path d="M16 14.6c2.6.2 4.6 1.9 5.4 5.4"></path>',
+ 'ducha': '<path d="M4 20V8a4 4 0 0 1 8 0"></path><path d="M9 8h6"></path><path d="M10 12v1M13 12v1M16 12v1M11.5 15v1M14.5 15v1"></path>',
+ 'sofa': '<path d="M4 11V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3"></path><path d="M2 12a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v5H2v-5Z"></path><path d="M5 17v2M19 17v2"></path>',
+ 'cama': '<path d="M3 18V7M21 18v-5a3 3 0 0 0-3-3H10v6"></path><path d="M3 15h18"></path><circle cx="6.5" cy="11" r="2"></circle>',
+ 'cocina': '<rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M4 9h16"></path><circle cx="9" cy="6" r=".6"></circle><circle cx="15" cy="6" r=".6"></circle><rect x="8" y="12" width="8" height="6" rx="1"></rect>',
+ 'lavarropas': '<rect x="4" y="2" width="16" height="20" rx="2"></rect><circle cx="12" cy="13" r="5"></circle><path d="M7 5.5h3"></path>',
+ 'etiqueta': '<path d="M3 12V4h8l10 10-8 8L3 12Z"></path><circle cx="7.5" cy="7.5" r="1.5"></circle>',
+ 'termometro': '<path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0Z"></path>',
+ 'aire_ic': '<rect x="2" y="5" width="20" height="8" rx="2"></rect><path d="M6 10h12M7 17l-1 3M12 17v3M17 17l1 3"></path>',
+ 'estrella_llena': '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9Z"></path>',
+ 'trofeo': '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"></path><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8M10 17h4"></path>',
+ 'compartido': '<circle cx="18" cy="5" r="2.5"></circle><circle cx="6" cy="12" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M8.2 10.8l7.6-4.4M8.2 13.2l7.6 4.4"></path>',
+ 'copiar': '<rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>',
+ 'reenviar': '<path d="M14 5l7 7-7 7"></path><path d="M21 12H9a6 6 0 0 0-6 6v1"></path>',
+ 'basura': '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path>',
 })
 
 RUBROS = [
  ('electricidad', 'Electricidad', 'lamparita', 'rayo'),
- ('plomeria', 'Plomería', 'cano', 'gota'),
+ ('plomeria', 'Plomería', 'cano', 'canilla_ic'),
  ('gas', 'Gas', 'gota', 'llama'),
  ('cerrajeria', 'Cerrajería', 'llave', 'llave2'),
  ('albanileria', 'Albañilería', None, 'ladrillo'),
@@ -90,7 +114,7 @@ def btn(texto, href=None, ic=None, var='azul', alto=56, chico=False):
     """Botón con base que se hunde. var: azul | verde | amarillo | contorno | rojo | blanco | gris."""
     est = {
         'azul': f'background: {AZUL}; color: #FFFFFF; box-shadow: 0 4px 0 {HONDO}',
-        'verde': f'background: {VERDE}; color: #FFFFFF; box-shadow: 0 4px 0 {VERDE_H}',
+        'verde': f'background: {AZUL}; color: #FFFFFF; box-shadow: 0 4px 0 {HONDO}',  # como el especialista: la acción principal siempre azul
         'amarillo': f'background: {AMARILLO}; color: {TINTA}; box-shadow: 0 4px 0 #C9C85A',
         'contorno': f'background: #FFFFFF; color: {AZUL}; border: 2px solid {AZUL}',
         'rojo': f'background: #FFFFFF; color: {ROJO}; border: 2px solid {ROJO}',
@@ -171,8 +195,9 @@ def verificado(t='Identidad verificada'):
 
 
 def mosaico_rubro(clave, nombre, handy, ic, href, tam=None):
-    dibujo = img(handy, 46, 50) if handy else f'<span style="width: 46px; height: 46px; border-radius: 14px; background: #FFFFFF; display: flex; align-items: center; justify-content: center">{svg(IC[ic], AZUL, 24)}</span>'
-    return f'<a href="{href}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; aspect-ratio: 1 / 0.92; border-radius: 22px; background: {MOSAICO}; box-shadow: 0 4px 0 #D3D6DC; color: {TINTA}; font-size: 13px; font-weight: 800; text-decoration: none">{dibujo}{nombre}</a>'
+    """Mosaico de rubro como la app real: gris, ícono de línea grande y el nombre (los Handys quedan para vacíos y éxitos)."""
+    return (f'<a href="{href}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 88px; border-radius: 20px; background: {MOSAICO}; box-shadow: 0 4px 0 #D3D6DC; color: {TINTA}; font-size: 13px; font-weight: 800; text-decoration: none">'
+            f'{svg(IC[ic], TINTA, 30, 1.8)}{nombre}</a>')
 
 
 def grilla_rubros(href='P-Que.dc.html'):
@@ -216,27 +241,83 @@ def estado_handia(tipo, tam=150):
 
 # ── Navegación ──────────────────────────────────────────────────────────────────────────────────────
 def barra_u(activa):
-    """Pestañas flotantes de vidrio: Inicio · Actividad · HandIA (círculo en el medio) · Mensajes · Mi hogar."""
+    """Pestañas de vidrio azul (como el especialista) con HandIA encastrada en el medio: la barra tiene un hueco que
+    abraza el círculo, así no queda flotando aparte. Inicio · Actividad · HandIA · Mensajes · Mi hogar."""
     tabs = [('Inicio', 'casa', 'I-Inicio.dc.html'), ('Actividad', 'agenda', 'X-Actividad.dc.html'), None,
             ('Mensajes', 'chat', 'M-Mensajes.dc.html'), ('Mi hogar', 'hogar', 'H-Hogar.dc.html')]
     items = []
     for t in tabs:
         if t is None:
             on = activa == 'HandIA'
-            items.append(
-                f'<a href="I-HandIA.dc.html" aria-label="HandIA, tu asistente"{" aria-current=\"page\"" if on else ""} style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 6px; color: {TINTA}; font-size: 11px; font-weight: 800; text-decoration: none">'
-                f'<span style="position: absolute; top: -30px; left: 50%; margin-left: -33px; width: 66px; height: 66px; box-sizing: border-box; border-radius: 50%; border: 4px solid #FFFFFF; background: {AZUL}; box-shadow: 0 4px 0 {HONDO}, 0 14px 26px -10px rgba(31,87,168,0.7); display: flex; align-items: center; justify-content: center; overflow: hidden">'
-                f'<span style="position: absolute; width: 44px; height: 44px; border-radius: 50%; background: #FFCF5A; opacity: 0.55; filter: blur(7px)"></span>{img("lamparita", 30, 44, "position: relative")}</span>HandIA</a>')
+            items.append(f'<a href="I-HandIA.dc.html" aria-label="HandIA, tu asistente"{" aria-current=\"page\"" if on else ""} style="display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; color: #FFFFFF; font-size: 11px; font-weight: 800; text-decoration: none">HandIA</a>')
             continue
         nombre, ic, href = t
         on = nombre == activa
-        fondo = f'background: {AZUL}; box-shadow: 0 3px 0 {HONDO};' if on else ''
-        color = '#FFFFFF' if on else TEXTO
+        fondo = 'background: #FFFFFF; box-shadow: 0 3px 0 rgba(0,0,0,0.18);' if on else ''
+        color = AZUL if on else '#FFFFFF'
         items.append(f'<a href="{href}"{" aria-current=\"page\"" if on else ""} style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 22px; {fondo} color: {color}; font-size: 11px; font-weight: {800 if on else 700}; text-decoration: none">{svg(IC[ic], color, 21)}{nombre}</a>')
-    return ('  <nav data-f="1" aria-label="Secciones" style="position: absolute; left: 14px; right: 14px; bottom: 14px; height: 70px; box-sizing: border-box; padding: 6px; border-radius: 30px; '
-            'background: rgba(255,255,255,0.62); backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); '
-            f'border: 1px solid rgba(255,255,255,0.75); box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), {ELEV2}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px">\n    '
-            + '\n    '.join(items) + '\n  </nav>')
+    # forma de la barra: 362 × 70, esquinas de 30 y un hueco de radio 44 alrededor del círculo (centro 181, -6)
+    forma = ('M30 0H126C134 0 137 3 139.5 9A44 44 0 0 0 222.5 9C225 3 228 0 236 0H332A30 30 0 0 1 362 30V40'
+             'A30 30 0 0 1 332 70H30A30 30 0 0 1 0 40V30A30 30 0 0 1 30 0Z')
+    circulo = (f'<a href="I-HandIA.dc.html" aria-label="Abrir HandIA" style="position: absolute; left: 50%; top: 0; margin-left: -37px; width: 74px; height: 74px; box-sizing: border-box; border-radius: 50%; '
+               f'background: radial-gradient(circle at 50% 38%, #3A78D0 0%, {AZUL} 62%, {HONDO} 100%); border: 3px solid #FFFFFF; box-shadow: 0 5px 0 {HONDO}, 0 18px 30px -12px rgba(20,62,126,0.75); display: flex; align-items: center; justify-content: center; overflow: hidden">'
+               f'<span style="position: absolute; width: 50px; height: 50px; border-radius: 50%; background: #FFCF5A; opacity: 0.6; filter: blur(9px)"></span>{img("lamparita", 34, 50, "position: relative")}</a>')
+    return (f'  <div data-f="1" style="position: absolute; left: 14px; right: 14px; bottom: 14px; height: 112px">\n'
+            f'    <svg aria-hidden="true" width="362" height="70" viewBox="0 0 362 70" style="position: absolute; left: 0; bottom: 0; filter: drop-shadow(0 18px 22px rgba(14,29,54,0.32))"><path d="{forma}" fill="{AZUL}" fill-opacity="0.94"></path><path d="{forma}" fill="none" stroke="rgba(255,255,255,0.28)"></path></svg>\n'
+            f'    <nav aria-label="Secciones" style="position: absolute; left: 0; right: 0; bottom: 0; height: 70px; box-sizing: border-box; padding: 6px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px">\n      '
+            + '\n      '.join(items) + f'\n    </nav>\n    {circulo}\n  </div>')
+
+
+def cabecera_inicio(n_avisos=2):
+    """Cabecera del Inicio como la app real (imagen 2 de Ignacio): fondo blanco, «Handyx» azul, avisos y cuenta en
+    cuadrados azules, y la dirección en un chip que se toca para cambiarla."""
+    cuad = lambda href, label, dentro, extra='': (f'<a href="{href}" aria-label="{label}" style="position: relative; width: 52px; height: 52px; border-radius: 16px; background: {AZUL}; box-shadow: 0 4px 0 {HONDO}; display: flex; align-items: center; justify-content: center; text-decoration: none">{dentro}{extra}</a>')
+    badge = f'<span style="position: absolute; top: -6px; right: -6px; min-width: 22px; height: 22px; box-sizing: border-box; padding: 0 6px; border-radius: 11px; background: {AMARILLO}; border: 2px solid #FFFFFF; color: {TINTA}; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center">{n_avisos}</span>'
+    lf = f'<span style="width: 34px; height: 34px; border-radius: 50%; background: {AMARILLO}; color: {TINTA}; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900">LF</span>'
+    return f'''  <header style="position: absolute; top: 0; left: 0; right: 0; padding: 18px 16px 0 20px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <span style="display: flex; flex-direction: column; gap: 2px"><span style="{TIT}; font-size: 36px; line-height: 1; color: {AZUL}">Handyx</span><span style="font-size: 12px; font-weight: 700; color: {SUAVE}">Soluciones, no problemas</span></span>
+      <span style="display: flex; gap: 10px">{cuad("I-Avisos.dc.html", f"Avisos, {n_avisos} sin leer", svg(IC["campana"], "#FFFFFF", 23), badge)}{cuad("X-Cuenta.dc.html", "Tu cuenta", lf)}</span>
+    </div>
+    <a href="X-Datos.dc.html" aria-label="Dirección: Calle De Prueba 123, La Perla. Cambiar" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 22px; background: {TINTE}; color: {HONDO}; font-size: 13px; font-weight: 800; text-decoration: none">{svg(IC["pin"], AZUL, 16)}Calle De Prueba 123 · La Perla{svg(IC["abajo"] if "abajo" in IC else IC["flecha"], AZUL, 14)}</a>
+  </header>'''
+
+
+def chat_abajo(html, top=72, bottom=92):
+    """Mensajes pegados abajo, sobre la caja para escribir: como cualquier chat, sin espacio vacío en el medio."""
+    return f'  <div data-c="1" style="position: absolute; top: {top}px; bottom: {bottom}px; left: 16px; right: 16px; display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; overflow: hidden">{html}</div>'
+
+
+def oscurecer(html_fondo):
+    """Pantalla de atrás oscurecida, para hojas que suben desde abajo (aceptar, reseña, compartir)."""
+    return html_fondo + '  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(14,29,54,0.55)"></div>\n'
+
+
+def hoja_u(html, top, titulo_hoja=''):
+    """Hoja que sube desde abajo, con manija y título (data-c para el chequeo de tapado)."""
+    t = f'<h2 style="margin: 0; {TIT}; font-size: 24px; line-height: 1.05">{titulo_hoja}</h2>' if titulo_hoja else ''
+    return (f'  <section role="dialog" aria-label="{re.sub("<[^>]+>", "", titulo_hoja) or "Hoja"}" style="position: absolute; left: 0; right: 0; top: {top}px; bottom: 0; padding: 10px 16px 0; border-radius: 30px 30px 0 0; background: #FFFFFF; box-shadow: 0 -10px 40px -10px rgba(14,29,54,0.45)">'
+            f'<div aria-hidden="true" style="width: 44px; height: 5px; margin: 0 auto 12px; border-radius: 3px; background: #D5DAE3"></div>'
+            f'<div data-c="1" style="display: flex; flex-direction: column; gap: 12px">{t}{html}</div></section>')
+
+
+def tarjeta_azul(html, extra=''):
+    """Tarjeta azul de resumen (la del informe y la obra en el especialista)."""
+    return f'<section style="padding: 16px; border-radius: 24px; background: {AZUL}; box-shadow: 0 4px 0 {HONDO}, 0 18px 30px -18px rgba(20,62,126,0.8); color: #FFFFFF; display: flex; flex-direction: column; gap: 10px; {extra}">{html}</section>'
+
+
+def tarjeta_noche(html):
+    return f'<section style="padding: 16px; border-radius: 24px; background: {NOCHE}; color: #FFFFFF; display: flex; flex-direction: column; gap: 8px">{html}</section>'
+
+
+def tarjeta_amarilla(html):
+    return f'<section style="padding: 14px 16px; border-radius: 22px; background: {AMARILLO}; box-shadow: 0 4px 0 #C9C85A; color: {TINTA}; display: flex; flex-direction: column; gap: 6px">{html}</section>'
+
+
+def dato_fila(ic, t, v, s=''):
+    sub = f'<span style="font-size: 12px; color: {SUAVE}">{s}</span>' if s else ''
+    return (f'<div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid {BORDE}">{mosaico_ic(ic, 40, fondo=TINTE, color=AZUL, radio=12, iconsize=19)}'
+            f'<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 12px; font-weight: 800; color: {SUAVE}">{t}</span><strong style="font-size: 15px">{v}</strong>{sub}</span></div>')
 
 
 def cabecera_u(chica=False):
@@ -272,6 +353,44 @@ def foto(tipo, w=358, h=200, radio=20, etq=None):
     }
     fondo, dib, label = fondos[tipo]
     return f'<svg role="img" aria-label="{etq or label}" width="{w}" height="{h}" viewBox="0 0 {w} {h}" style="display: block; border-radius: {radio}px; background: {fondo}">{dib}</svg>'
+
+
+def foto_amb(tipo, w=358, h=180, radio=20, etq=None):
+    """Fotos ilustradas de ambientes y etiquetas (planas, sin personas ni datos)."""
+    piso = f'<rect y="{h*0.72}" width="{w}" height="{h*0.28}" fill="#D9CFC0"></rect>'
+    if tipo == 'bano':
+        fondo, label = '#E4EEF8', 'Foto del baño'
+        d = (f'<g stroke="#C6D6EA" stroke-width="2">{"".join(f"<path d=\"M0 {y}H{w}\"></path>" for y in range(20, int(h*0.72), 26))}</g>{piso}'
+             f'<rect x="{w*0.08}" y="{h*0.42}" width="{w*0.28}" height="{h*0.18}" rx="10" fill="#FFFFFF" stroke="#9AA9BF" stroke-width="2"></rect><rect x="{w*0.17}" y="{h*0.6}" width="{w*0.1}" height="{h*0.12}" fill="#FFFFFF" stroke="#9AA9BF" stroke-width="2"></rect>'
+             f'<rect x="{w*0.13}" y="{h*0.1}" width="{w*0.18}" height="{h*0.26}" rx="8" fill="#F4F8FC" stroke="#9AA9BF" stroke-width="2"></rect>'
+             f'<rect x="{w*0.5}" y="{h*0.48}" width="{w*0.12}" height="{h*0.24}" rx="10" fill="#FFFFFF" stroke="#9AA9BF" stroke-width="2"></rect><rect x="{w*0.48}" y="{h*0.4}" width="{w*0.16}" height="{h*0.1}" rx="6" fill="#FFFFFF" stroke="#9AA9BF" stroke-width="2"></rect>'
+             f'<rect x="{w*0.72}" y="{h*0.06}" width="{w*0.22}" height="{h*0.66}" fill="#CFE0F3" stroke="#9AA9BF" stroke-width="2"></rect><path d="M{w*0.8} {h*0.12} v12 M{w*0.76} {h*0.2} h{w*0.08}" stroke="#7F90A8" stroke-width="3"></path>')
+    elif tipo == 'cocina':
+        fondo, label = '#F1ECE3', 'Foto de la cocina'
+        d = (f'{piso}<rect x="{w*0.04}" y="{h*0.46}" width="{w*0.92}" height="{h*0.26}" fill="#FFFFFF" stroke="#B9AE9C" stroke-width="2"></rect>'
+             + ''.join(f'<rect x="{w*0.04 + i*w*0.23}" y="{h*0.08}" width="{w*0.21}" height="{h*0.22}" rx="4" fill="#FFFFFF" stroke="#B9AE9C" stroke-width="2"></rect>' for i in range(4))
+             + f'<rect x="{w*0.36}" y="{h*0.4}" width="{w*0.22}" height="{h*0.06}" rx="3" fill="#7F8794"></rect><circle cx="{w*0.42}" cy="{h*0.43}" r="5" fill="#C9CFD8"></circle><circle cx="{w*0.52}" cy="{h*0.43}" r="5" fill="#C9CFD8"></circle>'
+             f'<rect x="{w*0.78}" y="{h*0.22}" width="{w*0.1}" height="{h*0.22}" rx="6" fill="#FFFFFF" stroke="{NARANJA}" stroke-width="2"></rect><circle cx="{w*0.83}" cy="{h*0.36}" r="5" fill="#F3D9A0"></circle>')
+    elif tipo == 'living':
+        fondo, label = '#E9EEF5', 'Foto del living'
+        d = (f'{piso}<rect x="{w*0.6}" y="{h*0.08}" width="{w*0.32}" height="{h*0.44}" fill="#CFE0F3" stroke="#9AA9BF" stroke-width="2"></rect><path d="M{w*0.76} {h*0.08}v{h*0.44}" stroke="#9AA9BF" stroke-width="2"></path>'
+             f'<rect x="{w*0.06}" y="{h*0.46}" width="{w*0.46}" height="{h*0.2}" rx="12" fill="{AZUL}"></rect><rect x="{w*0.06}" y="{h*0.38}" width="{w*0.46}" height="{h*0.14}" rx="10" fill="#3A78D0"></rect>'
+             f'<rect x="{w*0.1}" y="{h*0.08}" width="{w*0.3}" height="{h*0.1}" rx="5" fill="#FFFFFF" stroke="#9AA9BF" stroke-width="2"></rect><path d="M{w*0.14} {h*0.15}h{w*0.22}" stroke="#9DB7DE" stroke-width="3"></path>')
+    elif tipo == 'dormitorio':
+        fondo, label = '#EEEAF5', 'Foto del dormitorio'
+        d = (f'{piso}<rect x="{w*0.12}" y="{h*0.42}" width="{w*0.56}" height="{h*0.24}" rx="8" fill="#FFFFFF" stroke="#A9A2BD" stroke-width="2"></rect><rect x="{w*0.12}" y="{h*0.3}" width="{w*0.12}" height="{h*0.36}" rx="6" fill="#C9C1DE"></rect>'
+             f'<rect x="{w*0.62}" y="{h*0.08}" width="{w*0.3}" height="{h*0.14}" rx="8" fill="#FFFFFF" stroke="#A9A2BD" stroke-width="2"></rect><path d="M{w*0.66} {h*0.18}h{w*0.22}" stroke="#A9A2BD" stroke-width="2"></path>')
+    elif tipo == 'lavadero':
+        fondo, label = '#EAF1EE', 'Foto del lavadero'
+        d = (f'{piso}<rect x="{w*0.1}" y="{h*0.3}" width="{w*0.26}" height="{h*0.42}" rx="8" fill="#FFFFFF" stroke="#97AFA4" stroke-width="2"></rect><circle cx="{w*0.23}" cy="{h*0.53}" r="{h*0.11}" fill="#CFE0F3" stroke="#97AFA4" stroke-width="2"></circle>'
+             f'<rect x="{w*0.56}" y="{h*0.06}" width="{w*0.16}" height="{h*0.5}" rx="20" fill="#FFFFFF" stroke="#97AFA4" stroke-width="2"></rect><path d="M{w*0.64} {h*0.56}v{h*0.16}" stroke="#97AFA4" stroke-width="3"></path>')
+    else:  # etiqueta de un equipo
+        fondo, label = '#E7EAF0', 'Foto de la etiqueta del equipo'
+        d = (f'<rect x="{w*0.12}" y="{h*0.12}" width="{w*0.76}" height="{h*0.76}" rx="10" fill="#FFFFFF" stroke="#9AA9BF" stroke-width="2"></rect>'
+             f'<rect x="{w*0.18}" y="{h*0.2}" width="{w*0.3}" height="{h*0.1}" rx="3" fill="{NOCHE}"></rect>'
+             + ''.join(f'<rect x="{w*0.18}" y="{h*(0.38 + i*0.11)}" width="{w*(0.58 - i*0.08)}" height="{h*0.04}" rx="2" fill="#B8C2D0"></rect>' for i in range(4))
+             + f'<g fill="{TINTA}">{"".join(f"<rect x=\"{w*0.62 + i*w*0.022}\" y=\"{h*0.2}\" width=\"{w*0.012}\" height=\"{h*0.12}\"></rect>" for i in range(9))}</g>')
+    return f'<svg role="img" aria-label="{etq or label}" width="{w}" height="{h}" viewBox="0 0 {w} {h}" style="display: block; border-radius: {radio}px; background: {fondo}">{d}</svg>'
 
 
 def ciudad(w=390, h=430):
@@ -311,5 +430,5 @@ def camara(alto=844, extra=''):
     return f'  <div aria-hidden="true" style="position: absolute; inset: 0; height: {alto}px; background: #1B2230">{extra}</div>'
 
 
-def guardar_u(nombre, titulo_, cuerpo):
-    guardar(nombre, titulo_, cuerpo)
+def guardar_u(nombre, titulo_, cuerpo, alto=844):
+    guardar(nombre, titulo_, cuerpo, alto)

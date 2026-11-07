@@ -4,7 +4,7 @@ Fecha: 07/11/2026. Pedido de Ignacio: diseñar la app del usuario completa (no u
 visual y forma de trabajo que la app del especialista. **Es solo diseño: no se desarrolla nada hasta el OK de Ignacio.**
 
 - Lienzo (privado): <https://claude.ai/artifact/A4T5bqyE8WEiQkwD4ogDaZ>. Arriba, el tablero de revisión UX/UI; después
-  12 flujos (empezando por «Mapa de la app»), con cada pantalla tocable; abajo, 89 pantallas de 390 × 844 en 11 filas.
+  12 flujos (empezando por «Mapa de la app»), con cada pantalla tocable; abajo, 103 pantallas de 390 de ancho en 11 filas.
 - Fuente para pasar a Figma: [`design/usuario/`](../design/usuario/README.md).
 - Fases nuevas del plan: sección «Fase 7» de [`plan.md`](plan.md).
 
@@ -17,6 +17,31 @@ visual y forma de trabajo que la app del especialista. **Es solo diseño: no se 
 | `handyx-client-be` (`src/contracts/v1/`)                                  | Estados del trabajo y de las etapas, tipos de pedido y de propuesta, verificaciones (`identidad`, `antecedentes`, `matricula`), tarifa y pago directo.                       |
 
 No se tiró nada: el Inicio sigue siendo el de la demo, con los seis rubros como mosaicos y la tarjeta azul de HandIA.
+
+## Segunda ronda (07/11, notas de Ignacio sobre el lienzo)
+
+Se tomó como base el lienzo actualizado del especialista (rama `claude/pensive-hypatia-jajjgm`, `4c8ebd2`): piezas,
+colores, íconos y componentes copiados de nuevo a `design/usuario/gen/piezas*.py`.
+
+| Nota                           | Qué cambió                                                                                                                                                                                                                                                                                                        |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ¿«Pedir» es un onboarding?     | No: es el pedido de cada vez. Camino corto en 3 toques (rubro › qué pasa › revisar y publicar); fotos, medidas, día y dirección son opcionales y se cambian desde Revisar.                                                                                                                                        |
+| 1 · Inicio                     | Como la app real: cabecera blanca con «Handyx», avisos con contador y cuenta en cuadrados azules, chip de dirección, «¿Qué necesitás hoy?» en una línea, rubros con íconos de línea, ticket del turno, «Quiero…».                                                                                                 |
+| 2 · Barra de abajo             | Vidrio azul (la del especialista) con un hueco que abraza el círculo de HandIA, más arriba y parte de la barra.                                                                                                                                                                                                   |
+| 3 · Chat de HandIA             | Mensajes siempre abajo, sobre la caja de escribir. La lamparita grande solo con el chat vacío; «pensando» en una línea junto al avatar.                                                                                                                                                                           |
+| HandIA por voz                 | Sin personaje en el medio: esfera de luz en azul y amarillo. Mismo fondo azul y controles; textos en DM Sans 23/600, la parte que falta más tenue. Hoja de ajustes (voz, subtítulos, sonido, privacidad).                                                                                                         |
+| 4 · Colores                    | El verde queda solo para chips y checks: toda acción principal es azul, como en el especialista. Resúmenes en tarjeta azul, precios orientativos en noche, avisos en amarillo.                                                                                                                                    |
+| 5 · Presupuestos               | Cada tarjeta: especialista y reseñas › precio › duración, garantía y equipo › verificaciones › Rechazar · Ver perfil · Aceptar.                                                                                                                                                                                   |
+| 6 · Comparar                   | «La mejor en perfil y precio» por promedio con pesos fijos (precio 30, reseñas 25, verificaciones 20, garantía 15, fecha 10), a la vista. No es recomendación paga: elige la persona.                                                                                                                             |
+| 7 · Detalle de la propuesta    | Materiales, equipo, duración, garantía, visita previa, qué incluye y qué no, y el mensaje del especialista. Si es solo una consulta, pantalla de visita con lo que se sabe y lo que se define después.                                                                                                            |
+| 8 · Aceptar y turno confirmado | La hoja sube sobre la propuesta oscurecida (no sobre un gris). Confirmación con sello azul, ticket azul y «qué sigue».                                                                                                                                                                                            |
+| 9 · Trabajo y adicional        | Como el «Trabajo» del especialista: etapas en azul con la actual en amarillo, aviso amarillo del adicional, avance con foto. Adicional con foto, motivo y cómo cambia el total.                                                                                                                                   |
+| 10 · Reseña                    | Hoja tipo Uber sobre «¡Quedó arreglado!»: estrellas grandes, chips, comentario opcional y «Ahora no».                                                                                                                                                                                                             |
+| 11 · Mi hogar                  | Cuatro puertas (Mi casa · Algo se rompió · Mantenimiento · Historial y garantías). Ficha completa con fotos por ambiente, medidas, materiales, equipos con foto de la etiqueta. «Armá tu casa» opcional en el alta. Compartir con el especialista eligiendo qué, solo para ese pedido, y cortarlo cuando quieras. |
+| 12 · Seleccionar mensajes      | Fila completa resaltada sin cortes, check alineado, burbujas propias a la derecha y barra de acciones con nombre (copiar, reenviar, responder, borrar los tuyos).                                                                                                                                                 |
+
+Quedan 103 pantallas y 12 flujos; los chequeos siguen en 0 en las 116 piezas. Lo de Mi hogar compartido por pedido
+también necesita contrato nuevo (abajo).
 
 ## Navegación
 
@@ -79,7 +104,7 @@ diseño faltan, y los define `handyx-client-be` (dueño del contrato) antes de d
 
 - Acceso con código por email o SMS, Google y Apple, segunda verificación y sesiones abiertas (hoy: email y contraseña).
 - Reseñas; informe con garantía y antes/después como objetos del trabajo.
-- Mi hogar: ambientes, equipos, historial, garantías y recordatorios.
+- Mi hogar: ambientes, equipos (con foto de la etiqueta), historial, garantías y recordatorios; compartir partes de la ficha con un pedido y revocarlo.
 - Modelos 3D y medidas compartidas por pedido; AR de un equipo propuesto.
 - Camino del hogar: hitos, insignias y beneficios (después de Legal).
 - Obras en equipo: integrantes, reparto por etapa y dirección exacta por día.

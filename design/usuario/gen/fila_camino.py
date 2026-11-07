@@ -27,10 +27,10 @@ pasos_c = [('Ficha de tu casa', 'Cargaste ambientes y equipos', 'hogar', 'hecho'
            ('Casa al día', 'Todo revisado este año', 'medalla', 'falta', 110, 290)]
 nodos = ''
 for t, s, ic, est, x, y in pasos_c:
-    f = {'hecho': VERDE, 'ahora': AMARILLO, 'falta': '#FFFFFF'}[est]
+    f = {'hecho': AZUL, 'ahora': AMARILLO, 'falta': '#FFFFFF'}[est]
     c = {'hecho': '#FFFFFF', 'ahora': TINTA, 'falta': SUAVE}[est]
     i = 'check' if est == 'hecho' else ic
-    b = 'box-shadow: 0 4px 0 #0B4F2C' if est == 'hecho' else ('box-shadow: 0 4px 0 #C9C85A' if est == 'ahora' else f'border: 2px solid {BORDE}')
+    b = 'box-shadow: 0 4px 0 #143E7E' if est == 'hecho' else ('box-shadow: 0 4px 0 #C9C85A' if est == 'ahora' else f'border: 2px solid {BORDE}')
     lado = 'left: 70px' if x < 200 else 'right: 70px'
     nodos += (f'<li style="position: absolute; left: {x - 28}px; top: {y - 28}px; width: 56px; height: 56px; border-radius: 50%; background: {f}; {b}; display: flex; align-items: center; justify-content: center; box-sizing: border-box">{svg(IC[i], c, 24, 2.5)}'
               f'<span style="position: absolute; {lado}; top: 0; width: 164px; padding: 6px 10px; border-radius: 14px; background: rgba(255,255,255,0.94); box-shadow: 0 2px 8px rgba(14,29,54,0.08); display: flex; flex-direction: column; text-align: {"left" if x < 200 else "right"}"><strong style="font-size: 14px; color: {TINTA}">{t}</strong><span style="font-size: 12px; color: {SUAVE}">{s}</span></span></li>')

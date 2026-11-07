@@ -10,7 +10,7 @@ con Playwright y axe. **Es diseño, no código de la app**: nada de esto se impo
 ```
 design/usuario/
 ├── gen/
-│   ├── piezas.py, piezas2.py   # copias de las piezas del especialista (colores, íconos, tarjetas, chips, documento)
+│   ├── piezas.py, piezas2.py   # copias de las piezas del especialista (4c8ebd2) (colores, íconos, tarjetas, chips, documento)
 │   ├── piezas_u.py             # piezas del usuario: pestañas con HandIA al medio, cabecera, botones, campos,
 │   │                           # ticket, fotos SVG, ciudad, casa isométrica, cámara, estados de HandIA
 │   ├── fila_*.py               # una fila del lienzo por fase (A, I, P, C, S, O, M, H, T, G, X)
@@ -20,7 +20,7 @@ design/usuario/
 │   ├── lienzo.py               # arma project/canvas.json (revisión, flujos, filas)
 │   ├── revisar.cjs             # axe + toques < 44 px + letra < 11 px + tapado por lo fijo + desbordes
 │   └── foto.cjs                # capturas para revisar a ojo
-└── project/                    # lo que se publica: canvas.json + 102 tableros .dc.html
+└── project/                    # lo que se publica: canvas.json + 116 tableros .dc.html
 ```
 
 ## Regenerar y revisar

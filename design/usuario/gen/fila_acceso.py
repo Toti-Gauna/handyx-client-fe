@@ -82,7 +82,47 @@ guardar_u('A-Avisos.dc.html', 'Avisos', barra('Avisos', 'A-Zona.dc.html', sub='P
     + interr('Turno y llegada', True, 'El día antes y cuando sale para tu casa')
     + interr('Recordatorios del hogar', True, 'Mantenimientos que conviene hacer')
     + interr('Novedades de Handyx', False, 'Pocas veces al mes') + '</div>', gap=12)
-    + fijo(btn('Permitir avisos', 'A-Listo.dc.html'), btn('Ahora no', 'A-Listo.dc.html', var='contorno')))
+    + fijo(btn('Permitir avisos', 'A-Casa.dc.html'), btn('Ahora no', 'A-Casa.dc.html', var='contorno')))
+
+# A-Casa · onboarding opcional de Mi hogar (se puede saltar y completar después)
+guardar_u('A-Casa.dc.html', 'Armá tu casa', f'''  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 330px; background: {AZUL}; border-radius: 0 0 36px 36px; display: flex; align-items: center; justify-content: center">{casa_iso(300, 210, "Tu casa en Handyx (ilustración)").replace('role="img"', 'aria-hidden="true"')}</div>
+  <a href="A-Listo.dc.html" style="position: absolute; top: 14px; right: 16px; min-height: 44px; padding: 0 16px; border-radius: 22px; background: rgba(255,255,255,0.18); color: #FFFFFF; font-size: 14px; font-weight: 800; text-decoration: none; display: flex; align-items: center">Saltar</a>
+''' + cont(titulo('Armá tu ', 'casa', '', size=34, sup='OPCIONAL · 2 MINUTOS', sub='Cargá ambientes y equipos una vez. La próxima vez que algo se rompa, lo elegís y el pedido sale armado.')
+           + ''.join(f'<div style="display: flex; gap: 12px; align-items: center">{mosaico_ic(ic, 40, fondo=TINTE, color=AZUL, radio=12, iconsize=19)}<span style="display: flex; flex-direction: column"><strong style="font-size: 15px">{t}</strong><span style="font-size: 12px; color: {SUAVE}">{sub}</span></span></div>'
+                     for ic, t, sub in [('casa', 'Ambientes y equipos', 'Con fotos y medidas, a tu ritmo'), ('compartido', 'Compartís sin sacar fotos', 'Elegís qué ve el especialista'), ('candado', 'Es privada', 'Nadie la ve si no la compartís')]), top=350, gap=12)
+    + fijo(btn('Empezar', 'A-CasaAmbientes.dc.html', 'flecha'), btn('Más tarde', 'A-Listo.dc.html', var='contorno')))
+
+cont_amb = lambda ic, t, n: (f'<div style="display: flex; align-items: center; gap: 12px; min-height: 60px; border-top: 1px solid {BORDE}">{mosaico_ic(ic, 40, fondo=TINTE, color=AZUL, radio=12, iconsize=19)}<strong style="flex: 1; font-size: 15px">{t}</strong>'
+                             f'<span style="display: flex; align-items: center; gap: 6px"><button type="button" aria-label="Uno menos: {t}" style="width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid {BORDE}; background: #FFFFFF; font-size: 20px; font-weight: 800; color: {TINTA}">−</button>'
+                             f'<strong style="width: 22px; text-align: center; font-size: 17px">{n}</strong><button type="button" aria-label="Uno más: {t}" style="width: 44px; height: 44px; border-radius: 50%; border: 0; background: {AZUL}; box-shadow: 0 3px 0 {HONDO}; font-size: 20px; font-weight: 800; color: #FFFFFF">+</button></span></div>')
+guardar_u('A-CasaAmbientes.dc.html', 'Tu casa: ambientes', barra('Tu casa', 'A-Casa.dc.html', sub='1 de 3 · ambientes') + cont(
+    pasos(1, 3) + titulo('¿Qué ', 'ambientes', ' tiene?', size=28, sub='Contá los que tenés. Después les sumás fotos si querés.')
+    + seg([('Casa', 'A-CasaAmbientes.dc.html'), ('Depto', 'A-CasaAmbientes.dc.html'), ('PH', 'A-CasaAmbientes.dc.html')], 'Casa', 'Tipo de vivienda')
+    + '<div style="display: flex; flex-direction: column">' + cont_amb('ducha', 'Baños', 1).replace(f'border-top: 1px solid {BORDE}; ', '', 1) + cont_amb('cocina', 'Cocina', 1) + cont_amb('sofa', 'Living', 1) + cont_amb('cama', 'Dormitorios', 2) + cont_amb('lavarropas', 'Lavadero', 1) + cont_amb('casa', 'Patio o terraza', 0) + '</div>', gap=12)
+    + fijo(btn('Seguir', 'A-CasaEquipos.dc.html')))
+
+eq = lambda ic, t, on: f'<button type="button" aria-pressed="{"true" if on else "false"}" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 14px; border-radius: 999px; border: {"2px solid " + AZUL if on else "1.5px solid " + BORDE}; background: {TINTE if on else "#FFFFFF"}; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 800; color: {HONDO if on else TINTA}">{svg(IC["check"] if on else IC[ic], AZUL if on else SUAVE, 16, 2.5 if on else 2)}{t}</button>'
+grupo_eq = lambda t, items: f'<div style="display: flex; flex-direction: column; gap: 8px">{etiqueta(t)}<div style="display: flex; flex-wrap: wrap; gap: 8px">{"".join(eq(*i) for i in items)}</div></div>'
+guardar_u('A-CasaEquipos.dc.html', 'Tu casa: equipos', barra('Tu casa', 'A-CasaAmbientes.dc.html', sub='2 de 3 · equipos') + cont(
+    pasos(2, 3) + titulo('¿Qué ', 'equipos', ' tenés?', size=28, sub='Marcá los que hay. Marca y modelo, después (con una foto de la etiqueta).')
+    + grupo_eq('COCINA', [('llama', 'Calefón', True), ('llama', 'Anafe a gas', True), ('caja', 'Horno', False)])
+    + grupo_eq('BAÑO', [('canilla_ic', 'Canillas', True), ('ducha', 'Ducha', True), ('caja', 'Inodoro', True)])
+    + grupo_eq('TODA LA CASA', [('rayo', 'Tablero eléctrico', True), ('aire_ic', 'Aire acond.', True), ('termometro', 'Termotanque', False), ('llave2', 'Cerraduras', False)]), gap=14)
+    + fijo(btn('Seguir · 8 equipos', 'A-CasaFotos.dc.html')))
+
+def foto_slot(tipo, t, hecho):
+    if hecho:
+        vis = foto_amb(tipo, 171, 104, 16)
+    else:
+        vis = (f'<button type="button" aria-label="Sacar foto: {t}" style="height: 104px; border-radius: 16px; border: 2px dashed #AEB6C4; background: {GRIS2}; display: flex; align-items: center; justify-content: center">'
+               + svg(IC['camara'], AZUL, 26) + '</button>')
+    marca = svg(IC['check'], EXITO, 14, 3) if hecho else ''
+    return f'<div style="display: flex; flex-direction: column; gap: 6px">{vis}<span style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800">{marca}{t}</span></div>'
+
+guardar_u('A-CasaFotos.dc.html', 'Tu casa: fotos', barra('Tu casa', 'A-CasaEquipos.dc.html', sub='3 de 3 · fotos') + cont(
+    pasos(3, 3) + titulo('Una ', 'foto', ' por ambiente', size=28, sub='Opcional. Sin personas ni papeles: les sacamos la ubicación antes de guardarlas.')
+    + '<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">' + foto_slot('bano', 'Baño', True) + foto_slot('cocina', 'Cocina', True) + foto_slot('living', 'Living', False) + foto_slot('dormitorio', 'Dormitorio', False) + '</div>', gap=12)
+    + fijo(btn('Guardar mi casa', 'A-Listo.dc.html', 'check'), btn('Lo completo después', 'A-Listo.dc.html', var='contorno')))
 
 # A-Listo
 guardar_u('A-Listo.dc.html', 'Cuenta lista', f'''  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 300px; background: {AZUL}; border-radius: 0 0 36px 36px; display: flex; align-items: flex-end; justify-content: center">{img("grupo", 300, 200, "margin-bottom: 26px")}</div>

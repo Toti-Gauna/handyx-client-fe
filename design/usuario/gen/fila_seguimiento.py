@@ -7,18 +7,20 @@ from piezas_u import *  # noqa: F401,F403
 
 def etapas(hechas, actual, items):
     out = []
-    for i, (t, s) in enumerate(items):
-        if i < hechas:
-            m = f'<span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 50%; background: {VERDE}; display: flex; align-items: center; justify-content: center">{svg(IC["check"], "#FFFFFF", 16, 3)}</span>'
+    n = len(items)
+    for k, (t, sub) in enumerate(items):
+        if k < hechas:
+            m = f'<span aria-hidden="true" style="position: relative; z-index: 1; width: 28px; height: 28px; flex: none; border-radius: 50%; background: {AZUL}; display: flex; align-items: center; justify-content: center">{svg(IC["check"], "#FFFFFF", 15, 3)}</span>'
             est = ''
-        elif i == actual:
-            m = f'<span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 50%; background: {AZUL}; box-shadow: 0 0 0 5px {TINTE}"></span>'
+        elif k == actual:
+            m = f'<span aria-hidden="true" style="position: relative; z-index: 1; width: 28px; height: 28px; flex: none; box-sizing: border-box; border-radius: 50%; background: #FFFFFF; border: 3px solid {AMARILLO}; box-shadow: 0 0 0 3px #FBFBD2; display: flex; align-items: center; justify-content: center"><span style="width: 10px; height: 10px; border-radius: 50%; background: {AZUL}"></span></span>'
             est = 'font-weight: 800'
         else:
-            m = f'<span aria-hidden="true" style="width: 28px; height: 28px; flex: none; border-radius: 50%; border: 2px solid #C7CDD8; box-sizing: border-box"></span>'
+            m = f'<span aria-hidden="true" style="position: relative; z-index: 1; width: 28px; height: 28px; flex: none; border-radius: 50%; border: 2px solid #C7CDD8; background: #FFFFFF; box-sizing: border-box"></span>'
             est = f'color: {SUAVE}'
-        out.append(f'<li style="display: flex; gap: 12px; align-items: center">{m}<span style="display: flex; flex-direction: column; {est}"><span style="font-size: 15px">{t}</span><span style="font-size: 12px; color: {SUAVE}; font-weight: 400">{s}</span></span></li>')
-    return f'<ol aria-label="Etapas del trabajo" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">{"".join(out)}</ol>'
+        linea = f'<span aria-hidden="true" style="position: absolute; left: 13px; top: 28px; bottom: -14px; width: 2px; background: {AZUL if k < hechas else BORDE}"></span>' if k < n - 1 else ''
+        out.append(f'<li style="position: relative; display: flex; gap: 12px; align-items: center">{linea}{m}<span style="display: flex; flex-direction: column; {est}"><span style="font-size: 15px">{t}</span><span style="font-size: 12px; color: {SUAVE}; font-weight: 400">{sub}</span></span></li>')
+    return f'<ol aria-label="Etapas del trabajo" style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px">{"".join(out)}</ol>'
 
 
 ETAPAS = [('Turno confirmado', 'Lun 16/11'), ('En camino', 'Jue 19/11'), ('Llegó', ''), ('Trabajando', ''), ('Terminado y pago', '')]
@@ -49,19 +51,25 @@ guardar_u('S-Llego.dc.html', 'Llegó el especialista', barra('Llegó Julián', '
     + aviso('Si el código no coincide, no abras y escribile a Soporte de Handyx.', 'escudo', 'amarillo'), gap=12)
     + fijo(btn('Es Julián, ya entró', 'S-Trabajando.dc.html', 'check'), btn('Avisar a Soporte', 'M-Soporte.dc.html', var='contorno')))
 
-# S-Trabajando
-guardar_u('S-Trabajando.dc.html', 'Trabajando', barra('Trabajando', 'S-Agendado.dc.html', accion_icono('chat', 'Escribirle a Julián', 'M-Chat.dc.html'), sub='Julián Ortiz · desde 10:25') + cont(
-    tarjeta(etapas(3, 3, ETAPAS))
-    + f'<a href="S-Adicional.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 20px; background: #FBFBD2; border: 1px solid #E5E39A; color: {TINTA}; text-decoration: none">{mosaico_ic("alerta", 44, fondo=AMARILLO, color=TINTA, radio=14, iconsize=20)}<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Julián pide un adicional</strong><span style="font-size: 13px">Cartucho nuevo · $ 9.500 · para aprobar</span></span>{svg(IC["flecha"], TINTA, 18)}</a>'
-    + tarjeta(f'{etiqueta("AVANCE DE JULIÁN")}<div style="display: flex; gap: 10px">{foto("canilla", 110, 90, 14)}<span style="font-size: 14px; line-height: 1.4">«Desarmé la canilla. El cuerito estaba gastado y el cartucho tiene una fisura.»<span style="display: block; margin-top: 4px; font-size: 12px; color: {SUAVE}">10:41</span></span></div>'), gap=12))
+# S-Trabajando (como el «Trabajo» del especialista: título del trabajo, etapas, aviso amarillo y avance)
+tile = lambda ic, t, href: f'<a href="{href}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 72px; border-radius: 18px; background: {MOSAICO}; box-shadow: 0 4px 0 #D3D6DC; color: {TINTA}; font-size: 13px; font-weight: 800; text-decoration: none">{svg(IC[ic], TINTA, 22)}{t}</a>'
+guardar_u('S-Trabajando.dc.html', 'Trabajando', barra('Trabajo', 'X-Actividad.dc.html', sub='Hoy · desde 10:25') + cont(
+    f'<div style="display: flex; align-items: center; gap: 14px">{mosaico_ic("canilla_ic", 64, fondo=TINTE, color=AZUL, radio=20, iconsize=30)}<span style="display: flex; flex-direction: column; gap: 4px">{chip("Trabajando", "herramienta", "azul")}<span style="{TIT}; font-size: 24px; line-height: 1.02">Canilla del baño</span><span style="font-size: 13px; color: {SUAVE}">Julián Ortiz · Plomería</span></span></div>'
+    + tarjeta(etapas(3, 3, ETAPAS))
+    + f'<a href="S-Adicional.dc.html" style="display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 22px; background: {AMARILLO}; box-shadow: 0 4px 0 #C9C85A; color: {TINTA}; text-decoration: none">{mosaico_ic("alerta", 44, fondo="#FFFFFF", color=TINTA, radio=14, iconsize=20)}'
+      f'<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Julián pide un adicional</strong><span style="font-size: 13px">Cartucho nuevo · $ 9.500 · para aprobar</span></span>{svg(IC["flecha"], TINTA, 20)}</a>'
+    + tarjeta(f'{etiqueta("AVANCE DE JULIÁN · 10:41")}<div style="display: flex; gap: 12px; align-items: flex-start">{foto("canilla", 104, 96, 16, "Foto del avance: canilla desarmada")}<span style="font-size: 14px; line-height: 1.45">«Desarmé la canilla. El cuerito estaba gastado y el cartucho tiene una fisura.»</span></div>')
+    + f'<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">{tile("chat", "Mensaje", "M-Chat.dc.html")}{tile("telefono", "Llamar", "S-Trabajando.dc.html")}{tile("documento", "Acuerdo", "C-Detalle.dc.html")}</div>', gap=12), alto=900)
 
-# S-Adicional
+# S-Adicional (foto, motivo y cómo cambia el total; sin bloques verdes)
 guardar_u('S-Adicional.dc.html', 'Aprobar un adicional', barra('Adicional', 'S-Trabajando.dc.html', sub='Pedido por Julián Ortiz') + cont(
     titulo('¿Aprobás el ', 'adicional', '?', size=28, sub='Nada se suma al acuerdo hasta que lo apruebes.')
-    + tarjeta(f'<div style="display: flex; align-items: center; gap: 12px">{mosaico_ic("caja", 52, radio=16, iconsize=24)}<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px">Cartucho termostático</strong><span style="font-size: 13px; color: {SUAVE}">El de ahora tiene una fisura</span></span>{monto("$ 9.500", 22)}</div>'
-              + foto('canilla', 326, 140, 16, 'Foto del cartucho fisurado')
-              + f'<div style="display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid {BORDE}; font-size: 14px"><span>Acuerdo actual</span><strong>$ 45.000</strong></div><div style="display: flex; justify-content: space-between; font-size: 15px"><strong>Total si aprobás</strong>{monto("$ 54.500", 22)}</div>'), gap=12)
-    + fijo(btn('Aprobar $ 9.500', 'S-Trabajando.dc.html', 'check', 'verde'), btn('No, gracias', 'S-Trabajando.dc.html', var='rojo')))
+    + f'<section style="border-radius: 24px; overflow: hidden; border: 1px solid {BORDE}; box-shadow: 0 18px 34px -24px rgba(14,29,54,0.45)">{foto("canilla", 358, 150, 0, "Foto del cartucho fisurado")}'
+      f'<div style="padding: 14px 16px; display: flex; flex-direction: column; gap: 10px"><div style="display: flex; align-items: center; gap: 12px">{mosaico_ic("caja", 44, fondo=TINTE, color=AZUL, radio=14, iconsize=20)}<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 16px">Cartucho termostático</strong><span style="font-size: 13px; color: {SUAVE}">Repuesto + 20 min de mano de obra</span></span>{monto("+ $ 9.500", 20)}</div>'
+      f'<blockquote style="margin: 0; padding: 10px 12px; border-radius: 14px; background: {GRIS2}; font-size: 14px; line-height: 1.4">«El de ahora tiene una fisura: si solo cambio el cuerito, en unos meses vuelve a gotear.»</blockquote></div></section>'
+    + tarjeta_noche(f'<div style="display: flex; justify-content: space-between; font-size: 14px; color: #C9D3E6"><span>Acuerdo actual</span><span>$ 45.000</span></div><div style="display: flex; justify-content: space-between; font-size: 14px; color: #C9D3E6"><span>Adicional</span><span>+ $ 9.500</span></div>'
+                    f'<div style="height: 1px; background: rgba(255,255,255,0.18)"></div><div style="display: flex; justify-content: space-between; align-items: baseline"><strong style="font-size: 15px">Total si aprobás</strong>{monto("$ 54.500", 28, "#FFFFFF")}</div>'), gap=12)
+    + fijo(btn('Aprobar $ 9.500', 'S-Trabajando.dc.html', 'check'), fila_botones(btn('Preguntar', 'M-Chat.dc.html', 'chat', 'contorno', chico=True), btn('No, gracias', 'S-Trabajando.dc.html', 'cerrar', 'rojo', chico=True))), alto=900)
 
 # S-AntesDespues (deslizar)
 guardar_u('S-AntesDespues.dc.html', 'Antes y después', barra('Antes y después', 'S-Informe.dc.html', sub='Canilla del baño') + cont(
@@ -118,14 +126,20 @@ guardar_u('S-PagoInformado.dc.html', 'Pago informado', barra('Pago', 'S-Pagar.dc
     + aviso('Informado no es verificado: el pago queda verificado cuando Julián lo confirma.', 'info', 'gris'), gap=12)
     + fijo(btn('Dejar una reseña', 'S-Resena.dc.html', 'estrella'), btn('Listo', 'X-Actividad.dc.html', var='contorno')))
 
-# S-Resena
-estrellas = ''.join(f'<button type="button" aria-label="{i} de 5" aria-pressed="{"true" if i <= 5 else "false"}" style="width: 52px; height: 52px; border: 0; background: none; display: flex; align-items: center; justify-content: center"><svg width="38" height="38" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z" fill="{NARANJA}" stroke="{NARANJA}" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>' for i in range(1, 6))
-etq = ''.join(f'<button type="button" aria-pressed="{"true" if on else "false"}" style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: {"0" if on else "1.5px solid " + BORDE}; background: {TINTE if on else "#FFFFFF"}; color: {HONDO if on else TINTA}; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 800">{t}</button>' for t, on in [('Puntual', True), ('Prolijo', True), ('Explicó todo', False), ('Buen precio', False)])
-guardar_u('S-Resena.dc.html', 'Reseña', barra('Tu reseña', 'S-PagoInformado.dc.html', sub='Julián Ortiz · Plomería') + cont(
-    f'<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">{avatar("julian", 72)}<span style="{TIT}; font-size: 22px">¿Cómo te fue?</span></div>'
-    + f'<div role="group" aria-label="Calificación" style="display: flex; justify-content: center">{estrellas}</div>'
-    + f'<div role="group" aria-label="Qué destacás" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center">{etq}</div>'
-    + f'<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: {TEXTO}">Contá cómo fue (opcional)<textarea readonly rows="3" style="box-sizing: border-box; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1.5px solid {BORDE}; font-family: \'DM Sans\', sans-serif; font-size: 15px; color: {TINTA}; resize: none">Llegó en horario y dejó todo limpio.</textarea></label>'
-    + aviso('Tu reseña se publica con tu nombre y la inicial del apellido. Sumás un paso en tu camino del hogar.', 'medalla', 'gris'), gap=12)
-    + fijo(btn('Publicar la reseña', 'X-Actividad.dc.html')))
+# S-Resena: hoja que sube sobre «¡Quedó arreglado!» (como Uber): estrellas grandes, chips y comentario opcional.
+fondo_ok = (f'  <div aria-hidden="true" style="position: absolute; top: 0; left: 0; right: 0; height: 380px; background: {AZUL}; border-radius: 0 0 36px 36px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #FFFFFF">'
+            f'{img("cano", 120, 130)}<span style="{TIT}; font-size: 28px">¡Quedó arreglado!</span><span style="font-size: 14px; color: #DCE7F7">Pago informado · $ 54.500</span></div>\n')
+star = lambda k: f'<button type="button" aria-label="{k} de 5" aria-pressed="true" style="width: 54px; height: 54px; border: 0; background: none; display: flex; align-items: center; justify-content: center">{svg(IC["estrella_llena"], NARANJA, 40)}</button>'
+chip_b = lambda t, on=False: f'<button type="button" aria-pressed="{"true" if on else "false"}" style="min-height: 44px; padding: 0 14px; border-radius: 999px; border: {"2px solid " + AZUL if on else "1.5px solid " + BORDE}; background: {TINTE if on else "#FFFFFF"}; color: {HONDO if on else TINTA}; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 800">{t}</button>'
+guardar_u('S-Resena.dc.html', 'Reseña', oscurecer(fondo_ok)
+    + f'  <div aria-hidden="true" style="position: absolute; top: 236px; left: 50%; margin-left: -40px; z-index: 2; border-radius: 50%; box-shadow: 0 0 0 5px #FFFFFF, 0 12px 24px -8px rgba(14,29,54,0.5)">{avatar("julian", 80)}</div>\n'
+    + hoja_u(f'<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 26px; text-align: center"><h2 style="margin: 0; {TIT}; font-size: 24px">¿Cómo te fue con Julián?</h2><span style="font-size: 13px; color: {SUAVE}">Plomería · canilla del baño · jue 19/11</span></div>'
+             + f'<div role="group" aria-label="Calificación: 5 de 5" style="display: flex; justify-content: center">{"".join(star(k) for k in range(1, 6))}</div>'
+             + f'<span style="align-self: center; font-size: 15px; font-weight: 800; color: {HONDO}">¡Excelente!</span>'
+             + etiqueta('¿QUÉ ESTUVO BIEN?')
+             + f'<div role="group" aria-label="Qué estuvo bien" style="display: flex; flex-wrap: wrap; gap: 8px">{chip_b("Puntual", True)}{chip_b("Prolijo", True)}{chip_b("Explicó todo")}{chip_b("Buen precio")}</div>'
+             + f'<label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 800; color: {TEXTO}">Comentario (opcional)<input readonly value="Llegó en horario y dejó todo limpio." style="box-sizing: border-box; width: 100%; min-height: 50px; padding: 0 14px; border-radius: 14px; border: 1.5px solid {BORDE}; font-family: \'DM Sans\', sans-serif; font-size: 15px; color: {TINTA}"></label>'
+             + btn('Publicar la reseña', 'X-Actividad.dc.html')
+             + f'<a href="X-Actividad.dc.html" style="align-self: center; min-height: 44px; display: flex; align-items: center; font-size: 14px; font-weight: 800; color: {AZUL}; text-decoration: none">Ahora no</a>',
+             top=276))
 print('seguimiento ok')

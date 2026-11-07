@@ -1,5 +1,5 @@
-# Piezas compartidas (copiadas del diseño deluxe del especialista: handyx-specialist-fe/design/deluxe/gen/piezas.py).
-# Mismo sistema visual; las imágenes de los Handys apuntan al lienzo del usuario.
+# Copia de handyx-specialist-fe/design/deluxe/gen/piezas.py (4c8ebd2), con las imágenes del lienzo del usuario.
+# Piezas compartidas de la fila elegida (estética actual de la app, fondo blanco, barra de vidrio).
 AZUL='#1F57A8'; HONDO='#143E7E'; TINTE='#E9EFF9'; AMARILLO='#F5F59A'; NOCHE='#1D2C4A'; TINTA='#0E1D36'
 TEXTO='#26324A'; SUAVE='#5F6B84'; MOSAICO='#ECECEC'; BORDE='#E3E7EE'; NARANJA='#F6A623'; EXITO='#1E9E57'
 ELEV1='0 1px 3px rgba(14,29,54,0.06), 0 8px 22px -8px rgba(14,29,54,0.16)'
@@ -26,7 +26,14 @@ IC={
  'reloj':'<circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>',
 }
 
+import re as _re
+def sin_cortes(h):
+    h=_re.sub(r'([+−-]) \$ ', '\\1\u00a0$\u00a0', h)
+    h=_re.sub(r'\$ (?=[\d])', '$\u00a0', h)
+    h=_re.sub(r'(?<=\d) (mm²|m²|m³|km|cm|mm|kg|min|ms|MΩ|Ω|h|m|%|°|fg|W|V|A|ítems|ítem|fotos|trabajos|días)(?=[^\w]|$)', '\u00a0\\1', h)
+    return h
 def documento(titulo, cuerpo):
+    cuerpo=sin_cortes(cuerpo)
     return f'''<!doctype html>
 <html lang="es">
 <head>
@@ -40,6 +47,7 @@ def documento(titulo, cuerpo):
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&amp;family=DM+Sans:opsz,wght@9..40,400..800&amp;display=swap">
 <style>
 body{{margin:0}}
+*{{overflow-wrap:normal}}
 a{{color:{AZUL}}}a:hover{{color:{HONDO}}}
 </style>
 </helmet>
@@ -59,17 +67,17 @@ return {{}};
 '''
 
 def barra_vidrio(activa):
-    tabs=[('Inicio','casa','F-Inicio.dc.html'),('Obras','obra','F-Obras.dc.html'),('Agenda','agenda','F-Agenda.dc.html'),('Mensajes','chat','F-Mensajes.dc.html'),('Cuenta','cuenta','F-Cuenta.dc.html')]
+    tabs=[('Inicio','casa','F-Inicio.dc.html'),('Obras','obra','F-Obras.dc.html'),('Taller','herramienta','F-Herramientas.dc.html'),('Mensajes','chat','F-Mensajes.dc.html'),('Cuenta','cuenta','F-Cuenta.dc.html')]
     items=[]
     for nombre,ic,href in tabs:
         on = nombre==activa
-        fondo = f'background: {AZUL}; box-shadow: 0 3px 0 {HONDO};' if on else ''
-        color = '#FFFFFF' if on else TEXTO
+        fondo = f'background: #FFFFFF; box-shadow: 0 3px 0 rgba(0,0,0,0.18);' if on else ''
+        color = AZUL if on else '#FFFFFF'
         actual = ' aria-current="page"' if on else ''
         items.append(f'<a href="{href}"{actual} style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 22px; {fondo} color: {color}; font-size: 11px; font-weight: {800 if on else 700}; text-decoration: none">{svg(IC[ic], color, 21)}{nombre}</a>')
     return ('  <nav aria-label="Secciones" style="position: absolute; left: 14px; right: 14px; bottom: 14px; height: 70px; box-sizing: border-box; padding: 6px; border-radius: 30px; '
-            'background: rgba(255,255,255,0.62); backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); '
-            f'border: 1px solid rgba(255,255,255,0.75); box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), {ELEV2}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px">\n    '
+            'background: rgba(31,87,168,0.88); backdrop-filter: blur(22px) saturate(180%); -webkit-backdrop-filter: blur(22px) saturate(180%); '
+            f'border: 1px solid rgba(255,255,255,0.28); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), {ELEV2}; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2px">\n    '
             + '\n    '.join(items) + '\n  </nav>')
 
 def barra_compacta(titulo, atras, accion='', sub=''):
