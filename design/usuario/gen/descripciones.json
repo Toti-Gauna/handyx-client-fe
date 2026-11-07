@@ -1,0 +1,819 @@
+{
+ "A-Bienvenida": {
+  "titulo": "Bienvenida",
+  "que": "Primera pantalla: Mar del Plata ilustrada y qué es Handyx. «Crear cuenta» o «Ya tengo cuenta».",
+  "llegas": [
+   "Al abrir la app por primera vez."
+  ]
+ },
+ "O-Obra": {
+  "titulo": "Obra",
+  "que": "Tu obra: etapas, días, repuestos, equipo y pagos.",
+  "llegas": [
+   "«Días» en Pagos de la obra",
+   "«12 NOV» en Historial de la casa",
+   "«Ver» en Actividad"
+  ]
+ },
+ "T-Herramientas": {
+  "titulo": "Herramientas",
+  "que": "Herramientas del teléfono: medir, nivel, linterna y lupa, foto anotada, 3D y AR.",
+  "llegas": [
+   "Desde «Adjuntar» en un chat o «Medir» al pedir."
+  ]
+ },
+ "S-LadoALado": {
+  "titulo": "Lado a lado",
+  "que": "Antes y después, una foto al lado de la otra.",
+  "llegas": [
+   "«Lado a lado» en Antes y después"
+  ]
+ },
+ "C-Rechazar": {
+  "titulo": "Rechazar la propuesta",
+  "que": "Rechazás con un motivo opcional que el especialista no ve.",
+  "llegas": [
+   "«Rechazar» en Propuesta de Julián",
+   "«Rechazar» en Visita de Martín",
+   "«Rechazar» en Propuestas"
+  ]
+ },
+ "A-Datos": {
+  "titulo": "Tus datos",
+  "que": "Lo justo para coordinar: nombre y celular. Sin DNI ni CUIT.",
+  "llegas": [
+   "«Continuar con Google» en Cómo entrar",
+   "«Continuar con Apple» en Cómo entrar",
+   "«Verificar» en Código"
+  ]
+ },
+ "P-Cuando": {
+  "titulo": "Pedir: cuándo",
+  "que": "Si querés cambiarlo: lo antes posible, un día puntual o una obra de varios días.",
+  "llegas": [
+   "«Cuándo» en Pedir: revisar"
+  ]
+ },
+ "I-Avisos": {
+  "titulo": "Avisos",
+  "que": "Todos tus avisos (propuestas, mensajes, turnos, recordatorios). Cada uno abre su detalle; ninguno acepta nada por vos.",
+  "llegas": [
+   "La campana del Inicio.",
+   "«Avisos, 2 sin leer» en Inicio"
+  ]
+ },
+ "P-Fecha": {
+  "titulo": "Pedir: fecha y franja",
+  "que": "Día en el calendario y franja horaria preferida.",
+  "llegas": [
+   "«Elegir el día» en Pedir: cuándo",
+   "«Proponer otro día» en Cambio de fecha"
+  ]
+ },
+ "X-Ayuda": {
+  "titulo": "Ayuda",
+  "que": "Temas, buscador y preguntas frecuentes.",
+  "llegas": [
+   "«Políticas y textos» en Privacidad",
+   "«Ayuda Preguntas y Soporte» en Tu cuenta"
+  ]
+ },
+ "C-Cambios": {
+  "titulo": "Pedir cambios",
+  "que": "Pedís otro día, otro precio o que incluya materiales. Nada cambia hasta que aceptes la nueva.",
+  "llegas": [
+   "«Pedir cambios» en Propuesta de Julián",
+   "«Otro día» en Chat con Julián",
+   "«Cambiar el turno» en Turno agendado"
+  ]
+ },
+ "P-Anotar": {
+  "titulo": "Anotar la foto",
+  "que": "Marcás sobre la foto con flechas, círculos o texto dónde está el problema.",
+  "llegas": [
+   "«Foto anotada Flechas y texto» en Herramientas",
+   "«Anotar» en Pedir: fotos",
+   "«Foto anotada Flechas y texto» en Sumar al chat"
+  ]
+ },
+ "C-Detalle": {
+  "titulo": "Propuesta de Julián",
+  "que": "La propuesta completa: precio, materiales, equipo, duración, garantía, qué incluye y qué no.",
+  "llegas": [
+   "«Julián Ortiz te mandó una propuesta» en Avisos",
+   "«Ver» en Chat con Julián",
+   "«Acuerdo» en Trabajando"
+  ]
+ },
+ "A-Casa": {
+  "titulo": "Armá tu casa",
+  "que": "Paso opcional: armar la ficha de tu casa para que la próxima vez el pedido salga armado. Se puede saltar.",
+  "llegas": [
+   "«Permitir avisos» en Avisos",
+   "«Ahora no» en Avisos"
+  ]
+ },
+ "M-Mensajes": {
+  "titulo": "Mensajes",
+  "que": "Tus chats, cada uno atado a un pedido, una obra o Soporte.",
+  "llegas": [
+   "Pestaña «Mensajes» de la barra de abajo"
+  ]
+ },
+ "G-Hito": {
+  "titulo": "¡Insignia nueva!",
+  "que": "Celebración breve al conseguir una insignia.",
+  "llegas": [
+   "Al conseguir una insignia."
+  ]
+ },
+ "X-Privacidad": {
+  "titulo": "Privacidad",
+  "que": "HandIA y tus datos, qué se comparte, descargar tus datos y borrar la cuenta.",
+  "llegas": [
+   "«Privacidad» en Tu cuenta"
+  ]
+ },
+ "H-Garantias": {
+  "titulo": "Informes y garantías",
+  "que": "Informes y garantías vigentes, con hasta cuándo cubren.",
+  "llegas": [
+   "«Informes» en Historial de la casa"
+  ]
+ },
+ "A-Entrar": {
+  "titulo": "Cómo entrar",
+  "que": "Elegís cómo entrar, sin contraseña: código por email o por SMS, o tu cuenta de Google o Apple.",
+  "llegas": [
+   "«Crear cuenta» en Bienvenida",
+   "«Ya tengo cuenta» en Bienvenida"
+  ]
+ },
+ "O-Pagos": {
+  "titulo": "Pagos de la obra",
+  "que": "Pagos por etapa, directo a quien la hizo, informados y verificados.",
+  "llegas": [
+   "«Pagos» en Obra"
+  ]
+ },
+ "S-Conformidad": {
+  "titulo": "Conformidad",
+  "que": "Con un toque confirmás que quedó bien, o avisás que hay un problema.",
+  "llegas": [
+   "«Dar la conformidad» en Informe del trabajo"
+  ]
+ },
+ "S-Resena": {
+  "titulo": "Reseña",
+  "que": "Hoja tipo Uber: estrellas, qué estuvo bien y un comentario opcional.",
+  "llegas": [
+   "«Dejar una reseña» en Pago informado"
+  ]
+ },
+ "P-Publicado": {
+  "titulo": "Pedido publicado",
+  "que": "Pedido publicado: qué sigue y que no hay un tiempo fijo de respuesta.",
+  "llegas": [
+   "«Publicar el pedido» en Pedir: revisar"
+  ]
+ },
+ "X-Error": {
+  "titulo": "Algo se rompió",
+  "que": "Algo falló de nuestro lado: reintentar o escribir a Soporte.",
+  "llegas": [
+   "Aparece sola cuando algo falla de nuestro lado."
+  ]
+ },
+ "I-HandIAChat": {
+  "titulo": "HandIA: conversación",
+  "que": "La conversación: HandIA entiende el rubro y te hace 2 o 3 preguntas cortas, con respuestas rápidas.",
+  "llegas": [
+   "«Volver al chat» en HandIA voz: ajustes",
+   "«Escribir» en HandIA voz: ajustes",
+   "«Terminar el modo voz» en HandIA voz: ajustes"
+  ]
+ },
+ "A-Segunda": {
+  "titulo": "Segunda verificación",
+  "que": "Segunda verificación opcional: app autenticadora, SMS o email.",
+  "llegas": [
+   "«Sumar una segunda verificación (opcional)» en Cuenta lista",
+   "«Cambiar o apagar» en Seguridad"
+  ]
+ },
+ "H-Rompio": {
+  "titulo": "Algo se rompió",
+  "que": "Elegís dónde pasa y qué falla; el pedido sale armado con los datos de tu casa.",
+  "llegas": [
+   "«Algo se rompió acá» en Baño",
+   "«Algo se rompió» en Mi hogar"
+  ]
+ },
+ "T-Nivel": {
+  "titulo": "Nivel",
+  "que": "Nivel con el giroscopio del teléfono.",
+  "llegas": [
+   "«Nivel ¿Está derecho?» en Herramientas",
+   "«Nivel ¿Está derecho?» en Sumar al chat"
+  ]
+ },
+ "H-Ambiente": {
+  "titulo": "Baño",
+  "que": "Un ambiente completo: fotos, medidas, materiales, equipos y notas.",
+  "llegas": [
+   "«Baño» en Mi casa",
+   "«Cocina» en Mi casa",
+   "«Living» en Mi casa"
+  ]
+ },
+ "S-Informe": {
+  "titulo": "Informe del trabajo",
+  "que": "Informe del trabajo: qué encontró, pruebas, materiales y garantía.",
+  "llegas": [
+   "«Ver el informe» en Informes y garantías",
+   "«19 NOV» en Historial de la casa",
+   "«Revisión de gas · mar 2026» en Calefón"
+  ]
+ },
+ "I-VozAjustes": {
+  "titulo": "HandIA voz: ajustes",
+  "que": "Ajustes del modo voz: qué voz usa, subtítulos y sonido al empezar y terminar.",
+  "llegas": [
+   "«Ajustes del modo voz» en HandIA voz: te escucha",
+   "«Ajustes del modo voz» en HandIA voz: te responde"
+  ]
+ },
+ "A-CasaFotos": {
+  "titulo": "Tu casa: fotos",
+  "que": "Una foto por ambiente, si querés. Se guardan sin ubicación y sin datos del teléfono.",
+  "llegas": [
+   "«Seguir · 8 equipos» en Tu casa: equipos"
+  ]
+ },
+ "M-Soporte": {
+  "titulo": "Soporte de Handyx",
+  "que": "Conversación con Soporte de Handyx, atendida por personas.",
+  "llegas": [
+   "«Escribirle a Soporte» en Ayuda",
+   "«Soporte de Handyx» en Mensajes",
+   "«Hay un problema» en Conformidad"
+  ]
+ },
+ "O-Fecha": {
+  "titulo": "Cambio de fecha",
+  "que": "Un cambio de fecha propuesto: lo aceptás u ofrecés otro día.",
+  "llegas": [
+   "«Ver» en Chat de la obra"
+  ]
+ },
+ "M-Chat": {
+  "titulo": "Chat con Julián",
+  "que": "Chat con un especialista: tarjetas de propuesta u horario que se aceptan ahí mismo.",
+  "llegas": [
+   "«Diego Herrera te escribió» en Avisos",
+   "«Mandar a Julián» en Pedir cambios",
+   "«Escribirle a Julián» en Propuesta de Julián"
+  ]
+ },
+ "P-Medir": {
+  "titulo": "Medir con la cámara",
+  "que": "Medís con la cámara (aproximado) y la medida va al pedido.",
+  "llegas": [
+   "«Medir» en Pedir: fotos",
+   "«Medir» en Pedir: qué pasa"
+  ]
+ },
+ "S-Adicional": {
+  "titulo": "Aprobar un adicional",
+  "que": "Un adicional con foto, motivo y cómo cambia el total. Lo aprobás, preguntás o lo rechazás.",
+  "llegas": [
+   "«Julián pide un adicional» en Trabajando"
+  ]
+ },
+ "H-Modelo3D": {
+  "titulo": "Modelo 3D y medidas",
+  "que": "El modelo 3D con las medidas compartidas (para más adelante).",
+  "llegas": [
+   "«Terminar» en Escanear en 3D",
+   "«Guardar en Mi hogar» en Medir",
+   "«Planos y 3D» en Mi casa"
+  ]
+ },
+ "C-Certificados": {
+  "titulo": "Perfil de Julián",
+  "que": "Perfil del especialista: cifras, verificaciones de Operations, trabajos recientes y reseñas.",
+  "llegas": [
+   "«Ver perfil, trabajos y reseñas» en Propuesta de Julián",
+   "«Ver perfil» en Propuestas"
+  ]
+ },
+ "P-Fotos": {
+  "titulo": "Pedir: fotos",
+  "que": "Opcional: hasta 6 fotos. Les sacamos la ubicación antes de subirlas.",
+  "llegas": [
+   "«Listo» en Anotar la foto",
+   "«Guardar la medida en el pedido» en Medir con la cámara",
+   "«Foto» en Pedir: qué pasa"
+  ]
+ },
+ "X-Datos": {
+  "titulo": "Tus datos",
+  "que": "Tus datos y direcciones guardadas. Sin DNI ni CUIT.",
+  "llegas": [
+   "«Dirección: Calle De Prueba 123, La Perla.…» en Inicio",
+   "«Usar otra dirección» en Pedir: zona",
+   "«Tus datos y direcciones» en Tu cuenta"
+  ]
+ },
+ "O-Dia": {
+  "titulo": "Jornada de obra",
+  "que": "Una jornada: quién viene, a qué hora y qué se hace.",
+  "llegas": [
+   "«JUE» en Obra",
+   "«VIE» en Obra",
+   "«LUN» en Obra"
+  ]
+ },
+ "I-Inicio": {
+  "titulo": "Inicio",
+  "que": "El Inicio: rubros, tu próximo turno, la tarjeta de HandIA y arreglos frecuentes («Quiero…»).",
+  "llegas": [
+   "Pestaña «Inicio» de la barra de abajo",
+   "«Ir al inicio» en Pedido publicado",
+   "«Activar» en Segunda verificación",
+   "«Ahora no» en Segunda verificación"
+  ]
+ },
+ "A-Listo": {
+  "titulo": "Cuenta lista",
+  "que": "Tu cuenta está lista. Te contamos la tarifa de servicio (0 % hasta el 10/12/2026) y podés sumar la segunda verificación.",
+  "llegas": [
+   "«Saltar» en Armá tu casa",
+   "«Más tarde» en Armá tu casa",
+   "«Guardar mi casa» en Tu casa: fotos"
+  ]
+ },
+ "S-AntesDespues": {
+  "titulo": "Antes y después",
+  "que": "Antes y después con un deslizador.",
+  "llegas": [
+   "«Deslizar» en Lado a lado",
+   "«verlas» en Informe del trabajo"
+  ]
+ },
+ "S-Trabajando": {
+  "titulo": "Trabajando",
+  "que": "El trabajo en curso: etapas, avisos para aprobar y el avance con fotos.",
+  "llegas": [
+   "«Aprobar $ 9.500» en Aprobar un adicional",
+   "«No, gracias» en Aprobar un adicional",
+   "«Es Julián, ya entró» en Llegó el especialista"
+  ]
+ },
+ "H-Sumar": {
+  "titulo": "Sumar a tu casa",
+  "que": "Sumás un ambiente o un equipo, empezando por una foto de la etiqueta.",
+  "llegas": [
+   "«Sumar un ambiente» en Mi casa"
+  ]
+ },
+ "P-Zona": {
+  "titulo": "Pedir: zona",
+  "que": "La dirección para este pedido. Los especialistas ven solo la zona.",
+  "llegas": [
+   "«Dónde» en Pedir: revisar"
+  ]
+ },
+ "P-Rubro": {
+  "titulo": "Pedir: rubro",
+  "que": "Si entrás a pedir sin rubro: los seis rubros o «Contale a HandIA».",
+  "llegas": [
+   "Al pedir sin un rubro elegido."
+  ]
+ },
+ "A-Zona": {
+  "titulo": "Tu zona",
+  "que": "Tu barrio en el mapa y la dirección. Los especialistas ven solo la zona aproximada.",
+  "llegas": [
+   "«Seguir» en Tus datos",
+   "«Sumar una dirección» en Tus datos"
+  ]
+ },
+ "T-Escanear": {
+  "titulo": "Escanear en 3D",
+  "que": "Escanear en 3D sacando fotos alrededor.",
+  "llegas": [
+   "«Escanear en 3D» en Herramientas",
+   "«Escaneo 3D Un ambiente» en Sumar al chat"
+  ]
+ },
+ "H-Compartir": {
+  "titulo": "Compartir de Mi hogar",
+  "que": "Elegís qué partes de tu casa ve el especialista de este pedido.",
+  "llegas": [
+   "«Compartir con un especialista» en Baño",
+   "«De Mi hogar» en Pedir: qué pasa"
+  ]
+ },
+ "X-Respuesta": {
+  "titulo": "Respuesta de ayuda",
+  "que": "Una respuesta de ayuda con «¿Te sirvió?».",
+  "llegas": [
+   "«Pedir» en Ayuda",
+   "«Propuestas» en Ayuda",
+   "«Pagos» en Ayuda"
+  ]
+ },
+ "S-Llego": {
+  "titulo": "Llegó el especialista",
+  "que": "Llegó: un código para confirmar que es él antes de abrir.",
+  "llegas": [
+   "Cuando el especialista marca que llegó."
+  ]
+ },
+ "M-Adjuntar": {
+  "titulo": "Sumar al chat",
+  "que": "Sumás una foto, una medida, el modelo 3D o algo de Mi hogar al chat.",
+  "llegas": [
+   "«Sumar foto, medida o tarjeta» en Soporte de Handyx",
+   "«Sumar foto, medida o tarjeta» en Chat con Julián",
+   "«Sumar» en Chat de la obra"
+  ]
+ },
+ "S-Agendado": {
+  "titulo": "Turno agendado",
+  "que": "Tu turno: especialista, día y franja, precio y las etapas del trabajo.",
+  "llegas": [
+   "«Mañana: turno de plomería» en Avisos",
+   "«Jue 19/11 · 10 a 12 h» en Inicio",
+   "«Ver el turno» en Turno confirmado"
+  ]
+ },
+ "H-AR": {
+  "titulo": "Ver en AR",
+  "que": "Ver en tu casa, en tamaño real, un equipo propuesto antes de aceptarlo.",
+  "llegas": [
+   "«Ver en AR Un equipo propuesto» en Herramientas"
+  ]
+ },
+ "T-Linterna": {
+  "titulo": "Linterna y lupa",
+  "que": "Linterna y lupa para ver de cerca.",
+  "llegas": [
+   "«Linterna y lupa» en Herramientas"
+  ]
+ },
+ "P-Que": {
+  "titulo": "Pedir: qué pasa",
+  "que": "Paso 1 del camino corto: qué pasa, con tus palabras si querés. Fotos y medidas, opcionales.",
+  "llegas": [
+   "«Armar el pedido» en Algo se rompió",
+   "«Electricidad» en Inicio",
+   "«Plomería» en Inicio"
+  ]
+ },
+ "X-Seguridad": {
+  "titulo": "Seguridad",
+  "que": "Segunda verificación y sesiones abiertas.",
+  "llegas": [
+   "«Seguridad» en Tu cuenta"
+  ]
+ },
+ "C-Aceptada": {
+  "titulo": "Turno confirmado",
+  "que": "¡Turno confirmado! Cuándo, con quién, cuánto y qué sigue.",
+  "llegas": [
+   "«Aceptar» en Chat con Julián",
+   "«Aceptar y compartir mi dirección» en Confirmar la propuesta"
+  ]
+ },
+ "G-Insignia": {
+  "titulo": "Insignia Al día",
+  "que": "Una insignia: qué falta para conseguirla.",
+  "llegas": [
+   "«Casa fichada Ficha completa» en Insignias",
+   "«Ojo de inspector» en Insignias",
+   "«Al día» en Insignias"
+  ]
+ },
+ "A-CasaAmbientes": {
+  "titulo": "Tu casa: ambientes",
+  "que": "Tipo de vivienda y cuántos ambientes hay (baños, cocina, dormitorios…).",
+  "llegas": [
+   "«Empezar» en Armá tu casa"
+  ]
+ },
+ "T-Medir": {
+  "titulo": "Medir",
+  "que": "Medir con la cámara (aproximado).",
+  "llegas": [
+   "«Medir Con la cámara (AR)» en Herramientas",
+   "«Medida Con la cámara» en Sumar al chat"
+  ]
+ },
+ "I-HandIAPiensa": {
+  "titulo": "HandIA pensando",
+  "que": "Mientras piensa: primero te avisa si hay riesgo y te muestra qué está haciendo.",
+  "llegas": [
+   "Después de cada mensaje, mientras HandIA piensa."
+  ]
+ },
+ "I-HandIAFicha": {
+  "titulo": "HandIA: tu pedido",
+  "que": "HandIA armó la ficha del pedido. La revisás, la corregís o pedís así.",
+  "llegas": [
+   "Cuando HandIA termina las preguntas."
+  ]
+ },
+ "H-Historial": {
+  "titulo": "Historial de la casa",
+  "que": "Todo lo que se hizo en la casa: trabajos, informes y pagos.",
+  "llegas": [
+   "«Historial» en Actividad",
+   "«Historial y garantías» en Mi hogar"
+  ]
+ },
+ "C-Visita": {
+  "titulo": "Visita de Martín",
+  "que": "Cuando el especialista necesita ver antes: precio de la visita y lo que se define en ella.",
+  "llegas": [
+   "«Ver el detalle de Martín» en Propuestas",
+   "«Ver visita» en Propuestas"
+  ]
+ },
+ "C-Comparar": {
+  "titulo": "Comparar propuestas",
+  "que": "Lado a lado, con «La mejor en perfil y precio» calculada por promedio y los pesos a la vista.",
+  "llegas": [
+   "«Comparar lado a lado» en Propuestas",
+   "«Mejor promedio» en Propuestas"
+  ]
+ },
+ "X-Actividad": {
+  "titulo": "Actividad",
+  "que": "Actividad: lo que está en curso, la agenda y el historial.",
+  "llegas": [
+   "Pestaña «Actividad» de la barra de abajo",
+   "«Publicar la reseña» en Reseña",
+   "«Ahora no» en Reseña",
+   "«Listo» en Pago informado"
+  ]
+ },
+ "X-SinConexion": {
+  "titulo": "Estás sin conexión",
+  "que": "Sin conexión: no se mandó nada; reintentás cuando vuelva la señal.",
+  "llegas": [
+   "Aparece sola cuando el teléfono se queda sin señal."
+  ]
+ },
+ "C-Propuestas": {
+  "titulo": "Propuestas",
+  "que": "Las propuestas en el orden en que llegaron: precio, duración, garantía, equipo y verificaciones, con Rechazar, Ver perfil y Aceptar.",
+  "llegas": [
+   "«Rechazar la propuesta» en Rechazar la propuesta",
+   "«Ver las propuestas» en Tu pedido"
+  ]
+ },
+ "S-PagoInformado": {
+  "titulo": "Pago informado",
+  "que": "Pago informado: queda verificado cuando el especialista lo confirma.",
+  "llegas": [
+   "«Pagar con Mercado Pago» en Pagar",
+   "«Pagué en efectivo» en Pagar"
+  ]
+ },
+ "H-Hogar": {
+  "titulo": "Mi hogar",
+  "que": "Mi hogar: el resumen de tu casa y cuatro puertas (Mi casa, Algo se rompió, Mantenimiento, Historial y garantías).",
+  "llegas": [
+   "Pestaña «Mi hogar» de la barra de abajo",
+   "«Seguir» en ¡Insignia nueva!",
+   "«De Mi hogar Equipo o informe» en Sumar al chat"
+  ]
+ },
+ "I-HandIA": {
+  "titulo": "HandIA",
+  "que": "HandIA vacío: te saluda y te sugiere cómo empezar. Escribís, dictás o pasás al modo voz.",
+  "llegas": [
+   "«HandIA» en Mensajes",
+   "«HandIA, tu asistente» en Mensajes",
+   "«Abrir HandIA» en Mensajes"
+  ]
+ },
+ "O-Grupo": {
+  "titulo": "Chat de la obra",
+  "que": "El chat de la obra con todo el equipo.",
+  "llegas": [
+   "«Chat del equipo» en Obra",
+   "«Equipo» en Obra",
+   "«Obra · Baño completo» en Mensajes"
+  ]
+ },
+ "S-EnCamino": {
+  "titulo": "En camino",
+  "que": "Lo ves venir solo mientras comparte el viaje, con la llegada que calcula el servidor.",
+  "llegas": [
+   "Cuando el especialista sale para tu casa."
+  ]
+ },
+ "P-Revisar": {
+  "titulo": "Pedir: revisar",
+  "que": "Paso 2: todo junto en una tarjeta, con cuándo, dónde y fotos ya puestos (se cambian ahí). El precio orientativo de Handyx.",
+  "llegas": [
+   "«Lo antes posible» en Pedir: cuándo",
+   "«Listo · jue 19/11, 10 a 12 h» en Pedir: fecha y franja",
+   "«Listo» en Pedir: fotos"
+  ]
+ },
+ "C-Aceptar": {
+  "titulo": "Confirmar la propuesta",
+  "que": "Confirmás sobre la propuesta: qué pasa al aceptar (dirección, otras propuestas, pago directo).",
+  "llegas": [
+   "«Aceptar esta propuesta» en Propuesta de Julián",
+   "«Aceptar» en Chat con Julián",
+   "«Aceptar su propuesta» en Perfil de Julián"
+  ]
+ },
+ "C-Buscando": {
+  "titulo": "Tu pedido",
+  "que": "Tu pedido sobre el mapa de la zona y las propuestas que van llegando.",
+  "llegas": [
+   "«Ver mi pedido» en Pedido publicado"
+  ]
+ },
+ "M-Seleccion": {
+  "titulo": "Seleccionar mensajes",
+  "que": "Mantenés apretado y elegís varios mensajes para copiar, reenviar, responder o borrar los tuyos.",
+  "llegas": [
+   "Mantener apretado un mensaje en un chat."
+  ]
+ },
+ "H-MiCasa": {
+  "titulo": "Mi casa",
+  "que": "Tus ambientes con su foto de portada y cuánto falta completar.",
+  "llegas": [
+   "«Guardar en Mi casa» en Sumar a tu casa",
+   "«Editar la ficha de la casa» en Mi hogar",
+   "«Mi casa» en Mi hogar"
+  ]
+ },
+ "X-NoEncontrado": {
+  "titulo": "No encontramos esta página",
+  "que": "La página no existe o ya no tenés acceso.",
+  "llegas": [
+   "Al abrir un enlace viejo."
+  ]
+ },
+ "I-Voz": {
+  "titulo": "HandIA voz: te escucha",
+  "que": "Modo voz escuchando: la esfera de luz y lo que vas diciendo en vivo. Tu voz se reconoce en el celular.",
+  "llegas": [
+   "«Modo voz» en HandIA: conversación",
+   "«Modo voz» en HandIA pensando",
+   "«Modo voz» en HandIA: tu pedido"
+  ]
+ },
+ "H-Equipo": {
+  "titulo": "Calefón",
+  "que": "Un equipo: foto de la etiqueta, instalación, mantenimiento, garantía e informes.",
+  "llegas": [
+   "«Canilla del lavatorio» en Baño",
+   "«Inodoro con mochila» en Baño",
+   "«Ducha» en Baño"
+  ]
+ },
+ "H-Recordatorios": {
+  "titulo": "Recordatorios",
+  "que": "Mantenimientos que conviene hacer, con su fecha. Nada se pide solo.",
+  "llegas": [
+   "«Recordatorio de tu casa» en Avisos",
+   "«Mantenimiento» en Mi hogar",
+   "«Ver recordatorios» en Mi hogar"
+  ]
+ },
+ "H-Compartido": {
+  "titulo": "Lo que compartiste",
+  "que": "Todo lo que compartiste, con quién y para qué pedido. Lo cortás cuando quieras.",
+  "llegas": [
+   "«Lo que compartiste» en Mi hogar"
+  ]
+ },
+ "G-Beneficios": {
+  "titulo": "Beneficios",
+  "que": "Beneficios sin azar, en borrador hasta que los apruebe Legal.",
+  "llegas": [
+   "«Beneficios» en Camino del hogar"
+  ]
+ },
+ "O-Repuesto": {
+  "titulo": "Repuesto para aprobar",
+  "que": "Un repuesto para aprobar, con foto y precio.",
+  "llegas": [
+   "«Repuestos» en Obra",
+   "«Hay un repuesto para aprobar» en Avisos",
+   "«Repuestos» en Pagos de la obra"
+  ]
+ },
+ "O-Gastado": {
+  "titulo": "Lo gastado en la obra",
+  "que": "Total gastado en la obra, separando informado y verificado.",
+  "llegas": [
+   "«Ver lo gastado» en Obra",
+   "«Ver el informe» en Informes y garantías"
+  ]
+ },
+ "G-Camino": {
+  "titulo": "Camino del hogar",
+  "que": "Tu camino del hogar: se avanza cuidando la casa, no gastando más.",
+  "llegas": [
+   "«Sumaste un paso en tu camino» en Avisos",
+   "«Ver mi camino» en ¡Insignia nueva!"
+  ]
+ },
+ "O-Propuesta": {
+  "titulo": "Propuesta de obra",
+  "que": "Propuesta de obra: total, etapas, quién hace cada una y cuánto le pagás.",
+  "llegas": [
+   "Llega como tarjeta en el chat cuando el especialista propone una obra."
+  ]
+ },
+ "M-Presupuesto": {
+  "titulo": "Presupuesto en el chat",
+  "que": "Un presupuesto por ítem que llegó por el chat.",
+  "llegas": [
+   "«Diego Herrera» en Mensajes",
+   "«Ver» en Actividad"
+  ]
+ },
+ "X-Pagos": {
+  "titulo": "Pagos registrados",
+  "que": "Pagos registrados, informados y verificados. Sin tarjetas guardadas.",
+  "llegas": [
+   "«Pagos» en Historial de la casa",
+   "«Pagos registrados» en Tu cuenta"
+  ]
+ },
+ "T-Destino": {
+  "titulo": "A dónde lo mandás",
+  "que": "Elegís a dónde va lo que hiciste: al chat o al pedido.",
+  "llegas": [
+   "«Mandar…» en Nivel",
+   "«Sacar foto» en Linterna y lupa",
+   "«Mandar…» en Medir"
+  ]
+ },
+ "G-Insignias": {
+  "titulo": "Insignias",
+  "que": "Tus insignias: qué hiciste por tu casa. Sin rankings.",
+  "llegas": [
+   "«Insignias» en Camino del hogar"
+  ]
+ },
+ "A-Avisos": {
+  "titulo": "Avisos",
+  "que": "Elegís qué avisos te llegan: propuestas, turno, recordatorios. Nada de publicidad.",
+  "llegas": [
+   "«Seguir» en Tu zona",
+   "«Avisos» en Tu cuenta"
+  ]
+ },
+ "I-VozHabla": {
+  "titulo": "HandIA voz: te responde",
+  "que": "HandIA te responde en voz alta con subtítulos y te ofrece respuestas rápidas.",
+  "llegas": [
+   "«Listo» en HandIA voz: ajustes"
+  ]
+ },
+ "A-Codigo": {
+  "titulo": "Código",
+  "que": "Escribís el código de 6 números que te llegó. Si no llega, lo pedís de nuevo al terminar la cuenta regresiva.",
+  "llegas": [
+   "«Con tu email» en Cómo entrar",
+   "«Con un SMS» en Cómo entrar",
+   "«Mandar el código» en Cómo entrar"
+  ]
+ },
+ "A-CasaEquipos": {
+  "titulo": "Tu casa: equipos",
+  "que": "Marcás los equipos que hay: calefón, anafe, tablero, aire. Marca y modelo, después.",
+  "llegas": [
+   "«Seguir» en Tu casa: ambientes"
+  ]
+ },
+ "S-Pagar": {
+  "titulo": "Pagar",
+  "que": "Pagás directo al especialista: Mercado Pago o efectivo. Handyx no recibe la plata.",
+  "llegas": [
+   "«Sí, quedó bien» en Conformidad"
+  ]
+ },
+ "X-Cuenta": {
+  "titulo": "Tu cuenta",
+  "que": "Tu cuenta: datos, seguridad, pagos, avisos, privacidad y ayuda.",
+  "llegas": [
+   "«Elegir qué avisos recibir» en Avisos",
+   "«Guardar» en Tus datos",
+   "«Tu cuenta» en Inicio"
+  ]
+ }
+}

@@ -56,7 +56,7 @@ def prop_card(k, precio, sub_precio, fecha, datos, verifs, nres, ntr, marca='', 
     v = ''.join(chip(t, 'escudo', 'exito') for t in verifs)
     cab = (f'<div style="display: flex; align-items: center; gap: 12px">{avatar(k, 50)}'
            f'<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px"><strong style="font-size: 17px">{nombre(k)}</strong>{estrellas(nres, ntr)}</span>{marca}</div>')
-    precio_h = (f'<a href="{detalle}" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; padding: 14px; border-radius: 18px; background: {TINTE}; color: {TINTA}; text-decoration: none">'
+    precio_h = (f'<a href="{detalle}" aria-label="Ver el detalle de {nombre(k).split()[0]}" style="display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; padding: 14px; border-radius: 18px; background: {TINTE}; color: {TINTA}; text-decoration: none">'
                 f'<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: {HONDO}">{tipo.upper()}</span>{monto(precio, 32)}<span style="font-size: 12px; color: {HONDO}">{sub_precio}</span></span>'
                 f'<span style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px">{chip(fecha, "agenda", "blanco")}<span style="display: inline-flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 800; color: {AZUL}">Detalle{svg(IC["flecha"], AZUL, 15)}</span></span></a>')
     mini = '<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">' + ''.join(dato_mini(*d) for d in datos) + '</div>'

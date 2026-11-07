@@ -25,17 +25,16 @@ F('FL-Mapa.dc.html', 'Mapa de la app', 'Cinco pestañas en una barra de vidrio a
    ('men', 'chat', ''), ('chat', 'sel', 'Mantener'), ('hog', 'casa', ''), ('casa', 'rom', ''), ('cta', 'ayu', ''), ('ayu', 'sop', '')],
   'Las pestañas van en una barra de vidrio azul con un hueco que abraza a HandIA. Cuenta, datos, pagos y privacidad se abren desde el avatar del Inicio.')
 
-F('FL-Acceso.dc.html', 'Acceso y alta', 'Demo cerrada: se entra con invitación. Sin contraseñas. Al final, «Armá tu casa» es opcional.',
-  [('bien', 0, 0, 'Bienvenida', 'Mar del Plata en SVG', 'casa', 'A-Bienvenida.dc.html', 'i'), ('inv', 1, 0, 'Invitación', 'Código HX-…', 'sobre', 'A-Invitacion.dc.html', 'p'),
-   ('hx', 2, 0, 'Valida la invitación', 'Vigente y sin usar', 'escudo', None, 's'), ('ent', 3, 0, 'Entrar', 'Email, SMS, Google, Apple', 'cuenta', 'A-Entrar.dc.html', 'p'),
-   ('cod', 4, 0, 'Código', '6 números', 'candado', 'A-Codigo.dc.html', 'p'), ('seg', 5, 0, 'Segunda verificación', 'Solo si la activaste', 'escudo', 'A-Segunda.dc.html', 'p'),
-   ('dat', 0, 1, 'Tus datos', 'Nombre y celular', 'cuenta', 'A-Datos.dc.html', 'p'), ('zon', 1, 1, 'Tu zona', 'Barrio aproximado', 'pin', 'A-Zona.dc.html', 'p'),
-   ('ava', 2, 1, 'Avisos', 'Elegís cuáles', 'campana', 'A-Avisos.dc.html', 'p'), ('casa', 3, 1, 'Armá tu casa', 'Opcional · se salta', 'hogar', 'A-Casa.dc.html', 'p'),
-   ('lis', 5, 1, '¡Listo!', 'Tarifa 0 % hasta el 10/12', 'check', 'A-Listo.dc.html', 'p'),
-   ('amb', 3, 2, 'Ambientes', 'Cuántos hay', 'casa', 'A-CasaAmbientes.dc.html', 'p'), ('equ', 4, 2, 'Equipos', 'Calefón, aire, tablero…', 'herramienta', 'A-CasaEquipos.dc.html', 'p'),
-   ('fot', 5, 2, 'Una foto por ambiente', 'Opcional', 'camara', 'A-CasaFotos.dc.html', 'p')],
-  [('bien', 'inv', ''), ('inv', 'hx', ''), ('hx', 'ent', ''), ('ent', 'cod', ''), ('cod', 'seg', ''), ('seg', 'dat', 'Primera vez'),
-   ('dat', 'zon', ''), ('zon', 'ava', ''), ('ava', 'casa', ''), ('casa', 'lis', 'Saltar'), ('casa', 'amb', 'Empezar'), ('amb', 'equ', ''), ('equ', 'fot', ''), ('fot', 'lis', '')],
+F('FL-Acceso.dc.html', 'Acceso y alta', 'La gente se registra directo, sin invitación ni contraseñas. Al final, «Armá tu casa» es opcional.',
+  [('bien', 0, 0, 'Bienvenida', 'Mar del Plata en SVG', 'casa', 'A-Bienvenida.dc.html', 'i'), ('ent', 1, 0, 'Entrar', 'Email, SMS, Google, Apple', 'cuenta', 'A-Entrar.dc.html', 'p'),
+   ('cod', 2, 0, 'Código', '6 números', 'candado', 'A-Codigo.dc.html', 'p'), ('dat', 3, 0, 'Tus datos', 'Nombre y celular', 'cuenta', 'A-Datos.dc.html', 'p'),
+   ('zon', 4, 0, 'Tu zona', 'Barrio aproximado', 'pin', 'A-Zona.dc.html', 'p'), ('ava', 5, 0, 'Avisos', 'Elegís cuáles', 'campana', 'A-Avisos.dc.html', 'p'),
+   ('casa', 0, 1, 'Armá tu casa', 'Opcional · se salta', 'hogar', 'A-Casa.dc.html', 'p'), ('amb', 1, 1, 'Ambientes', 'Cuántos hay', 'casa', 'A-CasaAmbientes.dc.html', 'p'),
+   ('equ', 2, 1, 'Equipos', 'Calefón, aire, tablero…', 'herramienta', 'A-CasaEquipos.dc.html', 'p'), ('fot', 3, 1, 'Una foto por ambiente', 'Opcional', 'camara', 'A-CasaFotos.dc.html', 'p'),
+   ('lis', 4, 1, '¡Listo!', 'Tarifa 0 % hasta el 10/12', 'check', 'A-Listo.dc.html', 'p'), ('ini', 5, 1, 'Inicio', 'Primer ingreso', 'casa', 'I-Inicio.dc.html', 'p'),
+   ('seg', 4, 2, 'Segunda verificación', 'Opcional, desde ¡Listo!', 'escudo', 'A-Segunda.dc.html', 'p')],
+  [('bien', 'ent', 'Crear cuenta'), ('ent', 'cod', ''), ('cod', 'dat', ''), ('dat', 'zon', ''), ('zon', 'ava', ''), ('ava', 'casa', 'Primera vez'),
+   ('casa', 'amb', ''), ('amb', 'equ', ''), ('equ', 'fot', ''), ('fot', 'lis', ''), ('lis', 'ini', ''), ('lis', 'seg', '')],
   'Datos mínimos: nombre y celular, sin DNI ni CUIT. La dirección exacta se comparte solo al aceptar una propuesta. La ficha de la casa es privada.')
 
 F('FL-Pedir.dc.html', 'Pedir con HandIA', 'Camino corto en 3 toques: rubro › qué pasa › revisar y publicar. Lo demás es opcional y se cambia desde Revisar.',

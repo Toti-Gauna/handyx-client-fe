@@ -6,58 +6,58 @@ Cinco fases, ejecutadas por lotes en orden. Una rama por fase (`fase-N-…`) con
 Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable con datos ficticios) · **conectado**
 (contra el backend real) · **probado** (pruebas ejecutadas con resultado) · **desplegado** (publicado y verificado).
 
-| Fase                      | Lote | Objetivo                                                                                            | Modelo · esfuerzo   | Estado                                   |
-| ------------------------- | ---- | --------------------------------------------------------------------------------------------------- | ------------------- | ---------------------------------------- |
-| 1 · Bases                 | 1.1  | Auditoría y base ejecutable (Next export + Express)                                                 | Opus 5.5 · high     | ✅ listo · probado (local)               |
-|                           | 1.2  | Alcance, pantallas y registro                                                                       | Opus 5.5 · high     | ✅ listo · decidido                      |
-|                           | 1.3  | Contrato común de integración                                                                       | Opus 5.5 · high     | ✅ listo · decidido + probado (esquemas) |
-| 2 · Mockup completo       | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida                                    | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                           | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA                                                 | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                           | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos                                    | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                           | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial                                          | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
-|                           | 2.5  | Pagos directos, avisos y los 18 escenarios                                                          | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
-| 3 · Rediseño premium      | 3.1  | Dirección de arte, sistema y 3 pantallas modelo (aprobación)                                        | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.2  | Splash animado, acceso y onboarding                                                                 | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.3  | Mapa (MapLibre + PMTiles de MDP, dirección, búsqueda, seguimiento)                                  | Opus 5.5 · high     | ✅ listo · datos reales pendientes       |
-|                           | 3.4  | Inicio y pedir                                                                                      | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.5  | Propuestas y decisión                                                                               | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.6  | Trabajo en curso, pago, reseña y reclamo                                                            | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.7  | Actividad, mensajes y soporte                                                                       | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.8  | Cuenta y ayuda                                                                                      | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-|                           | 3.9  | Pulido premium y QA (transiciones, gestos, capturas)                                                | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
-| 4 · BE y DB conectados    | 4.1  | Esquema compartido y migraciones (base aislada)                                                     | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
-|                           | 4.2  | Auth, cuenta y privacidad reales                                                                    | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
-|                           | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)                                            | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
-|                           | 4.4  | Chat, agenda, trabajos y reclamos reales                                                            | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
-|                           | 4.5  | Pago directo, fee y métricas (o gate concreto)                                                      | Opus 5.5 · high     | ✅ listo · MP con gate · base aislada    |
-|                           | 4.6  | Integración con Especialista y regresión                                                            | Opus 5.5 · high     | ✅ listo · dos APIs en base aislada      |
-|                           | 4.7  | Viaje en vivo en la PWA (contrato `1.0.0-draft.2`, SSE)                                             | Opus 5.5 · high     | ✅ listo · mock + ensayo con BE local    |
-| 5 · Deploy                | 5.1  | Readiness, CI y deploy de prueba                                                                    | Sonnet 5.5 · high   | pendiente                                |
-|                           | 5.2  | Testing integrado en dos celulares                                                                  | Sonnet 5.5 · high   | pendiente                                |
-|                           | 5.3  | Deploy web final y rollback                                                                         | Sonnet 5.5 · high   | pendiente                                |
-|                           | 5.4  | Mapa final (PROD-26) y Handy Docs                                                                   | Sonnet 5.5 · high   | pendiente                                |
-| 6 · HandIA premium        | H0   | Base y decisiones ([plan](handia-premium-plan.md))                                                  | Opus · Sonnet       | H0.1 ✅ listo · H0.2 pendiente           |
-|                           | R    | Rediseño premium: referentes, concepto, lenguaje visual, pantallas, movimiento, aprobación          | Opus 5.5 · high     | R1–R6 ✅ · R8 ✅ · R7 espera a Ignacio   |
-|                           | H1   | Dirección de arte: imágenes ChatGPT, GSAP, degradés, 3D Meshy                                       | Opus/Sonnet · high  | espera imágenes de Ignacio               |
-|                           | H2   | Modo voz estilo ChatGPT Voice con los Handys                                                        | Opus/Sonnet · high  | pendiente                                |
-|                           | H3   | Chat premium (pensando visible, streaming, tarjetas, demo)                                          | Opus/Sonnet · high  | pendiente                                |
-|                           | H4   | HandIA agente: busca presupuesto recorriendo la app                                                 | Opus 5.5 · high     | pendiente                                |
-|                           | H5   | Cámara: foto del problema, limpia de metadatos                                                      | Opus/Sonnet · high  | pendiente                                |
-|                           | H6   | Backend de IA (OpenAI + ElevenLabs) con simuladores y topes                                         | Opus 5.5 · xhigh    | espera decisión de IA externa            |
-|                           | H7   | Integración real con saldo, consentimiento y lanzamiento                                            | Opus/Sonnet · high  | espera cuentas, saldo y revisión legal   |
-| 7 · App completa (diseño) | U0   | Diseño completo: 103 pantallas, 12 flujos y revisión UX/UI ([decisiones](diseno-usuario-deluxe.md)) | Opus 5.5 · high     | ✅ diseño listo · espera OK              |
-|                           | U1   | Contrato nuevo en el BE: acceso con código, Google/Apple, 2FA, reseñas, informe, Mi hogar, camino   | Opus 5.5 · xhigh    | espera OK y proveedores                  |
-|                           | U2   | Navegación: 5 pestañas con HandIA al medio, cabecera con avatar, Actividad como pestaña             | Opus 5.5 · high     | espera OK                                |
-|                           | U3   | Acceso sin contraseña: invitación, código por email/SMS, Google/Apple, segunda verificación         | Opus 5.5 · high     | espera OK y proveedores                  |
-|                           | U4   | Pedir: fotos anotadas, medir con la cámara, calendario de día y franja, zona aproximada             | Opus 5.5 · high     | espera OK                                |
-|                           | U5   | Propuestas: comparar, rango sugerido, certificados, pedir cambios                                   | Sonnet 5.5 · high   | espera OK                                |
-|                           | U6   | Seguimiento: antes y después, informe con garantía, conformidad, pago, reseña                       | Sonnet 5.5 · high   | espera OK                                |
-|                           | U7   | Obras de varios días y en equipo: días, repuestos, fechas, grupo, pagos por etapa                   | Opus 5.5 · high     | espera OK                                |
-|                           | U8   | Mensajes con tarjetas accionables y adjuntos (foto, medida, 3D)                                     | Sonnet 5.5 · high   | espera OK                                |
-|                           | U9   | Mi hogar: ficha, historial, garantías, recordatorios                                                | Opus 5.5 · high     | espera OK                                |
-|                           | U10  | Herramientas: medir, nivel, linterna y lupa, escanear 3D, AR de un equipo propuesto                 | Opus 5.5 · xhigh    | espera OK y decisión 3D/AR               |
-|                           | U11  | Camino del hogar: hitos, insignias y beneficios sin azar                                            | Sonnet 5.5 · high   | espera OK y Legal                        |
-|                           | U12  | Cuenta, ayuda, errores y QA final (axe, teclado, 320 px, texto al 200 %)                            | Sonnet 5.5 · medium | espera OK                                |
+| Fase                      | Lote | Objetivo                                                                                                     | Modelo · esfuerzo   | Estado                                   |
+| ------------------------- | ---- | ------------------------------------------------------------------------------------------------------------ | ------------------- | ---------------------------------------- |
+| 1 · Bases                 | 1.1  | Auditoría y base ejecutable (Next export + Express)                                                          | Opus 5.5 · high     | ✅ listo · probado (local)               |
+|                           | 1.2  | Alcance, pantallas y registro                                                                                | Opus 5.5 · high     | ✅ listo · decidido                      |
+|                           | 1.3  | Contrato común de integración                                                                                | Opus 5.5 · high     | ✅ listo · decidido + probado (esquemas) |
+| 2 · Mockup completo       | 2.1  | Acceso, perfil, cuenta, fee 0 % (3 avisos), baja, sesión vencida                                             | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
+|                           | 2.2  | Inicio, pedido, ubicación, agenda, búsqueda sin ETA                                                          | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
+|                           | 2.3  | Propuestas, contrapropuestas, aceptación explícita, vencimientos                                             | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
+|                           | 2.4  | Chat/fotos, trabajo, "Llegué", etapas, reclamos, historial                                                   | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
+|                           | 2.5  | Pagos directos, avisos y los 18 escenarios                                                                   | Sonnet 5.5 · high   | ✅ listo · mock probado en navegador     |
+| 3 · Rediseño premium      | 3.1  | Dirección de arte, sistema y 3 pantallas modelo (aprobación)                                                 | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.2  | Splash animado, acceso y onboarding                                                                          | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.3  | Mapa (MapLibre + PMTiles de MDP, dirección, búsqueda, seguimiento)                                           | Opus 5.5 · high     | ✅ listo · datos reales pendientes       |
+|                           | 3.4  | Inicio y pedir                                                                                               | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.5  | Propuestas y decisión                                                                                        | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.6  | Trabajo en curso, pago, reseña y reclamo                                                                     | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.7  | Actividad, mensajes y soporte                                                                                | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.8  | Cuenta y ayuda                                                                                               | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+|                           | 3.9  | Pulido premium y QA (transiciones, gestos, capturas)                                                         | Opus 5.5 · high     | ✅ listo · mock probado en navegador     |
+| 4 · BE y DB conectados    | 4.1  | Esquema compartido y migraciones (base aislada)                                                              | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
+|                           | 4.2  | Auth, cuenta y privacidad reales                                                                             | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
+|                           | 4.3  | Pedidos y propuestas reales (concurrencia, idempotencia)                                                     | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
+|                           | 4.4  | Chat, agenda, trabajos y reclamos reales                                                                     | Opus 5.5 · high     | ✅ listo · probado en base local aislada |
+|                           | 4.5  | Pago directo, fee y métricas (o gate concreto)                                                               | Opus 5.5 · high     | ✅ listo · MP con gate · base aislada    |
+|                           | 4.6  | Integración con Especialista y regresión                                                                     | Opus 5.5 · high     | ✅ listo · dos APIs en base aislada      |
+|                           | 4.7  | Viaje en vivo en la PWA (contrato `1.0.0-draft.2`, SSE)                                                      | Opus 5.5 · high     | ✅ listo · mock + ensayo con BE local    |
+| 5 · Deploy                | 5.1  | Readiness, CI y deploy de prueba                                                                             | Sonnet 5.5 · high   | pendiente                                |
+|                           | 5.2  | Testing integrado en dos celulares                                                                           | Sonnet 5.5 · high   | pendiente                                |
+|                           | 5.3  | Deploy web final y rollback                                                                                  | Sonnet 5.5 · high   | pendiente                                |
+|                           | 5.4  | Mapa final (PROD-26) y Handy Docs                                                                            | Sonnet 5.5 · high   | pendiente                                |
+| 6 · HandIA premium        | H0   | Base y decisiones ([plan](handia-premium-plan.md))                                                           | Opus · Sonnet       | H0.1 ✅ listo · H0.2 pendiente           |
+|                           | R    | Rediseño premium: referentes, concepto, lenguaje visual, pantallas, movimiento, aprobación                   | Opus 5.5 · high     | R1–R6 ✅ · R8 ✅ · R7 espera a Ignacio   |
+|                           | H1   | Dirección de arte: imágenes ChatGPT, GSAP, degradés, 3D Meshy                                                | Opus/Sonnet · high  | espera imágenes de Ignacio               |
+|                           | H2   | Modo voz estilo ChatGPT Voice con los Handys                                                                 | Opus/Sonnet · high  | pendiente                                |
+|                           | H3   | Chat premium (pensando visible, streaming, tarjetas, demo)                                                   | Opus/Sonnet · high  | pendiente                                |
+|                           | H4   | HandIA agente: busca presupuesto recorriendo la app                                                          | Opus 5.5 · high     | pendiente                                |
+|                           | H5   | Cámara: foto del problema, limpia de metadatos                                                               | Opus/Sonnet · high  | pendiente                                |
+|                           | H6   | Backend de IA (OpenAI + ElevenLabs) con simuladores y topes                                                  | Opus 5.5 · xhigh    | espera decisión de IA externa            |
+|                           | H7   | Integración real con saldo, consentimiento y lanzamiento                                                     | Opus/Sonnet · high  | espera cuentas, saldo y revisión legal   |
+| 7 · App completa (diseño) | U0   | Diseño completo: 102 pantallas, 13 recorridos, 12 flujos y revisión ([decisiones](diseno-usuario-deluxe.md)) | Opus 5.5 · high     | ✅ diseño listo · espera OK              |
+|                           | U1   | Contrato nuevo en el BE: alta sin invitación, código, Google/Apple, 2FA, reseñas, Mi hogar                   | Opus 5.5 · xhigh    | espera OK y proveedores                  |
+|                           | U2   | Navegación: 5 pestañas con HandIA al medio, cabecera con avatar, Actividad como pestaña                      | Opus 5.5 · high     | espera OK                                |
+|                           | U3   | Acceso sin contraseña: invitación, código por email/SMS, Google/Apple, segunda verificación                  | Opus 5.5 · high     | espera OK y proveedores                  |
+|                           | U4   | Pedir: fotos anotadas, medir con la cámara, calendario de día y franja, zona aproximada                      | Opus 5.5 · high     | espera OK                                |
+|                           | U5   | Propuestas: comparar, rango sugerido, certificados, pedir cambios                                            | Sonnet 5.5 · high   | espera OK                                |
+|                           | U6   | Seguimiento: antes y después, informe con garantía, conformidad, pago, reseña                                | Sonnet 5.5 · high   | espera OK                                |
+|                           | U7   | Obras de varios días y en equipo: días, repuestos, fechas, grupo, pagos por etapa                            | Opus 5.5 · high     | espera OK                                |
+|                           | U8   | Mensajes con tarjetas accionables y adjuntos (foto, medida, 3D)                                              | Sonnet 5.5 · high   | espera OK                                |
+|                           | U9   | Mi hogar: ficha, historial, garantías, recordatorios                                                         | Opus 5.5 · high     | espera OK                                |
+|                           | U10  | Herramientas: medir, nivel, linterna y lupa, escanear 3D, AR de un equipo propuesto                          | Opus 5.5 · xhigh    | espera OK y decisión 3D/AR               |
+|                           | U11  | Camino del hogar: hitos, insignias y beneficios sin azar                                                     | Sonnet 5.5 · high   | espera OK y Legal                        |
+|                           | U12  | Cuenta, ayuda, errores y QA final (axe, teclado, 320 px, texto al 200 %)                                     | Sonnet 5.5 · medium | espera OK                                |
 
 ## Fase 7 · App del usuario completa (diseño del 07/11)
 

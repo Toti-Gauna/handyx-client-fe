@@ -3,8 +3,8 @@ import sys, json, glob, os
 sys.path.insert(0, 'usuario/gen')
 from piezas_u import *  # noqa: F401,F403
 
-pant = len([f for f in glob.glob('usuario/project/*.dc.html') if os.path.basename(f)[:3] not in ('FL-', 'UX-')])
-flu = len(glob.glob('usuario/project/FL-*.dc.html'))
+pant = len([f for f in glob.glob('usuario/project/*.dc.html') if os.path.basename(f)[:3] not in ('FL-', 'UX-', 'RC-')])
+flu = len(glob.glob('usuario/project/FL-*.dc.html')); rc = len(glob.glob('usuario/project/RC-*.dc.html'))
 W, H = 1346, 800
 
 
@@ -18,10 +18,10 @@ def lista(titulo, items, ic='check', color='#137140'):
 
 
 html = f'''<div style="width: {W}px; height: {H}px; box-sizing: border-box; padding: 34px 40px; background: #F6F7F9; font-family: 'DM Sans', system-ui, sans-serif; color: {TINTA}; display: flex; flex-direction: column; gap: 18px">
-  <div style="display: flex; justify-content: space-between; align-items: flex-end"><div style="display: flex; flex-direction: column; gap: 6px">{etiqueta("REVISIÓN 2 · 07/11/2026 · APP DEL USUARIO", AZUL)}<h1 style="margin: 0; {TIT}; font-size: 40px; line-height: 1">Revisión UX/UI de todo el diseño</h1><span style="font-size: 15px; color: {SUAVE}">{pant} pantallas y {flu} flujos revisados en el navegador, uno por uno, con chequeos automáticos y a ojo.</span></div>{chip("Datos de prueba en todas las pantallas", "check", "exito")}</div>
+  <div style="display: flex; justify-content: space-between; align-items: flex-end"><div style="display: flex; flex-direction: column; gap: 6px">{etiqueta("REVISIÓN 2 · 07/11/2026 · APP DEL USUARIO", AZUL)}<h1 style="margin: 0; {TIT}; font-size: 40px; line-height: 1">Revisión UX/UI de todo el diseño</h1><span style="font-size: 15px; color: {SUAVE}">{pant} pantallas, {rc} recorridos con pantallas y {flu} flujos revisados en el navegador, uno por uno, con chequeos automáticos y a ojo.</span></div>{chip("Datos de prueba en todas las pantallas", "check", "exito")}</div>
   <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px">{kpi('0', 'errores de accesibilidad (axe, WCAG 2 A y AA)')}{kpi('0', 'botones o enlaces de menos de 44 px', '#FFFFFF', TINTA)}{kpi('0', 'textos de menos de 11 px', '#FFFFFF', TINTA)}{kpi('0', 'pantallas con contenido tapado por los botones fijos', '#FFFFFF', TINTA)}</div>
   <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px">
-    {lista("LO QUE CAMBIÓ CON LAS NOTAS DE IGNACIO", ["Inicio como la app real; barra azul con HandIA encastrada; chat con mensajes abajo.", "HandIA voz sin personaje: esfera de luz, textos livianos y hoja de ajustes.", "Pedir en 3 toques; propuestas con aceptar, rechazar y perfil; «la mejor» por promedio.", "Sin verde en botones ni seguimiento: colores y piezas del especialista.", "Reseña en hoja tipo Uber; Mi hogar con cuatro puertas y «Armá tu casa» en el alta.", "Selección de mensajes sin cortes, con acciones con nombre."])}
+    {lista("LO QUE CAMBIÓ CON LAS NOTAS DE IGNACIO", ["Inicio como la app real; barra azul con HandIA encastrada; chat con mensajes abajo.", "HandIA voz sin personaje: esfera de luz, textos livianos y hoja de ajustes.", "Pedir en 3 toques; propuestas con aceptar, rechazar y perfil; «la mejor» por promedio.", "Sin verde en botones ni seguimiento: colores y piezas del especialista.", "Reseña en hoja tipo Uber; Mi hogar con cuatro puertas y «Armá tu casa» en el alta.", "Sin invitación: registro directo. Recorridos con pantallas como en el especialista."])}
     {lista("REGLAS DEL SISTEMA QUE SE RESPETAN", ["Cabecera azul en Inicio, Mi hogar, Cuenta, Ayuda y Camino; barra compacta con volver en el resto.", "Pestañas de vidrio solo en las raíz, con HandIA como círculo azul flotante en el medio.", "Una acción principal fija abajo, con base que se hunde; aceptar verde, rechazar en rojo de contorno.", "Estados con ícono y texto; montos en Archivo 900 ensanchado.", "Una palabra con marcador amarillo por título; Handys en vacíos, éxitos y errores.", "Oscuro solo en cámara, nivel, escaneo, AR y la voz de HandIA."], 'check', AZUL)}
     {lista("PARA EL DESARROLLO", ["SVG de HandIA pensando y respondiendo: hoy provisionales, llegan los definitivos.", "Movimiento con View Transitions; todo se apaga con «reducir movimiento».", "Esqueletos, vacíos y errores para cada pantalla que trae datos.", "Texto al 200 % y 320 px de ancho en el código real (acá, 390 × 844).", "Probar con VoiceOver y TalkBack, y la AR en un Android y un iPhone.", "Pasar a Figma primero las piezas comunes (design/usuario/gen)."], 'flechas', HONDO)}
   </div>

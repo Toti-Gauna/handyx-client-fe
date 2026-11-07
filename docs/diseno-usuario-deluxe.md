@@ -43,6 +43,18 @@ colores, íconos y componentes copiados de nuevo a `design/usuario/gen/piezas*.p
 Quedan 103 pantallas y 12 flujos; los chequeos siguen en 0 en las 116 piezas. Lo de Mi hogar compartido por pedido
 también necesita contrato nuevo (abajo).
 
+## Tercera ronda (07/11): sin invitación y recorridos con pantallas
+
+- **Registro directo, sin invitación** (decisión de Ignacio: en las demos cerradas la gente se registra de una). Se
+  quitó la pantalla «Tu invitación»; «Crear cuenta» va directo a «¿Cómo querés entrar?» y el alta quedó en 5 pasos.
+  Ojo: hoy el contrato (`codigoInvitacion` en el registro) y las reglas de `handyx-client-be` y de este repo
+  (`AGENTS.md`: «demo cerrada con invitación») piden invitación; cambiarlo es parte del lote U1, con el OK.
+- **Recorridos con pantallas**, como en el especialista (`recorridos.py` y `descripciones.py`, copiados y adaptados):
+  13 recorridos (alta, volver a entrar, pedir, HandIA, propuestas, del turno al pago, obra, mensajes, Mi hogar,
+  herramientas, camino, actividad, cuenta). Cada paso muestra la pantalla real en miniatura, con su número, qué es
+  (`textos_pantallas.py`) y «Cómo llegás», que se calcula solo desde los botones reales que llevan ahí. En amarillo, lo
+  que pasa entre una pantalla y otra. Van en el lienzo entre el tablero de revisión y los flujos de cajas.
+
 ## Navegación
 
 - **Cinco pestañas** en una barra flotante de vidrio (con fondo sólido de respaldo): Inicio · Actividad · **HandIA** ·

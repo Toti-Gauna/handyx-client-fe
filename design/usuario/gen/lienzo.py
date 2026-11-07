@@ -2,8 +2,8 @@
 import json, re
 FL = json.load(open('usuario/gen/flujos.json'))
 FILAS = [
- ('A · Acceso y alta', 'blue', 'Bienvenida con Mar del Plata en SVG. Invitación, código por email o SMS, Google y Apple; segunda verificación opcional. Datos mínimos y zona aproximada. Al final, «Armá tu casa» (opcional, se salta).',
-  'A-Bienvenida A-Invitacion A-Entrar A-Codigo A-Segunda A-Datos A-Zona A-Avisos A-Casa A-CasaAmbientes A-CasaEquipos A-CasaFotos A-Listo'),
+ ('A · Acceso y alta', 'blue', 'Bienvenida con Mar del Plata en SVG. Registro directo, código por email o SMS, Google y Apple; segunda verificación opcional. Datos mínimos y zona aproximada. Al final, «Armá tu casa» (opcional, se salta).',
+  'A-Bienvenida A-Entrar A-Codigo A-Segunda A-Datos A-Zona A-Avisos A-Casa A-CasaAmbientes A-CasaEquipos A-CasaFotos A-Listo'),
  ('I · Inicio y HandIA', 'yellow', 'Inicio como la app real (imagen 2). HandIA encastrada en la barra. Chat con los mensajes abajo y la ilustración solo vacío. Voz sin personaje: esfera de luz, textos livianos y ajustes.',
   'I-Inicio I-HandIA I-HandIAChat I-HandIAPiensa I-HandIAFicha I-Voz I-VozHabla I-VozAjustes I-Avisos'),
  ('P · Pedir un servicio', 'blue', 'Camino corto en 3 toques: rubro › qué pasa › revisar y publicar. Fotos, medidas, día y dirección opcionales, desde Revisar.',
@@ -30,6 +30,13 @@ boards, order, notes, nord = {}, [], {}, []
 boards['UX-Revision.dc.html'] = {'x': 0, 'y': 0, 'w': 1346, 'h': 800, 'title': 'Revisión UX/UI'}; order.append('UX-Revision.dc.html')
 notes['tituloUX'] = {'x': 0, 'y': -300, 'text': 'Handyx · app del usuario', 'kind': 'title1', 'maxW': 1800, 'w': 240}; nord.append('tituloUX')
 y = 800 + 260
+RC = json.load(open('usuario/gen/recorridos.json'))
+notes['tituloRC'] = {'x': 0, 'y': y, 'text': 'Recorridos con pantallas', 'kind': 'title1', 'maxW': 1800, 'w': 240}; nord.append('tituloRC')
+y += 300
+notes['notaRC'] = {'x': 1830, 'y': y, 'w': 420, 'size': 24, 'fill': 'yellow', 'text': 'Cada recorrido muestra las pantallas reales en orden, con su número, qué es y cómo se llega. En amarillo, lo que pasa entre una pantalla y otra.'}; nord.append('notaRC')
+for f, t, W, H in RC:
+    boards[f] = {'x': 0, 'y': y, 'w': W, 'h': H, 'title': 'Recorrido · ' + t}; order.append(f); y += H + 200
+y += 100
 notes['tituloFlujos'] = {'x': 0, 'y': y, 'text': 'Flujos de la app', 'kind': 'title1', 'maxW': 1800, 'w': 240}; nord.append('tituloFlujos')
 y += 300
 notes['notaFlujos'] = {'x': 1500, 'y': y, 'w': 420, 'size': 24, 'fill': 'yellow', 'text': 'Empezá por «Mapa de la app». Cada caja es una pantalla (se toca para abrirla), un paso del especialista, algo que hace Handyx u Operations u otro profesional.'}; nord.append('notaFlujos')

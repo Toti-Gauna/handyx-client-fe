@@ -2,7 +2,7 @@
 
 **Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.7; sigue la Fase 5 (deploy, con autorización).**
 
-**Diseño completo de la app del usuario (07/11, Fase 7 · U0): segunda ronda con las notas de Ignacio, esperando su OK.** 103 pantallas, 12
+**Diseño completo de la app del usuario (07/11, Fase 7 · U0): tercera ronda: registro sin invitación y 13 recorridos con pantallas, esperando su OK.** 102 pantallas, 13 recorridos, 12
 flujos y el tablero de revisión en el lienzo <https://claude.ai/artifact/A4T5bqyE8WEiQkwD4ogDaZ>, con la fuente en
 `design/usuario/` y las decisiones en [`diseno-usuario-deluxe.md`](diseno-usuario-deluxe.md). Chequeos en 0 (axe,
 toques de 44 px, letra de 11 px, nada tapado). **No se desarrolla nada hasta el OK.** Lotes U1–U12 en

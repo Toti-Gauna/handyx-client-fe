@@ -14,13 +14,16 @@ design/usuario/
 │   ├── piezas_u.py             # piezas del usuario: pestañas con HandIA al medio, cabecera, botones, campos,
 │   │                           # ticket, fotos SVG, ciudad, casa isométrica, cámara, estados de HandIA
 │   ├── fila_*.py               # una fila del lienzo por fase (A, I, P, C, S, O, M, H, T, G, X)
+│   ├── textos_pantallas.py     # qué es cada pantalla (para los recorridos)
+│   ├── descripciones.py        # arma descripciones.json: qué es y «cómo llegás» desde los botones reales
+│   ├── recorridos.py           # 13 recorridos con las pantallas en miniatura, paso a paso (como el especialista)
 │   ├── flujos_base.py          # dibujo de flujos (copiado del especialista; nodo amarillo = especialista)
 │   ├── flujos.py               # 12 flujos, empezando por «Mapa de la app» → flujos.json
 │   ├── revision_board.py       # tablero de revisión UX/UI (arriba del lienzo)
 │   ├── lienzo.py               # arma project/canvas.json (revisión, flujos, filas)
 │   ├── revisar.cjs             # axe + toques < 44 px + letra < 11 px + tapado por lo fijo + desbordes
 │   └── foto.cjs                # capturas para revisar a ojo
-└── project/                    # lo que se publica: canvas.json + 116 tableros .dc.html
+└── project/                    # lo que se publica: canvas.json + 128 tableros .dc.html
 ```
 
 ## Regenerar y revisar
@@ -29,6 +32,7 @@ Desde `design/` (los generadores usan rutas relativas a esa carpeta):
 
 ```sh
 for f in usuario/gen/fila_*.py; do python3 "$f"; done
+python3 usuario/gen/descripciones.py && python3 usuario/gen/recorridos.py
 python3 usuario/gen/flujos.py && python3 usuario/gen/revision_board.py && python3 usuario/gen/lienzo.py
 node usuario/gen/revisar.cjs          # todas; o un prefijo: node usuario/gen/revisar.cjs X-
 node usuario/gen/foto.cjs <carpeta> X-Pagos.dc.html FL-Mapa.dc.html
