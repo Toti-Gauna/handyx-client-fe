@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PrototipoHandia } from '@/components/handia-prototipo/Shell';
 import { esVistaDePrueba } from '@/data';
-import '@/styles/handia.css';
 import '@/styles/handia-prototipo.css';
 
 export const metadata: Metadata = { title: 'HandIA · prototipo' };

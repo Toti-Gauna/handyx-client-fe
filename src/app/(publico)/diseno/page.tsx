@@ -5,6 +5,7 @@ import { AvatarHx, ChipEstado, Marcado, Pantalla } from '@/components/hx';
 import { Icono } from '@/components/Icono';
 import { MapaHx } from '@/components/MapaHx';
 import { TRAZOS, type NombreIcono } from '@/components/trazos';
+import { GaleriaHandia } from '@/components/handia/Galeria';
 import { esVistaDePrueba } from '@/data';
 import { CENTRO_MDP } from '@/geo/mdp';
 import { RUBROS } from '@/contracts/v1/pedidos';
@@ -221,6 +222,10 @@ export default function Diseno() {
           </div>
         </Seccion>
 
+        <Seccion titulo="HandIA" id="handia">
+          <GaleriaHandia />
+        </Seccion>
+
         <Seccion titulo="Íconos">
           <div className="galeria__iconos">
             {(Object.keys(TRAZOS) as NombreIcono[]).map((n) => (
@@ -236,9 +241,17 @@ export default function Diseno() {
   );
 }
 
-function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
+function Seccion({
+  titulo,
+  id,
+  children,
+}: {
+  titulo: string;
+  id?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section className="du-bloque galeria__seccion" aria-label={titulo}>
+    <section id={id} className="du-bloque galeria__seccion" aria-label={titulo}>
       <h2 className="hd-sobre">{titulo}</h2>
       {children}
     </section>

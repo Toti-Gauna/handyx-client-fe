@@ -209,8 +209,9 @@ Para Meshy (H1.5): una vista de frente y una de perfil en pose "A" (brazos abier
 
 ## Decisiones pendientes (Ignacio)
 
-1. **Rediseño:** ✅ prototipo navegable dentro del proyecto (`/diseno/handia/`, decisión del 07/11). Falta elegir una
-   dirección en R2 ([direcciones](handia-r2-direcciones.md)); bloquea R3–R4.
+1. **Rediseño:** ✅ prototipo navegable dentro del proyecto (`/diseno/handia/`, decisión del 07/11). Se avanzó con
+   Luz cálida+ (recomendada); falta que Ignacio la confirme y apruebe R4–R6 con la prueba de R7
+   ([guía](handia-r7-prueba.md)). Bloquea H2/H3.
 2. **Imágenes:** generarlas con el brief (bloquea H1.1 y todo H1).
 3. **3D:** prototipo con Meshy o solo 2D + GSAP (recomendado: 2D primero, 3D como prueba en H1.5).
 4. **IA externa:** cambiar la regla "sin datos personales ni documentos a una IA externa" para voz, texto y fotos, con

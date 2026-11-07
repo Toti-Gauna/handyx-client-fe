@@ -801,3 +801,31 @@ button.hia-chip:active {
     background: none;
   }
 }
+
+/* Galería /diseno/#handia (R8). */
+.galeria-handia {
+  display: grid;
+  gap: var(--esp-4);
+}
+.galeria-handia > p {
+  margin: 0;
+}
+.galeria-handia__escena {
+  gap: var(--esp-3);
+  padding: var(--esp-5);
+  border-radius: var(--hia-radio-tarjeta);
+  align-items: center;
+  text-align: center;
+}
+.galeria-handia__escena.hia-escena--chat {
+  align-items: stretch;
+  text-align: left;
+}
+.galeria-handia__vidrio {
+  padding: var(--esp-3) var(--esp-4);
+}
+.galeria-handia__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
