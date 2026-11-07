@@ -184,3 +184,29 @@ export function AvisoRiesgo({
     </div>
   );
 }
+
+export type EstadoEsfera = 'reposo' | 'escuchando' | 'pensando' | 'hablando' | 'listo' | 'silencio';
+
+/**
+ * Esfera del modo voz: cielo Handyx con nubes que se mueven y la luz cálida de la lamparita abajo. Reacciona al
+ * estado (escucha, piensa, habla, listo, micrófono apagado). Decorativa: el estado se dice aparte con texto.
+ */
+export function Esfera({
+  estado = 'reposo',
+  tamano = 'grande',
+}: {
+  estado?: EstadoEsfera;
+  tamano?: 'grande' | 'chica' | 'mini';
+}) {
+  return (
+    <span
+      className={`hia-esfera${tamano === 'grande' ? '' : ` hia-esfera--${tamano}`}`}
+      data-estado={estado}
+      aria-hidden="true"
+    >
+      <i />
+      <i />
+      <i />
+    </span>
+  );
+}

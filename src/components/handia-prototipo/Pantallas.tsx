@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 import { Icono } from '@/components/Icono';
-import type { NombreIcono } from '@/components/trazos';
 import { RUBROS } from '@/contracts/v1/pedidos';
 import { AVISO_SEGURIDAD } from '@/domain/handia';
 import { RUBROS_INFO } from '@/domain/etiquetas';
@@ -15,6 +14,8 @@ import {
   Dicho,
   Escena,
   type EstadoOrbe,
+  type EstadoEsfera,
+  Esfera,
   Orbe,
   PasosPensando,
   TarjetaVidrio,
@@ -149,38 +150,98 @@ function Voz({
   orbe,
   rotulo,
   children,
-  mic = 'microfono',
 }: {
   orbe: EstadoOrbe;
   rotulo: string;
   children: ReactNode;
-  mic?: NombreIcono;
 }) {
+  const estado: EstadoEsfera = orbe === 'apagado' ? 'silencio' : orbe;
   return (
-    <Escena tipo="voz" className="hxs-llena hia-voz">
-      <div className="hia-voz__arriba">
-        <span className="hia-voz__marca">
-          <Icono nombre="handia" className="hia-ico" /> HandIA
+    <div className="hia-voz-negra hxs-llena">
+      <div className="hia-voz-negra__arriba">
+        <span className="hia-redondo">
+          <Icono nombre="atras" className="hia-ico" />
         </span>
-        <span className="hia-pildora">
-          <Icono nombre="subtitulos" className="hia-ico" /> Subtítulos
-        </span>
-      </div>
-      <Orbe estado={orbe} tamano={orbe === 'apagado' ? 'chico' : 'grande'} />
-      <p className="hia-rotulo hxs-centro">{rotulo}</p>
-      <div className="hia-voz__centro">{children}</div>
-      <div className="hia-control">
-        <span className="hia-control__lado">
-          <Icono nombre="teclado" className="hia-ico" />
-        </span>
-        <span className="hia-mic" data-estado={orbe}>
-          <Icono nombre={mic} className="hia-ico" />
-        </span>
-        <span className="hia-control__lado">
-          <Icono nombre="encuadre" className="hia-ico" />
+        <span className="hia-redondo">
+          <Icono nombre="subtitulos" className="hia-ico" />
         </span>
       </div>
-    </Escena>
+      <div className="hia-voz-negra__centro">
+        <Esfera estado={estado} />
+        <p className="hia-voz-negra__estado">{rotulo}</p>
+        <div className="hxs-voz-texto">{children}</div>
+      </div>
+      <div className="hia-voz-negra__abajo">
+        <span className="hia-pastilla-oscura">
+          <Icono nombre="teclado" className="hia-ico" /> Escribir
+        </span>
+        <span className="hia-redondo">
+          <Icono nombre={orbe === 'apagado' ? 'microfonoNo' : 'microfono'} className="hia-ico" />
+        </span>
+        <span className="hia-redondo hia-redondo--claro">
+          <Icono nombre="cerrar" className="hia-ico" />
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/** Inicio con HandIA a pantalla completa, quieto (el interactivo está en la sección "Inicio y voz"). */
+function InicioHandia() {
+  return (
+    <div className="hia-inicio hxs-llena">
+      <div className="hia-inicio__cab">
+        <p className="hia-inicio__marca">Handyx</p>
+        <span className="hia-redondo">
+          <Icono nombre="campana" className="hia-ico" />
+        </span>
+        <span className="hia-redondo">
+          <Icono nombre="pin" className="hia-ico" />
+        </span>
+      </div>
+      <div className="hia-rubros">
+        {RUBROS.map((r) => (
+          <span key={r} className="hia-rubro">
+            <Icono nombre={RUBROS_INFO[r].icono} className="hia-ico" />
+            {RUBROS_INFO[r].corto}
+          </span>
+        ))}
+      </div>
+      <div className="hia-inicio__hilo">
+        <div className="hia-inicio__hola">
+          <Esfera tamano="chica" />
+          <p className="hxs-hola">¡Hola! Soy HandIA</p>
+          <p>¿Qué arreglo podemos hacer hoy?</p>
+          <span className="hia-turno">
+            <Icono nombre="calendario" className="hia-ico" /> Próximo turno: jue 19 · 10 a 12 h
+          </span>
+        </div>
+      </div>
+      <div className="hia-sugerencias">
+        <span className="hia-sugerencia">Pierde la canilla del baño</span>
+        <span className="hia-sugerencia">Saltó la térmica y no vuelve</span>
+      </div>
+      <div className="hia-composer">
+        <span className="hia-composer__boton">
+          <Icono nombre="mas" className="hia-ico" />
+        </span>
+        <span className="hxs-composer-campo">Contale a HandIA…</span>
+        <span className="hia-composer__boton">
+          <Icono nombre="microfono" className="hia-ico" />
+        </span>
+        <span className="hia-composer__boton hia-composer__boton--voz">
+          <Icono nombre="onda" className="hia-ico" />
+        </span>
+      </div>
+      <span className="hia-nav">
+        {NAVEGACION.map((n) => (
+          <span key={n.id} data-activa={n.id === 'inicio' || undefined}>
+            <Icono nombre={n.icono} className="hia-ico" />
+            {n.etiqueta}
+          </span>
+        ))}
+      </span>
+    </div>
   );
 }
 
@@ -240,26 +301,9 @@ export function Pantallas() {
       <Grupo titulo="Puertas de entrada (R6)">
         <Tel
           titulo="Inicio"
-          nota="La puerta más grande: arriba de los rubros, con el orbe que respira."
+          nota="HandIA a pantalla completa: rubros arriba, saludo y la barra para escribir. Probalo en «Inicio y voz»."
         >
-          <PantallaApp titulo="Hola, Ana" activa="inicio">
-            <span className="hxs-direccion">
-              <Icono nombre="pin" className="hia-ico" /> Tu casa · Mar del Plata
-            </span>
-            <Puerta
-              titulo="Contale a HandIA"
-              texto="Armo tu pedido con vos, escribiendo o hablando."
-            />
-            <span className="hxs-subtitulo">O elegí el rubro</span>
-            <span className="hxs-rubros">
-              {RUBROS.map((r) => (
-                <span key={r}>
-                  <Icono nombre={RUBROS_INFO[r].icono} className="hia-ico" />
-                  {RUBROS_INFO[r].corto}
-                </span>
-              ))}
-            </span>
-          </PantallaApp>
+          <InicioHandia />
         </Tel>
         <Tel titulo="Pedir" nota="Si no sabés qué rubro es, HandIA te lo sugiere.">
           <PantallaApp titulo="¿Qué necesitás?" activa="inicio">
@@ -457,7 +501,7 @@ export function Pantallas() {
           </Voz>
         </Tel>
         <Tel titulo="Piensa" nota="Lo dicho queda atenuado; los pasos en pastillas.">
-          <Voz orbe="pensando" rotulo="Pensando" mic="onda">
+          <Voz orbe="pensando" rotulo="Pensando">
             <p className="hia-display hxs-apagado">{YO}.</p>
             <PasosPensando
               pasos={[
@@ -471,7 +515,7 @@ export function Pantallas() {
           titulo="Habla"
           nota="La respuesta se resalta mientras se dice; tocar el botón interrumpe."
         >
-          <Voz orbe="hablando" rotulo="Hablando · tocá para interrumpir" mic="pausa">
+          <Voz orbe="hablando" rotulo="Hablando · tocá para interrumpir">
             <p className="hia-display">
               <Dicho texto="Parece un trabajo de plomería. ¿Dónde está la canilla?" />
             </p>
@@ -482,7 +526,7 @@ export function Pantallas() {
           </Voz>
         </Tel>
         <Tel titulo="Encontró" nota="Chispas y la ficha en chico; se revisa en el chat.">
-          <Voz orbe="listo" rotulo="Pedido listo" mic="check">
+          <Voz orbe="listo" rotulo="Pedido listo">
             <TarjetaVidrio className="hxs-mini-ficha">
               <span className="hia-ficha__ico">
                 <Icono nombre="canilla" className="hia-ico" />
@@ -499,7 +543,7 @@ export function Pantallas() {
           titulo="No puede escuchar"
           nota="Si el navegador mandaría la voz afuera, no escucha y lo explica."
         >
-          <Voz orbe="apagado" rotulo="Este navegador no escucha en el celular" mic="teclado">
+          <Voz orbe="apagado" rotulo="Este navegador no escucha en el celular">
             <p className="hia-suave">
               Para cuidarte, solo escucho si tu voz se reconoce en el teléfono, y acá no se puede.
               Escribime y te leo las respuestas en voz alta.
@@ -510,7 +554,7 @@ export function Pantallas() {
           </Voz>
         </Tel>
         <Tel titulo="Sin permiso" nota="Permiso de micrófono negado: cómo activarlo, sin culpa.">
-          <Voz orbe="apagado" rotulo="No tengo permiso para el micrófono" mic="teclado">
+          <Voz orbe="apagado" rotulo="No tengo permiso para el micrófono">
             <p className="hia-suave">
               Podés activarlo en los permisos del navegador para este sitio, o seguir escribiendo.
             </p>

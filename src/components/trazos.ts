@@ -102,6 +102,8 @@ export const TRAZOS = {
     '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/>',
   teclado:
     '<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6.5 10h1M10.5 10h1M14.5 10h1M17.5 10h.5M6.5 14h11"/>',
+  microfonoNo:
+    '<path d="M9 9v2a3 3 0 0 0 5.1 2.1M15 9.3V5.5a3 3 0 0 0-5.7-1.3"/><path d="M5.5 11a6.5 6.5 0 0 0 11 4.7M18.5 11c0 .6-.1 1.2-.2 1.8"/><path d="M12 17.5v3.5M8.5 21h7"/><path d="M3 3l18 18"/>',
   // Propios de HandIA (R3): la lamparita como marca, la onda de voz, subtítulos, encuadre de cámara y sin señal.
   handia:
     '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.4.3.6.8.6 1.3V16h6v-.9c0-.5.2-1 .6-1.3A6 6 0 0 0 12 3Z"/><path d="M12 7.5v1M10 9.5h.01M14 9.5h.01M10.5 11.5c.9.7 2.1.7 3 0"/>',

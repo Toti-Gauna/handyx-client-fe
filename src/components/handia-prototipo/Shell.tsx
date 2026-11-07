@@ -2,12 +2,14 @@
 
 // Prototipo de la fase R de HandIA: direcciones (R2), lenguaje (R3), pantallas y puertas (R4 + R6) y movimiento (R5).
 import { useState } from 'react';
+import { InicioSeccion } from './InicioSeccion';
 import { Lenguaje } from './Lenguaje';
 import { Movimiento } from './Movimiento';
 import { Pantallas } from './Pantallas';
 import { Direcciones, Selector } from './Prototipo';
 
 const SECCIONES = [
+  { id: 'inicio', nombre: 'Inicio y voz (nuevo)', lote: 'R4 · ajuste del 07/11' },
   { id: 'pantallas', nombre: 'Pantallas', lote: 'R4 · R6' },
   { id: 'lenguaje', nombre: 'Lenguaje', lote: 'R3' },
   { id: 'movimiento', nombre: 'Movimiento y sonido', lote: 'R5' },
@@ -16,7 +18,7 @@ const SECCIONES = [
 type Seccion = (typeof SECCIONES)[number]['id'];
 
 export function PrototipoHandia() {
-  const [seccion, setSeccion] = useState<Seccion>('pantallas');
+  const [seccion, setSeccion] = useState<Seccion>('inicio');
   const actual = SECCIONES.find((s) => s.id === seccion)!;
   return (
     <div className="hxp">
@@ -41,6 +43,7 @@ export function PrototipoHandia() {
         <h2 id="hxp-seccion-titulo">
           {actual.nombre} <span className="hxp-lote">{actual.lote}</span>
         </h2>
+        {seccion === 'inicio' && <InicioSeccion />}
         {seccion === 'pantallas' && <Pantallas />}
         {seccion === 'lenguaje' && <Lenguaje />}
         {seccion === 'movimiento' && <Movimiento />}

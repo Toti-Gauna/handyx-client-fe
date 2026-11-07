@@ -1349,8 +1349,8 @@ button.hxp-chip {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--color-amarillo);
-  color: var(--color-tinta);
+  background: var(--hia-texto-claro);
+  color: var(--hia-noche);
 }
 .hxs-subtitulo {
   font-weight: var(--peso-fuerte);
@@ -1749,4 +1749,84 @@ button.hxp-chip {
 .hxm-capa--centrada {
   justify-content: center;
   padding: 16px;
+}
+
+/* ── Inicio y voz (ajuste del 07/11) ──────────────────────────────────────────────────────────── */
+.hxi {
+  display: grid;
+  gap: var(--esp-6);
+  align-items: start;
+}
+@media (min-width: 900px) {
+  .hxi {
+    grid-template-columns: 360px 1fr;
+  }
+}
+.hxi-texto ul {
+  padding-left: 1.2em;
+}
+.hxi-texto li {
+  margin-bottom: var(--esp-2);
+}
+.hxi-pantalla {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: min(100%, 360px);
+  height: min(760px, 88vh);
+  margin-inline: auto;
+  border: 8px solid var(--color-tinta);
+  border-radius: var(--hia-radio-telefono);
+  background: var(--sup-base);
+  box-shadow: var(--elev-2);
+  font-size: 15px;
+}
+.hxi-pantalla [hidden] {
+  display: none !important;
+}
+.hxi-esfera-boton {
+  display: grid;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+.hxi-esfera-boton:disabled {
+  cursor: default;
+}
+.hxs-pantalla .hia-esfera:not(.hia-esfera--chica, .hia-esfera--mini) {
+  --hia-esfera: 170px;
+}
+.hxs-voz-texto {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.hxs-voz-texto p {
+  margin: 0;
+}
+.hxs-voz-texto .hia-chips {
+  justify-content: center;
+}
+.hxs-hola {
+  font-family: var(--fuente-titulos);
+  font-size: 1.4em;
+  font-weight: var(--peso-titulo);
+  color: var(--texto-titulo) !important;
+}
+.hxs-composer-campo {
+  flex: 1;
+  color: var(--texto-suave);
+  padding-left: 2px;
+}
+.hxs-pantalla .hia-inicio .hia-redondo {
+  width: 36px;
+  height: 36px;
+}
+/* En las maquetas quietas las filas no se desplazan (no hay nada para tocar adentro). */
+.hxs-pantalla .hia-rubros,
+.hxs-pantalla .hia-sugerencias {
+  overflow: hidden;
 }

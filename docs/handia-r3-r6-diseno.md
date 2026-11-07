@@ -72,3 +72,25 @@ en el teléfono, se tachan datos, vos revisás antes de publicar).
 2. Aprobar R4 y R5 (pantallas y movimiento) antes de H2/H3.
 3. Sonido y vibración en modo voz: sí o no (cambia una regla de la app).
 4. La cámara y el agente son diseño de H5/H4: siguen esperando sus decisiones (fotos e IA externa).
+
+## Ajuste del 07/11 · Inicio "como ChatGPT" y modo voz oscuro
+
+Pedido de Ignacio: "que se vea el chat completo como ChatGPT, con las profesiones arriba y un apartado «¡Hola! Soy
+HandIA. ¿Qué arreglo podemos hacer hoy?»; el modo voz con una estética más como la de ChatGPT; se ve muy verde y los
+botones de abajo muy grandes y toscos". Está en la primera sección del prototipo, **Inicio y voz (nuevo)**, y conversa
+de verdad con el motor de HandIA (en el celular, sin IA externa).
+
+- **Inicio = HandIA a pantalla completa:** marca y dos botones redondos arriba; los 6 rubros en una fila que se
+  desplaza; en el centro la esfera chica, "¡Hola! Soy HandIA" y "¿Qué arreglo podemos hacer hoy?" con el próximo turno;
+  ejemplos tocables; abajo la barra para escribir (fotos, campo, dictado y el botón azul de voz, que pasa a "enviar"
+  cuando hay texto). La persona en burbuja gris, HandIA como texto sin burbuja. La ficha aparece en el hilo con las dos
+  formas de pedir.
+- **Modo voz oscuro:** fondo casi negro, una **esfera** de cielo Handyx con nubes que se mueven y la luz cálida de la
+  lamparita abajo; reacciona al estado (escucha, piensa, habla, listo, micrófono apagado). Subtítulos debajo. Controles
+  finos: "Escribir", micrófono y terminar (blanco), de 44 px. Lo hablado queda en el mismo chat.
+- **Menos verde:** el amarillo de marca sobre azul se leía verdoso; en escenas oscuras los botones principales van en
+  blanco y la luz de HandIA es ámbar, en poca superficie. Íconos de la ficha en azul suave.
+- **Barra inferior liviana:** íconos finos sin la placa azul.
+- El catálogo (sección Pantallas) usa el modo voz nuevo en sus 7 estados y el Inicio nuevo en "Puertas de entrada".
+- Tokens nuevos en `tokens.css` §4 (`--hia-negro`, `--hia-boton-oscuro`, `--hia-cielo-hondo`, `--hia-nube`…); pieza
+  `Esfera` en `components/handia/piezas.tsx`; ícono `microfonoNo`.

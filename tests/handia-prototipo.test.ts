@@ -69,3 +69,23 @@ describe('lenguaje visual de HandIA (R3 · styles/handia.css y components/handia
     expect(piezas).toMatch(/className=\{`hia-orbe[\s\S]*?aria-hidden="true"/);
   });
 });
+
+describe('Inicio con HandIA y modo voz oscuro (ajuste del 07/11)', () => {
+  const inicio = readFileSync('src/components/handia-prototipo/InicioChat.tsx', 'utf8');
+
+  it('la voz del prototipo es una simulación: no usa micrófono, voz, audio, almacenamiento ni red', () => {
+    expect(inicio).not.toMatch(
+      /getUserMedia|SpeechRecognition|speechSynthesis|AudioContext|vibrate|localStorage|sessionStorage|fetch\(|cliente\./,
+    );
+  });
+
+  it('tacha los datos personales antes de mostrarlos y de pasarlos al motor', () => {
+    expect(inicio).toMatch(
+      /const limpio = tacharDatosPersonales\(crudo\.trim\(\)\)\.texto;[\s\S]*?mandar\(limpio, \{ texto: limpio \}\)/,
+    );
+  });
+
+  it('pedir no publica nada: en el prototipo solo avisa qué haría la app', () => {
+    expect(inicio).toMatch(/if \(t\.pedir\)[\s\S]*?\(Prototipo\)/);
+  });
+});

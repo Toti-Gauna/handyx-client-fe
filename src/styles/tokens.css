@@ -199,4 +199,15 @@
     1
   ); /* un rebote chico: solo personaje y chispas */
   --hia-curva-salida: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* Inicio con HandIA y modo voz oscuro (pedido de Ignacio del 07/11: "como ChatGPT", menos amarillo verdoso,
+     controles más finos). La esfera es cielo Handyx con una luz cálida abajo: la lamparita hecha luz. */
+  --hia-negro: #030407;
+  --hia-boton-oscuro: #15171c;
+  --hia-boton-oscuro-borde: rgb(255 255 255 / 0.09);
+  --hia-texto-oscuro-suave: #a9b0bf; /* 8.6:1 sobre --hia-negro */
+  --hia-cielo-hondo: #2350d8;
+  --hia-nube: rgb(255 255 255 / 0.92);
+  --hia-burbuja-gris: #eef0f4;
+  --hia-composer-sombra: 0 6px 24px -10px rgb(14 29 54 / 0.28), 0 1px 3px rgb(14 29 54 / 0.08);
 }

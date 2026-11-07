@@ -712,6 +712,7 @@ button.hia-chip:active {
 }
 .hia-ficha__texto {
   margin: 0;
+  white-space: pre-line;
   padding: 10px 12px;
   border-radius: 14px;
   background: rgb(from var(--hia-crema) r g b / 0.8);
@@ -828,4 +829,551 @@ button.hia-chip:active {
   display: flex;
   flex-wrap: wrap;
   gap: var(--esp-2);
+}
+
+/* ── Esfera de voz: cielo Handyx que se mueve, con la luz cálida de la lamparita abajo ────────── */
+.hia-esfera {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: var(--hia-esfera, 220px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(
+    172deg,
+    var(--hia-cielo-hondo) 0%,
+    var(--color-azul-personajes) 34%,
+    var(--hia-azul-luz) 56%,
+    var(--hia-celeste) 78%,
+    var(--hia-hielo) 100%
+  );
+  box-shadow: 0 0 70px -14px rgb(from var(--hia-azul-luz) r g b / 0.55);
+  transition:
+    transform var(--hia-dur-estado) var(--hia-curva-entrada),
+    filter var(--hia-dur-estado);
+}
+.hia-esfera--chica {
+  --hia-esfera: 56px;
+  box-shadow: 0 0 24px -8px rgb(from var(--hia-azul-luz) r g b / 0.6);
+}
+.hia-esfera--mini {
+  --hia-esfera: 28px;
+  box-shadow: none;
+}
+.hia-esfera i {
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  filter: blur(calc(var(--hia-esfera, 220px) * 0.06));
+  animation: hia-nubes 20s linear infinite;
+}
+.hia-esfera i:nth-child(1) {
+  background:
+    radial-gradient(28% 14% at 34% 60%, var(--hia-nube), transparent 72%),
+    radial-gradient(30% 13% at 64% 57%, var(--hia-nube), transparent 72%),
+    radial-gradient(42% 18% at 48% 74%, var(--hia-nube), transparent 70%);
+}
+.hia-esfera i:nth-child(2) {
+  background:
+    radial-gradient(22% 10% at 72% 40%, rgb(from var(--hia-hielo) r g b / 0.8), transparent 70%),
+    radial-gradient(26% 12% at 28% 44%, rgb(from var(--hia-hielo) r g b / 0.6), transparent 70%);
+  animation-duration: 31s;
+  animation-direction: reverse;
+}
+/* La luz cálida que sube desde abajo: el único toque amarillo, en ámbar (no el amarillo verdoso). */
+.hia-esfera i:nth-child(3) {
+  inset: 0;
+  border-radius: 0;
+  filter: none;
+  background: radial-gradient(
+    70% 38% at 50% 108%,
+    rgb(from var(--hia-ambar) r g b / 0.5),
+    transparent 70%
+  );
+  animation: none;
+}
+@keyframes hia-nubes {
+  to {
+    transform: rotate(1turn);
+  }
+}
+.hia-esfera[data-estado='escuchando'] {
+  animation: hia-esfera-oye 1.3s ease-in-out infinite;
+}
+.hia-esfera[data-estado='pensando'] i:nth-child(-n + 2) {
+  animation-duration: 4s;
+}
+.hia-esfera[data-estado='pensando'] {
+  filter: saturate(0.85) brightness(0.92);
+  transform: scale(0.94);
+}
+.hia-esfera[data-estado='hablando'] {
+  animation: hia-esfera-habla 0.6s ease-in-out infinite alternate;
+}
+.hia-esfera[data-estado='listo'] {
+  box-shadow:
+    0 0 0 6px rgb(from var(--hia-azul-luz) r g b / 0.25),
+    0 0 90px -10px rgb(from var(--hia-ambar) r g b / 0.6);
+}
+.hia-esfera[data-estado='silencio'] {
+  filter: saturate(0.25) brightness(0.7);
+  transform: scale(0.92);
+}
+.hia-esfera[data-estado='silencio'] i {
+  animation-play-state: paused;
+}
+@keyframes hia-esfera-oye {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.05);
+  }
+  45% {
+    transform: scale(1.01);
+  }
+  70% {
+    transform: scale(1.07);
+  }
+}
+@keyframes hia-esfera-habla {
+  from {
+    transform: scale(0.98);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+/* ── Modo voz oscuro: casi negro, la esfera y controles finos abajo ───────────────────────────── */
+.hia-voz-negra {
+  --hia-suave: var(--hia-texto-oscuro-suave);
+  --hia-chip: var(--hia-boton-oscuro);
+  --hia-chip-borde: var(--hia-boton-oscuro-borde);
+  --hia-chip-texto: var(--hia-texto-claro);
+  --hia-aro-actual: var(--hia-celeste);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 20px;
+  background: var(--hia-negro);
+  color: var(--hia-texto-claro);
+}
+.hia-voz-negra__arriba {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hia-voz-negra__centro {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  text-align: center;
+}
+.hia-voz-negra__estado {
+  margin: 0;
+  font-size: var(--t-sm);
+  color: var(--hia-texto-oscuro-suave);
+}
+.hia-subtitulo {
+  margin: 0;
+  max-width: 28ch;
+  min-height: 2.6em;
+  font-size: 1.05em;
+  line-height: 1.3;
+  color: var(--hia-texto-claro);
+  text-wrap: balance;
+}
+.hia-redondo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--toque-min);
+  height: var(--toque-min);
+  padding: 0;
+  border: 1px solid var(--hia-boton-oscuro-borde);
+  border-radius: 50%;
+  background: var(--hia-boton-oscuro);
+  color: var(--hia-texto-claro);
+  font: inherit;
+  cursor: pointer;
+}
+.hia-redondo .hia-ico {
+  width: 20px;
+  height: 20px;
+}
+.hia-redondo--claro {
+  background: var(--hia-texto-claro);
+  border-color: transparent;
+  color: var(--hia-negro);
+}
+.hia-redondo[aria-pressed='true'] {
+  background: var(--hia-texto-claro);
+  color: var(--hia-negro);
+}
+.hia-voz-negra__abajo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hia-pastilla-oscura {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--hia-boton-oscuro-borde);
+  border-radius: var(--radio-pastilla);
+  background: var(--hia-boton-oscuro);
+  color: var(--hia-texto-oscuro-suave);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.hia-voz-negra :focus-visible {
+  outline: 2px solid var(--hia-celeste);
+  outline-offset: 2px;
+}
+
+/* En escenas oscuras el botón destacado va en blanco: el amarillo de marca sobre azul se lee verdoso. */
+.hia-escena--voz .hia-boton--destacado {
+  background: var(--hia-texto-claro);
+  color: var(--hia-noche);
+  box-shadow: none;
+}
+
+/* Adentro del modo voz oscuro: texto como subtítulo (no titular), tarjetas grises y el botón principal blanco. */
+.hia-voz-negra .hia-display {
+  font-family: var(--fuente);
+  font-size: 1.2rem;
+  font-weight: var(--peso-medio);
+  line-height: 1.32;
+}
+.hia-voz-negra .hia-vidrio {
+  background: var(--hia-boton-oscuro);
+  border-color: var(--hia-boton-oscuro-borde);
+  box-shadow: none;
+}
+.hia-voz-negra .hia-boton--destacado,
+.hia-voz-negra .hia-boton--primario {
+  background: var(--hia-texto-claro);
+  color: var(--hia-negro);
+  box-shadow: none;
+}
+.hia-voz-negra .hia-boton--vidrio {
+  background: var(--hia-boton-oscuro);
+  border-color: var(--hia-boton-oscuro-borde);
+  color: var(--hia-texto-claro);
+}
+.hia-voz-negra .hia-ficha__ico {
+  background: var(--hia-cielo-hondo);
+  color: var(--hia-texto-claro);
+}
+
+/* ── Inicio con HandIA (chat a pantalla completa, como un asistente) ──────────────────────────── */
+.hia-inicio {
+  --hia-suave: var(--texto-suave);
+  --hia-chip: var(--sup-marca-tinte);
+  --hia-chip-borde: var(--estado-info-borde);
+  --hia-chip-texto: var(--color-azul);
+  --hia-aro-actual: var(--color-azul);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--sup-base);
+  color: var(--texto-cuerpo);
+}
+.hia-inicio__cab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 14px 6px;
+}
+.hia-inicio__marca {
+  flex: 1;
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.35em;
+  font-weight: var(--peso-titulo);
+  letter-spacing: 0.02em;
+  color: var(--color-azul);
+}
+.hia-inicio .hia-redondo {
+  width: 40px;
+  height: 40px;
+  background: var(--sup-hundida);
+  border-color: var(--linea);
+  color: var(--texto-titulo);
+}
+.hia-rubros {
+  display: flex;
+  gap: 8px;
+  padding: 6px 14px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--linea);
+  -webkit-mask-image: linear-gradient(90deg, var(--color-tinta) 82%, transparent);
+  mask-image: linear-gradient(90deg, var(--color-tinta) 82%, transparent);
+}
+.hia-rubros::-webkit-scrollbar {
+  display: none;
+}
+.hia-rubro {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-pastilla);
+  background: var(--sup-tarjeta);
+  color: var(--texto-titulo);
+  font: inherit;
+  font-size: 0.86em;
+  font-weight: var(--peso-medio);
+  cursor: pointer;
+}
+.hia-rubro .hia-ico {
+  width: 16px;
+  height: 16px;
+  color: var(--color-azul);
+}
+.hia-inicio__hilo {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  overflow-y: auto;
+}
+.hia-inicio__hola {
+  margin: auto 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+.hia-inicio__hola h2,
+.hia-inicio__hola p {
+  margin: 0;
+}
+.hia-inicio__hola h2 {
+  font-family: var(--fuente-titulos);
+  font-size: 1.5em;
+  font-weight: var(--peso-titulo);
+  color: var(--texto-titulo);
+}
+.hia-inicio__hola p {
+  max-width: 22ch;
+  font-size: 1.15em;
+  line-height: 1.3;
+  color: var(--texto-suave);
+}
+.hia-turno {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radio-pastilla);
+  background: var(--estado-ok-fondo);
+  color: var(--estado-ok);
+  font-size: 0.8em;
+  font-weight: var(--peso-medio);
+}
+.hia-sugerencias {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.hia-sugerencias::-webkit-scrollbar {
+  display: none;
+}
+.hia-sugerencia {
+  flex: none;
+  max-width: 190px;
+  padding: 10px 12px;
+  border: 1px solid var(--linea);
+  border-radius: 16px;
+  background: var(--sup-tarjeta);
+  color: var(--texto-titulo);
+  font: inherit;
+  font-size: 0.86em;
+  text-align: left;
+  cursor: pointer;
+}
+/* Mensajes: la persona en burbuja gris a la derecha; HandIA como texto, sin burbuja. */
+.hia-msj {
+  margin: 0;
+  line-height: 1.42;
+  animation: hia-entrar var(--hia-dur-entrada) var(--hia-curva-entrada) both;
+}
+.hia-msj--yo {
+  align-self: flex-end;
+  max-width: 82%;
+  padding: 9px 14px;
+  border-radius: 20px;
+  background: var(--hia-burbuja-gris);
+  color: var(--texto-titulo);
+}
+.hia-msj--ia {
+  align-self: flex-start;
+  max-width: 94%;
+  color: var(--texto-titulo);
+}
+.hia-msj--detectado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: var(--radio-pastilla);
+  background: var(--sup-marca-tinte);
+  color: var(--color-azul);
+  font-size: 0.82em;
+  font-weight: var(--peso-fuerte);
+}
+.hia-pensando {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--texto-suave);
+  --hia-aro-actual: var(--color-azul);
+}
+.hia-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hia-opcion {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-pastilla);
+  background: var(--sup-tarjeta);
+  color: var(--texto-titulo);
+  font: inherit;
+  font-size: 0.88em;
+  font-weight: var(--peso-medio);
+  cursor: pointer;
+}
+.hia-ficha-clara {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--linea);
+  border-radius: var(--hia-radio-tarjeta);
+  background: var(--sup-tarjeta);
+  box-shadow: var(--elev-1);
+}
+.hia-ficha-clara p {
+  margin: 0;
+}
+.hia-inicio .hia-ficha__ico {
+  background: var(--sup-marca-tinte);
+  color: var(--color-azul);
+}
+/* Barra para escribir: una pastilla con "+", el campo, dictado y el botón de voz (o enviar). */
+.hia-composer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 12px 10px;
+  padding: 5px;
+  border: 1px solid var(--linea);
+  border-radius: 26px;
+  background: var(--sup-tarjeta);
+  box-shadow: var(--hia-composer-sombra);
+}
+.hia-composer input {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  border: 0;
+  background: none;
+  color: var(--texto-titulo);
+  font: inherit;
+}
+.hia-composer input::placeholder {
+  color: var(--texto-suave);
+}
+.hia-composer input:focus-visible {
+  outline: none;
+}
+.hia-composer:focus-within {
+  border-color: var(--linea-foco);
+}
+.hia-composer__boton {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--texto-titulo);
+  cursor: pointer;
+}
+.hia-composer__boton .hia-ico {
+  width: 20px;
+  height: 20px;
+}
+.hia-composer__boton--voz {
+  background: var(--color-azul);
+  color: var(--texto-sobre-marca);
+}
+.hia-composer__boton:focus-visible,
+.hia-rubro:focus-visible,
+.hia-sugerencia:focus-visible,
+.hia-opcion:focus-visible,
+.hia-inicio .hia-redondo:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: 2px;
+}
+/* Barra inferior liviana: íconos finos, sin la placa azul. */
+.hia-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 6px 4px 10px;
+  border-top: 1px solid var(--linea);
+  background: var(--sup-base);
+}
+.hia-nav span {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  font-size: 0.7em;
+  color: var(--texto-suave);
+}
+.hia-nav .hia-ico {
+  width: 21px;
+  height: 21px;
+  stroke-width: 1.7;
+}
+.hia-nav [data-activa] {
+  color: var(--color-azul);
+  font-weight: var(--peso-fuerte);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hia-esfera,
+  .hia-esfera i {
+    animation: none !important;
+  }
+}
+.hia-inicio__hilo:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: -3px;
 }
