@@ -342,9 +342,10 @@ export function Pantallas() {
   return (
     <div className="hxs">
       <p className="hxp-intro">
-        Todas las pantallas de HandIA con la dirección de trabajo, más las puertas de entrada desde
-        la app (R6). Lo que lleva una fase (H4, H5) todavía no existe: se diseña ahora para que todo
-        sea una sola experiencia.
+        <strong>Ojo: este catálogo es la versión anterior</strong> (vidrio, esfera y negro,
+        inspirada en ChatGPT). La dirección actual, traducida al diseño de Handyx, está en «Inicio y
+        voz (nuevo)»; cuando se apruebe, este catálogo se rehace con esas piezas. Lo que lleva una
+        fase (H4, H5) todavía no existe.
       </p>
 
       <Grupo titulo="Puertas de entrada (R6)">

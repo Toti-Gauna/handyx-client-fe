@@ -1,8 +1,10 @@
 'use client';
 
-// Inicio con HandIA a pantalla completa (pedido de Ignacio del 07/11: "que se vea el chat completo como ChatGPT, con
-// las profesiones arriba"). Conversa de verdad con el motor local (src/domain/handia-motor.ts). El modo voz es una
-// simulación: no usa el micrófono; tocar la esfera simula que la persona dijo lo siguiente.
+// Inicio con HandIA a pantalla completa, con el diseño de Handyx (pedido de Ignacio del 07/11: la idea de un asistente
+// a pantalla completa, "no una copia de ChatGPT: llevado al diseño que ya existe en Handyx"). Usa las piezas del kit
+// (cabecera con logo, mosaicos con los Handys, burbujas de los chats, ticket, botones táctiles, barra azul). Conversa
+// de verdad con el motor local (src/domain/handia-motor.ts). El modo voz es una simulación: no usa el micrófono;
+// tocar la lamparita simula que la persona dijo lo siguiente.
 import { useEffect, useRef, useState } from 'react';
 import { Icono } from '@/components/Icono';
 import { RUBROS } from '@/contracts/v1/pedidos';
@@ -19,13 +21,9 @@ import {
 } from '@/domain/handia-motor';
 import { RUBROS_INFO } from '@/domain/etiquetas';
 import type { Rubro } from '@/contracts/v1/pedidos';
-import {
-  AvisoRiesgo,
-  BotonPremium,
-  CabeceraHandia,
-  Esfera,
-  type EstadoEsfera,
-} from '@/components/handia/piezas';
+import Image from 'next/image';
+import type { EstadoEsfera } from '@/components/handia/piezas';
+import { HandyRubro, Marcado } from '@/components/hx';
 import { NAVEGACION } from '@/mapa/pantallas';
 
 type Mensaje =
@@ -40,6 +38,7 @@ const SUGERENCIAS = [
 ];
 const PRIMERA_FRASE = 'Pierde la canilla del baño, gotea toda la noche';
 const PAUSA = 650;
+const LAMPARITA = '/img/handy-lamparita.webp';
 
 let siguienteId = 0;
 const id = () => ++siguienteId;
@@ -74,6 +73,7 @@ export function InicioChat() {
   const [sonidos, setSonidos] = useState(false);
   const [leerEnVoz, setLeerEnVoz] = useState(false);
   const [vozTexto, setVozTexto] = useState('');
+  const [menu, setMenu] = useState(false);
   const relojes = useRef<ReturnType<typeof setTimeout>[]>([]);
   const turnoRef = useRef(turno);
   const hilo = useRef<HTMLDivElement>(null);
@@ -138,7 +138,10 @@ export function InicioChat() {
   // ── Modo voz (simulado) ───────────────────────────────────────────────────────────────────────
   /** Lo que "dice" la persona: la primera opción que ofrece HandIA o, al empezar, un problema de ejemplo. */
   const proximoDicho = (): { texto: string; entrada: { texto: string } | { accion: Accion } } => {
-    const op = turnoRef.current.opciones.find((o) => o.accion.tipo !== 'saltear');
+    // Nunca "dice" por la persona que pida, ni que empiece de nuevo: eso lo decide ella.
+    const op = turnoRef.current.opciones.find(
+      (o) => !['saltear', 'pedir', 'reiniciar'].includes(o.accion.tipo),
+    );
     return op
       ? { texto: op.texto, entrada: { accion: op.accion } }
       : { texto: PRIMERA_FRASE, entrada: { texto: PRIMERA_FRASE } };
@@ -146,6 +149,12 @@ export function InicioChat() {
 
   const intercambio = () => {
     cortar();
+    // Con el pedido ya armado, la voz no sigue sola: la persona revisa la ficha y elige cómo pedir.
+    if (turnoRef.current.estado.etapa === 'resumen') {
+      setVoz('listo');
+      setSubtitulo('Tu pedido está listo: revisalo en el chat y elegí cómo pedirlo.');
+      return;
+    }
     const { texto: frase, entrada } = proximoDicho();
     setVoz('escuchando');
     setSubtitulo('');
@@ -212,367 +221,552 @@ export function InicioChat() {
   const opciones = pensando ? [] : turno.opciones;
   const ultimaFicha = mensajes.findLast((m) => m.de === 'ficha')?.id;
   const estadoCab = pensando
-    ? 'pensando'
+    ? 'Pensando…'
     : turno.estado.etapa === 'resumen' && mensajes.some((m) => m.de === 'ficha')
-      ? 'listo'
+      ? 'Pedido listo para revisar'
       : turno.progreso
-        ? 'escribiendo'
-        : 'lista';
+        ? 'Armando tu pedido'
+        : 'En tu celular, sin IA externa';
   const rotuloVoz =
     voz === 'silencio'
       ? 'Micrófono apagado'
       : voz === 'pensando'
         ? 'Pensando'
         : voz === 'hablando'
-          ? 'HandIA está hablando'
+          ? 'HandIA te está hablando'
           : voz === 'listo'
-            ? 'Pedido listo'
+            ? '¡Pedido listo!'
             : 'Te escucho';
+  const avatar = (chico = false) => (
+    <span
+      className={`hxh-avatar${chico ? ' hxh-avatar--chico' : ''}`}
+      data-estado={pensando ? 'pensando' : undefined}
+      aria-hidden="true"
+    >
+      <i />
+      <Image src={LAMPARITA} alt="" width={202} height={346} />
+    </span>
+  );
 
   return (
     <div className="hxi-pantalla">
-      <div className="hia-inicio hxs-llena" hidden={voz !== null}>
-        {vacio ? (
-          <>
-            <div className="hia-inicio__cab">
-              <p className="hia-inicio__marca">Handyx</p>
-              <button type="button" className="hia-redondo" aria-label="Avisos">
-                <Icono nombre="campana" className="hia-ico" />
-              </button>
-              <button type="button" className="hia-redondo" aria-label="Dirección: Tu casa">
-                <Icono nombre="pin" className="hia-ico" />
-              </button>
-            </div>
-            <div className="hia-rubros" role="group" aria-label="Rubros">
+      <div className="hx hxh">
+        <div className="hxh-app" hidden={voz !== null}>
+          {vacio ? (
+            <header className="app-cabecera app-cabecera--blanca">
+              <div className="app-cabecera__fila">
+                <span className="app-logo">
+                  <Image src="/img/logo-handyx.webp" alt="Handyx" width={720} height={158} />
+                  <small aria-hidden="true">Soluciones, no problemas</small>
+                </span>
+                <span className="app-cabecera__botones">
+                  <button type="button" className="app-cuadrado" aria-label="Avisos, 2 sin leer">
+                    <Icono nombre="campana" />
+                    <span className="hd-insignia" aria-hidden="true">
+                      2
+                    </span>
+                  </button>
+                  <button type="button" className="app-cuadrado" aria-label="Tus direcciones">
+                    <Icono nombre="pin" />
+                  </button>
+                </span>
+              </div>
+            </header>
+          ) : (
+            <header className="hd-chat-cabecera hxh-chat-cab">
+              <div className="hd-chat-cabecera__fila">
+                <button
+                  type="button"
+                  className="hd-chat-cabecera__volver"
+                  aria-label="Volver al inicio"
+                  onClick={reiniciar}
+                >
+                  <Icono nombre="atras" />
+                </button>
+                {avatar()}
+                <span className="hd-chat-cabecera__quien">
+                  <strong>HandIA</strong>
+                  <small>{estadoCab}</small>
+                </span>
+                <button
+                  type="button"
+                  className="hd-chat-cabecera__volver"
+                  aria-label="Más opciones"
+                  aria-expanded={menu}
+                  onClick={() => setMenu((v) => !v)}
+                >
+                  <Icono nombre="menu" />
+                </button>
+              </div>
+              {turno.progreso && !pensando ? (
+                <div
+                  className="hxh-tramos"
+                  role="progressbar"
+                  aria-label="Preguntas del pedido"
+                  aria-valuemin={0}
+                  aria-valuemax={turno.progreso.total}
+                  aria-valuenow={turno.progreso.actual}
+                  aria-valuetext={`Pregunta ${turno.progreso.actual} de ${turno.progreso.total}`}
+                >
+                  {Array.from({ length: turno.progreso.total }, (_, k) => (
+                    <i key={k} data-hecho={k < turno.progreso!.actual || undefined} />
+                  ))}
+                </div>
+              ) : null}
+              {menu && (
+                <div className="hxh-menu" onKeyDown={(e) => e.key === 'Escape' && setMenu(false)}>
+                  {(
+                    [
+                      ['nuevoChat', 'Nuevo pedido', 'nuevo'],
+                      ['onda', 'Modo voz', 'voz'],
+                      ['escudo', 'Cómo cuido tus datos', 'datos'],
+                    ] as const
+                  ).map(([ico, txt, accion]) => (
+                    <button
+                      key={txt}
+                      type="button"
+                      className="hd-fila hxh-menu__fila"
+                      onClick={() => {
+                        setMenu(false);
+                        if (accion === 'nuevo') reiniciar();
+                        else if (accion === 'voz') abrirVoz();
+                        else privacidad();
+                      }}
+                    >
+                      <span className="hd-fila__ico">
+                        <Icono nombre={ico} />
+                      </span>
+                      <span className="hd-fila__texto">{txt}</span>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={leerEnVoz}
+                    className="hd-fila hxh-menu__fila"
+                    onClick={() => setLeerEnVoz((v) => !v)}
+                  >
+                    <span className="hd-fila__ico">
+                      <Icono nombre="parlante" />
+                    </span>
+                    <span className="hd-fila__texto">Leer respuestas en voz alta</span>
+                    <span className="hia-interruptor" aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+            </header>
+          )}
+
+          {vacio && (
+            <div className="hxh-rubros" role="group" aria-label="Rubros">
               {RUBROS.map((r) => (
-                <button key={r} type="button" className="hia-rubro" onClick={() => rubro(r)}>
-                  <Icono nombre={RUBROS_INFO[r].icono} className="hia-ico" />
-                  {RUBROS_INFO[r].corto}
+                <button
+                  key={r}
+                  type="button"
+                  className="hd-mosaico hxh-rubro"
+                  onClick={() => rubro(r)}
+                >
+                  <HandyRubro rubro={r} />
+                  <span>{RUBROS_INFO[r].corto}</span>
                 </button>
               ))}
             </div>
-          </>
-        ) : (
-          <CabeceraHandia
-            estado={estadoCab}
-            progreso={pensando ? null : turno.progreso}
-            alVolver={reiniciar}
-            alNuevo={reiniciar}
-            alAbrirVoz={abrirVoz}
-            leerEnVoz={leerEnVoz}
-            alLeerEnVoz={setLeerEnVoz}
-            alPrivacidad={privacidad}
-          />
-        )}
+          )}
 
-        <div
-          className="hia-inicio__hilo"
-          ref={hilo}
-          role="log"
-          aria-label="Conversación con HandIA"
-          tabIndex={0}
-        >
-          {vacio ? (
-            <div className="hia-inicio__hola">
-              <Esfera tamano="chica" />
-              <h2>¡Hola! Soy HandIA</h2>
-              <p>¿Qué arreglo podemos hacer hoy?</p>
-              <span className="hia-turno">
-                <Icono nombre="calendario" className="hia-ico" /> Próximo turno: jue 19 · 10 a 12 h
-              </span>
-            </div>
-          ) : (
-            mensajes.map((m) =>
-              m.de === 'yo' ? (
-                <p key={m.id} className="hia-msj hia-msj--yo">
-                  {m.texto}
-                </p>
-              ) : m.de === 'detectado' ? (
-                <span key={m.id} className="hia-msj hia-msj--detectado">
-                  <Icono nombre={RUBROS_INFO[m.rubro].icono} className="hia-ico" />{' '}
-                  {RUBROS_INFO[m.rubro].nombre}
+          <div
+            className="hxh-hilo"
+            data-chat={vacio ? undefined : ''}
+            ref={hilo}
+            role="log"
+            aria-label="Conversación con HandIA"
+            tabIndex={0}
+          >
+            {vacio ? (
+              <div className="hxh-hola">
+                <span className="du-bienvenida__luz hxh-hola__luz" aria-hidden="true">
+                  <i />
+                  <Image className="hd-handy" src={LAMPARITA} alt="" width={202} height={346} />
                 </span>
-              ) : m.de === 'ficha' ? (
-                <div key={m.id} className="hia-msj hia-ficha-clara">
-                  <div className="hia-ficha__cab">
-                    <span className="hia-ficha__ico">
-                      <Icono
-                        nombre={m.rubro ? RUBROS_INFO[m.rubro].icono : 'caja'}
-                        className="hia-ico"
-                      />
-                    </span>
-                    <div>
-                      <span className="hia-suave">Tu pedido</span>
-                      <p className="hia-ficha__titulo">
-                        {m.rubro ? RUBROS_INFO[m.rubro].nombre : 'Arreglo'}
-                      </p>
+                <p className="hd-sobre">¡Hola! Soy HandIA</p>
+                <h2 className="hd-titulo hd-titulo--grande">
+                  <Marcado texto="¿Qué arreglo podemos hacer ==hoy==?" />
+                </h2>
+                <p className="hd-texto hd-texto--suave">
+                  Contame qué pasó, escribiendo o hablando, y armo el pedido con vos.
+                </p>
+              </div>
+            ) : (
+              mensajes.map((m) =>
+                m.de === 'yo' ? (
+                  <p key={m.id} className="du-burbuja du-burbuja--propia hxh-msj">
+                    <span className="sr-only">Vos: </span>
+                    {m.texto}
+                  </p>
+                ) : m.de === 'detectado' ? (
+                  <span key={m.id} className="hd-chip hd-chip--azul hxh-msj hxh-detectado">
+                    <Icono nombre={RUBROS_INFO[m.rubro].icono} /> {RUBROS_INFO[m.rubro].nombre}
+                  </span>
+                ) : m.de === 'ficha' ? (
+                  <div key={m.id} className="hd-ticket hxh-ficha hxh-msj">
+                    <div className="hd-ticket__papel">
+                      <div className="hxh-ficha__arriba">
+                        {m.rubro ? <HandyRubro rubro={m.rubro} /> : null}
+                        <span>
+                          <span className="hd-sobre">Tu pedido</span>
+                          <span className="hd-titulo hd-titulo--chico">
+                            {m.rubro ? RUBROS_INFO[m.rubro].nombre : 'Arreglo'}
+                          </span>
+                        </span>
+                      </div>
+                      <div className="hd-ticket__corte" />
+                      <div className="hxh-ficha__abajo">
+                        {m.detalles.length > 0 && (
+                          <span className="hd-chips">
+                            {m.detalles.map((d) => (
+                              <span key={d} className="hd-chip hd-chip--tinte">
+                                {d}
+                              </span>
+                            ))}
+                          </span>
+                        )}
+                        <p className="hd-texto">{m.descripcion}</p>
+                        {m.id === ultimaFicha && !pensando && (
+                          <div className="hd-botones hd-botones--fila">
+                            {turno.opciones
+                              .filter((o) => o.accion.tipo === 'pedir')
+                              .map((o) => (
+                                <button
+                                  key={o.texto}
+                                  type="button"
+                                  className={`hd-boton${o.destacada ? '' : ' hd-boton--claro'}`}
+                                  onClick={() => elegir(o)}
+                                >
+                                  <Icono
+                                    nombre={
+                                      o.accion.tipo === 'pedir' && o.accion.modo === 'urgente'
+                                        ? 'reloj'
+                                        : 'calendario'
+                                    }
+                                  />
+                                  {o.texto}
+                                </button>
+                              ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  {m.detalles.length > 0 && (
-                    <div className="hia-chips">
-                      {m.detalles.map((d) => (
-                        <span key={d} className="hia-chip hia-chip--dato">
-                          {d}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <p className="hia-ficha__texto">{m.descripcion}</p>
-                  {m.id === ultimaFicha && !pensando && (
-                    <div className="hia-ficha__acciones">
-                      {turno.opciones
-                        .filter((o) => o.accion.tipo === 'pedir')
-                        .map((o) => (
-                          <BotonPremium
-                            key={o.texto}
-                            variante={o.destacada ? 'primario' : 'vidrio'}
-                            icono={
-                              o.accion.tipo === 'pedir' && o.accion.modo === 'urgente'
-                                ? 'reloj'
-                                : 'calendario'
-                            }
-                            onClick={() => elegir(o)}
-                          >
-                            {o.texto}
-                          </BotonPremium>
-                        ))}
-                    </div>
-                  )}
-                </div>
-              ) : m.de === 'aviso' && m.riesgo ? (
-                <AvisoRiesgo key={m.id} texto={m.texto} />
-              ) : (
-                <p key={m.id} className="hia-msj hia-msj--ia">
-                  {m.texto}
-                </p>
-              ),
-            )
-          )}
-          {pensando && (
-            <span className="hia-pensando">
-              <span className="hia-giro" aria-hidden="true" />
-              <span className="hia-brillo">Pensando</span>
-            </span>
-          )}
-          {opciones.some((o) => o.accion.tipo !== 'pedir') && (
-            <div className="hia-opciones" role="group" aria-label="Respuestas rápidas">
-              {opciones
-                .filter((o) => o.accion.tipo !== 'pedir')
-                .map((o) => (
-                  <button
-                    key={o.texto}
-                    type="button"
-                    className="hia-opcion"
-                    onClick={() => elegir(o)}
+                ) : m.de === 'aviso' ? (
+                  <p
+                    key={m.id}
+                    className={`du-nota du-handia-aviso hxh-msj${m.riesgo ? ' hx-riesgo' : ''}`}
+                    role={m.riesgo ? 'alert' : undefined}
                   >
-                    {o.texto}
-                  </button>
-                ))}
+                    <Icono nombre={m.riesgo ? 'alerta' : 'info'} />
+                    <span>{m.texto}</span>
+                  </p>
+                ) : (
+                  <div key={m.id} className="hxh-ia hxh-msj">
+                    {avatar(true)}
+                    <p className="du-burbuja du-burbuja--otra">
+                      <span className="sr-only">HandIA: </span>
+                      {m.texto}
+                    </p>
+                  </div>
+                ),
+              )
+            )}
+            {pensando && (
+              <div className="hxh-ia">
+                {avatar(true)}
+                <span className="hd-escribiendo">
+                  <i />
+                  <i />
+                  <i />
+                  <span className="sr-only">HandIA está pensando</span>
+                </span>
+              </div>
+            )}
+            {opciones.some((o) => o.accion.tipo !== 'pedir') && (
+              <div className="hxh-opciones" role="group" aria-label="Respuestas rápidas">
+                {opciones
+                  .filter((o) => o.accion.tipo !== 'pedir')
+                  .map((o) => (
+                    <button
+                      key={o.texto}
+                      type="button"
+                      className="hd-chip hd-chip--tinte hxh-opcion"
+                      onClick={() => elegir(o)}
+                    >
+                      {o.texto}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </div>
+
+          {vacio && (
+            <div
+              className="hd-chips hd-chips--carril hxh-sugerencias"
+              role="group"
+              aria-label="Ejemplos"
+            >
+              {SUGERENCIAS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  className="hd-chip hxh-opcion"
+                  onClick={() => enviarTexto(s)}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
           )}
-        </div>
-
-        {vacio && (
-          <div className="hia-sugerencias" role="group" aria-label="Ejemplos">
-            {SUGERENCIAS.map((s) => (
-              <button
-                key={s}
-                type="button"
-                className="hia-sugerencia"
-                onClick={() => enviarTexto(s)}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
-        <form
-          className="hia-composer"
-          onSubmit={(e) => {
-            e.preventDefault();
-            enviarTexto(texto);
-          }}
-        >
-          <button type="button" className="hia-composer__boton" aria-label="Sumar fotos (fase H5)">
-            <Icono nombre="mas" className="hia-ico" />
-          </button>
-          <input
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            placeholder="Contale a HandIA…"
-            aria-label="Contale a HandIA"
-            maxLength={500}
-            autoComplete="off"
-          />
-          {texto.trim() ? (
-            <button
-              type="submit"
-              className="hia-composer__boton hia-composer__boton--voz"
-              aria-label="Enviar"
-            >
-              <Icono nombre="enviar" className="hia-ico" />
-            </button>
-          ) : (
-            <>
-              <button type="button" className="hia-composer__boton" aria-label="Dictar (fase H2)">
-                <Icono nombre="microfono" className="hia-ico" />
-              </button>
-              <button
-                type="button"
-                className="hia-composer__boton hia-composer__boton--voz"
-                aria-label="Modo voz"
-                onClick={abrirVoz}
-              >
-                <Icono nombre="onda" className="hia-ico" />
-              </button>
-            </>
-          )}
-        </form>
-        <nav className="hia-nav" aria-label="Secciones de la app (maqueta)">
-          {NAVEGACION.map((n) => (
-            <span key={n.id} data-activa={n.id === 'inicio' || undefined}>
-              <Icono nombre={n.icono} className="hia-ico" />
-              {n.etiqueta}
-            </span>
-          ))}
-        </nav>
-      </div>
-
-      {voz !== null && (
-        <div
-          className="hia-voz-negra hxs-llena"
-          role="dialog"
-          aria-label="Modo voz de HandIA"
-          onKeyDown={(e) => e.key === 'Escape' && (ajustes ? setAjustes(false) : cerrarVoz())}
-        >
-          <div className="hia-voz-negra__arriba">
-            <button
-              type="button"
-              className="hia-redondo"
-              aria-label="Volver al chat"
-              onClick={cerrarVoz}
-            >
-              <Icono nombre="atras" className="hia-ico" />
-            </button>
-            <button
-              type="button"
-              className="hia-redondo"
-              aria-label="Ajustes de voz"
-              aria-expanded={ajustes}
-              onClick={() => setAjustes((a) => !a)}
-            >
-              <Icono nombre="ajustes" className="hia-ico" />
-            </button>
-          </div>
-          <div className="hia-voz-negra__centro">
-            <button
-              type="button"
-              className="hxi-esfera-boton"
-              onClick={intercambio}
-              disabled={silencio || voz === 'pensando' || voz === 'hablando'}
-              aria-label="Simular que hablás (prototipo: no usa el micrófono)"
-            >
-              <Esfera estado={voz} />
-            </button>
-            <p className="hia-voz-negra__estado" aria-live="polite">
-              {rotuloVoz}
-            </p>
-            {subtitulos && <p className="hia-subtitulo">{subtitulo}</p>}
-          </div>
           <form
-            className="hia-voz-negra__abajo"
+            className="du-escribir hxh-escribir"
             onSubmit={(e) => {
               e.preventDefault();
-              const t = vozTexto;
-              setVozTexto('');
-              cerrarVoz();
-              enviarTexto(t);
+              enviarTexto(texto);
             }}
           >
-            <span className="hia-pastilla-oscura">
-              <Icono nombre="mas" className="hia-ico" />
+            <button
+              type="button"
+              className="du-escribir__adjuntar"
+              aria-label="Sumar fotos (fase H5)"
+            >
+              <Icono nombre="mas" />
+            </button>
+            <label className="du-escribir__campo hxh-campo">
               <input
-                value={vozTexto}
-                onChange={(e) => setVozTexto(e.target.value)}
-                placeholder="Contale a HandIA"
-                aria-label="Escribirle a HandIA"
+                value={texto}
+                onChange={(e) => setTexto(e.target.value)}
+                placeholder="Contale a HandIA…"
+                aria-label="Contale a HandIA"
                 maxLength={500}
                 autoComplete="off"
               />
-            </span>
-            <button
-              type="button"
-              className="hia-redondo"
-              aria-label="Apagar el micrófono"
-              aria-pressed={silencio}
-              onClick={alternarSilencio}
-            >
-              <Icono nombre={silencio ? 'microfonoNo' : 'microfono'} className="hia-ico" />
-            </button>
-            <button
-              type="button"
-              className="hia-redondo hia-redondo--claro"
-              aria-label="Terminar"
-              onClick={cerrarVoz}
-            >
-              <Icono nombre="cerrar" className="hia-ico" />
-            </button>
+              {!texto.trim() && (
+                <button type="button" className="hxh-dictar" aria-label="Dictar (fase H2)">
+                  <Icono nombre="microfono" />
+                </button>
+              )}
+            </label>
+            {texto.trim() ? (
+              <button type="submit" className="du-escribir__enviar" aria-label="Enviar">
+                <Icono nombre="enviar" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="du-escribir__enviar"
+                aria-label="Modo voz"
+                onClick={abrirVoz}
+              >
+                <Icono nombre="onda" />
+              </button>
+            )}
           </form>
+          <nav className="app-nav" aria-label="Secciones de la app (maqueta)">
+            {NAVEGACION.map((n) => (
+              <span
+                key={n.id}
+                className={`app-nav__item${n.id === 'inicio' ? ' app-nav__item--activo' : ''}`}
+              >
+                <Icono nombre={n.icono} />
+                {n.etiqueta}
+              </span>
+            ))}
+          </nav>
+        </div>
 
-          {ajustes && (
-            <div className="hia-hoja-oscura" role="group" aria-label="Ajustes de voz">
-              <span className="hia-hoja-oscura__asa" aria-hidden="true" />
-              <p className="hia-hoja-oscura__titulo">Modo voz</p>
-              <div className="hia-hoja-oscura__fila">
-                <Icono nombre="parlante" className="hia-ico" />
-                <span>
-                  Voz
-                  <small>La del sistema, en español</small>
-                </span>
-              </div>
+        {voz !== null && (
+          <div
+            className="hxh-voz"
+            role="dialog"
+            aria-label="Modo voz de HandIA"
+            onKeyDown={(e) => e.key === 'Escape' && (ajustes ? setAjustes(false) : cerrarVoz())}
+          >
+            <div className="hxh-voz__arriba">
               <button
                 type="button"
-                role="switch"
-                aria-checked={subtitulos}
-                className="hia-hoja-oscura__fila"
-                onClick={() => setSubtitulos((v) => !v)}
+                className="app-cuadrado hxh-cuadrado-claro"
+                aria-label="Volver al chat"
+                onClick={cerrarVoz}
               >
-                <Icono nombre="subtitulos" className="hia-ico" />
-                <span>Subtítulos</span>
-                <span className="hia-interruptor" aria-hidden="true" />
+                <Icono nombre="atras" />
               </button>
+              <span className="hxh-voz__titulo">
+                <strong>HandIA</strong>
+                <span className="hd-chip hd-chip--mini hxh-chip-voz">
+                  <Icono nombre="onda" /> Modo voz
+                </span>
+              </span>
               <button
                 type="button"
-                role="switch"
-                aria-checked={sonidos}
-                className="hia-hoja-oscura__fila"
-                onClick={() => setSonidos((v) => !v)}
+                className="app-cuadrado hxh-cuadrado-claro"
+                aria-label="Ajustes de voz"
+                aria-expanded={ajustes}
+                onClick={() => setAjustes((a) => !a)}
               >
-                <Icono nombre="campana" className="hia-ico" />
-                <span>
-                  Sonidos al empezar y terminar
-                  <small>Espera tu aprobación (R5)</small>
-                </span>
-                <span className="hia-interruptor" aria-hidden="true" />
-              </button>
-              <div className="hia-hoja-oscura__fila">
-                <Icono nombre="candado" className="hia-ico" />
-                <span>
-                  Tu voz se reconoce en el celular
-                  <small>No se graba ni se manda a ningún lado.</small>
-                </span>
-              </div>
-              <button
-                type="button"
-                className="hia-hoja-oscura__listo"
-                onClick={() => setAjustes(false)}
-              >
-                Listo
+                <Icono nombre="ajustes" />
               </button>
             </div>
-          )}
-        </div>
-      )}
+            <div className="hxh-voz__centro">
+              <button
+                type="button"
+                className="hxh-foco"
+                data-estado={voz}
+                onClick={intercambio}
+                disabled={silencio || voz === 'pensando' || voz === 'hablando'}
+                aria-label="Simular que hablás (prototipo: no usa el micrófono)"
+              >
+                <span className="hxh-foco__ondas" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                <span className="hxh-foco__luz" aria-hidden="true" />
+                <Image
+                  className="hd-handy hxh-foco__handy"
+                  src={LAMPARITA}
+                  alt=""
+                  width={202}
+                  height={346}
+                />
+              </button>
+              <p className="hxh-voz__estado" aria-live="polite">
+                {rotuloVoz}
+                {voz === 'pensando' && (
+                  <span className="hd-escribiendo hxh-puntos" aria-hidden="true">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                )}
+              </p>
+              {subtitulos && (
+                <p className="hd-titulo hd-titulo--claro hxh-voz__texto">
+                  {voz === 'hablando' ? <Subrayado texto={subtitulo} /> : subtitulo}
+                </p>
+              )}
+            </div>
+            <form
+              className="hxh-voz__abajo"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const t = vozTexto;
+                setVozTexto('');
+                cerrarVoz();
+                enviarTexto(t);
+              }}
+            >
+              <label className="hxh-voz__campo">
+                <Icono nombre="teclado" />
+                <input
+                  value={vozTexto}
+                  onChange={(e) => setVozTexto(e.target.value)}
+                  placeholder="Escribir"
+                  aria-label="Escribirle a HandIA"
+                  maxLength={500}
+                  autoComplete="off"
+                />
+              </label>
+              <button
+                type="button"
+                className="hxh-tactil hxh-tactil--blanco"
+                aria-label="Apagar el micrófono"
+                aria-pressed={silencio}
+                onClick={alternarSilencio}
+              >
+                <Icono nombre={silencio ? 'microfonoNo' : 'microfono'} />
+              </button>
+              <button
+                type="button"
+                className="hxh-tactil hxh-tactil--claro"
+                aria-label="Terminar"
+                onClick={cerrarVoz}
+              >
+                <Icono nombre="cerrar" />
+              </button>
+            </form>
+
+            {ajustes && (
+              <div className="hxh-hoja" role="group" aria-label="Ajustes de voz">
+                <span className="hxh-hoja__asa" aria-hidden="true" />
+                <p className="hd-titulo hd-titulo--chico">Modo voz</p>
+                <div className="hd-lista">
+                  <div className="hd-fila">
+                    <span className="hd-fila__ico">
+                      <Icono nombre="parlante" />
+                    </span>
+                    <span className="hd-fila__texto">
+                      <strong>Voz</strong>
+                      <small>La del sistema, en español</small>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={subtitulos}
+                    className="hd-fila"
+                    onClick={() => setSubtitulos((v) => !v)}
+                  >
+                    <span className="hd-fila__ico">
+                      <Icono nombre="subtitulos" />
+                    </span>
+                    <span className="hd-fila__texto">
+                      <strong>Subtítulos</strong>
+                    </span>
+                    <span className="hia-interruptor" aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={sonidos}
+                    className="hd-fila"
+                    onClick={() => setSonidos((v) => !v)}
+                  >
+                    <span className="hd-fila__ico">
+                      <Icono nombre="campana" />
+                    </span>
+                    <span className="hd-fila__texto">
+                      <strong>Sonidos al empezar y terminar</strong>
+                      <small>Espera tu aprobación (R5)</small>
+                    </span>
+                    <span className="hia-interruptor" aria-hidden="true" />
+                  </button>
+                  <div className="hd-fila">
+                    <span className="hd-fila__ico">
+                      <Icono nombre="candado" />
+                    </span>
+                    <span className="hd-fila__texto">
+                      <strong>Tu voz se reconoce en el celular</strong>
+                      <small>No se graba ni se manda a ningún lado.</small>
+                    </span>
+                  </div>
+                </div>
+                <button type="button" className="hd-boton" onClick={() => setAjustes(false)}>
+                  Listo
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
+  );
+}
+
+/** Lo que dice HandIA se va subrayando en amarillo (el marcador de la marca, sobre azul). */
+function Subrayado({ texto }: { texto: string }) {
+  return (
+    <>
+      {texto.split(' ').map((p, i) => (
+        <span key={i} className="hxh-subrayado" style={{ '--i': i } as React.CSSProperties}>
+          {p}{' '}
+        </span>
+      ))}
+    </>
   );
 }

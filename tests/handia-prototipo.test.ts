@@ -115,3 +115,32 @@ describe('cabecera premium y esfera (ajuste del 07/11)', () => {
     expect(esfera).not.toMatch(/<img|next\/image|url\(['"]?\/|\.png|\.webp/);
   });
 });
+
+describe('Inicio y voz con el diseño de Handyx (07/11: "no una copia de ChatGPT")', () => {
+  const inicio = readFileSync('src/components/handia-prototipo/InicioChat.tsx', 'utf8');
+
+  it('usa las piezas del kit de Handyx, no otras', () => {
+    for (const pieza of [
+      'app-cabecera',
+      'app-cuadrado',
+      'hd-mosaico',
+      'HandyRubro',
+      'hd-titulo',
+      'du-burbuja--otra',
+      'du-burbuja--propia',
+      'hd-chat-cabecera',
+      'hd-ticket',
+      'hd-boton',
+      'du-escribir',
+      'app-nav',
+    ])
+      expect(inicio, pieza).toContain(pieza);
+  });
+
+  it('la voz simulada nunca elige por la persona cómo pedir ni reinicia', () => {
+    expect(inicio).toMatch(/!\['saltear', 'pedir', 'reiniciar'\]\.includes\(o\.accion\.tipo\)/);
+    expect(inicio).toMatch(
+      /if \(turnoRef\.current\.estado\.etapa === 'resumen'\) \{[\s\S]*?return;/,
+    );
+  });
+});

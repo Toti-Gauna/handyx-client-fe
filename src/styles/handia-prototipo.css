@@ -1840,3 +1840,662 @@ button.hxp-chip {
 .hxs-pantalla .hia-voz-negra__centro .hia-esfera {
   --hia-esfera: 176px;
 }
+
+/* ── Inicio y voz con el diseño de Handyx (ajuste del 07/11) ──────────────────────────────────────
+   Las piezas son las del kit (cabecera con logo, mosaicos, burbujas de los chats, ticket, botones táctiles, barra
+   azul); acá solo se acomodan a la maqueta. El texto base es el de la app en un celular de 360 px (17 px). */
+.hxi-pantalla .hx.hxh {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+  background: var(--hd-fondo);
+  font-size: 17px;
+}
+.hxh-app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.hxh-app[hidden] {
+  display: none;
+}
+.hxh .app-cuadrado {
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 0.22em 0 var(--hd-azul-hondo);
+}
+.hxh .app-cuadrado:active {
+  transform: translateY(0.22em);
+  box-shadow: none;
+}
+
+/* Rubros: los mosaicos con los Handys, en una fila que se desliza. */
+.hxh-rubros {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 4.6em;
+  gap: 0.55em;
+  flex: none;
+  padding: 0.1em 1.2em 0.7em;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.hxh-rubros::-webkit-scrollbar {
+  display: none;
+}
+.hxh-rubro {
+  aspect-ratio: 1 / 1.04;
+  gap: 0.3em;
+  border: 0;
+  font: inherit;
+  font-size: 0.6em;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hxh-rubro .hx-handy-rubro {
+  width: auto;
+  height: 3.6em;
+}
+.hxh-rubro .hx-handy-rubro--icono .icono {
+  width: 2.4em;
+  height: 2.4em;
+}
+
+/* Hilo */
+.hxh-hilo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  flex: 1;
+  min-height: 0;
+  padding: 0.8em 1.1em;
+  overflow-y: auto;
+}
+.hxh-hilo[data-chat] {
+  background: var(--hd-fondo-2);
+}
+.hxh-hilo:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: -3px;
+}
+.hxh-hola {
+  display: grid;
+  justify-items: center;
+  gap: 0.45em;
+  margin: auto 0;
+  text-align: center;
+}
+.hxh-hola > * {
+  margin: 0;
+}
+.hxh-hola .hd-titulo {
+  font-size: 1.55em;
+}
+.hxh-hola .hd-texto {
+  max-width: 19em;
+}
+.hxh-hola__luz .hd-handy {
+  position: relative;
+  width: auto;
+  height: 3.6em;
+}
+.hxh-msj {
+  margin: 0;
+  animation: hia-entrar var(--hia-dur-entrada) var(--hia-curva-entrada) both;
+}
+.hxh-ia {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.45em;
+}
+.hxh-ia .du-burbuja {
+  margin: 0;
+  max-width: 82%;
+}
+.hxh-detectado {
+  align-self: flex-start;
+}
+.hxh-avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.5em;
+  height: 2.5em;
+  overflow: hidden;
+  border-radius: 0.8em;
+  background: var(--hd-azul);
+  box-shadow: 0 0.2em 0 var(--hd-azul-hondo);
+}
+.hxh-avatar > * {
+  grid-area: 1 / 1;
+}
+.hxh-avatar i {
+  width: 1.6em;
+  height: 1.6em;
+  border-radius: 50%;
+  background: var(--hia-ambar);
+  opacity: 0.5;
+  filter: blur(0.35em);
+}
+.hxh-avatar img {
+  position: relative;
+  width: auto;
+  height: 1.95em;
+}
+.hxh-avatar--chico {
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 0.65em;
+  box-shadow: none;
+}
+.hxh-avatar--chico img {
+  height: 1.5em;
+}
+.hxh-avatar[data-estado='pensando'] i {
+  animation: hxh-respira 1.1s ease-in-out infinite;
+}
+.hxh-opciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  padding-left: 2.35em;
+}
+.hxh-opcion {
+  min-height: 44px;
+  padding: 0 1em;
+  border: 0;
+  font: inherit;
+  font-size: 0.72em;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hxh-sugerencias {
+  flex: none;
+  margin: 0 0 0.5em;
+  padding-inline: 1.1em;
+}
+.hxh-sugerencias .hxh-opcion {
+  white-space: nowrap;
+}
+.hxh .du-handia-aviso {
+  margin: 0;
+}
+
+/* Ficha como ticket troquelado */
+.hxh-ficha {
+  --corte: 4.4em;
+  align-self: stretch;
+}
+.hxh-ficha__arriba {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  height: 4.4em;
+  padding: 0 1em;
+}
+.hxh-ficha__arriba > span {
+  display: grid;
+  gap: 0.15em;
+}
+.hxh-ficha__arriba .hx-handy-rubro {
+  width: auto;
+  height: 2.9em;
+}
+.hxh-ficha__abajo {
+  display: grid;
+  gap: 0.6em;
+  padding: 0.8em 1em 1em;
+}
+.hxh-ficha__abajo .hd-texto {
+  margin: 0;
+  white-space: pre-line;
+}
+.hxh-ficha .hd-boton {
+  border: 0;
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Cabecera del chat con HandIA */
+.hxh-chat-cab .hd-chat-cabecera__fila {
+  padding-top: 0.7em;
+}
+.hxh-chat-cab button.hd-chat-cabecera__volver {
+  border: 0;
+  cursor: pointer;
+}
+.hxh-cuadrado {
+  width: 2.75em;
+  height: 2.75em;
+  border-radius: 0.9em;
+}
+.hxh-tramos {
+  display: flex;
+  gap: 0.3em;
+  padding: 0 1.1em 0.7em;
+}
+.hxh-tramos i {
+  flex: 1;
+  height: 0.32em;
+  border-radius: 999px;
+  background: var(--hd-mosaico);
+}
+.hxh-tramos [data-hecho] {
+  background: var(--hd-azul);
+}
+.hxh-menu {
+  position: absolute;
+  top: 100%;
+  left: 0.8em;
+  right: 0.8em;
+  z-index: 4;
+  padding: 0.2em 0.9em;
+  border-radius: 1.2em;
+  background: var(--hd-fondo);
+  box-shadow: var(--elev-2);
+  animation: hia-menu-abre var(--hia-dur-entrada) var(--hia-curva-entrada) both;
+}
+.hxh-menu__fila {
+  width: 100%;
+  background: none;
+  color: var(--hd-tinta);
+  font: inherit;
+  font-size: 0.85em;
+  font-weight: 700;
+  cursor: pointer;
+}
+.hxh .hia-interruptor {
+  margin-left: auto;
+}
+
+/* Escribir */
+.hxh-escribir {
+  flex: none;
+  padding: 0.55em 0.9em 0.7em;
+  border-top: 1px solid var(--hd-linea);
+  background: var(--hd-fondo);
+}
+.hxh-escribir button {
+  border: 0;
+  cursor: pointer;
+}
+.hxh-campo {
+  font-size: 0.85em;
+  cursor: text;
+}
+.hxh-campo input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--hd-tinta);
+  font: inherit;
+}
+.hxh-campo input::placeholder {
+  color: var(--hd-suave);
+}
+.hxh-campo input:focus-visible {
+  outline: none;
+}
+.hxh-campo:focus-within {
+  box-shadow: 0 0 0 2px var(--linea-foco);
+}
+.hxh-dictar {
+  display: grid;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  background: none;
+  color: var(--hd-azul);
+}
+
+/* ── HandIA voz, en el azul de Handyx: la lamparita es el foco de luz ───────────────────────────── */
+.hxh-voz {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0.8em 1.1em 1.2em;
+  background:
+    radial-gradient(60% 38% at 50% 40%, rgb(from var(--hd-azul-vivo) r g b / 0.5), transparent 72%),
+    linear-gradient(180deg, var(--hd-azul) 0%, var(--hia-azul-hondo) 58%, var(--hd-noche) 100%);
+  color: var(--texto-sobre-marca);
+}
+.hxh-voz :focus-visible {
+  outline: 3px solid var(--hd-amarillo);
+  outline-offset: 2px;
+}
+.hxh-voz__arriba {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.hxh .hxh-cuadrado-claro {
+  background: rgb(255 255 255 / 0.16);
+  box-shadow: 0 0.22em 0 rgb(0 0 0 / 0.2);
+  color: var(--texto-sobre-marca);
+}
+.hxh-voz__titulo {
+  display: grid;
+  justify-items: center;
+  gap: 0.25em;
+}
+.hxh-voz__titulo strong {
+  font-family: var(--hd-titulos);
+  font-size: 1.05em;
+  font-weight: 900;
+  font-stretch: 125%;
+}
+.hxh-chip-voz {
+  background: rgb(255 255 255 / 0.16);
+  color: var(--texto-sobre-marca);
+}
+.hxh-voz__centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9em;
+  flex: 1;
+  min-height: 0;
+  text-align: center;
+}
+.hxh-foco {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 12.5em;
+  height: 12.5em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.07);
+  box-shadow: inset 0 0 0 0.08em rgb(255 255 255 / 0.16);
+  cursor: pointer;
+  transition: box-shadow var(--hia-dur-estado);
+}
+.hxh-foco:disabled {
+  cursor: default;
+}
+.hxh-foco > * {
+  grid-area: 1 / 1;
+}
+.hxh-foco__ondas {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.hxh-foco__ondas i {
+  position: absolute;
+  inset: 0;
+  border: 0.12em solid rgb(255 255 255 / 0.55);
+  border-radius: 50%;
+  opacity: 0;
+}
+.hxh-foco__luz {
+  width: 8.5em;
+  height: 8.5em;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(from var(--hia-ambar) r g b / 0.95) 0%,
+    rgb(from var(--hia-ambar) r g b / 0.35) 45%,
+    transparent 70%
+  );
+  animation: hxh-respira 3.6s ease-in-out infinite;
+  transition: opacity var(--hia-dur-estado);
+}
+.hxh-foco__handy {
+  position: relative;
+  width: auto;
+  height: 7.4em;
+  animation: hxh-flota 3.6s ease-in-out infinite;
+  transition: filter var(--hia-dur-estado);
+}
+.hxh-foco[data-estado='escuchando'] .hxh-foco__ondas i {
+  animation: hxh-onda 1.8s ease-out infinite;
+}
+.hxh-foco[data-estado='escuchando'] .hxh-foco__ondas i:nth-child(2) {
+  animation-delay: 0.6s;
+}
+.hxh-foco[data-estado='escuchando'] .hxh-foco__ondas i:nth-child(3) {
+  animation-delay: 1.2s;
+}
+.hxh-foco[data-estado='pensando'] .hxh-foco__luz {
+  opacity: 0.45;
+}
+.hxh-foco[data-estado='pensando'] .hxh-foco__handy {
+  animation: hxh-piensa 1.6s ease-in-out infinite;
+}
+.hxh-foco[data-estado='hablando'] .hxh-foco__luz {
+  animation: hxh-habla 0.5s ease-in-out infinite alternate;
+}
+.hxh-foco[data-estado='listo'] {
+  box-shadow:
+    inset 0 0 0 0.08em rgb(255 255 255 / 0.3),
+    0 0 0 0.45em rgb(255 255 255 / 0.12);
+}
+.hxh-foco[data-estado='listo'] .hxh-foco__luz {
+  transform: scale(1.15);
+  animation: none;
+}
+.hxh-foco[data-estado='silencio'] .hxh-foco__luz {
+  opacity: 0.12;
+  animation: none;
+}
+.hxh-foco[data-estado='silencio'] .hxh-foco__handy {
+  filter: grayscale(0.8) brightness(0.8);
+  animation: none;
+}
+@keyframes hxh-respira {
+  50% {
+    transform: scale(1.08);
+    opacity: 0.8;
+  }
+}
+@keyframes hxh-flota {
+  50% {
+    transform: translateY(-0.25em);
+  }
+}
+@keyframes hxh-onda {
+  from {
+    opacity: 0.7;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+}
+@keyframes hxh-piensa {
+  50% {
+    transform: rotate(-7deg) translateY(-0.1em);
+  }
+}
+@keyframes hxh-habla {
+  from {
+    transform: scale(0.94);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+.hxh-voz__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: rgb(255 255 255 / 0.85);
+}
+.hxh-puntos {
+  padding: 0.4em 0.55em;
+  background: rgb(255 255 255 / 0.16);
+}
+.hxh-puntos i {
+  background: var(--texto-sobre-marca);
+}
+.hxh-voz__texto {
+  min-height: 2.5em;
+  max-width: 14em;
+  margin: 0;
+  font-size: 1.3em;
+}
+/* El marcador amarillo de la marca, sobre azul: se dibuja debajo de cada palabra mientras HandIA la dice. */
+.hxh-subrayado {
+  background: linear-gradient(transparent 80%, var(--hd-amarillo) 80% 94%, transparent 94%)
+    no-repeat 0 0 / 0% 100%;
+  animation: hxh-subrayar 0.28s ease forwards;
+  animation-delay: calc(var(--i) * 190ms);
+}
+@keyframes hxh-subrayar {
+  to {
+    background-size: 100% 100%;
+  }
+}
+.hxh-voz__abajo {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+.hxh-voz__campo {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  flex: 1;
+  min-width: 0;
+  height: 3em;
+  padding: 0 1em;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  cursor: text;
+}
+.hxh-voz__campo .icono {
+  width: 1.2em;
+  height: 1.2em;
+  flex: none;
+}
+.hxh-voz__campo input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--texto-sobre-marca);
+  font: inherit;
+  font-size: 0.85em;
+}
+.hxh-voz__campo input::placeholder {
+  color: rgb(255 255 255 / 0.8);
+}
+.hxh-voz__campo input:focus-visible {
+  outline: none;
+}
+.hxh-voz__campo:focus-within {
+  box-shadow: 0 0 0 2px var(--hd-amarillo);
+}
+.hxh-tactil {
+  --b-base: rgb(0 0 0 / 0.2);
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 3em;
+  height: 3em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 0.22em 0 var(--b-base);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.hxh-tactil .icono {
+  width: 1.3em;
+  height: 1.3em;
+}
+.hxh-tactil:active {
+  transform: translateY(0.22em);
+  box-shadow: none;
+}
+.hxh-tactil--blanco {
+  --b-base: var(--estado-info-borde);
+  background: var(--hd-fondo);
+  color: var(--hd-azul);
+}
+.hxh-tactil--blanco[aria-pressed='true'] {
+  --b-base: rgb(0 0 0 / 0.3);
+  background: var(--hd-noche);
+  color: var(--texto-sobre-marca);
+}
+.hxh-tactil--claro {
+  background: rgb(255 255 255 / 0.16);
+  color: var(--texto-sobre-marca);
+}
+.hxh-hoja {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  padding: 0.6em 1.1em 1.2em;
+  border-radius: 1.6em 1.6em 0 0;
+  background: var(--hd-fondo);
+  color: var(--hd-tinta);
+  box-shadow: 0 -1em 2em rgb(0 0 0 / 0.3);
+  animation: hia-hoja-sube var(--hia-dur-entrada) var(--hia-curva-entrada) both;
+}
+.hxh-hoja__asa {
+  display: block;
+  width: 2.4em;
+  height: 0.3em;
+  margin: 0 auto 0.6em;
+  border-radius: 999px;
+  background: var(--hd-mosaico-hondo);
+}
+.hxh-hoja .hd-titulo {
+  margin: 0 0 0.3em;
+}
+.hxh-hoja .hd-fila {
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+.hxh-hoja button.hd-fila {
+  cursor: pointer;
+}
+.hxh-hoja .hd-fila__texto {
+  display: grid;
+  gap: 0.1em;
+  font-size: 0.85em;
+}
+.hxh-hoja .hd-fila__texto small {
+  color: var(--hd-suave);
+}
+.hxh-hoja .hd-boton {
+  margin-top: 0.8em;
+  border: 0;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hxh *,
+  .hxh *::before,
+  .hxh *::after {
+    animation: none !important;
+  }
+  .hxh-subrayado {
+    background-size: 100% 100%;
+  }
+}

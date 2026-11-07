@@ -114,3 +114,27 @@ de verdad con el motor de HandIA (en el celular, sin IA externa).
   volver y **ajustes** arriba; abajo, la pastilla con "+" y "Contale a HandIA" (se puede escribir y vuelve al chat),
   silenciar y terminar en blanco. **Hoja de ajustes**: voz del sistema en español, subtítulos, sonidos (esperan la
   aprobación de R5) y "tu voz se reconoce en el celular".
+
+### Tercera vuelta (07/11): traducido al diseño de Handyx
+
+Ignacio: "la idea no es que sea una copia literal de ChatGPT, sino trasladarlo a como lo podemos llevar con el diseño
+que ya existe en Handyx". Se conserva la idea (asistente a pantalla completa, voz inmersiva, lo hablado en el mismo
+chat) y se dice con las piezas del kit de la landing que ya usa la app. Está en «Inicio y voz (nuevo)»
+(`components/handia-prototipo/InicioChat.tsx`, estilos `.hxh-*` en `handia-prototipo.css`, solo variables `--hd-*`
+y tokens):
+
+- **Inicio**: cabecera con el logo y los cuadrados azules táctiles (avisos con insignia, dirección); los rubros como
+  **mosaicos con los Handys** en una fila; la lamparita encendida, "¡Hola! Soy HandIA" y el título de la marca
+  «¿Qué arreglo podemos hacer ==hoy==?» con el subrayado amarillo; ejemplos en chips; la barra de escribir de los chats
+  (`du-escribir`) con el botón azul táctil de voz; la barra azul de siempre.
+- **Chat**: la cabecera de los chats (`hd-chat-cabecera`) con volver, la lamparita en su cuadrado azul, "HandIA" y el
+  estado, y "más opciones" (nuevo pedido, modo voz, cómo cuido tus datos, leer en voz alta); **tramos de progreso**
+  como en Pedir; HandIA en burbuja azul y la persona en blanco (como en Mensajes); el rubro detectado en un chip; la
+  **ficha como ticket troquelado** con los botones táctiles de pedir; los avisos de riesgo con el estilo de la app.
+- **Modo voz**: el azul de Handyx (como la hoja azul), la **lamparita como foco de luz** (ondas blancas cuando
+  escucha, se inclina y se atenúa cuando piensa, brilla al hablar, se apaga si se silencia), lo que dice HandIA se va
+  **subrayando en amarillo** (el marcador de la marca sobre azul), controles táctiles chicos (escribir, micrófono
+  blanco, terminar) y la hoja de ajustes blanca con las filas de la app.
+- La voz simulada nunca elige por la persona cómo pedir: con la ficha lista avisa y espera.
+- El catálogo de la sección «Pantallas» quedó rotulado como versión anterior; se rehace con estas piezas cuando se
+  apruebe.
