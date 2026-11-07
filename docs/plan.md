@@ -37,7 +37,7 @@ Leyenda de estado: **decidido** (acordado/documentado) · **mock** (navegable co
 |                        | 5.3  | Deploy web final y rollback                                                                | Sonnet 5.5 · high  | pendiente                                |
 |                        | 5.4  | Mapa final (PROD-26) y Handy Docs                                                          | Sonnet 5.5 · high  | pendiente                                |
 | 6 · HandIA premium     | H0   | Base y decisiones ([plan](handia-premium-plan.md))                                         | Opus · Sonnet      | H0.1 ✅ listo · H0.2 pendiente           |
-|                        | R    | Rediseño premium: referentes, concepto, lenguaje visual, pantallas, movimiento, aprobación | Opus 5.5 · high    | pendiente (puede arrancar ya)            |
+|                        | R    | Rediseño premium: referentes, concepto, lenguaje visual, pantallas, movimiento, aprobación | Opus 5.5 · high    | R1 ✅ · R2 ✅ prototipo · elige Ignacio  |
 |                        | H1   | Dirección de arte: imágenes ChatGPT, GSAP, degradés, 3D Meshy                              | Opus/Sonnet · high | espera imágenes de Ignacio               |
 |                        | H2   | Modo voz estilo ChatGPT Voice con los Handys                                               | Opus/Sonnet · high | pendiente                                |
 |                        | H3   | Chat premium (pensando visible, streaming, tarjetas, demo)                                 | Opus/Sonnet · high | pendiente                                |

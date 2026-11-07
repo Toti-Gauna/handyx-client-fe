@@ -1,0 +1,1088 @@
+/* Prototipo del rediseño premium de HandIA (fase R · R2). Tres direcciones sobre la misma maqueta: cada una cambia solo
+   variables. Colores solo de tokens.css (sección 3). Con "reducir movimiento" todo queda quieto en su estado final. */
+
+.hxp-marco {
+  min-height: 100dvh;
+  background: var(--sup-app);
+}
+.hxp {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--esp-6) var(--esp-4) var(--esp-8);
+  color: var(--texto-cuerpo);
+}
+.hxp-intro {
+  max-width: 68ch;
+}
+.hxp-etiqueta {
+  display: inline-block;
+  margin: 0 0 var(--esp-2);
+  padding: 2px 10px;
+  border-radius: var(--radio-pastilla);
+  background: var(--color-amarillo);
+  color: var(--color-tinta);
+  font-size: var(--t-xs);
+  font-weight: var(--peso-fuerte);
+}
+.hxp h1 {
+  margin: 0 0 var(--esp-2);
+  font-family: var(--fuente-titulos);
+  font-size: var(--t-2xl);
+  font-weight: var(--peso-titulo);
+  color: var(--texto-titulo);
+  line-height: 1.1;
+}
+.hxp-intro p {
+  margin: 0 0 var(--esp-4);
+}
+
+/* Selectores (dirección y estados): pastillas de 44 px. */
+.hxp-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+.hxp-selector button {
+  min-height: var(--toque-min);
+  padding: 0 var(--esp-4);
+  border: 1.5px solid var(--linea-fuerte);
+  border-radius: var(--radio-pastilla);
+  background: var(--sup-tarjeta);
+  color: var(--texto-titulo);
+  font: inherit;
+  font-weight: var(--peso-medio);
+  cursor: pointer;
+}
+.hxp-selector button[aria-pressed='true'] {
+  border-color: var(--accion-primaria);
+  background: var(--accion-primaria);
+  color: var(--texto-sobre-marca);
+}
+.hxp-selector button[aria-pressed='true']::before {
+  content: '✓ ';
+}
+.hxp-selector button:focus-visible,
+.hxp-reproducir:focus-visible,
+.hxp-pantalla button:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: 2px;
+}
+
+.hxp-dir {
+  display: grid;
+  gap: var(--esp-6);
+  margin-top: var(--esp-6);
+}
+@media (min-width: 1000px) {
+  .hxp-dir {
+    grid-template-columns: 280px 1fr;
+    align-items: start;
+  }
+}
+.hxp-dir__texto h2 {
+  margin: 0 0 var(--esp-2);
+  font-family: var(--fuente-titulos);
+  font-size: var(--t-xl);
+  color: var(--texto-titulo);
+}
+.hxp-dir__texto ul {
+  padding-left: 1.2em;
+  margin: var(--esp-3) 0 var(--esp-4);
+}
+.hxp-dir__texto li {
+  margin-bottom: var(--esp-1);
+}
+.hxp-reproducir {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--esp-2);
+  min-height: var(--toque-min);
+  padding: 0 var(--esp-5);
+  border: 0;
+  border-radius: var(--radio-pastilla);
+  background: var(--color-tinta);
+  color: var(--texto-sobre-marca);
+  font: inherit;
+  font-weight: var(--peso-fuerte);
+  cursor: pointer;
+}
+.hxp-ico {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+.hxp-par {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-6);
+  justify-content: center;
+}
+.hxp-tel {
+  margin: 0;
+  width: min(100%, 340px);
+}
+.hxp-tel figcaption {
+  display: grid;
+  gap: var(--esp-2);
+  margin-top: var(--esp-3);
+}
+.hxp-tel figcaption .hxp-selector button {
+  min-height: 40px;
+  padding: 0 var(--esp-3);
+  font-size: var(--t-sm);
+}
+
+/* ── Pantalla del teléfono ─────────────────────────────────────────────────────────────────────── */
+.hxp-pantalla {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 340 / 720;
+  border: 8px solid var(--color-tinta);
+  border-radius: 44px;
+  background: var(--p-fondo);
+  color: var(--p-texto);
+  box-shadow: var(--elev-2);
+  font-size: 15px;
+  transition: background var(--dur-media) var(--curva);
+}
+.hxp-pantalla > :not(.hxp-fondo) {
+  position: relative;
+  z-index: 1;
+}
+.hxp-suave {
+  color: var(--p-suave);
+  font-size: 0.9em;
+  margin: 0;
+}
+.hxp-grande {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.45em;
+  font-weight: var(--peso-fuerte);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Fondo vivo: tres manchas desenfocadas que flotan (cada dirección decide colores y cuánto se ven). */
+.hxp-fondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.hxp-fondo i {
+  position: absolute;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(42px);
+  opacity: var(--p-manchas, 0.6);
+  animation: hxp-flotar 14s ease-in-out infinite alternate;
+}
+.hxp-fondo i:nth-child(1) {
+  background: var(--p-mancha-1);
+  top: -12%;
+  left: -18%;
+}
+.hxp-fondo i:nth-child(2) {
+  background: var(--p-mancha-2);
+  top: 30%;
+  right: -28%;
+  animation-delay: -5s;
+}
+.hxp-fondo i:nth-child(3) {
+  background: var(--p-mancha-3);
+  bottom: -18%;
+  left: 8%;
+  animation-delay: -9s;
+}
+@keyframes hxp-flotar {
+  to {
+    transform: translate(12%, 8%) scale(1.15);
+  }
+}
+
+.hxp-pildora {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radio-pastilla);
+  background: var(--p-vidrio);
+  border: 1px solid var(--p-vidrio-borde);
+  backdrop-filter: blur(14px);
+  font-size: 0.82em;
+  font-weight: var(--peso-medio);
+}
+.hxp-vidrio {
+  background: var(--p-vidrio);
+  border: 1px solid var(--p-vidrio-borde);
+  backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow: 0 10px 30px -14px var(--p-sombra);
+}
+.hxp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.hxp-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: var(--radio-pastilla);
+  background: var(--p-chip);
+  border: 1px solid var(--p-chip-borde);
+  color: var(--p-chip-texto);
+  font: inherit;
+  font-size: 0.86em;
+  font-weight: var(--peso-medio);
+}
+button.hxp-chip {
+  cursor: pointer;
+}
+
+/* ── El orbe: la lamparita es la luz ───────────────────────────────────────────────────────────── */
+.hxp-orbe {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 200px;
+  aspect-ratio: 1;
+  margin: 8px auto 0;
+}
+.hxp-orbe--chico {
+  width: 120px;
+}
+.hxp-orbe > * {
+  grid-area: 1 / 1;
+}
+.hxp-orbe__halo {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--p-luz) 0%,
+    color-mix(in oklab, var(--p-luz) 45%, transparent) 38%,
+    transparent 70%
+  );
+  animation: hxp-respirar 4s ease-in-out infinite;
+}
+.hxp-orbe__aro {
+  width: 78%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 55%, var(--p-aro) 85%, transparent);
+  -webkit-mask: radial-gradient(circle, transparent 60%, var(--color-tinta) 62%);
+  mask: radial-gradient(circle, transparent 60%, var(--color-tinta) 62%);
+  opacity: 0;
+  transition: opacity var(--dur-media);
+}
+.hxp-orbe__nivel {
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid color-mix(in oklab, var(--p-aro) 70%, transparent);
+  opacity: 0;
+}
+.hxp-orbe__handy {
+  width: auto;
+  height: 58%;
+  filter: drop-shadow(0 0 18px color-mix(in oklab, var(--hia-ambar) 70%, transparent));
+  animation: hxp-flotar-handy 4s ease-in-out infinite;
+}
+.hxp-orbe__chispas {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.hxp-orbe__chispas i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  border-radius: 50%;
+  background: var(--hia-miel);
+  box-shadow: 0 0 10px var(--hia-ambar);
+  opacity: 0;
+  transform: rotate(calc(var(--i) * 60deg)) translateY(0);
+}
+
+.hxp-orbe[data-estado='escuchando'] .hxp-orbe__nivel {
+  opacity: 1;
+  animation: hxp-nivel 1.1s ease-in-out infinite;
+}
+.hxp-orbe[data-estado='escuchando'] .hxp-orbe__halo {
+  animation: hxp-nivel-halo 0.9s ease-in-out infinite;
+}
+.hxp-orbe[data-estado='pensando'] .hxp-orbe__aro {
+  opacity: 1;
+  animation: hxp-girar 1.4s linear infinite;
+}
+.hxp-orbe[data-estado='pensando'] .hxp-orbe__handy {
+  filter: brightness(0.85)
+    drop-shadow(0 0 8px color-mix(in oklab, var(--hia-ambar) 40%, transparent));
+  animation: hxp-pensar 2.4s ease-in-out infinite;
+}
+.hxp-orbe[data-estado='hablando'] .hxp-orbe__halo {
+  animation: hxp-hablar 0.55s ease-in-out infinite alternate;
+}
+.hxp-orbe[data-estado='listo'] .hxp-orbe__halo {
+  transform: scale(1.12);
+  animation: none;
+}
+.hxp-orbe[data-estado='listo'] .hxp-orbe__chispas i {
+  animation: hxp-chispa 1.8s var(--curva) infinite;
+  animation-delay: calc(var(--i) * 60ms);
+}
+
+@keyframes hxp-respirar {
+  50% {
+    transform: scale(1.07);
+    opacity: 0.85;
+  }
+}
+@keyframes hxp-flotar-handy {
+  50% {
+    transform: translateY(-5px);
+  }
+}
+@keyframes hxp-nivel {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.18);
+  }
+  45% {
+    transform: scale(1.06);
+  }
+  70% {
+    transform: scale(1.24);
+  }
+}
+@keyframes hxp-nivel-halo {
+  50% {
+    transform: scale(1.12);
+  }
+}
+@keyframes hxp-girar {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes hxp-pensar {
+  50% {
+    transform: rotate(-6deg) translateY(-2px);
+  }
+}
+@keyframes hxp-hablar {
+  from {
+    transform: scale(0.96);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+@keyframes hxp-chispa {
+  0% {
+    opacity: 0;
+    transform: rotate(calc(var(--i) * 60deg)) translateY(-20px) scale(0.4);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(calc(var(--i) * 60deg)) translateY(-96px) scale(1);
+  }
+}
+
+/* ── Modo voz ─────────────────────────────────────────────────────────────────────────────────── */
+.hxp-voz {
+  padding: 18px 18px 20px;
+  gap: 6px;
+}
+.hxp-voz__arriba {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.hxp-marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--fuente-titulos);
+  font-weight: var(--peso-titulo);
+}
+.hxp-voz__estado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--p-suave);
+  font-size: 0.86em;
+  font-weight: var(--peso-medio);
+}
+.hxp-punto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--p-aro);
+}
+.hxp-voz[data-estado='escuchando'] .hxp-punto {
+  animation: hxp-respirar 0.9s ease-in-out infinite;
+}
+.hxp-voz__texto {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+.hxp-voz__texto .hxp-chips {
+  justify-content: center;
+}
+.hxp-apagado {
+  opacity: 0.55;
+}
+.hxp-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  background: currentColor;
+  animation: hxp-titilar 1s steps(2) infinite;
+}
+@keyframes hxp-titilar {
+  50% {
+    opacity: 0;
+  }
+}
+.hxp-dicho span {
+  opacity: 0.35;
+  animation: hxp-decir 0.3s ease forwards;
+  animation-delay: calc(var(--i) * 190ms);
+}
+@keyframes hxp-decir {
+  to {
+    opacity: 1;
+  }
+}
+.hxp-pasos-mini {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8em;
+}
+.hxp-pasos-mini li {
+  padding: 4px 10px;
+  border-radius: var(--radio-pastilla);
+  border: 1px solid var(--p-vidrio-borde);
+  color: var(--p-suave);
+}
+.hxp-pasos-mini li[data-hecho='si']::before {
+  content: '✓ ';
+}
+.hxp-pasos-mini li[data-hecho='ahora'] {
+  background: var(--p-vidrio);
+  color: var(--p-texto);
+  font-weight: var(--peso-medio);
+}
+.hxp-mini-ficha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 22px;
+  text-align: left;
+}
+.hxp-mini-ficha__ico {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--color-amarillo);
+  color: var(--color-tinta);
+}
+.hxp-mini-ficha__ico svg {
+  width: 24px;
+  height: 24px;
+}
+.hxp-mini-ficha__titulo {
+  margin: 0;
+  font-weight: var(--peso-fuerte);
+}
+
+/* Controles en una sola pastilla. */
+.hxp-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--radio-pastilla);
+  background: var(--p-vidrio);
+  border: 1px solid var(--p-vidrio-borde);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 -10px 50px -10px var(--p-brillo-abajo, transparent);
+}
+.hxp-control__lado {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: var(--p-suave);
+}
+.hxp-control__mic {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--p-mic);
+  color: var(--p-mic-texto);
+  box-shadow: 0 0 0 0 color-mix(in oklab, var(--p-mic) 60%, transparent);
+  cursor: pointer;
+}
+.hxp-control__mic svg {
+  width: 30px;
+  height: 30px;
+}
+.hxp-control__mic[data-estado='escuchando'] {
+  animation: hxp-latir 1.2s ease-out infinite;
+}
+@keyframes hxp-latir {
+  to {
+    box-shadow: 0 0 0 16px transparent;
+  }
+}
+
+/* ── Chat ─────────────────────────────────────────────────────────────────────────────────────── */
+.hxp-chat {
+  background: var(--p-chat-fondo);
+  color: var(--p-chat-texto);
+  --p-texto: var(--p-chat-texto);
+  --p-suave: var(--p-chat-suave);
+}
+.hxp-chat__cab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px 10px;
+  background: var(--p-chat-cab);
+  border-bottom: 1px solid var(--p-vidrio-borde);
+  backdrop-filter: blur(16px);
+}
+.hxp-chat__atras {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--p-vidrio);
+}
+.hxp-chat__avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--hia-miel), var(--p-luz) 60%, var(--hia-ambar));
+  box-shadow:
+    0 0 0 2px var(--p-chat-fondo-plano),
+    0 0 0 4px var(--p-aro);
+}
+.hxp-chat__avatar img {
+  width: auto;
+  height: 30px;
+}
+.hxp-chat__avatar[data-estado='pensando'] {
+  animation: hxp-respirar 1.2s ease-in-out infinite;
+}
+.hxp-chat__quien {
+  flex: 1;
+  display: grid;
+  line-height: 1.2;
+}
+.hxp-chat__quien .hxp-suave {
+  font-size: 0.8em;
+}
+.hxp-pildora--voz {
+  background: var(--p-mic);
+  color: var(--p-mic-texto);
+  border-color: transparent;
+}
+.hxp-chat__hilo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  overflow: hidden;
+}
+.hxp-burbuja {
+  margin: 0;
+  max-width: 86%;
+  padding: 10px 14px;
+  border-radius: 20px;
+  line-height: 1.35;
+  animation: hxp-entrar 0.35s var(--curva) both;
+}
+.hxp-burbuja p {
+  margin: 0;
+}
+.hxp-burbuja--yo {
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+  background: var(--p-yo);
+  color: var(--p-yo-texto);
+}
+.hxp-burbuja--ia {
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+  background: var(--p-ia);
+  color: var(--p-ia-texto);
+  border: 1px solid var(--p-vidrio-borde);
+}
+@keyframes hxp-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+.hxp-progreso {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 0.75em;
+  font-weight: var(--peso-fuerte);
+  color: var(--p-ia-suave);
+}
+.hxp-porque {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px !important;
+  font-size: 0.82em;
+  color: var(--p-ia-suave);
+}
+.hxp-chat__hilo > .hxp-chips {
+  padding-left: 2px;
+}
+.hxp-pasos {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9em;
+}
+.hxp-pasos li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--p-ia-suave);
+}
+.hxp-pasos li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+.hxp-pasos li[data-hecho]::before {
+  display: none;
+}
+.hxp-pasos li[data-hecho] {
+  color: var(--p-ia-texto);
+}
+.hxp-giro {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in oklab, var(--p-aro) 30%, transparent);
+  border-top-color: var(--p-aro);
+  animation: hxp-girar 0.9s linear infinite;
+}
+.hxp-brillo {
+  background: linear-gradient(
+      90deg,
+      var(--p-ia-texto) 0 35%,
+      var(--p-aro) 50%,
+      var(--p-ia-texto) 65% 100%
+    )
+    0 0 / 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: var(--peso-medio);
+  animation: hxp-barrido 1.8s linear infinite;
+}
+@keyframes hxp-barrido {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+.hxp-bienvenida {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+.hxp-bienvenida .hxp-suave {
+  max-width: 26ch;
+}
+.hxp-sugerencias {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  margin-top: 10px;
+}
+.hxp-sugerencia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--toque-min);
+  padding: 0 14px;
+  border-radius: 16px;
+  color: var(--p-chat-texto);
+  font: inherit;
+  font-weight: var(--peso-medio);
+  text-align: left;
+  cursor: pointer;
+}
+
+.hxp-ficha {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 22px;
+  animation: hxp-entrar 0.45s var(--curva) both 0.15s;
+}
+.hxp-ficha__cab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hxp-ficha__cab > div {
+  flex: 1;
+}
+.hxp-ficha__titulo {
+  margin: 0;
+  font-family: var(--fuente-titulos);
+  font-size: 1.25em;
+  font-weight: var(--peso-titulo);
+}
+.hxp-ficha__editar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82em;
+  font-weight: var(--peso-medio);
+  color: var(--p-enlace);
+}
+.hxp-ficha__texto {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--p-hundida);
+  font-size: 0.9em;
+}
+.hxp-ficha__acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+/* Botones de pedir: nunca animados (AGENTS.md). */
+.hxp-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: var(--toque-min);
+  border-radius: 14px;
+  border: 1.5px solid var(--p-chip-borde);
+  font-size: 0.88em;
+  font-weight: var(--peso-fuerte);
+  color: var(--p-chat-texto);
+}
+.hxp-boton--primario {
+  background: var(--accion-primaria);
+  border-color: var(--accion-primaria);
+  color: var(--texto-sobre-marca);
+}
+.hxp-chips--datos .hxp-chip {
+  min-height: 28px;
+  font-size: 0.78em;
+}
+
+.hxp-riesgo {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  background: var(--p-riesgo-fondo);
+  color: var(--p-riesgo-texto);
+  border: 1.5px solid var(--hia-riesgo);
+  box-shadow: 0 0 30px -8px color-mix(in oklab, var(--hia-riesgo) 70%, transparent);
+  font-size: 0.88em;
+  line-height: 1.4;
+  animation: hxp-entrar 0.35s var(--curva) both;
+}
+.hxp-riesgo p {
+  margin: 0;
+}
+.hxp-riesgo__titulo {
+  font-weight: var(--peso-titulo);
+  font-family: var(--fuente-titulos);
+  margin-bottom: 2px !important;
+}
+.hxp-riesgo__ico svg {
+  width: 26px;
+  height: 26px;
+}
+
+.hxp-redactar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 12px 14px;
+  padding: 6px 6px 6px 14px;
+  border-radius: var(--radio-pastilla);
+  background: var(--p-vidrio);
+  border: 1px solid var(--p-vidrio-borde);
+  backdrop-filter: blur(16px);
+  color: var(--p-chat-suave);
+}
+.hxp-redactar__campo {
+  flex: 1;
+  font-size: 0.9em;
+}
+.hxp-redactar__mic {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--p-mic);
+  color: var(--p-mic-texto);
+}
+
+/* ── Dirección A · Luz cálida ─────────────────────────────────────────────────────────────────── */
+.hxp-dir--calida {
+  --p-fondo:
+    radial-gradient(
+      120% 70% at 50% 30%,
+      color-mix(in oklab, var(--hia-ambar) 35%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--hia-azul-hondo), var(--hia-noche) 75%);
+  --p-texto: var(--hia-texto-claro);
+  --p-suave: var(--hia-texto-claro-suave);
+  --p-mancha-1: var(--hia-ambar);
+  --p-mancha-2: var(--color-azul-personajes);
+  --p-mancha-3: var(--hia-ambar);
+  --p-manchas: 0.28;
+  --p-luz: var(--hia-ambar);
+  --p-aro: var(--hia-miel);
+  --p-vidrio: color-mix(in oklab, var(--hia-texto-claro) 12%, transparent);
+  --p-vidrio-borde: color-mix(in oklab, var(--hia-texto-claro) 22%, transparent);
+  --p-sombra: var(--hia-abismo);
+  --p-chip: color-mix(in oklab, var(--hia-texto-claro) 10%, transparent);
+  --p-chip-borde: color-mix(in oklab, var(--hia-miel) 50%, transparent);
+  --p-chip-texto: var(--hia-texto-claro);
+  --p-mic: var(--color-amarillo);
+  --p-mic-texto: var(--color-tinta);
+  --p-brillo-abajo: color-mix(in oklab, var(--hia-ambar) 45%, transparent);
+}
+.hxp-dir--calida .hxp-chat {
+  --p-chat-fondo:
+    radial-gradient(90% 40% at 50% 0%, var(--hia-miel), transparent 70%), var(--hia-papel);
+  --p-chat-fondo-plano: var(--hia-papel);
+  --p-chat-cab: color-mix(in oklab, var(--hia-crema) 70%, transparent);
+  --p-chat-texto: var(--color-tinta);
+  --p-chat-suave: var(--color-texto-suave);
+  --p-mancha-1: var(--hia-miel);
+  --p-mancha-2: var(--hia-celeste);
+  --p-mancha-3: var(--hia-miel);
+  --p-manchas: 0.45;
+  --p-vidrio: color-mix(in oklab, var(--color-fondo) 72%, transparent);
+  --p-vidrio-borde: color-mix(in oklab, var(--color-tinta) 10%, transparent);
+  --p-sombra: color-mix(in oklab, var(--color-tinta) 40%, transparent);
+  --p-luz: var(--hia-miel);
+  --p-aro: var(--hia-ambar);
+  --p-yo: var(--color-azul);
+  --p-yo-texto: var(--texto-sobre-marca);
+  --p-ia: var(--hia-crema);
+  --p-ia-texto: var(--color-tinta);
+  --p-ia-suave: var(--color-texto-suave);
+  --p-chip: var(--color-fondo);
+  --p-chip-borde: var(--estado-alerta-borde);
+  --p-chip-texto: var(--color-tinta);
+  --p-mic: var(--color-azul);
+  --p-mic-texto: var(--texto-sobre-marca);
+  --p-enlace: var(--color-azul);
+  --p-hundida: var(--hia-crema);
+  --p-riesgo-fondo: var(--estado-error-fondo);
+  --p-riesgo-texto: var(--accion-peligro-base);
+}
+
+/* ── Dirección B · Noche azul ─────────────────────────────────────────────────────────────────── */
+.hxp-dir--noche {
+  --p-fondo:
+    radial-gradient(
+      90% 45% at 50% 105%,
+      color-mix(in oklab, var(--hia-azul-luz) 70%, transparent),
+      transparent 70%
+    ),
+    var(--hia-abismo);
+  --p-texto: var(--hia-texto-claro);
+  --p-suave: var(--hia-texto-claro-suave);
+  --p-mancha-1: var(--hia-azul-hondo);
+  --p-mancha-2: var(--color-azul-personajes);
+  --p-mancha-3: var(--hia-celeste);
+  --p-manchas: 0.3;
+  --p-luz: color-mix(in oklab, var(--hia-celeste) 60%, var(--hia-ambar));
+  --p-aro: var(--hia-celeste);
+  --p-vidrio: color-mix(in oklab, var(--hia-texto-claro) 9%, transparent);
+  --p-vidrio-borde: color-mix(in oklab, var(--hia-celeste) 22%, transparent);
+  --p-sombra: var(--hia-abismo);
+  --p-chip: color-mix(in oklab, var(--hia-celeste) 10%, transparent);
+  --p-chip-borde: color-mix(in oklab, var(--hia-celeste) 35%, transparent);
+  --p-chip-texto: var(--hia-texto-claro);
+  --p-mic: var(--hia-texto-claro);
+  --p-mic-texto: var(--hia-abismo);
+  --p-brillo-abajo: var(--hia-azul-luz);
+  --p-chat-fondo:
+    radial-gradient(80% 30% at 50% 0%, var(--hia-azul-hondo), transparent 70%), var(--hia-abismo);
+  --p-chat-fondo-plano: var(--hia-abismo);
+  --p-chat-cab: color-mix(in oklab, var(--hia-noche) 70%, transparent);
+  --p-chat-texto: var(--hia-texto-claro);
+  --p-chat-suave: var(--hia-texto-claro-suave);
+  --p-yo: var(--color-azul);
+  --p-yo-texto: var(--texto-sobre-marca);
+  --p-ia: var(--hia-noche);
+  --p-ia-texto: var(--hia-texto-claro);
+  --p-ia-suave: var(--hia-texto-claro-suave);
+  --p-enlace: var(--hia-celeste);
+  --p-hundida: color-mix(in oklab, var(--hia-texto-claro) 7%, transparent);
+  --p-riesgo-fondo: color-mix(in oklab, var(--hia-riesgo) 14%, var(--hia-abismo));
+  --p-riesgo-texto: var(--hia-texto-claro);
+}
+.hxp-dir--noche .hxp-voz .hxp-grande {
+  font-size: 1.6em;
+}
+.hxp-dir--noche .hxp-orbe:not(.hxp-orbe--chico) {
+  width: 150px;
+}
+
+/* ── Dirección C · Vidrio y brillo ────────────────────────────────────────────────────────────── */
+.hxp-dir--vidrio {
+  --p-fondo: linear-gradient(170deg, var(--hia-hielo), var(--color-fondo) 60%, var(--hia-crema));
+  --p-texto: var(--color-tinta);
+  --p-suave: var(--color-texto-suave);
+  --p-mancha-1: var(--hia-azul-luz);
+  --p-mancha-2: var(--hia-miel);
+  --p-mancha-3: var(--hia-celeste);
+  --p-manchas: 0.75;
+  --p-luz: var(--hia-miel);
+  --p-aro: var(--color-azul-personajes);
+  --p-vidrio: color-mix(in oklab, var(--color-fondo) 55%, transparent);
+  --p-vidrio-borde: color-mix(in oklab, var(--color-fondo) 85%, transparent);
+  --p-sombra: color-mix(in oklab, var(--color-azul) 45%, transparent);
+  --p-chip: color-mix(in oklab, var(--color-fondo) 60%, transparent);
+  --p-chip-borde: color-mix(in oklab, var(--color-azul) 28%, transparent);
+  --p-chip-texto: var(--color-tinta);
+  --p-mic: var(--color-azul);
+  --p-mic-texto: var(--texto-sobre-marca);
+  --p-brillo-abajo: color-mix(in oklab, var(--hia-azul-luz) 35%, transparent);
+  --p-chat-fondo: var(--p-fondo);
+  --p-chat-fondo-plano: var(--color-fondo);
+  --p-chat-cab: color-mix(in oklab, var(--color-fondo) 45%, transparent);
+  --p-chat-texto: var(--color-tinta);
+  --p-chat-suave: var(--color-texto-suave);
+  --p-yo: var(--color-azul);
+  --p-yo-texto: var(--texto-sobre-marca);
+  --p-ia: color-mix(in oklab, var(--color-fondo) 70%, transparent);
+  --p-ia-texto: var(--color-tinta);
+  --p-ia-suave: var(--color-texto-suave);
+  --p-enlace: var(--color-azul);
+  --p-hundida: color-mix(in oklab, var(--color-fondo) 60%, transparent);
+  --p-riesgo-fondo: color-mix(in oklab, var(--color-fondo) 80%, var(--hia-riesgo));
+  --p-riesgo-texto: var(--accion-peligro-base);
+}
+/* La esfera de vidrio con la lamparita adentro. */
+.hxp-dir--vidrio .hxp-orbe::before {
+  content: '';
+  grid-area: 1 / 1;
+  width: 76%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 26%, var(--color-fondo), transparent 28%),
+    radial-gradient(
+      circle at 50% 60%,
+      color-mix(in oklab, var(--hia-miel) 70%, transparent),
+      transparent 70%
+    ),
+    color-mix(in oklab, var(--hia-hielo) 40%, transparent);
+  border: 1px solid var(--color-fondo);
+  box-shadow:
+    inset 0 -14px 30px color-mix(in oklab, var(--hia-azul-luz) 35%, transparent),
+    0 18px 40px -16px color-mix(in oklab, var(--color-azul) 60%, transparent);
+  backdrop-filter: blur(8px);
+}
+.hxp-dir--vidrio .hxp-burbuja--ia {
+  backdrop-filter: blur(14px);
+}
+
+/* ── Quieto con "reducir movimiento": cada estado se ve en su forma final ─────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .hxp *,
+  .hxp *::before,
+  .hxp *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .hxp-dicho span {
+    opacity: 1;
+  }
+  .hxp-orbe[data-estado='listo'] .hxp-orbe__chispas i {
+    opacity: 1;
+    transform: rotate(calc(var(--i) * 60deg)) translateY(-80px);
+  }
+  .hxp-orbe[data-estado='pensando'] .hxp-orbe__aro {
+    transform: rotate(0.3turn);
+  }
+  .hxp-brillo {
+    color: var(--p-ia-texto);
+    background: none;
+  }
+}

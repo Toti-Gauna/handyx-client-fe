@@ -53,9 +53,8 @@ seguridad y privacidad: donde un error cuesta caro). **Ignacio** marca lo que ha
 
 Objetivo: **diseñar y aprobar** cómo se ve, se mueve y suena HandIA antes de programar H2–H5, para que todo lo que se
 construya sea una sola experiencia deluxe y no pantallas sueltas. Extiende la marca de la landing y del kit (azul
-Handyx, amarillo, Archivo + DM Sans, los Handys): no se inventa otra marca. Se diseña en **Figma** (conector disponible
-en la sesión, con el archivo que indique Ignacio) o, si no, como prototipo navegable publicado para revisar desde el
-celular.
+Handyx, amarillo, Archivo + DM Sans, los Handys): no se inventa otra marca. Se diseña como **prototipo navegable dentro del
+proyecto** (`/diseno/handia/`, decisión de Ignacio del 07/11), para revisar desde el celular.
 
 | Lote | Qué                                                                                                                                                                                                 | Quién            | Modelo · esfuerzo |
 | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------------- |
@@ -210,7 +209,8 @@ Para Meshy (H1.5): una vista de frente y una de perfil en pose "A" (brazos abier
 
 ## Decisiones pendientes (Ignacio)
 
-1. **Rediseño:** ¿en Figma (indicar el archivo) o como prototipo navegable? Y elegir una dirección en R2 (bloquea R4).
+1. **Rediseño:** ✅ prototipo navegable dentro del proyecto (`/diseno/handia/`, decisión del 07/11). Falta elegir una
+   dirección en R2 ([direcciones](handia-r2-direcciones.md)); bloquea R3–R4.
 2. **Imágenes:** generarlas con el brief (bloquea H1.1 y todo H1).
 3. **3D:** prototipo con Meshy o solo 2D + GSAP (recomendado: 2D primero, 3D como prueba en H1.5).
 4. **IA externa:** cambiar la regla "sin datos personales ni documentos a una IA externa" para voz, texto y fotos, con

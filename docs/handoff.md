@@ -5,6 +5,13 @@
 **Siguiente para HandIA:** plan por fases H0–H7 en [`handia-premium-plan.md`](handia-premium-plan.md) (modo voz estilo
 ChatGPT Voice con los Handys, chat premium, agente, cámara, OpenAI + ElevenLabs). H1 espera las imágenes de ChatGPT.
 
+**Fase R (rediseño de HandIA), 07/11:** R1 listo ([referentes y diagnóstico](handia-r1-referentes.md)). Ignacio
+eligió prototipar dentro del proyecto: R2 está en **`/diseno/handia/`** (solo vista de prueba, grupo `src/app/(prototipo)/`)
+con tres direcciones (Luz cálida, Noche azul, Vidrio y brillo), cada una con voz y chat en todos sus estados
+([R2](handia-r2-direcciones.md)). Recomendación: Luz cálida con el texto grande de Noche azul y la ficha de vidrio.
+**Espera que Ignacio elija** para seguir con R3–R4 en el mismo prototipo. También se corrigió la franja transparente
+de la base de `handy-lamparita.webp` y `handy-lamparita-rota.webp`.
+
 **Rama `handia-premium` (07/11/2026, pedido de Ignacio: "HandIA superpremium, con modo voz").** Sale de `fase-3-diseno`
 y no dispara el deploy. HandIA conversa como un especialista antes de cotizar, **todo en el celular, sin IA externa**:
 `src/domain/handia-motor.ts` (estado → respuestas y opciones; lo usan igual el chat y la voz) con las guías de

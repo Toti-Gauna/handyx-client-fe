@@ -126,4 +126,21 @@
   /* Capas */
   --capa-barra: 20;
   --capa-aviso-prueba: 30;
+
+  /* ── 3. HandIA premium (fase R, prototipo en /diseno/handia/) ─────────────────────────────────────
+     Extienden la marca, no la reemplazan: el azul y el amarillo de Handyx con más luz y más profundidad.
+     Se usan solo en HandIA; cuando Ignacio elija una dirección (R2) quedan los de esa dirección. */
+  --hia-abismo: #060d1f; /* el fondo más hondo de "noche azul" */
+  --hia-noche: #0b1a3a;
+  --hia-azul-hondo: #12306b;
+  --hia-azul-luz: #5c8dff; /* brillo del azul de los personajes */
+  --hia-celeste: #9fd0ff;
+  --hia-hielo: #eaf3ff;
+  --hia-ambar: #ffcf5a; /* el centro caliente de la lamparita */
+  --hia-miel: #ffe8a3;
+  --hia-crema: #fffaf0;
+  --hia-papel: #fbf7ee;
+  --hia-texto-claro: #f4f7ff; /* 15:1 sobre --hia-noche */
+  --hia-texto-claro-suave: #c4d2ef; /* 9.6:1 sobre --hia-noche */
+  --hia-riesgo: #ff8a7a; /* solo borde y brillo; el texto del riesgo va en claro con ícono */
 }
