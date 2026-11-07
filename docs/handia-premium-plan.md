@@ -12,6 +12,7 @@ seguridad y privacidad: donde un error cuesta caro). **Ignacio** marca lo que ha
 | Pedido (07/11/2026)                                                               | Lotes                  |
 | --------------------------------------------------------------------------------- | ---------------------- |
 | Experiencia **súper premium, deluxe**, que parezca que vale mucho dinero          | Todos; criterios abajo |
+| **Apartado de rediseño** para que HandIA sea bien premium (pedido del 07/11)      | R1 a R8                |
 | **Modo voz como ChatGPT Voice**, pero con los personajes de Handyx                | H2.1 a H2.5            |
 | **Imágenes hechas con ChatGPT**: pensando, buscando, encontró, enviando respuesta | H1.1, H1.2             |
 | **Degradé de fondo**                                                              | H1.4, H2.1             |
@@ -47,6 +48,31 @@ seguridad y privacidad: donde un error cuesta caro). **Ignacio** marca lo que ha
 | ---- | ------------------------------------------------------------------ | ------ | ------------------- | --------- |
 | H0.1 | Base de HandIA premium (motor local, ficha, voz local, pruebas)    | Claude | Opus 5.5 · high     | ✅ listo  |
 | H0.2 | Registrar las decisiones de Ignacio (ver al final) y fijar alcance | Claude | Sonnet 5.5 · medium | pendiente |
+
+### R · Rediseño premium de HandIA (antes de construir)
+
+Objetivo: **diseñar y aprobar** cómo se ve, se mueve y suena HandIA antes de programar H2–H5, para que todo lo que se
+construya sea una sola experiencia deluxe y no pantallas sueltas. Extiende la marca de la landing y del kit (azul
+Handyx, amarillo, Archivo + DM Sans, los Handys): no se inventa otra marca. Se diseña en **Figma** (conector disponible
+en la sesión, con el archivo que indique Ignacio) o, si no, como prototipo navegable publicado para revisar desde el
+celular.
+
+| Lote | Qué                                                                                                                                                                                                 | Quién            | Modelo · esfuerzo |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- | ----------------- |
+| R1   | Referentes y diagnóstico: ChatGPT Voice, Gemini Live, Siri, apps de servicios premium; qué hace "caro" a cada uno y qué le falta hoy a HandIA                                                       | Claude           | Opus 5.5 · high   |
+| R2   | Concepto y moodboard: 2 o 3 direcciones (p. ej. "luz cálida", "noche azul", "vidrio y brillo") con una pantalla de voz y una de chat cada una                                                       | Claude           | Opus 5.5 · high   |
+| R3   | Lenguaje visual de HandIA: degradés como tokens, brillos y halos, vidrio/blur, sombras y profundidad, radios, tipografía de display, íconos propios                                                 | Claude           | Opus 5.5 · high   |
+| R4   | Pantallas en alta: entrada desde Inicio, bienvenida de HandIA, chat (vacío, pensando, respuesta, ficha, riesgo), voz (cada estado), cámara, agente y propuestas, errores y sin conexión, escritorio | Claude           | Opus 5.5 · high   |
+| R5   | Movimiento, sonido y vibración: prototipo de transiciones (GSAP), curvas y duraciones, sonidos originales de inicio/fin, patrón de vibración                                                        | Claude           | Opus 5.5 · high   |
+| R6   | Puertas de entrada en toda la app: botón "Preguntale a HandIA" en Inicio, Pedir, Actividad y Ayuda; primer uso con una presentación corta                                                           | Claude           | Sonnet 5.5 · high |
+| R7   | Prueba con 5 personas usando la demo (datos ficticios, sin datos reales de nadie) + ajuste, y **aprobación de Ignacio** de una dirección final                                                      | Ignacio + Claude | Opus 5.5 · high   |
+| R8   | Base en código: tokens nuevos en `tokens.css`/`ajustes.css`, componentes (Orbe, Degradé vivo, Tarjeta de vidrio, Botón premium, Burbuja HandIA) y galería `/diseno/#handia`                         | Claude           | Sonnet 5.5 · high |
+
+- **Criterio de aprobación:** Ignacio elige una dirección en R2 y aprueba R4 + R5 antes de H2/H3. Lo que no se aprueba
+  no se construye.
+- **Contraste y accesibilidad desde el diseño:** cada combinación de degradé y texto pasa AA; cada animación tiene su
+  versión quieta.
+- **Peso:** el lenguaje visual cabe en CSS y SVG livianos; las imágenes de los estados (H1) son las únicas pesadas.
 
 ### H1 · Dirección de arte y personajes
 
@@ -147,13 +173,14 @@ seguridad y privacidad: donde un error cuesta caro). **Ignacio** marca lo que ha
 ## Orden y dependencias
 
 ```
-H0 ─▶ H1 ─┬─▶ H2 (voz)
-          └─▶ H3 (chat) ─┬─▶ H4 (agente)
-                         └─▶ H5 (cámara)
+H0 ─▶ R (rediseño, aprobado) ─▶ H1 ─┬─▶ H2 (voz)
+                                    └─▶ H3 (chat) ─┬─▶ H4 (agente)
+                                                   └─▶ H5 (cámara)
 H0 (decisión 3) ─▶ H6 (backend, simuladores) ─▶ H7 (real, con saldo)
 ```
 
-H3 puede arrancar antes de tener las imágenes con las poses que ya existen. H6 puede avanzar en paralelo a H2–H5 porque
+R1–R3 pueden arrancar ya (no necesitan las imágenes); R4 usa las poses que existen como provisorias. H3 puede
+arrancar con las poses actuales una vez aprobado R. H6 puede avanzar en paralelo a H2–H5 porque
 usa simuladores; H7 espera cuentas, saldo y la revisión legal.
 
 ## Brief para ChatGPT (imágenes de HandIA)
@@ -183,13 +210,14 @@ Para Meshy (H1.5): una vista de frente y una de perfil en pose "A" (brazos abier
 
 ## Decisiones pendientes (Ignacio)
 
-1. **Imágenes:** generarlas con el brief (bloquea H1.1 y todo H1).
-2. **3D:** prototipo con Meshy o solo 2D + GSAP (recomendado: 2D primero, 3D como prueba en H1.5).
-3. **IA externa:** cambiar la regla "sin datos personales ni documentos a una IA externa" para voz, texto y fotos, con
+1. **Rediseño:** ¿en Figma (indicar el archivo) o como prototipo navegable? Y elegir una dirección en R2 (bloquea R4).
+2. **Imágenes:** generarlas con el brief (bloquea H1.1 y todo H1).
+3. **3D:** prototipo con Meshy o solo 2D + GSAP (recomendado: 2D primero, 3D como prueba en H1.5).
+4. **IA externa:** cambiar la regla "sin datos personales ni documentos a una IA externa" para voz, texto y fotos, con
    consentimiento y tachado, y pedir revisión legal (bloquea H6.2 en adelante con datos reales).
-4. **Cuentas y saldo:** crear/usar las cuentas de OpenAI y ElevenLabs, cargar saldo y fijar el tope mensual (bloquea H7).
-5. **HandIA con la app real:** habilitarla con el motor local (hoy queda inactiva fuera de la demo).
-6. **Voz de HandIA:** una voz de ElevenLabs rioplatense y cálida, o diseñar una propia (H7.3).
+5. **Cuentas y saldo:** crear/usar las cuentas de OpenAI y ElevenLabs, cargar saldo y fijar el tope mensual (bloquea H7).
+6. **HandIA con la app real:** habilitarla con el motor local (hoy queda inactiva fuera de la demo).
+7. **Voz de HandIA:** una voz de ElevenLabs rioplatense y cálida, o diseñar una propia (H7.3).
 
 ## Criterios de "premium" (se miden en cada fase)
 
@@ -197,4 +225,4 @@ Para Meshy (H1.5): una vista de frente y una de perfil en pose "A" (brazos abier
 - Cero fallas de axe, texto al 200 % sin desbordes, "reducir movimiento" respetado.
 - Recorrido de demo completo (contar → preguntas → ficha → publicar → propuestas → elegir) en < 2 minutos, escribiendo
   o hablando.
-- Cada estado del personaje aprobado por Ignacio en la galería antes de usarlo.
+- Cada estado del personaje y cada pantalla del rediseño aprobados por Ignacio antes de construirlos.
