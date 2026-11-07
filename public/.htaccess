@@ -4,6 +4,13 @@ Options -Indexes
 DirectoryIndex index.html
 ErrorDocument 404 /404.html
 
+# Archivo de estado que deja el deploy automático por FTP (docs/deploy-hostinger.md): no se sirve.
+<Files ".ftp-deploy-sync-state.json">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+</Files>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # Siempre por HTTPS (la cookie de sesión del BE es Secure y la PWA solo se instala con HTTPS).
