@@ -2,6 +2,23 @@
 
 **Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.7; sigue la Fase 5 (deploy, con autorización).**
 
+**Rama `handia-premium` (07/11/2026, pedido de Ignacio: "HandIA superpremium, con modo voz").** Sale de `fase-3-diseno`
+y no dispara el deploy. HandIA conversa como un especialista antes de cotizar, **todo en el celular, sin IA externa**:
+`src/domain/handia-motor.ts` (estado → respuestas y opciones; lo usan igual el chat y la voz) con las guías de
+`handia-guias.ts` (2 a 4 preguntas por rubro con opciones y palabras clave). Deduce lo que ya se contó y pregunta solo
+lo que falta, entiende correcciones y negaciones ("no es la luz"), repregunta una vez si la respuesta no encaja, avisa
+riesgos primero (gas, monóxido, electricidad, agua y luz), da consejos seguros "mientras tanto", sugiere pedir para hoy
+sin prometer tiempos y arma una **ficha editable** ("Así lo leen los especialistas", sin huecos de datos tachados; lo
+editado vuelve a pasar por el tachado). **Modo voz** a pantalla completa (lamparita que reacciona: escucha, piensa,
+habla), manos libres, lee las opciones, órdenes ("repetí", "pará", "volver al chat") y dictado en el chat: solo con
+**reconocimiento en el dispositivo** (`processLocally`/`ondevice-only`, ofrece descargarlo una vez) y **voces del
+sistema**; si el navegador mandaría la voz a un servidor, no escucha y lo explica (Safari/iOS hoy: solo lee en voz
+alta). Al navegador se le pregunta por la voz local **recién al abrir el modo voz y solo en Chrome o Edge**: en
+Chromium 153 sin el componente de voz (el de las pruebas automáticas) esa consulta cerraba la pestaña. Pruebas: `tests/handia-motor.test.ts`, `tests/voz.test.ts`, `tests/e2e/handia.cjs` (voz simulada local y "en la
+nube", axe del chat, la ficha y el modo voz). Pendiente de Ignacio: si HandIA se habilita también con la API real (hoy
+sigue inactiva ahí, aunque ya no manda nada a ningún servidor) y si se aceptaría reconocimiento de voz en la nube con
+consentimiento explícito para los navegadores sin reconocimiento local.
+
 **Lote 4.7 · Viaje en vivo y conexión preparada (02/11/2026).** El seguimiento del trabajo en camino muestra la posición
 del especialista, el recorrido y la llegada estimada **que manda el servidor**, solo mientras comparte
 (`src/domain/viaje.ts` arma los textos, sin calcular tiempos; `MapaHx` dibuja el recorrido y encuadra según su tamaño

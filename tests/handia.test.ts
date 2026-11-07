@@ -61,9 +61,13 @@ describe('HandIA · pantalla', () => {
   });
 
   it('solo sugiere: la persona confirma y el pedido se revisa antes de mandar', () => {
-    expect(pagina).toMatch(/Es otro rubro/);
-    expect(pagina).toMatch(/dejarBorrador\(\{ rubro, descripcion: problema \}\)/);
-    expect(pagina).not.toMatch(/pedidoCrear/);
+    const motor = readFileSync('src/domain/handia-motor.ts', 'utf8');
+    expect(motor).toMatch(/Es otro rubro/);
+    // El borrador se arma con la descripción revisada (y vuelve a pasar por el tachado).
+    expect(pagina).toMatch(
+      /dejarBorrador\(\{ rubro, descripcion: tacharDatosPersonales\(descRef\.current\)\.texto \}\)/,
+    );
+    expect(pagina + motor).not.toMatch(/pedidoCrear/);
   });
 
   it('con la API real queda inactiva hasta que exista el endpoint', () => {

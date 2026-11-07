@@ -36,8 +36,12 @@ segmentos dinámicos `[id]`.
   permiso puntual (nunca en segundo plano); fee 0 % hasta el 10/12 avisado después del registro, en el modal de primer
   ingreso y con contador en Cuenta, sin presentarlo como descuento ni anunciar tarifas no aprobadas; pago directo al
   especialista (Mercado Pago o efectivo), reportado ≠ verificado, volver del checkout no confirma nada; sin "Agregar
-  tarjeta"; HandIA incluida como asistente para armar el pedido (sugiere el rubro; tacha datos personales antes de
-  enviar; nunca recibe fotos ni documentos; con API real, inactiva hasta el endpoint del BE); sin envíos automáticos a terceros.
+  tarjeta"; HandIA incluida como asistente para armar el pedido (conversa en el celular con el motor de
+  `src/domain/handia-motor.ts`, sin IA externa: sugiere el rubro, pregunta lo justo, avisa riesgos primero y arma una
+  ficha que la persona revisa; tacha datos personales antes de procesar; nunca recibe fotos, documentos ni audio; **modo
+  voz solo con reconocimiento en el dispositivo** (`processLocally`/`ondevice-only`) **y voces del sistema**
+  (`localService`): si el navegador mandaría la voz a un servidor, no escucha y lo dice; sin prometer tiempos; con API
+  real, inactiva hasta el endpoint del BE); sin envíos automáticos a terceros.
 - **Mapa** (`src/components/MapaHx.tsx`, `src/geo/`): MapLibre + el extracto de OpenStreetMap de Mar del Plata servido por la
   propia app (`public/mapa/mdp.pmtiles`, se genera con `npm run mdp:datos`, no se versiona) y fuentes propias en
   `public/mapa/fuentes/`. **Nada de terceros** (ni teselas, ni claves, ni geocodificadores). Sin el archivo, el mapa

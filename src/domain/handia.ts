@@ -21,6 +21,7 @@ const CLAVES: Record<Rubro, readonly (readonly [string, number])[]> = {
     ['pierde agua', 3],
     ['gotea', 2],
     ['tapad', 2],
+    ['se tapo', 2],
     ['flexible', 3],
     ['ducha', 2],
     ['mochila', 2],
@@ -60,6 +61,7 @@ const CLAVES: Record<Rubro, readonly (readonly [string, number])[]> = {
     ['cerradura', 3],
     ['llave', 2],
     ['trabad', 2],
+    ['se trabo', 2],
     ['puerta', 1],
     ['candado', 3],
     ['cerrojo', 3],
@@ -93,7 +95,19 @@ const CLAVES: Record<Rubro, readonly (readonly [string, number])[]> = {
   ],
 };
 
-const normalizar = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+/** Minúsculas, sin acentos (la ñ queda como n): "Baño" → "bano". */
+export const normalizar = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+/**
+ * Saca lo que la persona descarta ("no es la luz", "nada que ver con el gas") para que no cuente como pista. Los
+ * síntomas con "no" ("no enfría", "no sale agua") quedan: solo se quitan las negaciones de identidad.
+ */
+export function quitarNegaciones(t: string): string {
+  return t.replace(
+    /\b(no es|no era|no seria|no creo que sea|nada que ver con|no tiene que ver con)\s+(?:de |del |en |con )?(?:el |la |los |las |un |una )?[a-z]+(?:\s+(?:de|del)\s+[a-z]+)?/g,
+    ' ',
+  );
+}
 
 export interface Deteccion {
   /** Rubros con puntaje, del más probable al menos. Vacío si no hubo pistas. */
@@ -105,7 +119,7 @@ export interface Deteccion {
 }
 
 export function detectarRubro(texto: string): Deteccion {
-  const t = normalizar(texto);
+  const t = quitarNegaciones(normalizar(texto));
   const puntajes = (Object.keys(CLAVES) as Rubro[])
     .map((r) => ({
       r,
