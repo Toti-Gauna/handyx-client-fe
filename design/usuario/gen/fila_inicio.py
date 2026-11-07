@@ -108,46 +108,82 @@ guardar_u('I-HandIAFicha.dc.html', 'HandIA: tu pedido', cab_handia('Pedido listo
     + opciones('Sumar una foto', 'Elegir de Mi hogar'), bottom=92) + composer())
 
 
-def esfera(estado):
-    """Esfera de luz en los colores de Handyx (sin personaje): escucha con anillos finos, habla más encendida."""
-    anillos = ''.join(f'<span style="position: absolute; inset: {-i * 20}px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,{0.32 - i * 0.08})"></span>' for i in range(1, 4)) if estado == 'escucha' else ''
-    brillo = 1 if estado == 'habla' else 0.82
-    return (f'<div aria-hidden="true" style="position: absolute; left: 50%; top: 178px; margin-left: -110px; width: 220px; height: 220px">{anillos}'
-            f'<span style="position: absolute; inset: -30px; border-radius: 50%; background: radial-gradient(circle, rgba(255,207,90,{0.38 * brillo}) 0%, rgba(255,207,90,0) 65%)"></span>'
-            f'<span style="position: absolute; inset: 0; border-radius: 50%; opacity: {brillo}; background: radial-gradient(circle at 34% 28%, #FFFFFF 0%, #DCE9FB 16%, #8DB4EC 42%, #3F7BD2 70%, {HONDO} 100%); box-shadow: inset -16px -22px 40px rgba(14,29,54,0.35), 0 30px 60px -20px rgba(8,20,48,0.6)"></span>'
-            f'<span style="position: absolute; left: 22%; top: 54%; width: 58%; height: 30%; border-radius: 50%; background: radial-gradient(ellipse, rgba(245,245,154,0.55), rgba(245,245,154,0) 70%); filter: blur(6px)"></span>'
-            f'<span style="position: absolute; left: 18%; top: 12%; width: 34%; height: 22%; border-radius: 50%; background: rgba(255,255,255,0.55); filter: blur(10px)"></span></div>')
+def esfera(estado, cx=195, cy=300, r=104):
+    """Esfera de HandIA en SVG: capas de luz difuminadas dentro de un círculo, brillo arriba y halo afuera.
+    Escuchando: anillo de barras de audio. Hablando: más encendida, con un aro amarillo suave."""
+    k = estado
+    ondas = ''
+    if k == 'escucha':
+        import math
+        n = 64
+        alturas = [10 + 14 * abs(math.sin(i * 0.55)) * (0.55 + 0.45 * abs(math.cos(i * 0.21))) for i in range(n)]
+        for i, h in enumerate(alturas):
+            a = 2 * math.pi * i / n
+            r1 = r + 22
+            x1, y1 = cx + r1 * math.cos(a), cy + r1 * math.sin(a)
+            x2, y2 = cx + (r1 + h) * math.cos(a), cy + (r1 + h) * math.sin(a)
+            ondas += f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="rgba(255,255,255,{0.35 + 0.4 * (h - 10) / 14:.2f})" stroke-width="3" stroke-linecap="round"></line>'
+    aro = (f'<circle cx="{cx}" cy="{cy}" r="{r + 16}" fill="none" stroke="url(#hxAro)" stroke-width="2"></circle>' if k == 'habla' else '')
+    brillo = 1 if k == 'habla' else 0.88
+    return f'''  <svg aria-hidden="true" width="390" height="560" viewBox="0 0 390 560" style="position: absolute; left: 0; top: 0">
+    <defs>
+      <radialGradient id="hxHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7FB0F0" stop-opacity="{0.55 * brillo:.2f}"></stop><stop offset="60%" stop-color="#3A78D0" stop-opacity="0.18"></stop><stop offset="100%" stop-color="#1F57A8" stop-opacity="0"></stop></radialGradient>
+      <radialGradient id="hxBase" cx="42%" cy="34%" r="75%"><stop offset="0%" stop-color="#EAF2FF"></stop><stop offset="30%" stop-color="#9CC2F4"></stop><stop offset="62%" stop-color="#3D7BD3"></stop><stop offset="100%" stop-color="#143E7E"></stop></radialGradient>
+      <linearGradient id="hxAro" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#F5F59A" stop-opacity="0.9"></stop><stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.2"></stop><stop offset="100%" stop-color="#F5F59A" stop-opacity="0.7"></stop></linearGradient>
+      <filter id="hxBlur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="14"></feGaussianBlur></filter>
+      <filter id="hxBlur2" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+      <clipPath id="hxClip"><circle cx="{cx}" cy="{cy}" r="{r}"></circle></clipPath>
+    </defs>
+    <circle cx="{cx}" cy="{cy}" r="{r + 90}" fill="url(#hxHalo)"></circle>
+    {ondas}{aro}
+    <g clip-path="url(#hxClip)">
+      <circle cx="{cx}" cy="{cy}" r="{r}" fill="url(#hxBase)"></circle>
+      <g filter="url(#hxBlur)" opacity="{brillo}">
+        <ellipse cx="{cx - 30}" cy="{cy + 34}" rx="{r * 0.75:.0f}" ry="{r * 0.34:.0f}" fill="#5B9BEA" transform="rotate(-18 {cx} {cy})"></ellipse>
+        <ellipse cx="{cx + 36}" cy="{cy + 46}" rx="{r * 0.55:.0f}" ry="{r * 0.26:.0f}" fill="#9ED8FF" opacity="{0.85 if k == 'habla' else 0.65}" transform="rotate(14 {cx} {cy})"></ellipse>
+        <ellipse cx="{cx + 44}" cy="{cy + 20}" rx="{r * 0.28:.0f}" ry="{r * 0.1:.0f}" fill="#FFF3CC" opacity="{0.8 if k == 'habla' else 0.45}" transform="rotate(20 {cx} {cy})"></ellipse>
+        <ellipse cx="{cx + 10}" cy="{cy - 8}" rx="{r * 0.6:.0f}" ry="{r * 0.22:.0f}" fill="#FFFFFF" opacity="0.55" transform="rotate(-8 {cx} {cy})"></ellipse>
+        <ellipse cx="{cx - 20}" cy="{cy + 78}" rx="{r * 0.7:.0f}" ry="{r * 0.3:.0f}" fill="#163F80"></ellipse>
+      </g>
+      <ellipse cx="{cx - 30}" cy="{cy - 52}" rx="{r * 0.42:.0f}" ry="{r * 0.2:.0f}" fill="#FFFFFF" opacity="0.7" filter="url(#hxBlur2)"></ellipse>
+    </g>
+    <circle cx="{cx}" cy="{cy}" r="{r - 0.5}" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1"></circle>
+  </svg>'''
 
 
 def voz(estado, rotulo, texto_html, extra=''):
-    ctrl = 'rgba(255,255,255,0.16)'
-    return f'''  <div style="position: absolute; inset: 0; background: radial-gradient(120% 80% at 50% 30%, #2A66BC 0%, {AZUL} 48%, #173F7C 100%)"></div>
-  <header style="position: absolute; top: 16px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between">
-    <a href="I-HandIAChat.dc.html" aria-label="Volver al chat" style="width: 48px; height: 48px; border-radius: 50%; background: {ctrl}; display: flex; align-items: center; justify-content: center">{svg(IC['atras'], '#FFFFFF', 22)}</a>
-    <span style="display: flex; flex-direction: column; align-items: center; gap: 2px; color: #FFFFFF"><h1 style="margin: 0; font-size: 17px; font-weight: 800">HandIA</h1><span style="font-size: 12px; color: #DCE7F7">Modo voz · en tu celular</span></span>
-    <a href="I-VozAjustes.dc.html" aria-label="Ajustes del modo voz" style="width: 48px; height: 48px; border-radius: 50%; background: {ctrl}; display: flex; align-items: center; justify-content: center">{svg(IC['ajustes'], '#FFFFFF', 20)}</a>
+    glass = 'background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px)'
+    dot = AMARILLO if estado == 'habla' else '#7FE0A8'
+    return f'''  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, #0F2C5C 0%, #17468E 45%, #0C2550 100%)"></div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: radial-gradient(60% 40% at 50% 34%, rgba(63,123,211,0.35), rgba(15,44,92,0) 70%)"></div>
+{esfera(estado)}
+  <header style="position: absolute; top: 14px; left: 16px; right: 16px; display: flex; align-items: center; justify-content: space-between">
+    <a href="I-HandIAChat.dc.html" aria-label="Volver al chat" style="width: 46px; height: 46px; border-radius: 50%; {glass}; display: flex; align-items: center; justify-content: center">{svg(IC['atras'], '#FFFFFF', 20)}</a>
+    <span role="status" style="display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 14px; border-radius: 18px; {glass}; color: #FFFFFF; font-size: 13px; font-weight: 700; letter-spacing: 0.2px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: {dot}; box-shadow: 0 0 0 4px rgba(255,255,255,0.08)"></span>{rotulo}</span>
+    <a href="I-VozAjustes.dc.html" aria-label="Ajustes del modo voz" style="width: 46px; height: 46px; border-radius: 50%; {glass}; display: flex; align-items: center; justify-content: center">{svg(IC['ajustes'], '#FFFFFF', 20)}</a>
   </header>
-  {esfera(estado)}
-  <div data-c="1" style="position: absolute; top: 456px; left: 28px; right: 28px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; color: #FFFFFF">
-    <p role="status" style="margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #DCE7F7"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: {AMARILLO}"></span>{rotulo}</p>
+  <div data-c="1" style="position: absolute; top: 478px; left: 28px; right: 28px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; color: #FFFFFF">
     {texto_html}
   </div>
   {extra}
-  <div data-f="1" style="position: absolute; left: 16px; right: 16px; bottom: 28px; display: flex; align-items: center; gap: 10px">
-    <a href="I-HandIAChat.dc.html" style="flex: 1; display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 18px; border-radius: 999px; background: {ctrl}; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none">{svg(IC['teclado'], '#FFFFFF', 20)}Escribir</a>
-    <button type="button" aria-label="Silenciar el micrófono" style="width: 56px; height: 56px; border-radius: 50%; border: 0; background: {ctrl}; display: flex; align-items: center; justify-content: center">{svg(IC['micro'], '#FFFFFF', 24)}</button>
-    <a href="I-HandIAChat.dc.html" aria-label="Terminar el modo voz" style="width: 56px; height: 56px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 4px 0 #C9D3E6; display: flex; align-items: center; justify-content: center">{svg(IC['cerrar'], AZUL, 22, 2.5)}</a>
+  <div data-f="1" style="position: absolute; left: 0; right: 0; bottom: 0; padding: 0 28px 30px; display: flex; flex-direction: column; align-items: center; gap: 14px">
+    <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #C9D8EF">{svg(IC['candado'], '#C9D8EF', 13)}Se reconoce en tu celular · no se graba</span>
+    <div style="width: 100%; display: flex; align-items: center; justify-content: space-between">
+      <a href="I-HandIAChat.dc.html" aria-label="Escribir en el chat" style="width: 58px; height: 58px; border-radius: 50%; {glass}; display: flex; align-items: center; justify-content: center">{svg(IC['teclado'], '#FFFFFF', 22)}</a>
+      <button type="button" aria-label="Silenciar el micrófono" style="width: 80px; height: 80px; border-radius: 50%; border: 0; background: #FFFFFF; box-shadow: 0 10px 30px -8px rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center">{svg(IC['micro'], AZUL, 30)}</button>
+      <a href="I-HandIAChat.dc.html" aria-label="Terminar el modo voz" style="width: 58px; height: 58px; border-radius: 50%; background: rgba(232,77,61,0.9); display: flex; align-items: center; justify-content: center">{svg(IC['cerrar'], '#FFFFFF', 22, 2.5)}</a>
+    </div>
   </div>'''
 
 
-FRASE = 'font-size: 23px; font-weight: 600; line-height: 1.35; letter-spacing: -0.2px; color: #FFFFFF'
-guardar_u('I-Voz.dc.html', 'HandIA voz: te escucha', voz('escucha', 'Te escucho',
+FRASE = 'font-size: 24px; font-weight: 500; line-height: 1.38; letter-spacing: -0.3px; color: #FFFFFF'
+guardar_u('I-Voz.dc.html', 'HandIA voz: te escucha', voz('escucha', 'Escuchando',
     f'<p style="margin: 0; {FRASE}">Pierde la canilla del baño, <span style="color: rgba(255,255,255,0.6)">gotea toda la…</span></p>'
-    f'<p style="margin: 0; font-size: 13px; color: #DCE7F7">Hablá tranquilo: cuando hagas una pausa, te respondo.</p>'))
+    f'<p style="margin: 0; font-size: 14px; color: #C9D8EF">Hacé una pausa y te respondo.</p>'))
 
 pal = 'Parece un trabajo de plomería. ¿Dónde está la canilla?'.split()
 sub = ' '.join(f'<span style="color: {"#FFFFFF" if k < 6 else "rgba(255,255,255,0.55)"}; {"text-decoration: underline; text-decoration-color: " + AMARILLO + "; text-decoration-thickness: 2px; text-underline-offset: 6px" if k == 5 else ""}">{p}</span>' for k, p in enumerate(pal))
-resp = ''.join(f'<button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.1); color: #FFFFFF; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 700">{t}</button>' for t in ['En el baño', 'En la cocina', 'Afuera'])
+resp = ''.join(f'<button type="button" style="min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.12); display: inline-flex; align-items: center; justify-content: center; color: #FFFFFF; font-family: \'DM Sans\', sans-serif; font-size: 14px; font-weight: 700">{t}</button>' for t in ['En el baño', 'En la cocina', 'Afuera'])
 guardar_u('I-VozHabla.dc.html', 'HandIA voz: te responde', voz('habla', 'HandIA está hablando',
     f'<p style="margin: 0; {FRASE}">{sub}</p><div role="group" aria-label="Respuestas rápidas" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px">{resp}</div>'))
 
