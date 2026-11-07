@@ -5,8 +5,8 @@
 **Diseño completo de la app del usuario (07/11, Fase 7 · U0): tercera ronda: registro sin invitación y 13 recorridos con pantallas, esperando su OK.** 102 pantallas, 13 recorridos, 12
 flujos y el tablero de revisión en el lienzo <https://claude.ai/artifact/A4T5bqyE8WEiQkwD4ogDaZ>, con la fuente en
 `design/usuario/` y las decisiones en [`diseno-usuario-deluxe.md`](diseno-usuario-deluxe.md). Chequeos en 0 (axe,
-toques de 44 px, letra de 11 px, nada tapado). **No se desarrolla nada hasta el OK.** Lotes U1–U12 en
-[`plan.md`](plan.md).
+toques de 44 px, letra de 11 px, nada tapado). **No se desarrolla nada hasta el OK.** Desarrollo por olas en
+[`plan-olas.md`](plan-olas.md).
 
 **Siguiente para HandIA:** plan por fases H0–H7 en [`handia-premium-plan.md`](handia-premium-plan.md) (modo voz estilo
 ChatGPT Voice con los Handys, chat premium, agente, cámara, OpenAI + ElevenLabs). H1 espera las imágenes de ChatGPT.
