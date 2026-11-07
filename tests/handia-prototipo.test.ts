@@ -33,3 +33,39 @@ describe('prototipo de HandIA', () => {
     expect(proto).toMatch(/AVISO_SEGURIDAD\.gas/);
   });
 });
+
+describe('lenguaje visual de HandIA (R3 · styles/handia.css y components/handia/)', () => {
+  const lenguaje = readFileSync('src/styles/handia.css', 'utf8');
+  const piezas = readFileSync('src/components/handia/piezas.tsx', 'utf8');
+  const tokens = readFileSync('src/styles/tokens.css', 'utf8');
+
+  it('la dirección vive en un solo bloque de tokens', () => {
+    expect(tokens).toMatch(/── 4\. Lenguaje de HandIA \(R3\)/);
+    for (const t of ['--hia-voz-fondo', '--hia-chat-fondo', '--hia-vidrio', '--hia-curva-entrada'])
+      expect(tokens).toContain(`${t}:`);
+  });
+
+  it('los botones premium no se animan', () => {
+    for (const sel of ['.hia-boton {', '.hia-boton--primario {', '.hia-boton--destacado {']) {
+      const i = lenguaje.indexOf(sel);
+      expect(i, sel).toBeGreaterThan(-1);
+      expect(lenguaje.slice(i, lenguaje.indexOf('}', i)), sel).not.toMatch(/animation|transition/);
+    }
+  });
+
+  it('con "reducir movimiento" todo queda quieto', () => {
+    expect(lenguaje).toMatch(
+      /@media \(prefers-reduced-motion: reduce\) \{\s*\[class\*='hia-'\][\s\S]*?animation: none !important/,
+    );
+  });
+
+  it('las piezas son presentacionales: no escuchan, no suenan, no guardan ni piden datos', () => {
+    expect(piezas).not.toMatch(
+      /getUserMedia|SpeechRecognition|speechSynthesis|AudioContext|vibrate|localStorage|fetch\(|cliente\./,
+    );
+  });
+
+  it('el orbe es decorativo y el estado se dice con texto aparte', () => {
+    expect(piezas).toMatch(/className=\{`hia-orbe[\s\S]*?aria-hidden="true"/);
+  });
+});

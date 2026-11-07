@@ -98,7 +98,10 @@ describe('movimiento', () => {
   });
 
   it('sin sonido ni vibración', () => {
-    for (const f of archivos('src').filter((x) => /\.(ts|tsx)$/.test(x))) {
+    // Única excepción: el prototipo de la fase R de HandIA (/diseno/handia/, solo vista de prueba) los muestra para
+    // que Ignacio los apruebe (R5). La app sigue sin sonido ni vibración hasta que H2 los construya aprobados.
+    const prototipo = /src\/components\/handia-prototipo\//;
+    for (const f of archivos('src').filter((x) => /\.(ts|tsx)$/.test(x) && !prototipo.test(x))) {
       expect(readFileSync(f, 'utf8'), f).not.toMatch(/new Audio\(|\.vibrate\(|AudioContext/);
     }
   });

@@ -325,7 +325,7 @@ function PantallaChat({ estado, ir }: { estado: EstadoChat; ir: (e: EstadoChat) 
   );
 }
 
-function Selector<T extends string>({
+export function Selector<T extends string>({
   etiqueta,
   opciones,
   actual,
@@ -352,7 +352,8 @@ function Selector<T extends string>({
   );
 }
 
-export function PrototipoHandia() {
+/** R2: las tres direcciones, cada una con voz y chat en todos sus estados. */
+export function Direcciones() {
   const [dir, setDir] = useState<Direccion>('calida');
   const [voz, setVoz] = useState<EstadoVoz>('reposo');
   const [chat, setChat] = useState<EstadoChat>('vacio');
@@ -398,22 +399,18 @@ export function PrototipoHandia() {
   const actual = DIRECCIONES.find((d) => d.id === dir)!;
 
   return (
-    <div className="hxp">
-      <header className="hxp-intro">
-        <p className="hxp-etiqueta">Prototipo · fase R · datos ficticios</p>
-        <h1>HandIA premium: elegí una dirección</h1>
-        <p>
-          Tres maneras de hacer que HandIA se vea, se mueva y se sienta cara, con la marca de
-          Handyx. Cada una muestra el modo voz y el chat en todos sus estados. Tocá el micrófono,
-          una sugerencia o una respuesta para avanzar, o reproducí el recorrido.
-        </p>
-      </header>
+    <div>
+      <p className="hxp-intro">
+        Tres maneras de hacer que HandIA se vea, se mueva y se sienta cara, con la marca de Handyx.
+        Cada una muestra el modo voz y el chat en todos sus estados. Tocá el micrófono, una
+        sugerencia o una respuesta para avanzar, o reproducí el recorrido.
+      </p>
 
       <Selector etiqueta="Dirección visual" opciones={DIRECCIONES} actual={dir} elegir={setDir} />
 
       <section className={`hxp-dir hxp-dir--${dir}`} aria-labelledby="hxp-dir-titulo">
         <div className="hxp-dir__texto">
-          <h2 id="hxp-dir-titulo">{actual.nombre}</h2>
+          <h3 id="hxp-dir-titulo">{actual.nombre}</h3>
           <p>{actual.idea}</p>
           <ul>
             {actual.claves.map((c) => (
