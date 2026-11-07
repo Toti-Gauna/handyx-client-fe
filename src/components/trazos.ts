@@ -104,6 +104,12 @@ export const TRAZOS = {
     '<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6.5 10h1M10.5 10h1M14.5 10h1M17.5 10h.5M6.5 14h11"/>',
   microfonoNo:
     '<path d="M9 9v2a3 3 0 0 0 5.1 2.1M15 9.3V5.5a3 3 0 0 0-5.7-1.3"/><path d="M5.5 11a6.5 6.5 0 0 0 11 4.7M18.5 11c0 .6-.1 1.2-.2 1.8"/><path d="M12 17.5v3.5M8.5 21h7"/><path d="M3 3l18 18"/>',
+  ajustes:
+    '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/>',
+  candado:
+    '<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
+  nuevoChat:
+    '<path d="M12 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20h11a2.5 2.5 0 0 0 2.5-2.5V12"/><path d="M17.6 3.6a1.9 1.9 0 0 1 2.8 2.8L13 13.8l-3.5.7.7-3.5 7.4-7.4Z"/>',
   // Propios de HandIA (R3): la lamparita como marca, la onda de voz, subtítulos, encuadre de cámara y sin señal.
   handia:
     '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.4.3.6.8.6 1.3V16h6v-.9c0-.5.2-1 .6-1.3A6 6 0 0 0 12 3Z"/><path d="M12 7.5v1M10 9.5h.01M14 9.5h.01M10.5 11.5c.9.7 2.1.7 3 0"/>',

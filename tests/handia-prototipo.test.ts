@@ -89,3 +89,29 @@ describe('Inicio con HandIA y modo voz oscuro (ajuste del 07/11)', () => {
     expect(inicio).toMatch(/if \(t\.pedir\)[\s\S]*?\(Prototipo\)/);
   });
 });
+
+describe('cabecera premium y esfera (ajuste del 07/11)', () => {
+  const cab = readFileSync('src/components/handia/cabecera.tsx', 'utf8');
+  const esfera = readFileSync('src/components/handia/esfera.tsx', 'utf8');
+
+  it('son presentacionales: sin micrófono, audio, almacenamiento ni red', () => {
+    for (const f of [cab, esfera])
+      expect(f).not.toMatch(
+        /getUserMedia|SpeechRecognition|speechSynthesis|AudioContext|vibrate|localStorage|sessionStorage|fetch\(/,
+      );
+  });
+
+  it('el estado se dice con texto y el progreso es accesible', () => {
+    expect(cab).toMatch(
+      /role="progressbar"[\s\S]*?aria-valuetext=\{`Pregunta \$\{progreso\.actual\} de \$\{progreso\.total\}`\}/,
+    );
+    expect(cab).toMatch(/aria-expanded=\{abierto\}/);
+    expect(cab).toMatch(/e\.key === 'Escape'/);
+  });
+
+  it('la esfera genera su textura en el navegador (sin imágenes) y es decorativa', () => {
+    expect(esfera).toMatch(/feTurbulence/);
+    expect(esfera).toMatch(/aria-hidden="true"/);
+    expect(esfera).not.toMatch(/<img|next\/image|url\(['"]?\/|\.png|\.webp/);
+  });
+});

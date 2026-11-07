@@ -98,3 +98,19 @@ de verdad con el motor de HandIA (en el celular, sin IA externa).
   "HandIA" y el estado debajo (punto + texto: "En tu celular", "Pensando…" con puntos animados, "Armando tu pedido",
   "Sin conexión"), y a la derecha el botón azul redondo de voz. Fondo blanco translúcido con una línea fina; sin el
   círculo amarillo. Las pantallas de chat del catálogo usan también la barra para escribir del Inicio.
+
+### Segunda vuelta (07/11): cabecera premium y HandIA voz con el estilo de las referencias
+
+- **Cabecera** (`components/handia/cabecera.tsx`): botones de vidrio que flotan sobre el chat (brillo arriba, borde de
+  luz, sombra azul suave) y un desvanecido en lugar de la línea dura. En el centro, una **cápsula** con la esfera
+  (reflejo de vidrio y un aura azul-ámbar que gira mientras piensa), "HandIA" y el estado con ícono: candado "En tu
+  celular", "Pensando" con un brillo que barre el texto, "Armando tu pedido", "Pedido listo" (verde), "Sin conexión".
+  Tocarla abre un **menú**: nuevo pedido, modo voz, cómo cuido tus datos y leer respuestas en voz alta (interruptor).
+  A la derecha, un grupo con "nuevo pedido" y voz. Debajo, la **línea de progreso** del pedido (pregunta X de Y) con
+  degradé azul → ámbar; mientras piensa, barre. En el Inicio, la cabecera de la marca se transforma en esta cuando
+  empieza la charla, y "Nuevo pedido" vuelve al Inicio con los rubros.
+- **HandIA voz** (siguiendo las capturas de referencia de Ignacio): fondo negro, la **esfera pintada** (nubes de ruido
+  fractal generadas en el navegador, grano fino, borde nítido y la luz cálida de la lamparita abajo, sin imágenes),
+  volver y **ajustes** arriba; abajo, la pastilla con "+" y "Contale a HandIA" (se puede escribir y vuelve al chat),
+  silenciar y terminar en blanco. **Hoja de ajustes**: voz del sistema en español, subtítulos, sonidos (esperan la
+  aprobación de R5) y "tu voz se reconoce en el celular".

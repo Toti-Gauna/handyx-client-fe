@@ -1833,3 +1833,10 @@ button.hxp-chip {
 .hxs-composer-campo--escrito {
   color: var(--texto-titulo);
 }
+.hxs-listo {
+  display: grid;
+  place-items: center;
+}
+.hxs-pantalla .hia-voz-negra__centro .hia-esfera {
+  --hia-esfera: 176px;
+}

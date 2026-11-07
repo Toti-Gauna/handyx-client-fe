@@ -108,26 +108,28 @@ function Chat({
   sub,
   estado,
   escrito,
+  progreso,
   children,
 }: {
   sub: string;
-  estado?: 'pensando';
+  estado?: 'pensando' | 'listo';
   escrito?: string;
+  progreso?: { actual: number; total: number };
   children: ReactNode;
 }) {
   return (
     <Escena tipo="chat" className="hxs-llena">
       <CabeceraHandia
         estado={
-          estado === 'pensando'
-            ? 'pensando'
-            : sub === 'Sin conexión'
-              ? 'sin_conexion'
-              : sub === 'En tu celular'
-                ? 'lista'
-                : 'escribiendo'
+          estado ??
+          (sub === 'Sin conexión'
+            ? 'sin_conexion'
+            : sub === 'En tu celular'
+              ? 'lista'
+              : 'escribiendo')
         }
-        texto={sub.replace(/…$/, '')}
+        texto={sub === 'En tu celular' ? undefined : sub.replace(/…$/, '')}
+        progreso={progreso ?? null}
       />
       <div className="hia-hilo">{children}</div>
       <div className="hia-composer">
@@ -160,10 +162,12 @@ function Voz({
   orbe,
   rotulo,
   children,
+  hoja,
 }: {
   orbe: EstadoOrbe;
   rotulo: string;
   children: ReactNode;
+  hoja?: ReactNode;
 }) {
   const estado: EstadoEsfera = orbe === 'apagado' ? 'silencio' : orbe;
   return (
@@ -173,7 +177,7 @@ function Voz({
           <Icono nombre="atras" className="hia-ico" />
         </span>
         <span className="hia-redondo">
-          <Icono nombre="subtitulos" className="hia-ico" />
+          <Icono nombre="ajustes" className="hia-ico" />
         </span>
       </div>
       <div className="hia-voz-negra__centro">
@@ -183,7 +187,7 @@ function Voz({
       </div>
       <div className="hia-voz-negra__abajo">
         <span className="hia-pastilla-oscura">
-          <Icono nombre="teclado" className="hia-ico" /> Escribir
+          <Icono nombre="mas" className="hia-ico" /> Contale a HandIA
         </span>
         <span className="hia-redondo">
           <Icono nombre={orbe === 'apagado' ? 'microfonoNo' : 'microfono'} className="hia-ico" />
@@ -192,6 +196,41 @@ function Voz({
           <Icono nombre="cerrar" className="hia-ico" />
         </span>
       </div>
+      {hoja}
+    </div>
+  );
+}
+
+/** Hoja de ajustes del modo voz, quieta (la interactiva está en "Inicio y voz"). */
+function HojaAjustes() {
+  const fila = (
+    ico: Parameters<typeof Icono>[0]['nombre'],
+    t: string,
+    sub?: string,
+    sw?: boolean,
+  ) => (
+    <span className="hia-hoja-oscura__fila" data-activo={sw || undefined}>
+      <Icono nombre={ico} className="hia-ico" />
+      <span>
+        {t}
+        {sub && <small>{sub}</small>}
+      </span>
+      {sw !== undefined && <span className="hia-interruptor" aria-hidden="true" />}
+    </span>
+  );
+  return (
+    <div className="hia-hoja-oscura">
+      <span className="hia-hoja-oscura__asa" aria-hidden="true" />
+      <p className="hia-hoja-oscura__titulo">Modo voz</p>
+      {fila('parlante', 'Voz', 'La del sistema, en español')}
+      {fila('subtitulos', 'Subtítulos', undefined, true)}
+      {fila('campana', 'Sonidos al empezar y terminar', 'Espera tu aprobación (R5)', false)}
+      {fila(
+        'candado',
+        'Tu voz se reconoce en el celular',
+        'No se graba ni se manda a ningún lado.',
+      )}
+      <span className="hia-hoja-oscura__listo hxs-listo">Listo</span>
     </div>
   );
 }
@@ -429,7 +468,7 @@ export function Pantallas() {
           titulo="Pensando"
           nota="Los pasos a la vista: se ve qué está haciendo, nunca una espera muda."
         >
-          <Chat sub="Pensando…" estado="pensando">
+          <Chat sub="Pensando" estado="pensando">
             <BurbujaHandia de="yo">{YO}</BurbujaHandia>
             <BurbujaHandia de="ia">
               <PasosPensando
@@ -447,7 +486,7 @@ export function Pantallas() {
           titulo="Pregunta"
           nota="Progreso, la pregunta y por qué se pregunta. Opciones grandes y “Saltear”."
         >
-          <Chat sub="Armando tu pedido">
+          <Chat sub="Armando tu pedido" progreso={{ actual: 1, total: 3 }}>
             <BurbujaHandia de="yo">{YO}</BurbujaHandia>
             <BurbujaHandia de="ia">
               <span className="hia-progreso">Plomería · pregunta 1 de 3</span>
@@ -471,7 +510,7 @@ export function Pantallas() {
           titulo="Ficha"
           nota="La ficha de vidrio: lo que entendió, editable, y las dos formas de pedir."
         >
-          <Chat sub="Pedido listo para revisar">
+          <Chat sub="Pedido listo" estado="listo">
             <BurbujaHandia de="ia">
               Listo, armé tu pedido. Revisalo: así lo leen los especialistas.
             </BurbujaHandia>
@@ -571,6 +610,14 @@ export function Pantallas() {
             <BotonPremium variante="vidrio" icono="teclado">
               Seguir escribiendo
             </BotonPremium>
+          </Voz>
+        </Tel>
+        <Tel
+          titulo="Ajustes de voz"
+          nota="Voz del sistema, subtítulos, sonidos (si se aprueban) y la promesa de privacidad."
+        >
+          <Voz orbe="reposo" rotulo="Lista para escucharte" hoja={<HojaAjustes />}>
+            <span />
           </Voz>
         </Tel>
       </Grupo>

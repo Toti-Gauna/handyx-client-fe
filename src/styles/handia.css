@@ -831,95 +831,90 @@ button.hia-chip:active {
   gap: var(--esp-2);
 }
 
-/* ── Esfera de voz: cielo Handyx que se mueve, con la luz cálida de la lamparita abajo ────────── */
+/* ── Esfera: cielo Handyx pintado (nubes de ruido fractal, grano fino y la luz cálida de la lamparita) ── */
 .hia-esfera {
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  display: block;
+  flex: none;
   width: var(--hia-esfera, 220px);
   aspect-ratio: 1;
   border-radius: 50%;
   background: linear-gradient(
-    172deg,
+    174deg,
     var(--hia-cielo-hondo) 0%,
-    var(--color-azul-personajes) 34%,
-    var(--hia-azul-luz) 56%,
-    var(--hia-celeste) 78%,
+    var(--color-azul-personajes) 30%,
+    var(--hia-azul-luz) 52%,
+    var(--hia-celeste) 74%,
     var(--hia-hielo) 100%
   );
-  box-shadow: 0 0 70px -14px rgb(from var(--hia-azul-luz) r g b / 0.55);
   transition:
     transform var(--hia-dur-estado) var(--hia-curva-entrada),
     filter var(--hia-dur-estado);
 }
 .hia-esfera--chica {
   --hia-esfera: 56px;
-  box-shadow: 0 0 24px -8px rgb(from var(--hia-azul-luz) r g b / 0.6);
 }
 .hia-esfera--mini {
   --hia-esfera: 28px;
-  box-shadow: none;
 }
-.hia-esfera i {
+.hia-esfera__nubes {
   position: absolute;
-  inset: -30%;
-  border-radius: 50%;
-  filter: blur(calc(var(--hia-esfera, 220px) * 0.06));
-  animation: hia-nubes 20s linear infinite;
+  left: -25%;
+  top: -10%;
+  width: 150%;
+  height: 130%;
+  -webkit-mask-image: linear-gradient(180deg, transparent 14%, var(--color-tinta) 58%);
+  mask-image: linear-gradient(180deg, transparent 14%, var(--color-tinta) 58%);
+  animation: hia-deriva 26s ease-in-out infinite alternate;
 }
-.hia-esfera i:nth-child(1) {
-  background:
-    radial-gradient(28% 14% at 34% 60%, var(--hia-nube), transparent 72%),
-    radial-gradient(30% 13% at 64% 57%, var(--hia-nube), transparent 72%),
-    radial-gradient(42% 18% at 48% 74%, var(--hia-nube), transparent 70%);
-}
-.hia-esfera i:nth-child(2) {
-  background:
-    radial-gradient(22% 10% at 72% 40%, rgb(from var(--hia-hielo) r g b / 0.8), transparent 70%),
-    radial-gradient(26% 12% at 28% 44%, rgb(from var(--hia-hielo) r g b / 0.6), transparent 70%);
-  animation-duration: 31s;
-  animation-direction: reverse;
-}
-/* La luz cálida que sube desde abajo: el único toque amarillo, en ámbar (no el amarillo verdoso). */
-.hia-esfera i:nth-child(3) {
+.hia-esfera__grano {
+  position: absolute;
   inset: 0;
-  border-radius: 0;
-  filter: none;
-  background: radial-gradient(
-    70% 38% at 50% 108%,
-    rgb(from var(--hia-ambar) r g b / 0.5),
-    transparent 70%
-  );
-  animation: none;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: soft-light;
+  opacity: 0.55;
 }
-@keyframes hia-nubes {
+.hia-esfera__calor {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    72% 34% at 50% 108%,
+    rgb(from var(--hia-ambar) r g b / 0.42),
+    transparent 72%
+  );
+}
+@keyframes hia-deriva {
+  from {
+    transform: translate3d(-7%, 2%, 0) scale(1);
+  }
   to {
-    transform: rotate(1turn);
+    transform: translate3d(7%, -4%, 0) scale(1.08);
   }
 }
 .hia-esfera[data-estado='escuchando'] {
   animation: hia-esfera-oye 1.3s ease-in-out infinite;
 }
-.hia-esfera[data-estado='pensando'] i:nth-child(-n + 2) {
-  animation-duration: 4s;
+.hia-esfera[data-estado='pensando'] .hia-esfera__nubes {
+  animation-duration: 5s;
 }
 .hia-esfera[data-estado='pensando'] {
-  filter: saturate(0.85) brightness(0.92);
+  filter: saturate(0.9) brightness(0.9);
   transform: scale(0.94);
 }
 .hia-esfera[data-estado='hablando'] {
   animation: hia-esfera-habla 0.6s ease-in-out infinite alternate;
 }
 .hia-esfera[data-estado='listo'] {
-  box-shadow:
-    0 0 0 6px rgb(from var(--hia-azul-luz) r g b / 0.25),
-    0 0 90px -10px rgb(from var(--hia-ambar) r g b / 0.6);
+  box-shadow: 0 0 0 5px rgb(from var(--hia-azul-luz) r g b / 0.22);
 }
 .hia-esfera[data-estado='silencio'] {
-  filter: saturate(0.25) brightness(0.7);
+  filter: saturate(0.2) brightness(0.6);
   transform: scale(0.92);
 }
-.hia-esfera[data-estado='silencio'] i {
+.hia-esfera[data-estado='silencio'] .hia-esfera__nubes {
   animation-play-state: paused;
 }
 @keyframes hia-esfera-oye {
@@ -928,21 +923,21 @@ button.hia-chip:active {
     transform: scale(1);
   }
   25% {
-    transform: scale(1.05);
+    transform: scale(1.045);
   }
   45% {
     transform: scale(1.01);
   }
   70% {
-    transform: scale(1.07);
+    transform: scale(1.06);
   }
 }
 @keyframes hia-esfera-habla {
   from {
-    transform: scale(0.98);
+    transform: scale(0.985);
   }
   to {
-    transform: scale(1.06);
+    transform: scale(1.05);
   }
 }
 
@@ -1369,7 +1364,7 @@ button.hia-chip:active {
 
 @media (prefers-reduced-motion: reduce) {
   .hia-esfera,
-  .hia-esfera i {
+  .hia-esfera__nubes {
     animation: none !important;
   }
 }
@@ -1378,107 +1373,463 @@ button.hia-chip:active {
   outline-offset: -3px;
 }
 
-/* ── Cabecera del chat (ajuste del 07/11): liviana, centrada, con la esfera mini ──────────────── */
-.hia-cab {
-  display: grid;
-  grid-template-columns: 40px 1fr 40px;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  background: rgb(from var(--sup-base) r g b / 0.78);
-  border-bottom: 1px solid var(--linea);
-  -webkit-backdrop-filter: var(--hia-desenfoque);
-  backdrop-filter: var(--hia-desenfoque);
+/* ── Cabecera premium del chat: vidrio que flota, cápsula con la esfera, grupo de acciones y progreso ── */
+.hia-cab2 {
+  position: relative;
+  z-index: 3;
+  padding: 10px 12px 2px;
+  background: linear-gradient(
+    180deg,
+    var(--hia-cab-fondo, var(--sup-base)) 0%,
+    rgb(from var(--hia-cab-fondo, var(--sup-base)) r g b / 0.86) 62%,
+    transparent
+  );
   color: var(--texto-titulo);
 }
-.hia-cab__boton {
+.hia-escena--chat {
+  --hia-cab-fondo: var(--hia-papel);
+}
+.hia-cab2__fila {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+/* Vidrio: blanco translúcido, borde de luz, brillo arriba y sombra azul muy suave. */
+.hia-vid {
+  background: rgb(255 255 255 / 0.68);
+  border: 1px solid rgb(255 255 255 / 0.95);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255),
+    0 1px 2px rgb(14 29 54 / 0.06),
+    0 10px 26px -14px rgb(31 87 168 / 0.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+}
+.hia-vid-boton {
   display: grid;
   place-items: center;
   width: 40px;
   height: 40px;
   padding: 0;
-  border: 1px solid var(--linea);
   border-radius: 50%;
-  background: var(--sup-base);
   color: var(--texto-titulo);
   cursor: pointer;
 }
-.hia-cab__boton .hia-ico {
+.hia-vid-boton .hia-ico {
   width: 19px;
   height: 19px;
 }
-.hia-cab__boton--voz {
-  border-color: transparent;
-  background: var(--color-azul);
-  color: var(--texto-sobre-marca);
+.hia-capsula {
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 3px 14px 3px 3px;
+  border-radius: var(--radio-pastilla);
+  color: var(--texto-titulo);
+  font: inherit;
+  cursor: pointer;
 }
-.hia-cab__boton:focus-visible {
+span.hia-capsula {
+  cursor: default;
+}
+.hia-capsula__avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+.hia-capsula__avatar > * {
+  grid-area: 1 / 1;
+}
+.hia-capsula__avatar .hia-esfera--mini {
+  --hia-esfera: 34px;
+  box-shadow: 0 2px 8px -2px rgb(from var(--hia-cielo-hondo) r g b / 0.55);
+}
+/* Reflejo: la esfera parece de vidrio. */
+.hia-capsula__avatar::after {
+  content: '';
+  grid-area: 1 / 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(40% 30% at 34% 24%, rgb(255 255 255 / 0.75), transparent 70%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45);
+  pointer-events: none;
+}
+/* Aura que gira mientras piensa. */
+.hia-capsula__avatar::before {
+  content: '';
+  grid-area: 1 / 1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--color-azul-personajes),
+    var(--hia-celeste),
+    var(--hia-ambar),
+    var(--color-azul-personajes)
+  );
+  -webkit-mask: radial-gradient(circle, transparent 17.5px, var(--color-tinta) 18px);
+  mask: radial-gradient(circle, transparent 17.5px, var(--color-tinta) 18px);
+  opacity: 0;
+  transition: opacity var(--hia-dur-estado);
+}
+.hia-capsula__avatar[data-estado='pensando']::before {
+  opacity: 1;
+  animation: hia-girar 1.6s linear infinite;
+}
+.hia-capsula__avatar[data-estado='listo']::before {
+  opacity: 1;
+  background: var(--estado-ok);
+}
+.hia-capsula__texto {
+  display: grid;
+  min-width: 0;
+  text-align: left;
+  line-height: 1.18;
+}
+.hia-capsula__nombre {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.98em;
+  font-weight: var(--peso-fuerte);
+  letter-spacing: -0.01em;
+}
+.hia-capsula__flecha {
+  width: 14px;
+  height: 14px;
+  color: var(--texto-suave);
+  transition: transform var(--hia-dur-micro) var(--hia-curva-entrada);
+}
+.hia-capsula[aria-expanded='true'] .hia-capsula__flecha,
+.hia-capsula[data-abierta] .hia-capsula__flecha {
+  transform: rotate(180deg);
+}
+.hia-capsula__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.72em;
+  font-weight: var(--peso-medio);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--texto-suave);
+  --hia-aro-actual: var(--color-azul-personajes);
+}
+.hia-capsula__estado .hia-ico {
+  width: 12px;
+  height: 12px;
+}
+.hia-capsula__estado[data-estado='listo'] {
+  color: var(--estado-ok);
+}
+.hia-capsula__estado[data-estado='sin_conexion'] {
+  color: var(--estado-alerta);
+}
+.hia-grupo {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radio-pastilla);
+}
+.hia-grupo__boton {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--texto-titulo);
+  cursor: pointer;
+}
+.hia-grupo__boton .hia-ico {
+  width: 18px;
+  height: 18px;
+}
+.hia-grupo__boton--voz {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.22), transparent 60%), var(--color-azul-personajes);
+  color: var(--texto-sobre-marca);
+  box-shadow: 0 4px 12px -4px rgb(from var(--color-azul-personajes) r g b / 0.7);
+}
+.hia-vid-boton:focus-visible,
+.hia-capsula:focus-visible,
+.hia-grupo__boton:focus-visible,
+.hia-menu__item:focus-visible {
   outline: 3px solid var(--linea-foco);
   outline-offset: 2px;
 }
-.hia-cab__centro {
+button.hia-vid-boton:active,
+button.hia-capsula:active,
+button.hia-grupo__boton:active {
+  transform: scale(0.96);
+}
+.hia-cab2__progreso {
+  position: relative;
+  height: 3px;
+  margin: 9px 18px 0;
+  border-radius: var(--radio-pastilla);
+  background: rgb(14 29 54 / 0.06);
+  overflow: hidden;
+}
+.hia-cab2__progreso span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--color-azul-personajes),
+    var(--hia-azul-luz),
+    var(--hia-ambar)
+  );
+  box-shadow: 0 0 10px rgb(from var(--hia-azul-luz) r g b / 0.8);
+  transition: width var(--hia-dur-estado) var(--hia-curva-entrada);
+}
+.hia-cab2__progreso[data-indeterminado] span {
+  width: 34%;
+  animation: hia-barrer 1.3s var(--hia-curva-entrada) infinite;
+}
+.hia-cab2__progreso[data-lleno] span {
+  width: 100%;
+}
+@keyframes hia-barrer {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(310%);
+  }
+}
+/* Menú de la cápsula */
+.hia-menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 12px;
+  right: 12px;
   display: grid;
-  justify-items: center;
-  gap: 1px;
-  min-width: 0;
-  line-height: 1.15;
+  gap: 2px;
+  padding: 8px;
+  border-radius: 24px;
+  background: rgb(255 255 255 / 0.97);
+  border: 1px solid rgb(255 255 255 / 0.95);
+  box-shadow:
+    0 24px 48px -16px rgb(14 29 54 / 0.35),
+    0 2px 6px rgb(14 29 54 / 0.08);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(24px) saturate(1.6);
+  transform-origin: top center;
+  animation: hia-menu-abre var(--hia-dur-entrada) var(--hia-curva-entrada) both;
 }
-.hia-cab__nombre {
-  display: inline-flex;
+@keyframes hia-menu-abre {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+.hia-menu__cab {
+  display: flex;
   align-items: center;
-  gap: 7px;
-  font-family: var(--fuente-titulos);
-  font-size: 1.05em;
-  font-weight: var(--peso-titulo);
+  gap: 12px;
+  padding: 8px 10px 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--linea);
 }
-.hia-cab__nombre .hia-esfera--mini {
-  --hia-esfera: 20px;
+.hia-menu__cab .hia-esfera--chica {
+  --hia-esfera: 44px;
 }
-.hia-cab__estado {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.74em;
+.hia-menu__cab > span {
+  display: grid;
+  gap: 2px;
+  font-size: 0.82em;
+  line-height: 1.3;
   color: var(--texto-suave);
 }
-.hia-cab__estado::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--estado-ok);
+.hia-menu__cab strong {
+  font-size: 1.15em;
+  color: var(--texto-titulo);
 }
-.hia-cab__estado[data-estado='pensando']::before,
-.hia-cab__estado[data-estado='escribiendo']::before {
+.hia-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: var(--toque-min);
+  padding: 0 10px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: var(--texto-titulo);
+  font: inherit;
+  font-size: 0.92em;
+  font-weight: var(--peso-medio);
+  text-align: left;
+  cursor: pointer;
+}
+button.hia-menu__item:hover {
+  background: var(--sup-hundida);
+}
+.hia-menu__item .hia-ico {
+  width: 19px;
+  height: 19px;
+  color: var(--color-azul);
+}
+.hia-interruptor {
+  position: relative;
+  flex: none;
+  margin-left: auto;
+  width: 38px;
+  height: 22px;
+  border-radius: var(--radio-pastilla);
+  background: var(--linea-fuerte);
+  transition: background var(--hia-dur-micro);
+}
+.hia-interruptor::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--sup-base);
+  box-shadow: 0 1px 3px rgb(14 29 54 / 0.3);
+  transition: transform var(--hia-dur-micro) var(--hia-curva-entrada);
+}
+[aria-checked='true'] > .hia-interruptor,
+[data-activo] > .hia-interruptor {
   background: var(--color-azul-personajes);
 }
-.hia-cab__estado[data-estado='sin_conexion']::before {
-  background: var(--estado-alerta);
+[aria-checked='true'] > .hia-interruptor::after,
+[data-activo] > .hia-interruptor::after {
+  transform: translateX(16px);
 }
-.hia-cab__puntos {
-  display: inline-flex;
+
+/* ── HandIA voz con el estilo de las referencias (07/11): esfera grande y nítida, pastilla para escribir ── */
+.hia-voz-negra__centro .hia-esfera {
+  --hia-esfera: 214px;
+}
+.hia-pastilla-oscura input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  color: var(--hia-texto-claro);
+  font: inherit;
+}
+.hia-pastilla-oscura input::placeholder {
+  color: var(--hia-texto-oscuro-suave);
+}
+.hia-pastilla-oscura input:focus-visible {
+  outline: none;
+}
+.hia-pastilla-oscura:focus-within {
+  border-color: rgb(255 255 255 / 0.32);
+}
+span.hia-pastilla-oscura {
+  cursor: text;
+}
+.hia-hoja-oscura {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 5;
+  display: grid;
   gap: 2px;
+  padding: 8px 10px 12px;
+  border: 1px solid var(--hia-boton-oscuro-borde);
+  border-radius: 28px;
+  background: rgb(from var(--hia-boton-oscuro) r g b / 0.97);
+  box-shadow: 0 -24px 60px rgb(0 0 0 / 0.6);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  animation: hia-hoja-sube var(--hia-dur-entrada) var(--hia-curva-entrada) both;
 }
-.hia-cab__puntos i {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: currentColor;
-  animation: hia-punto 1.2s ease-in-out infinite;
-}
-.hia-cab__puntos i:nth-child(2) {
-  animation-delay: 0.15s;
-}
-.hia-cab__puntos i:nth-child(3) {
-  animation-delay: 0.3s;
-}
-@keyframes hia-punto {
-  0%,
-  60%,
-  100% {
-    opacity: 0.3;
+@keyframes hia-hoja-sube {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
   }
-  30% {
-    opacity: 1;
-  }
+}
+.hia-hoja-oscura__asa {
+  justify-self: center;
+  width: 36px;
+  height: 4px;
+  margin: 2px 0 8px;
+  border-radius: var(--radio-pastilla);
+  background: rgb(255 255 255 / 0.25);
+}
+.hia-hoja-oscura__titulo {
+  margin: 0 8px 6px;
+  font-size: 1.05em;
+  font-weight: var(--peso-fuerte);
+}
+.hia-hoja-oscura__fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  color: var(--hia-texto-claro);
+  font: inherit;
+  font-size: 0.92em;
+  text-align: left;
+}
+.hia-hoja-oscura__fila > span:not(.hia-interruptor) {
+  flex: 1;
+  display: grid;
+  gap: 1px;
+}
+.hia-hoja-oscura__fila small {
+  font-size: 0.82em;
+  color: var(--hia-texto-oscuro-suave);
+}
+.hia-hoja-oscura__fila .hia-ico {
+  width: 20px;
+  height: 20px;
+  color: var(--hia-celeste);
+}
+button.hia-hoja-oscura__fila {
+  cursor: pointer;
+}
+button.hia-hoja-oscura__fila:hover {
+  background: rgb(255 255 255 / 0.05);
+}
+.hia-hoja-oscura .hia-interruptor {
+  background: rgb(255 255 255 / 0.18);
+}
+.hia-hoja-oscura [aria-checked='true'] > .hia-interruptor,
+.hia-hoja-oscura [data-activo] > .hia-interruptor {
+  background: var(--color-azul-personajes);
+}
+.hia-hoja-oscura__listo {
+  margin-top: 6px;
+  height: 46px;
+  border: 0;
+  border-radius: var(--radio-pastilla);
+  background: var(--hia-texto-claro);
+  color: var(--hia-negro);
+  font: inherit;
+  font-weight: var(--peso-fuerte);
+  cursor: pointer;
 }
