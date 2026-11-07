@@ -1,0 +1,41 @@
+# Hostinger (Apache / LiteSpeed) para el export estático de Next (ADR-0001, trailingSlash: true).
+# Cada ruta es una carpeta con su index.html: no hacen falta reglas de rewrite para las pantallas.
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Siempre por HTTPS (la cookie de sesión del BE es Secure y la PWA solo se instala con HTTPS).
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Archivos con hash del build: se pueden guardar para siempre.
+  RewriteRule ^_next/static/ - [E=HX_INMUTABLE:1]
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType application/octet-stream .pmtiles
+  AddType font/woff2 .woff2
+  AddType text/javascript .js .mjs
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Frame-Options "DENY"
+  Header set Permissions-Policy "camera=(), microphone=(), payment=(), geolocation=(self)"
+  Header set Strict-Transport-Security "max-age=31536000"
+
+  # Caché: las páginas y el service worker se revisan siempre (así llegan las versiones nuevas);
+  # lo que tiene hash, un año; el resto (íconos, Handys, mapa), un día.
+  Header set Cache-Control "public, max-age=86400"
+  <FilesMatch "\.(html|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <Files "sw.js">
+    Header set Cache-Control "no-cache"
+  </Files>
+  Header set Cache-Control "public, max-age=31536000, immutable" env=HX_INMUTABLE
+</IfModule>

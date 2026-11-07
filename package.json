@@ -27,7 +27,8 @@
     "comparar": "node tests/e2e/comparar.cjs",
     "capturas": "node tests/e2e/escenarios.cjs docs/screens/capturas/escenarios && node tests/e2e/capturas.cjs docs/screens/capturas",
     "kit": "node scripts/kit.mjs",
-    "api:verificar": "node scripts/api-verificar.mjs"
+    "api:verificar": "node scripts/api-verificar.mjs",
+    "empaquetar": "node scripts/empaquetar.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "5.3.0",

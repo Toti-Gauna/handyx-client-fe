@@ -15,3 +15,4 @@ capturas-e2e/
 public/mapa/mdp.pmtiles
 # Copia del worker de MapLibre (scripts/mapa-worker.mjs, en predev/prebuild).
 public/mapa/maplibre-gl-worker.js
+handyx-web.zip
