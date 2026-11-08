@@ -4,7 +4,8 @@
 #   2) FTPS (respaldo, si el plan no tiene SSH): con usuario y contraseña.
 # Hoy publica la vista de prueba (NEXT_PUBLIC_ENTORNO=preview, sin API). Para la app real, cambiar las variables del
 # repositorio HX_ENTORNO=produccion y HX_API_BASE_URL=https://api.handyx.pro (el build falla si falta la API).
-# Credenciales: secretos del repositorio (nunca en el código). Sin ellos, compila pero no sube nada.
+# Credenciales: la clave y la contraseña FTP, siempre como secretos. El host, el usuario y la huella del servidor (datos
+# no sensibles) se leen como secreto o, si no hay, como variable del repositorio. Sin ellos, compila pero no sube nada.
 name: Deploy Hostinger
 on:
   push:
@@ -23,7 +24,7 @@ jobs:
       name: hostinger
       url: https://handyx.pro
     env:
-      HAY_SSH: ${{ secrets.HOSTINGER_SSH_HOST != '' && secrets.HOSTINGER_SSH_USER != '' && secrets.HOSTINGER_SSH_KEY != '' && secrets.HOSTINGER_SSH_KNOWN_HOSTS != '' }}
+      HAY_SSH: ${{ (secrets.HOSTINGER_SSH_HOST || vars.HOSTINGER_SSH_HOST || vars.HOSTINGER_HOST) != '' && (secrets.HOSTINGER_SSH_USER || vars.HOSTINGER_SSH_USER || vars.HOSTINGER_USER) != '' && secrets.HOSTINGER_SSH_KEY != '' && (secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.HOSTINGER_KNOWN_HOSTS || vars.HOSTINGER_SSH_KNOWN_HOSTS || vars.HOSTINGER_KNOWN_HOSTS) != '' }}
       HAY_FTP: ${{ secrets.HOSTINGER_FTP_HOST != '' && secrets.HOSTINGER_FTP_USER != '' && secrets.HOSTINGER_FTP_PASSWORD != '' }}
     steps:
       - uses: actions/checkout@v5
@@ -52,10 +53,10 @@ jobs:
 
       - name: Qué secretos llegan al job (solo si están cargados o no; nunca el valor)
         env:
-          S_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
-          S_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          S_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST || vars.HOSTINGER_SSH_HOST || vars.HOSTINGER_HOST }}
+          S_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER || vars.HOSTINGER_SSH_USER || vars.HOSTINGER_USER }}
           S_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          S_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+          S_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.HOSTINGER_KNOWN_HOSTS || vars.HOSTINGER_SSH_KNOWN_HOSTS || vars.HOSTINGER_KNOWN_HOSTS }}
           S_FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
           S_FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
           S_FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
@@ -71,10 +72,10 @@ jobs:
       - name: Subir a Hostinger (SSH + rsync)
         if: env.HAY_SSH == 'true'
         env:
-          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
-          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST || vars.HOSTINGER_SSH_HOST || vars.HOSTINGER_HOST }}
+          SSH_USER: ${{ secrets.HOSTINGER_SSH_USER || vars.HOSTINGER_SSH_USER || vars.HOSTINGER_USER }}
           SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+          SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS || secrets.HOSTINGER_KNOWN_HOSTS || vars.HOSTINGER_SSH_KNOWN_HOSTS || vars.HOSTINGER_KNOWN_HOSTS }}
           SSH_PORT: ${{ vars.HOSTINGER_SSH_PORT || '65002' }}
           DESTINO: ${{ vars.HOSTINGER_SSH_DIR || 'domains/handyx.pro/public_html' }}
         run: |
