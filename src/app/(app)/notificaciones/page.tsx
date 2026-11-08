@@ -1,15 +1,14 @@
 'use client';
 
-import Image from 'next/image';
 import { useSyncExternalStore } from 'react';
-import { Icono } from '@/components/Icono';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { Barra, Pantalla, entra } from '@/components/hx';
 import type { NombreIcono } from '@/components/trazos';
-import { Aviso, EstadoConsulta } from '@/components/ui';
+import { EstadoConsulta } from '@/components/ui';
 import type { Notificacion, TIPOS_NOTIFICACION } from '@/contracts/v1/servicio';
 import { cliente } from '@/data';
 import { useConsulta } from '@/data/hooks';
+import { FilaEnlace, Nota, Texto, Titulo } from '@/ui';
+import { BarraCentro, EscenaVacio, PantallaM } from '@/ui/mensajes';
 import { estadoPush, suscribirPush, type EstadoPush } from '@/data/push';
 import { cuando } from '@/domain/fechas';
 import type { z } from 'zod';
@@ -87,67 +86,50 @@ export default function Avisos() {
   }
 
   return (
-    <Pantalla
+    <PantallaM
       arriba={
-        <Barra
-          titulo="Tus ==avisos=="
+        <BarraCentro
+          titulo="Tus avisos"
           volver={{ href: '/inicio/', etiqueta: 'Volver al inicio' }}
         />
       }
-      clase="du-avisos-hx"
     >
-      <div className="du-cuerpo">
+      <div className="ds-cuerpo ds-cuerpo--raiz">
         {push === 'pendiente' ? (
-          <Aviso tipo="info" titulo="¿Querés que te avisemos en el celular?">
-            <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
-              Activar avisos del celular
-            </Enlace>
-          </Aviso>
+          <Nota icono="campana">
+            ¿Querés que te avisemos en el celular?{' '}
+            <Enlace href="/cuenta/notificaciones/">Activar avisos del celular</Enlace>
+          </Nota>
         ) : push === 'denegado' || push === 'ios_sin_instalar' || push === 'no_soportado' ? (
-          <Aviso tipo="info">
+          <Nota icono="info" tono="gris">
             Los avisos del celular no están activos. No pasa nada: los ves acá cuando abrís la app.{' '}
-            <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
-              Más info
-            </Enlace>
-          </Aviso>
+            <Enlace href="/cuenta/notificaciones/">Más info</Enlace>
+          </Nota>
         ) : null}
         <EstadoConsulta consulta={lista}>
           {(d) =>
             d.items.length === 0 ? (
-              <div className="du-vacio-hx">
-                <Image
-                  className="hd-handy"
-                  src="/img/handy-lamparita.webp"
-                  alt=""
-                  width={202}
-                  height={346}
-                />
-                <p className="hd-titulo hd-titulo--chico">No tenés avisos</p>
-                <p className="du-vacio-hx__texto">
+              <div className="ds-m-vacio">
+                <EscenaVacio />
+                <Titulo nivel={2} tam={1.375} texto="No tenés avisos" />
+                <Texto>
                   Acá aparecen las propuestas, los mensajes y las novedades de tus trabajos.
-                </p>
+                </Texto>
               </div>
             ) : (
-              <ul className="du-avisos-hx__lista">
-                {d.items.map((n, i) => (
-                  <li key={n.id} {...entra(i + 1)}>
-                    <button
-                      type="button"
-                      className={`du-aviso-card du-aviso-card--${n.leidaEn ? 'leido' : 'nuevo'}`}
+              <ul
+                className="ds-pila"
+                style={{ listStyle: 'none', margin: 0, padding: 0, ['--ds-gap' as string]: 0 }}
+              >
+                {d.items.map((n) => (
+                  <li key={n.id}>
+                    <FilaEnlace
+                      icono={ICONO[n.tipo] ?? 'campana'}
+                      tono={n.leidaEn ? 'gris' : 'tinte'}
+                      titulo={TEXTO[n.tipo]}
+                      sub={`${cuando(n.creadaEn)}${n.leidaEn ? '' : ' · nuevo'}`}
                       onClick={() => void abrir(n)}
-                    >
-                      <span className="du-aviso-card__ico" aria-hidden="true">
-                        <Icono nombre={ICONO[n.tipo] ?? 'campana'} />
-                      </span>
-                      <span className="du-aviso-card__texto">
-                        <strong>{TEXTO[n.tipo]}</strong>
-                        <small>
-                          {cuando(n.creadaEn)}
-                          {n.leidaEn ? '' : ' · nuevo'}
-                        </small>
-                      </span>
-                      <Icono nombre="derecha" />
-                    </button>
+                    />
                   </li>
                 ))}
               </ul>
@@ -155,6 +137,6 @@ export default function Avisos() {
           }
         </EstadoConsulta>
       </div>
-    </Pantalla>
+    </PantallaM>
   );
 }
