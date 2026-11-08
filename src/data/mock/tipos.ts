@@ -19,6 +19,8 @@ import type {
   EspecialistaResumen,
   Etapa,
 } from '../../contracts/v1/index.ts';
+import type { ViajeSimulado } from './viaje.ts';
+import type { EstadoDraft4 } from './draft4.ts';
 
 export type Conv = z.output<typeof Conversacion>;
 export type Evento = z.output<typeof EventoTrabajo>;
@@ -85,6 +87,8 @@ export interface Mundo {
   respuestaChat: Record<string, number>;
   trabajos: Trabajo[];
   eventos: Record<string, Evento[]>;
+  /** Viajes en vivo de la vista de prueba, por trabajo (src/data/mock/viaje.ts). */
+  viajes: Record<string, ViajeSimulado>;
   conversaciones: Conv[];
   mensajes: Mensaje[];
   pagos: RegistroPago[];
@@ -99,4 +103,6 @@ export interface Mundo {
   /** La sesión venció y todavía no se reingresó: todo responde `sesion_vencida` (no `no_autenticado`). */
   sesionVencida: boolean;
   contador: number;
+  /** Contrato draft.4: Mi hogar, compartidos, recordatorios, reseñas, acceso por código (src/data/mock/draft4.ts). */
+  d4: EstadoDraft4;
 }

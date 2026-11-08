@@ -24,14 +24,14 @@ export const AceptacionEntrada = z
   .strict();
 export const Aceptacion = AceptacionEntrada.extend({ aceptadaEn: Instante }).strict();
 
-/** Demo cerrada: sin código de invitación válido no hay alta (no hay registro público abierto). */
+/** Invitación: desde draft.4 es opcional (alta directa, decisión del 07/11); si viene, se valida igual. */
 export const CodigoInvitacion = z.string().regex(/^[A-Z0-9]{6,16}$/);
 
 export const RegistroEntrada = z
   .object({
     email: Email,
     contrasena: Contrasena,
-    codigoInvitacion: CodigoInvitacion,
+    codigoInvitacion: CodigoInvitacion.optional(),
     aceptaciones: z.array(AceptacionEntrada).min(2).max(3),
   })
   .strict();
@@ -135,3 +135,57 @@ export const SolicitudBaja = z
 export const BajaEntrada = z.object({ contrasena: z.string().min(1).max(128) }).strict();
 
 export const PreferenciasNotificacion = z.object({ push: z.boolean() }).strict();
+
+// ── draft.4 · Acceso sin contraseña ──────────────────────────────────────────────────────────────────────────
+/** Pedir un código de 6 dígitos por email. Siempre responde 202 igual, exista o no la cuenta. */
+export const CodigoAccesoEntrada = z.object({ email: Email }).strict();
+/**
+ * Verificar el código. Si la cuenta no existe, la crea (alta directa) y para eso exige las aceptaciones de los
+ * textos vigentes; si existe, inicia sesión. Responde la sesión (cookie HttpOnly).
+ */
+export const VerificarCodigoEntrada = z
+  .object({
+    email: Email,
+    codigo: z.string().regex(/^\d{6}$/),
+    aceptaciones: z.array(AceptacionEntrada).min(2).max(3).optional(),
+    segundoFactor: z
+      .string()
+      .regex(/^\d{6}$/)
+      .optional(),
+  })
+  .strict();
+export const PROVEEDORES_ACCESO = ['google', 'apple'] as const;
+export const ProveedorAcceso = z.enum(PROVEEDORES_ACCESO);
+
+export const METODOS_SEGUNDA = ['app', 'email'] as const;
+export const SegundaVerificacion = z
+  .object({
+    activa: z.boolean(),
+    metodo: z.enum(METODOS_SEGUNDA).nullable(),
+    activadaEn: Instante.nullable(),
+  })
+  .strict();
+export const SegundaVerificacionEntrada = z
+  .object({ metodo: z.enum(METODOS_SEGUNDA), codigo: z.string().regex(/^\d{6}$/) })
+  .strict();
+
+/** Sesiones abiertas, sin IP ni datos del dispositivo más allá de una etiqueta genérica. */
+export const SesionAbierta = z
+  .object({
+    id: Id,
+    dispositivo: z.enum(['celular', 'computadora', 'tableta', 'otro']),
+    ultimoUso: Instante,
+    actual: z.boolean(),
+  })
+  .strict();
+
+/** Descargar mis datos: se prepara en el servidor y se baja con un enlace de un solo uso que vence. */
+export const Exportacion = z
+  .object({
+    id: Id,
+    estado: z.enum(['preparando', 'lista', 'vencida']),
+    pedidaEn: Instante,
+    url: z.url({ protocol: /^https$/ }).nullable(),
+    venceEn: Instante.nullable(),
+  })
+  .strict();

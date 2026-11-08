@@ -1,54 +1,66 @@
 'use client';
 
-import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
-import { BarraInferior } from './BarraInferior';
-import { Icono } from './Icono';
-import { Enlace } from './nav';
-import { SesionProvider, useSesion } from './SesionProvider';
+import { FocoAlNavegar } from './FocoAlNavegar';
+import { BarraPestanas } from '@/ui/organismos';
+import { SesionProvider } from './SesionProvider';
 import { Cargando } from './ui';
 
-function Campana() {
-  const { noLeidas } = useSesion();
-  return (
-    <Enlace
-      href="/notificaciones/"
-      className="campana"
-      aria-label={noLeidas ? `Avisos, ${noLeidas} sin leer` : 'Avisos'}
-    >
-      <Icono nombre="campana" />
-      {noLeidas ? (
-        <span className="campana__n" aria-hidden="true">
-          {noLeidas > 9 ? '9+' : noLeidas}
-        </span>
-      ) : null}
-    </Enlace>
-  );
-}
+/**
+ * Marco de las pantallas con sesión (rediseño, docs/rediseno.md §3): sin cabecera fija. Cada pantalla trae lo suyo
+ * (Inicio, su cabecera con dirección y avisos; las internas, la barra "← Título") y abajo va la barra de pestañas.
+ * Se comporta como una app nativa: la pantalla ocupa el alto y solo se desplaza su cuerpo.
+ */
+/** Pantallas a pantalla completa, sin la barra de pestañas (chats y asistentes, como en la demo). */
+const SIN_BARRA = [
+  '/handia/',
+  '/pedir/',
+  '/propuestas/',
+  '/pedidos/propuestas/',
+  '/herramientas/medir/',
+  '/herramientas/nivel/',
+  '/herramientas/linterna/',
+  '/trabajos/',
+  '/obras/',
+  '/reclamos/nuevo/',
+  '/chats/conversacion/',
+  '/soporte/',
+  '/cuenta/',
+  '/ayuda/',
+  '/notificaciones/',
+  '/hogar/ambiente/',
+  '/hogar/equipo/',
+  '/hogar/rompio/',
+  '/hogar/casa/',
+  '/hogar/sumar/',
+  '/hogar/compartir/',
+  '/hogar/compartidos/',
+  '/hogar/recordatorios/',
+  '/hogar/historial/',
+  '/hogar/garantias/',
+  '/camino/hito/',
+  '/camino/insignias/',
+  '/camino/insignia/',
+  '/camino/beneficios/',
+];
 
-/** Marco de las pantallas con sesión: proveedor de sesión, cabecera con avisos y barra inferior. */
 export function MarcoApp({ children, barra }: { children: React.ReactNode; barra: boolean }) {
+  const ruta = usePathname();
+  const conBarra = barra && !SIN_BARRA.some((r) => ruta.startsWith(r));
   return (
-    <div className="app">
+    <div className="hx">
+      <a className="saltar" href="#contenido">
+        Saltar al contenido
+      </a>
+      <FocoAlNavegar />
       <SesionProvider>
-        <header className="app__cabecera">
-          <Image
-            className="app__logo"
-            src="/img/logo-handyx.webp"
-            alt="Handyx"
-            width={128}
-            height={28}
-            priority
-          />
-          {barra ? <Campana /> : null}
-        </header>
-        <main
-          id="contenido"
-          className={barra ? 'app__cuerpo' : 'app__cuerpo app__cuerpo--sin-barra'}
-        >
-          <Suspense fallback={<Cargando />}>{children}</Suspense>
-        </main>
-        {barra ? <BarraInferior /> : null}
+        <div className="hx-app">
+          <main id="contenido" className="hx-cuerpo">
+            <Suspense fallback={<Cargando />}>{children}</Suspense>
+          </main>
+          {conBarra ? <BarraPestanas /> : null}
+        </div>
       </SesionProvider>
     </div>
   );

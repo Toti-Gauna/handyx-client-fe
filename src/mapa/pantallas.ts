@@ -1,50 +1,19 @@
 // Mapa funcional inicial (Fase 1 · lote 1.2): pantalla → acciones → estados → API → entidad → prueba.
 // Fuente única: de acá salen las páginas, la navegación y docs/screens/mapa-inicial.md (npm run mapa).
 // `demo` = pantalla de referencia visual en Handy-landing-page-fe (/demo/); manda este mapa, no la demo.
-import type { EndpointId } from '../contracts/v1/endpoints.ts';
+import { ACCESO7 } from './fase7/acceso.ts';
+import { HERRAMIENTAS7 } from './fase7/herramientas.ts';
+import { HOGAR7 } from './fase7/hogar.ts';
+import { INICIO7 } from './fase7/inicio.ts';
+import { MENSAJES7 } from './fase7/mensajes.ts';
+import { PEDIR7 } from './fase7/pedir.ts';
+import { SEGUIMIENTO7 } from './fase7/seguimiento.ts';
+import { p, type Pantalla } from './tipos.ts';
 
-export type Grupo =
-  | 'acceso'
-  | 'perfil'
-  | 'inicio'
-  | 'pedido'
-  | 'propuestas'
-  | 'chat'
-  | 'trabajo'
-  | 'pagos'
-  | 'soporte'
-  | 'avisos'
-  | 'cuenta'
-  | 'sistema';
+export type { Grupo, Lote, Pantalla } from './tipos.ts';
+export { p } from './tipos.ts';
 
-export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.3';
-
-export interface Pantalla {
-  readonly id: string;
-  readonly tipo: 'pantalla' | 'modal';
-  /** Ruta del export estático (con barra final). Los detalles reciben el id por query (`?id=`). */
-  readonly ruta: `/${string}`;
-  readonly titulo: string;
-  readonly grupo: Grupo;
-  readonly lote: Lote;
-  /** `publica`: sin sesión. `sesion`: requiere cuenta (y perfil completo salvo en el alta). */
-  readonly acceso: 'publica' | 'sesion';
-  readonly consulta?: readonly string[];
-  readonly acciones: readonly string[];
-  readonly estados: readonly string[];
-  readonly endpoints: readonly EndpointId[];
-  readonly entidades: readonly string[];
-  readonly pruebas: readonly string[];
-  readonly demo?: readonly string[];
-  readonly nota?: string;
-}
-
-const p = (pantalla: Omit<Pantalla, 'tipo'> & { tipo?: Pantalla['tipo'] }): Pantalla => ({
-  tipo: 'pantalla',
-  ...pantalla,
-});
-
-export const PANTALLAS: readonly Pantalla[] = [
+const BASE: readonly Pantalla[] = [
   // ── Acceso (demo cerrada: sin invitación no hay alta) ───────────────────────────────────────────
   p({
     id: 'bienvenida',
@@ -53,7 +22,11 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'acceso',
     lote: '2.1',
     acceso: 'publica',
-    acciones: ['Tengo invitación → registro', 'Ya tengo cuenta → ingresar'],
+    acciones: [
+      '3 tarjetas: contá qué pasó, recibí propuestas, elegís vos',
+      'Crear cuenta → registro (con invitación)',
+      'Ya tengo cuenta → ingresar',
+    ],
     estados: [
       'normal',
       'sesion_activa → inicio',
@@ -71,7 +44,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     lote: '2.1',
     acceso: 'publica',
     consulta: ['motivo'],
-    acciones: ['Ingresar con email y contraseña', 'Olvidé mi contraseña'],
+    acciones: ['Paso 1: email', 'Paso 2: contraseña (ver/ocultar)', 'Olvidé mi contraseña'],
     estados: [
       'inicial',
       'enviando',
@@ -95,9 +68,11 @@ export const PANTALLAS: readonly Pantalla[] = [
     lote: '2.1',
     acceso: 'publica',
     acciones: [
-      'Código de invitación',
-      'Email y contraseña',
-      'Aceptar términos y privacidad (versión mostrada)',
+      'Paso 1: código de invitación',
+      'Paso 2: email',
+      'Paso 3: contraseña con medidor',
+      'Paso 4: aceptar términos y privacidad (versión mostrada)',
+      'Paso 5: confirmar el email (solo vista de prueba, simulado)',
     ],
     estados: [
       'inicial',
@@ -111,6 +86,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     entidades: ['accounts', 'policy_acceptances'],
     pruebas: [
       'aceptaciones sin tildar por defecto',
+      'si el servidor rechaza un dato, vuelve al paso de ese dato',
       'un preregistro de la landing no crea ni activa la cuenta',
       'no pide DNI, CUIT ni certificados',
     ],
@@ -139,7 +115,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'acceso',
     lote: '2.1',
     acceso: 'publica',
-    acciones: ['Pedir el enlace por email'],
+    acciones: ['Paso 1: pedir el enlace por email', 'Paso 2: revisá tu email (reenviar)'],
     estados: [
       'inicial',
       'enviado (respuesta uniforme)',
@@ -156,7 +132,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'acceso',
     lote: '2.1',
     acceso: 'publica',
-    acciones: ['Elegir contraseña nueva'],
+    acciones: ['Paso 3: elegir contraseña nueva (con medidor)'],
     estados: ['inicial', 'token_vencido_o_usado', 'listo → ingresar'],
     endpoints: ['csrf', 'recuperacionConfirmar'],
     entidades: ['accounts', 'sessions'],
@@ -173,15 +149,16 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'perfil',
     lote: '2.1',
     acceso: 'sesion',
-    consulta: ['paso'],
     acciones: [
       'Nombre y apellido',
       'Fecha de nacimiento, nacionalidad y género',
-      'Ubicación: a mano o "usar mi ubicación" una vez',
+      'Pre-permiso de ubicación, después la dirección (a mano o "usar mi ubicación" una vez)',
+      'Mapa: mover el mapa hasta que el pin quede en la puerta (barrio cercano)',
+      'Pre-permiso de avisos (solo si el navegador puede preguntar)',
       'Completar después (lo que falta queda vacío)',
     ],
     estados: [
-      'paso_1..3',
+      'paso_1..4',
       'validacion_por_campo',
       'guardando',
       'conflicto_version',
@@ -194,6 +171,8 @@ export const PANTALLAS: readonly Pantalla[] = [
     pruebas: [
       'la geolocalización se pide una vez y nunca en segundo plano',
       'denegar el permiso no bloquea el alta',
+      'el navegador pregunta solo después de explicar para qué (pre-permiso)',
+      'el mapa usa solo datos de la propia app (sin terceros) y sin datos se ve ilustrado y rotulado',
       'otra ciudad no promete cobertura',
     ],
   }),
@@ -246,21 +225,21 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'pedido',
     lote: '2.2',
     acceso: 'sesion',
-    consulta: ['rubro', 'paso'],
+    consulta: ['rubro', 'tipo', 'tarea', 'desde'],
     acciones: [
-      'Tipo: urgente / programado / obra',
-      'Descripción y fotos opcionales',
-      'Ubicación del pedido',
-      'Fecha y hora (calendario propio, "Quiero elegir otra fecha")',
-      'Precio propuesto opcional',
-      'Autoaceptación solo si la elijo (apagada por defecto)',
-      'Revisar y enviar',
+      'Rubro (con su Handy), si no viene elegido',
+      'Para cuándo: urgencia / programado / obra',
+      'Día en tira y franja (programado y obra), "Quiero elegir otra fecha" y "otro horario"',
+      'Contanos con tus palabras y fotos opcionales',
+      'Dirección en el mapa',
+      'Revisar con "Cambiar" en cada dato; precio y autoaceptación opcionales',
+      'Pedir presupuestos',
     ],
     estados: [
       'paso_n',
       'foto_subiendo / foto_error / tipo_no_permitido / payload_grande',
       'ubicacion_denegada → manual',
-      'fecha_pasada o hora_invalida (bloqueadas)',
+      'fecha_pasada o hora_invalida (bloqueadas; las franjas de hoy que ya pasaron, deshabilitadas)',
       'enviando',
       'error_reintentable (misma Idempotency-Key)',
       'enviado → detalle',
@@ -270,6 +249,8 @@ export const PANTALLAS: readonly Pantalla[] = [
     pruebas: [
       'doble tap no crea dos pedidos',
       'urgente sin fecha; programado y obra con fecha',
+      'las fotos no se pierden al cambiar de paso',
+      'un rechazo del servidor vuelve al paso del dato',
       'zona horaria de Buenos Aires',
     ],
     demo: ['u-opciones', 'u-programar', 'u-describir'],
@@ -277,12 +258,17 @@ export const PANTALLAS: readonly Pantalla[] = [
   p({
     id: 'pedidos',
     ruta: '/pedidos/',
-    titulo: 'Mis pedidos',
+    titulo: 'Actividad',
     grupo: 'pedido',
     lote: '2.2',
     acceso: 'sesion',
     consulta: ['vista'],
-    acciones: ['Activos / historial', 'Abrir un pedido'],
+    acciones: [
+      'En curso (lo que espera tu respuesta arriba)',
+      'Agenda (calendario y el día)',
+      'Historial',
+      'Abrir un pedido o un trabajo',
+    ],
     estados: ['cargando', 'vacio', 'lista_paginada', 'error_reintentable'],
     endpoints: ['pedidos'],
     entidades: ['service_requests'],
@@ -297,6 +283,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     acceso: 'sesion',
     consulta: ['id'],
     acciones: [
+      'Búsqueda: mapa con tu casa y la hoja azul (u-buscando)',
       'Ver propuestas',
       'Editar mientras se busca',
       'Relanzar búsqueda',
@@ -355,12 +342,14 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'propuestas',
     lote: '2.3',
     acceso: 'sesion',
-    consulta: ['id'],
+    consulta: ['id', 'elegir'],
     acciones: [
-      'Aceptar estas condiciones (confirmación explícita)',
+      'Perfil del especialista: verificaciones reales, rubros, trabajos con Handyx, historial con vos',
+      'Total final con desglose, horario y vigencia',
+      'Aceptar → "Confirmá el turno" (u-confirmar): deslizá para confirmar o "Sí, acepto estas condiciones"',
       'Rechazar',
       'Hacer contrapropuesta',
-      'Ver perfil profesional',
+      'Hablar con el especialista',
     ],
     estados: [
       'pendiente (con vigencia)',
@@ -374,6 +363,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     endpoints: ['propuesta', 'propuestaAceptar', 'propuestaRechazar'],
     entidades: ['proposals', 'jobs'],
     pruebas: [
+      'deslizar a medias no acepta; el botón alternativo siempre está (WCAG 2.5.7)',
       'no hay acuerdo hasta aceptar la misma versión',
       'aceptación duplicada no crea dos trabajos',
       'vencida no se puede aceptar',
@@ -466,7 +456,7 @@ export const PANTALLAS: readonly Pantalla[] = [
     ],
     estados: [
       'agendado',
-      'en_camino',
+      'en_camino (viaje en vivo: sin_compartir | compartiendo | terminado)',
       'en_sitio ("Llegué" del especialista)',
       'en_curso',
       'terminado_por_especialista',
@@ -479,14 +469,17 @@ export const PANTALLAS: readonly Pantalla[] = [
       'trabajoConfirmarFin',
       'etapaConfirmar',
       'trabajoCancelar',
+      'trabajoViaje',
+      'trabajoViajeEnVivo',
     ],
-    entidades: ['jobs', 'job_events'],
+    entidades: ['jobs', 'job_events', 'trips', 'trip_positions'],
     pruebas: [
       'el acuerdo no cambia sin otra propuesta aceptada',
       'cada cambio de estado tiene actor y fecha',
+      'posición, recorrido y llegada estimada solo del servidor y solo mientras comparte',
     ],
     demo: ['u-seguimiento', 'u-terminado'],
-    nota: 'Sin seguimiento de ubicación en segundo plano: "Llegué" lo marca el especialista.',
+    nota: 'Viaje en vivo (4.7, SSE con respaldo cada 5 s): solo en camino y mientras el especialista comparte; nada de tu ubicación. "Llegué" lo marca el especialista.',
   }),
   p({
     id: 'trabajo-cambiar',
@@ -516,6 +509,58 @@ export const PANTALLAS: readonly Pantalla[] = [
     entidades: ['jobs'],
     pruebas: ['días en Buenos Aires aunque el celular esté en otra zona'],
     demo: ['u-turnos', 'u-turno-detalle'],
+  }),
+  p({
+    id: 'resena',
+    ruta: '/trabajos/resena/',
+    titulo: 'Calificar el trabajo',
+    grupo: 'trabajo',
+    lote: '3.6',
+    acceso: 'sesion',
+    consulta: ['id'],
+    acciones: [
+      'Estrellas de 1 a 5',
+      'Lo mejor o lo que estuvo mal (chips)',
+      'Comentario opcional sin datos personales',
+    ],
+    estados: [
+      'todavía no se puede (trabajo sin confirmar)',
+      'calificando',
+      'enviada → gracias',
+      'funcion_inactiva (API real sin resenaCrear)',
+    ],
+    endpoints: ['trabajo', 'pedido'],
+    entidades: [],
+    pruebas: [
+      'solo después de confirmar que terminó',
+      'el comentario se envía sin teléfonos, emails ni documentos',
+      'con la API real queda inactiva hasta resenaCrear (Fase 4.4)',
+    ],
+    nota: 'Decisión 2 del rediseño. Contrato pendiente: resenaCrear y el promedio (solo con un mínimo de reseñas reales).',
+    demo: ['u-resena'],
+  }),
+  p({
+    id: 'soporte',
+    ruta: '/soporte/',
+    titulo: 'Soporte',
+    grupo: 'soporte',
+    lote: '3.7',
+    acceso: 'sesion',
+    acciones: ['Escribirle al equipo de Handy', 'Ir a Ayuda o abrir un reclamo'],
+    estados: [
+      'vacío con temas',
+      'esperando respuesta',
+      'respondido',
+      'funcion_inactiva (API real)',
+    ],
+    endpoints: [],
+    entidades: [],
+    pruebas: [
+      'lo atiende una persona: sin IA y sin plazos prometidos',
+      'con la API real queda inactivo hasta el contrato (Fase 4.4)',
+    ],
+    nota: 'Decisión 5 del rediseño. Contrato pendiente: conversación con Operations (reusa Conversacion).',
+    demo: ['u-soporte'],
   }),
   // ── Pagos directos ──────────────────────────────────────────────────────────────────────────────
   p({
@@ -603,16 +648,31 @@ export const PANTALLAS: readonly Pantalla[] = [
   p({
     id: 'ayuda',
     ruta: '/ayuda/',
-    titulo: 'Ayuda',
+    titulo: 'Centro de ayuda',
     grupo: 'soporte',
     lote: '2.4',
     acceso: 'sesion',
-    acciones: ['Preguntas frecuentes', 'Abrir reclamo'],
+    acciones: ['Preguntas frecuentes', 'Chatear con soporte', 'Ver mis reclamos', 'HandIA'],
     estados: ['normal'],
     endpoints: [],
     entidades: [],
-    pruebas: ['HandIA figura desactivada (sin datos personales a terceros)'],
-    demo: ['u-ayuda', 'u-ayuda-detalle', 'u-handia'],
+    pruebas: ['HandIA: acceso al asistente (sin datos personales a terceros)'],
+    demo: ['u-ayuda', 'u-handia'],
+  }),
+  p({
+    id: 'ayuda-respuesta',
+    ruta: '/ayuda/respuesta/',
+    titulo: 'Respuesta de ayuda',
+    grupo: 'soporte',
+    lote: '3.8',
+    acceso: 'sesion',
+    consulta: ['p'],
+    acciones: ['Ir al atajo de la respuesta', '¿Te sirvió? (sí / no)', 'Otras preguntas'],
+    estados: ['respuesta', 'gracias', 'no sirvió (ofrece soporte)'],
+    endpoints: [],
+    entidades: [],
+    pruebas: ['el voto no se envía ni se guarda', 'una pregunta desconocida muestra la primera'],
+    demo: ['u-ayuda-detalle'],
   }),
   // ── Avisos ──────────────────────────────────────────────────────────────────────────────────────
   p({
@@ -644,11 +704,17 @@ export const PANTALLAS: readonly Pantalla[] = [
     lote: '2.1',
     acceso: 'sesion',
     acciones: [
-      'Mis datos',
+      'Datos personales',
+      'Direcciones',
+      'Pagos registrados',
+      'Tu agenda',
+      'Reclamos',
+      'Avisos del celular',
       'Tarifa y demo',
-      'Avisos',
       'Privacidad',
+      'Centro de ayuda',
       'Eliminar cuenta',
+      'Instalar',
       'Cerrar sesión',
     ],
     estados: ['normal', 'perfil_incompleto', 'baja_en_curso'],
@@ -661,16 +727,63 @@ export const PANTALLAS: readonly Pantalla[] = [
   p({
     id: 'cuenta-datos',
     ruta: '/cuenta/datos/',
-    titulo: 'Mis datos',
+    titulo: 'Datos personales',
     grupo: 'cuenta',
     lote: '2.1',
     acceso: 'sesion',
-    acciones: ['Editar perfil operativo'],
-    estados: ['normal', 'guardando', 'validacion', 'conflicto_version'],
+    consulta: ['editar'],
+    acciones: ['Ver el perfil operativo', 'Editar mis datos'],
+    estados: ['lectura', 'editando', 'guardando', 'validacion', 'conflicto_version', 'guardado'],
     endpoints: ['sesion', 'perfil'],
     entidades: ['user_profiles'],
     pruebas: ['los campos faltantes se muestran vacíos, no inventados'],
     demo: ['u-datos'],
+  }),
+  p({
+    id: 'cuenta-direcciones',
+    ruta: '/cuenta/direcciones/',
+    titulo: 'Direcciones',
+    grupo: 'cuenta',
+    lote: '3.8',
+    acceso: 'sesion',
+    acciones: ['Ver la principal (perfil)', 'Agregar una dirección con nombre', 'Quitar una'],
+    estados: [
+      'solo principal',
+      'lista',
+      'nueva',
+      'máximo alcanzado',
+      'funcion_inactiva (API real)',
+    ],
+    endpoints: ['sesion'],
+    entidades: ['user_profiles'],
+    pruebas: [
+      'las guardadas viven solo en memoria (nunca en el navegador)',
+      'con la API real solo la principal hasta el contrato (Fase 4.2)',
+      'al pedir, elegir una completa el formulario',
+    ],
+    nota: 'Contrato pendiente: `direcciones` (lista con alias) y la dirección del pedido elegida de ahí (Fase 4.2).',
+  }),
+  p({
+    id: 'cuenta-pagos',
+    ruta: '/cuenta/pagos/',
+    titulo: 'Pagos registrados',
+    grupo: 'cuenta',
+    lote: '3.8',
+    acceso: 'sesion',
+    acciones: [
+      'Ver los pagos de cada trabajo',
+      'Ver más (quién lo registró, verificado)',
+      'Ir al pago del trabajo',
+    ],
+    estados: ['cargando', 'vacio', 'lista', 'error_reintentable'],
+    endpoints: ['trabajos', 'pedidos', 'pagos'],
+    entidades: ['payment_records'],
+    pruebas: [
+      'sin tarjetas ni "Agregar tarjeta"',
+      'reportado ≠ verificado',
+      'Handy no cobra el servicio',
+    ],
+    demo: ['u-pagos'],
   }),
   p({
     id: 'cuenta-tarifa',
@@ -709,7 +822,10 @@ export const PANTALLAS: readonly Pantalla[] = [
     estados: ['normal', 'version_nueva_pendiente'],
     endpoints: ['sesion', 'aceptacion'],
     entidades: ['policy_acceptances', 'consents'],
-    pruebas: ['HandIA desactivada', 'la versión aceptada queda registrada'],
+    pruebas: [
+      'HandIA explicada (sin datos personales ni fotos)',
+      'la versión aceptada queda registrada',
+    ],
   }),
   p({
     id: 'cuenta-baja',
@@ -733,7 +849,49 @@ export const PANTALLAS: readonly Pantalla[] = [
       'compatible con la solicitud web de las tiendas',
     ],
   }),
-  // ── Sistema ─────────────────────────────────────────────────────────────────────────────────────
+  p({
+    id: 'handia',
+    ruta: '/handia/',
+    titulo: 'HandIA',
+    grupo: 'pedido',
+    lote: '3.1',
+    acceso: 'sesion',
+    acciones: [
+      'Contar el problema (texto, ejemplos o dictado)',
+      'Confirmar o cambiar el rubro sugerido',
+      'Responder las preguntas cortas del rubro (o saltearlas)',
+      'Revisar y corregir la ficha del pedido',
+      'Pedir para hoy o programar turno (arma el pedido)',
+      'Modo voz: hablar y escuchar (manos libres)',
+    ],
+    estados: [
+      'inicio',
+      'pensando',
+      'rubro sugerido',
+      'rubro dudoso',
+      'sin rubro',
+      'preguntas (con progreso)',
+      'ficha del pedido',
+      'aviso de riesgo (gas, monóxido, electricidad, agua y luz)',
+      'modo voz: escuchando | pensando | hablando | quieto',
+      'modo voz sin reconocimiento local (solo lee)',
+      'no disponible',
+    ],
+    endpoints: [],
+    entidades: ['borrador del pedido (en memoria)'],
+    pruebas: [
+      'tacha emails, teléfonos y documentos antes de enviar',
+      'no recibe fotos',
+      'solo sugiere: la persona confirma el rubro y revisa el pedido',
+      'olor a gas o chispas: primero el aviso de seguridad',
+      'pregunta solo lo que falta (deduce lo que ya contó)',
+      'el especialista no lee huecos de datos tachados',
+      'voz: solo reconocimiento en el dispositivo y voces del sistema',
+    ],
+    demo: ['u-handia'],
+    nota: 'Motor en el celular (src/domain/handia-motor.ts), sin IA externa. Con API real necesita el endpoint de HandIA en handyx-client-be (contrato v1.1); hasta entonces avisa que no está disponible.',
+  }),
+
   p({
     id: 'sin-conexion',
     ruta: '/sin-conexion/',
@@ -741,12 +899,35 @@ export const PANTALLAS: readonly Pantalla[] = [
     grupo: 'sistema',
     lote: '3.3',
     acceso: 'publica',
-    acciones: ['Reintentar'],
-    estados: ['offline'],
+    acciones: ['Reintentar', 'Ir al inicio'],
+    estados: ['offline (pantalla no guardada)'],
     endpoints: [],
     entidades: [],
-    pruebas: ['ninguna acción se da por hecha sin respuesta del servidor'],
+    pruebas: [
+      'ninguna acción se da por hecha sin respuesta del servidor',
+      'tests/e2e/pwa.cjs: aceptar y mandar mensajes sin conexión fallan a la vista',
+      'el caché del service worker no guarda API, ids ni datos personales',
+    ],
   }),
+];
+
+/**
+ * Fase 7 (app completa, lienzo design/usuario): cada grupo de pantallas declara las suyas en src/mapa/fase7/ y
+ * puede reemplazar una pantalla base con el mismo id (misma ruta, nueva versión).
+ */
+const FASE7: readonly Pantalla[] = [
+  ...ACCESO7,
+  ...INICIO7,
+  ...PEDIR7,
+  ...SEGUIMIENTO7,
+  ...MENSAJES7,
+  ...HOGAR7,
+  ...HERRAMIENTAS7,
+];
+const reemplazadas = new Set(FASE7.map((x) => x.id));
+export const PANTALLAS: readonly Pantalla[] = [
+  ...BASE.filter((x) => !reemplazadas.has(x.id)),
+  ...FASE7,
 ];
 
 export const pantalla = (id: string): Pantalla => {
@@ -756,10 +937,12 @@ export const pantalla = (id: string): Pantalla => {
 };
 
 /** Barra inferior de la app (como la de la demo de la landing). */
+// Fase 7: Inicio · Actividad · HandIA (círculo del medio) · Mensajes · Mi hogar. Cuenta, desde el avatar del Inicio.
+// La barra la dibuja src/ui/organismos.tsx (BarraPestanas); esta lista la usa la prueba del mapa.
 export const NAVEGACION = [
   { id: 'inicio', etiqueta: 'Inicio', icono: 'casa' },
-  { id: 'pedidos', etiqueta: 'Pedidos', icono: 'maletin' },
+  { id: 'pedidos', etiqueta: 'Actividad', icono: 'calendario' },
+  { id: 'handia', etiqueta: 'HandIA', icono: 'handia' },
   { id: 'chats', etiqueta: 'Mensajes', icono: 'chat' },
-  { id: 'agenda', etiqueta: 'Agenda', icono: 'calendario' },
-  { id: 'cuenta', etiqueta: 'Cuenta', icono: 'usuario' },
+  { id: 'hogar', etiqueta: 'Mi hogar', icono: 'hogar' },
 ] as const;

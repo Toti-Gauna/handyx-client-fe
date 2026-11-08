@@ -1,6 +1,16 @@
 // Contrato v1 · chat, pagos directos, reclamos y notificaciones.
 import { z } from 'zod';
-import { Actor, Centavos, Id, Importe, Instante, Rol, Texto, Version } from './comunes.ts';
+import {
+  Actor,
+  Centavos,
+  FechaLocal,
+  Id,
+  Importe,
+  Instante,
+  Rol,
+  Texto,
+  Version,
+} from './comunes.ts';
 import { EspecialistaResumen, MediaRef } from './pedidos.ts';
 
 // ── Chat: ligado al pedido desde la primera cotización y al trabajo después ──────────────────────────
@@ -146,6 +156,8 @@ export const TIPOS_NOTIFICACION = [
   'trabajo_en_camino',
   'trabajo_llego',
   'trabajo_terminado',
+  /** El especialista canceló antes de empezar (lote 5.6 del bloque 4), siempre con motivo. */
+  'trabajo_cancelado',
   'pago_verificado',
   'reclamo_actualizado',
   'baja_actualizada',
@@ -180,3 +192,42 @@ export const PushSuscripcionEntrada = z
     rol: Rol,
   })
   .strict();
+
+// ── draft.4 · Reseña e informe del trabajo ───────────────────────────────────────────────────────────────────
+export const DESTACADOS_RESENA = [
+  'puntual',
+  'prolijo',
+  'explico_todo',
+  'buen_precio',
+  'llego_tarde',
+  'dejo_sucio',
+  'no_explico',
+] as const;
+export const ResenaEntrada = z
+  .object({
+    puntaje: z.int().min(1).max(5),
+    destacados: z.array(z.enum(DESTACADOS_RESENA)).max(7),
+    comentario: Texto(500).nullable(),
+  })
+  .strict();
+/** Se publica con el nombre y la inicial del apellido de quien la deja. Una por trabajo. */
+export const Resena = ResenaEntrada.extend({ id: Id, trabajoId: Id, creadaEn: Instante }).strict();
+export type Resena = z.infer<typeof Resena>;
+
+/** Informe que arma el especialista al terminar: lo que encontró, pruebas, materiales, garantía y antes/después. */
+export const Informe = z
+  .object({
+    trabajoId: Id,
+    encontrado: Texto(1000),
+    pruebas: Texto(500).nullable(),
+    materiales: z.array(Texto(120)).max(20),
+    garantiaHasta: FechaLocal.nullable(),
+    recomendaciones: z
+      .array(z.object({ texto: Texto(160), enMeses: z.int().min(1).max(60).nullable() }).strict())
+      .max(10),
+    fotosAntes: z.array(MediaRef).max(6),
+    fotosDespues: z.array(MediaRef).max(6),
+    creadoEn: Instante,
+  })
+  .strict();
+export type Informe = z.infer<typeof Informe>;

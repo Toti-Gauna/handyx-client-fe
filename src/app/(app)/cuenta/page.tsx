@@ -1,108 +1,163 @@
 'use client';
 
+import { useState, useSyncExternalStore } from 'react';
 import { Contador } from '@/components/Contador';
-import { Icono } from '@/components/Icono';
 import { Enlace } from '@/components/nav';
+import {
+  instalar,
+  puedeInstalar,
+  puedeInstalarServidor,
+  suscribirInstalacion,
+} from '@/components/red';
 import { useSesion } from '@/components/SesionProvider';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, Boton } from '@/components/ui';
-import type { NombreIcono } from '@/components/trazos';
-import { useState } from 'react';
+import { useConsulta } from '@/data/hooks';
 import { resumirFee } from '@/domain/fee';
+import { Boton, FilaEnlace, Nota } from '@/ui';
+import { PantallaM } from '@/ui/mensajes';
+import { CabeceraCuenta } from './_CabeceraCuenta';
 
-const MENU: readonly { href: string; icono: NombreIcono; texto: string }[] = [
-  { href: '/cuenta/datos/', icono: 'usuario', texto: 'Mis datos' },
-  { href: '/cuenta/tarifa/', icono: 'etiqueta', texto: 'Tarifa y demo' },
-  { href: '/cuenta/notificaciones/', icono: 'campana', texto: 'Avisos del celular' },
-  { href: '/cuenta/privacidad/', icono: 'escudo', texto: 'Privacidad' },
-  { href: '/reclamos/', icono: 'alerta', texto: 'Reclamos' },
-  { href: '/ayuda/', icono: 'pregunta', texto: 'Ayuda' },
-  { href: '/cuenta/baja/', icono: 'tacho', texto: 'Eliminar cuenta' },
-];
-
+/**
+ * Cuenta (lienzo X-Cuenta): se entra desde el avatar del Inicio. Cabecera con tus iniciales y tus números reales,
+ * el menú y la tarifa de la demo con su contador (tercer lugar donde se avisa). Sin foto de perfil (el contrato no la
+ * tiene) y sin «modo especialista» hasta que exista su app.
+ */
 export default function Cuenta() {
   const { sesion, fee, cerrarSesion } = useSesion();
   const [saliendo, setSaliendo] = useState(false);
   const resumen = resumirFee(fee);
-  const nombre = [sesion.perfil.nombre, sesion.perfil.apellido].filter(Boolean).join(' ');
+  const instalable = useSyncExternalStore(
+    suscribirInstalacion,
+    puedeInstalar,
+    puedeInstalarServidor,
+  );
+  const trabajos = useConsulta('trabajos', { consulta: { limite: 50 } });
+  const pedidos = useConsulta('pedidos', { consulta: { limite: 50 } });
+  const camino = useConsulta('camino', {});
+  const segunda = useConsulta('segundaVerificacion', {});
+  const p = sesion.perfil;
+  const nombre = [p.nombre, p.apellido].filter(Boolean).join(' ') || 'Tu cuenta';
+  const zona = p.ubicacion
+    ? [p.ubicacion.barrio, p.ubicacion.ciudad].filter(Boolean).join(' · ')
+    : '';
+  const hitos = camino.datos?.hitos;
+  const datos =
+    trabajos.datos && pedidos.datos
+      ? [
+          {
+            valor: String(trabajos.datos.items.length),
+            texto: trabajos.datos.items.length === 1 ? 'trabajo' : 'trabajos',
+          },
+          {
+            valor: String(pedidos.datos.items.filter((x) => x.tipo === 'obra').length),
+            texto: 'obras',
+          },
+          ...(hitos?.length
+            ? [
+                {
+                  valor: `${hitos.filter((h) => h.estado === 'hecho').length}/${hitos.length}`,
+                  texto: 'tu camino',
+                },
+              ]
+            : []),
+        ]
+      : [];
+
   return (
-    <>
-      <Titulo texto="Tu ==cuenta==" />
-      <p style={{ margin: '0 0 12px' }}>
-        <strong>{nombre || 'Tu perfil está incompleto'}</strong>
-      </p>
-      {sesion.cuenta.estado === 'perfil_incompleto' ? (
-        <Aviso tipo="alerta" titulo="Falta completar tu perfil">
-          <p>Lo necesitás para pedir servicios.</p>
-          <Enlace href="/perfil/" className="boton boton--chico">
-            Completar ahora
+    <PantallaM
+      arriba={
+        <CabeceraCuenta
+          nombre={nombre}
+          zona={zona}
+          datos={datos}
+          volver={{ href: '/inicio/', etiqueta: 'Volver al inicio' }}
+        />
+      }
+    >
+      <div className="ds-cuerpo">
+        {sesion.cuenta.estado === 'perfil_incompleto' ? (
+          <Enlace href="/perfil/" className="ds-boton ds-boton--amarillo ds-boton--ancho">
+            Falta completar tu perfil
           </Enlace>
-        </Aviso>
-      ) : null}
-      {sesion.cuenta.estado === 'baja_solicitada' ? (
-        <Aviso tipo="info" titulo="Pediste eliminar tu cuenta">
-          <Enlace className="enlace-tarjeta" href="/cuenta/baja/">
-            Ver el estado
-          </Enlace>
-        </Aviso>
-      ) : null}
-
-      {/* Contador del fee 0 % (3 de 3 lugares) */}
-      <section className="tarjeta" aria-labelledby="fee-t">
-        <div className="tarjeta__cuerpo">
-          <h2 id="fee-t" className="tarjeta__titulo">
-            Tarifa de Handy
-          </h2>
-          {resumen.tipo === 'demo' ? (
-            resumen.cuenta.terminada ? (
-              <p style={{ margin: 0 }}>
-                La demo terminó. Todavía no hay una tarifa aprobada: te avisamos antes de aplicar
-                cualquier cambio.
-              </p>
+        ) : null}
+        {sesion.cuenta.estado === 'baja_solicitada' ? (
+          <Nota icono="info" tono="amarillo">
+            Pediste eliminar tu cuenta.{' '}
+            <Enlace href="/cuenta/baja/">Ver el estado de la solicitud</Enlace>.
+          </Nota>
+        ) : null}
+        <nav aria-label="Tu cuenta" className="ds-pila" style={{ ['--ds-gap' as string]: 0 }}>
+          <FilaEnlace
+            icono="usuario"
+            titulo="Tus datos y direcciones"
+            sub="Nombre, nacimiento y dirección"
+            href="/cuenta/datos/"
+          />
+          <FilaEnlace
+            icono="candado"
+            titulo="Seguridad"
+            sub={
+              segunda.datos
+                ? segunda.datos.activa
+                  ? 'Segunda verificación activa'
+                  : 'Segunda verificación apagada'
+                : 'Verificación y sesiones abiertas'
+            }
+            href="/cuenta/seguridad/"
+          />
+          <FilaEnlace
+            icono="billete"
+            titulo="Pagos registrados"
+            sub="Sin tarjetas guardadas"
+            href="/cuenta/pagos/"
+          />
+          <FilaEnlace
+            icono="campana"
+            titulo="Avisos"
+            sub="Propuestas, turnos y recordatorios"
+            href="/cuenta/notificaciones/"
+          />
+          <FilaEnlace
+            icono="escudo"
+            titulo="Privacidad"
+            sub="Tus datos, HandIA y borrar la cuenta"
+            href="/cuenta/privacidad/"
+          />
+          <FilaEnlace icono="pregunta" titulo="Ayuda" sub="Preguntas y Soporte" href="/ayuda/" />
+        </nav>
+        {instalable ? (
+          <FilaEnlace
+            icono="abajo"
+            titulo="Instalá Handyx en este celular"
+            sub="Queda en la pantalla de inicio y se abre como una app."
+            tono="amarillo"
+            onClick={() => void instalar()}
+          />
+        ) : null}
+        <section aria-label="Tarifa de servicio">
+          <Nota icono="billete" tono="gris">
+            {resumen.tipo === 'demo' ? (
+              resumen.cuenta.terminada ? (
+                <>
+                  Tarifa de servicio: la demo terminó. Todavía no hay una tarifa aprobada: te
+                  avisamos antes de aplicar cualquier cambio.
+                </>
+              ) : (
+                <>
+                  Tarifa de servicio: {resumen.porcentajeUsuario} hasta el {resumen.hasta}. Faltan{' '}
+                  <Contador hasta={fee?.vigente?.vigenteHasta ?? ''} />. No es un descuento: el
+                  servicio del especialista se paga entero. Si algo cambia, te avisamos antes.{' '}
+                  <Enlace href="/cuenta/tarifa/">Ver condiciones</Enlace>
+                </>
+              )
             ) : (
-              <>
-                <p className="importe" style={{ margin: '4px 0' }}>
-                  {resumen.porcentajeUsuario}
-                </p>
-                <p style={{ margin: 0 }}>
-                  hasta el {resumen.hasta} · faltan{' '}
-                  <strong>
-                    <Contador hasta={fee?.vigente?.vigenteHasta ?? ''} />
-                  </strong>
-                </p>
-                <p className="texto-suave" style={{ margin: '6px 0 0' }}>
-                  No es un descuento: el servicio del especialista se paga entero.
-                </p>
-              </>
-            )
-          ) : (
-            <p style={{ margin: 0 }}>No pudimos cargar la tarifa.</p>
-          )}
-        </div>
-        <Enlace className="tarjeta__franja" href="/cuenta/tarifa/">
-          Ver condiciones
-        </Enlace>
-      </section>
-
-      <ul className="lista-tarjetas">
-        {MENU.map((m) => (
-          <li key={m.href}>
-            <Enlace href={m.href} className="tarjeta tarjeta--enlace">
-              <span className="tarjeta__cuerpo tarjeta__fila">
-                <span style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                  <Icono nombre={m.icono} /> {m.texto}
-                </span>
-                <Icono nombre="derecha" />
-              </span>
-            </Enlace>
-          </li>
-        ))}
-      </ul>
-      <div className="acciones">
+              'No pudimos cargar la tarifa.'
+            )}
+          </Nota>
+        </section>
         <Boton
           variante="contorno"
           icono="salir"
-          cargando={saliendo}
+          ocupado={saliendo}
           onClick={async () => {
             setSaliendo(true);
             try {
@@ -114,10 +169,8 @@ export default function Cuenta() {
         >
           Cerrar sesión
         </Boton>
+        <p className="ds-m-nota-centro">Cerrar sesión no elimina tu cuenta.</p>
       </div>
-      <p className="texto-suave" style={{ textAlign: 'center' }}>
-        Cerrar sesión no elimina tu cuenta.
-      </p>
-    </>
+    </PantallaM>
   );
 }

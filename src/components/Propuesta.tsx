@@ -1,40 +1,62 @@
 'use client';
-
+// Propuestas (Fase 7 · C-Propuestas): la tarjeta con jerarquía (quién, precio, datos chicos, verificaciones reales y
+// acciones) y los textos que salen del detalle de la propuesta (draft.4). La tarjeta no acepta ni rechaza: cada acción
+// lleva al detalle, al perfil o a la hoja de confirmación.
 import type { EspecialistaResumen } from '@/contracts/v1/pedidos';
-import type { Propuesta } from '@/contracts/v1/propuestas';
-import { pesos, porcentaje } from '@/domain/dinero';
-import { VERIFICACION_TEXTO, etiquetaPropuesta } from '@/domain/etiquetas';
-import { cuando } from '@/domain/fechas';
-import { Icono } from './Icono';
-import { Enlace, ruta } from './nav';
+import type { DetallePropuesta, Propuesta } from '@/contracts/v1/propuestas';
+import { etiquetaPropuesta } from '@/domain/etiquetas';
+import { cuando, fechaCorta, fechaDeInstante, horaDeInstante } from '@/domain/fechas';
+import { Avatar, Chip } from '@/ui';
+import { AccionesPropuesta, BloquePrecio, DatoMini } from '@/ui/pedir';
 import { Contador } from './Contador';
+import { Icono } from './Icono';
+import { ruta } from './nav';
 import { useAhora } from './SesionProvider';
-import { Pastilla } from './ui';
 
-/** Datos profesionales autorizados. "Verificado" solo con dato real; sin rankings ni claims de matrícula. */
-export function PerfilProfesional({ e }: { e: EspecialistaResumen }) {
+/** Iniciales para el avatar ("Especialista 1" → "E1"). Sin foto: el contrato no expone fotos de perfil. */
+export function iniciales(nombre: string): string {
+  const partes = nombre.trim().split(/\s+/).filter(Boolean);
+  return partes
+    .slice(0, 2)
+    .map((p) => p[0] ?? '')
+    .join('')
+    .toUpperCase();
+}
+
+const VERIF_CORTO: Record<string, string> = {
+  identidad: 'Identidad',
+  antecedentes: 'Antecedentes',
+  matricula: 'Matrícula',
+};
+
+/** Verificaciones tal como las informa el backend. Sin datos, no se afirma nada. */
+export function Verificaciones({
+  e,
+  conVacio = false,
+}: {
+  e: EspecialistaResumen;
+  conVacio?: boolean;
+}) {
+  if (!e.verificaciones.length)
+    return conVacio ? (
+      <Chip tono="gris" icono="info">
+        Todavía sin verificaciones registradas
+      </Chip>
+    ) : null;
   return (
-    <div>
-      <strong>{e.nombrePublico}</strong>
-      <ul className="etiquetas" aria-label="Verificaciones">
-        {e.verificaciones.length ? (
-          e.verificaciones.map((v) => (
-            <li key={v.tipo} className="etiqueta-v">
-              <Icono nombre="verificado" />
-              {VERIFICACION_TEXTO[v.tipo] ?? v.tipo}
-            </li>
-          ))
-        ) : (
-          <li className="texto-suave">Todavía sin verificaciones registradas</li>
-        )}
-      </ul>
-      {e.trabajosRealizados !== null ? (
-        <p className="texto-suave" style={{ margin: '6px 0 0' }}>
-          {e.trabajosRealizados}{' '}
-          {e.trabajosRealizados === 1 ? 'trabajo realizado' : 'trabajos realizados'} en Handy
-        </p>
-      ) : null}
-    </div>
+    <ul
+      className="ds-fila"
+      aria-label="Verificaciones de Handyx"
+      style={{ listStyle: 'none', margin: 0, padding: 0, flexWrap: 'wrap', gap: '0.375rem' }}
+    >
+      {e.verificaciones.map((v) => (
+        <li key={v.tipo}>
+          <Chip tono="exito" icono="escudo">
+            {VERIF_CORTO[v.tipo] ?? v.tipo}
+          </Chip>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -52,59 +74,145 @@ export function Vigencia({ hasta }: { hasta: string }) {
   );
 }
 
-export function ResumenMonto({ p }: { p: Propuesta }) {
+// ── Textos del detalle ──────────────────────────────────────────────────────────────────────────────────
+const hora = (i: string) => horaDeInstante(i).replace(/:00$/, '');
+
+/** «Jue 19 · 10 a 12 h» o, sin horario (urgencias), «Horario al aceptar». */
+export function horarioCorto(p: Pick<Propuesta, 'horario'>): string {
+  if (!p.horario) return 'Horario al aceptar';
+  const { inicio, fin } = p.horario;
+  return `${fechaCorta(fechaDeInstante(inicio))} · ${hora(inicio)}${fin ? ` a ${hora(fin)}` : ''} h`;
+}
+
+export function duracionTexto(d: NonNullable<DetallePropuesta['duracion']>): string {
+  const u =
+    d.unidad === 'horas' ? (d.maximo === 1 ? 'hora' : 'horas') : d.maximo === 1 ? 'día' : 'días';
+  return d.minimo === d.maximo ? `${d.maximo} ${u}` : `${d.minimo} a ${d.maximo} ${u}`;
+}
+export const equipoTexto = (e: DetallePropuesta['equipo']) =>
+  e.personas === 1 ? 'Va solo' : `${e.personas} personas`;
+export const garantiaTexto = (dias: number | null) => (dias ? `${dias} días` : 'Sin garantía');
+export function materialesTexto(m: DetallePropuesta['materiales']): string | null {
+  if (!m) return null;
+  return m.incluidos ? 'Materiales incluidos' : 'Materiales aparte';
+}
+
+export const totalDe = (p: Pick<Propuesta, 'monto' | 'comisionHandy'>) =>
+  p.monto.centavos + p.comisionHandy.importe.centavos;
+
+// ── Tarjeta ──────────────────────────────────────────────────────────────────────────────────────────────
+export function TarjetaOferta({ p, marca }: { p: Propuesta; marca?: React.ReactNode }) {
+  const e = p.especialista;
+  const d = p.detalle;
+  const visita = d?.oferta === 'visita';
+  const decidible = p.estado === 'pendiente' && p.autorRol === 'especialista';
+  const detalle = ruta('/propuestas/detalle/', { id: p.id });
+  const nombre = e.nombrePublico;
+  const minis: [Parameters<typeof DatoMini>[0]['icono'], string, string][] = !d
+    ? []
+    : visita
+      ? [
+          ['reloj', 'Dura', d.duracion ? duracionTexto(d.duracion) : 'A coordinar'],
+          ['billete', 'Trabajo', 'A presupuestar'],
+          ['ojo', 'Antes', 'Quiere ver'],
+        ]
+      : [
+          ['reloj', 'Dura', d.duracion ? duracionTexto(d.duracion) : 'A coordinar'],
+          ['escudo', 'Garantía', garantiaTexto(d.garantiaDias)],
+          ['personas', 'Equipo', equipoTexto(d.equipo)],
+        ];
   return (
-    <>
-      <p className="importe" style={{ margin: '4px 0' }}>
-        {pesos(p.monto.centavos)}
-      </p>
-      <p style={{ margin: 0 }}>
-        Comisión de Handy: <strong>{pesos(p.comisionHandy.importe.centavos)}</strong> (
-        {porcentaje(p.comisionHandy.bp)}) · pagás directo al especialista
-      </p>
-    </>
+    <article
+      className="ds-tarjeta dsp-prop"
+      data-vt-origen
+      aria-label={`${visita ? 'Visita' : 'Propuesta'} de ${nombre}`}
+    >
+      <div className="ds-fila">
+        <Avatar nombre={nombre} tam={3.125} />
+        <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.1875rem' }}>
+          <span className="dsp-prop__nombre">{nombre}</span>
+          {e.trabajosRealizados !== null ? (
+            <span className="dsp-dato-linea">
+              <Icono nombre="medalla" />
+              {e.trabajosRealizados === 0
+                ? 'Nuevo en Handyx'
+                : `${e.trabajosRealizados} ${e.trabajosRealizados === 1 ? 'trabajo' : 'trabajos'} con Handyx`}
+            </span>
+          ) : null}
+        </span>
+        {visita ? (
+          <Chip tono="tinte" icono="ojo">
+            Consulta
+          </Chip>
+        ) : (
+          marca
+        )}
+      </div>
+      <BloquePrecio
+        tipo={visita ? 'Visita' : 'Propuesta'}
+        centavos={totalDe(p)}
+        sub={
+          visita
+            ? 'Visita para ver y presupuestar'
+            : (materialesTexto(d?.materiales ?? null) ?? undefined)
+        }
+        fecha={
+          <Chip tono="blanco" icono="calendario">
+            {horarioCorto(p)}
+          </Chip>
+        }
+        href={detalle}
+        etiqueta={`Ver el detalle de ${nombre}`}
+      />
+      {minis.length ? (
+        <div className="dsp-minis">
+          {minis.map(([ic, t, v]) => (
+            <DatoMini key={t} icono={ic} etiqueta={t} valor={v} />
+          ))}
+        </div>
+      ) : null}
+      <Verificaciones e={e} />
+      {p.estado === 'pendiente' ? (
+        <span className="dsp-dato-linea">
+          <Icono nombre="reloj" />
+          <span>
+            Propuesta <Vigencia hasta={p.venceEn} />
+          </span>
+        </span>
+      ) : null}
+      {decidible ? (
+        <AccionesPropuesta
+          nombre={nombre}
+          rechazar={ruta('/propuestas/detalle/', { id: p.id, rechazar: '1' })}
+          perfil={ruta('/propuestas/perfil/', { id: p.id })}
+          aceptar={visita ? detalle : ruta('/propuestas/detalle/', { id: p.id, elegir: '1' })}
+          textoAceptar={visita ? 'Ver visita' : 'Aceptar'}
+        />
+      ) : null}
+    </article>
   );
 }
 
-export function TarjetaPropuesta({ p, destacar = false }: { p: Propuesta; destacar?: boolean }) {
+const TONO_CHIP = {
+  ok: 'exito',
+  gris: 'gris',
+  azul: 'tinte',
+  alerta: 'amarillo',
+  error: 'error',
+} as const;
+
+/** Estado de una propuesta resuelta como chip (texto + ícono, nunca solo color). */
+export function ChipEstadoPropuesta({ p }: { p: Pick<Propuesta, 'estado'> }) {
   const e = etiquetaPropuesta(p);
-  const propia = p.autorRol === 'usuario';
   return (
-    <li>
-      <article
-        className="tarjeta"
-        aria-label={`Propuesta de ${p.especialista.nombrePublico}`}
-        style={destacar ? { borderColor: 'var(--color-azul)', borderWidth: 2 } : undefined}
-      >
-        <div className="tarjeta__cuerpo">
-          <div className="tarjeta__fila">
-            <PerfilProfesional e={p.especialista} />
-            <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-              {propia ? `Tu contrapropuesta · ${e.texto}` : e.texto}
-            </Pastilla>
-          </div>
-          <ResumenMonto p={p} />
-          <p style={{ margin: '8px 0 0' }}>
-            {p.horario ? (
-              <>
-                Horario: <strong>{cuando(p.horario.inicio)}</strong>
-              </>
-            ) : (
-              'El especialista declara su horario al aceptar.'
-            )}
-          </p>
-          <p className="texto-suave" style={{ margin: '6px 0 0' }}>
-            {p.estado === 'pendiente' ? (
-              <Vigencia hasta={p.venceEn} />
-            ) : (
-              `Respondida: ${p.respondidaEn ? cuando(p.respondidaEn) : '—'}`
-            )}
-          </p>
-        </div>
-        <Enlace className="tarjeta__franja" href={ruta('/propuestas/detalle/', { id: p.id })}>
-          {p.estado === 'pendiente' && !propia ? 'Ver y responder' : 'Ver detalle'}
-        </Enlace>
-      </article>
-    </li>
+    <Chip tono={TONO_CHIP[e.tono]} {...(e.icono ? { icono: e.icono } : {})}>
+      {e.texto}
+    </Chip>
   );
+}
+
+/** Nombre corto para los textos («Julián»); si el segundo es un número («Especialista 1»), van los dos. */
+export function nombreCorto(nombre: string): string {
+  const [a = nombre, b] = nombre.trim().split(/\s+/);
+  return b && /^\d+$/.test(b) ? `${a} ${b}` : a;
 }

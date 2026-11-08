@@ -1,24 +1,28 @@
-import type { Route } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 import { Marco } from '@/components/Marco';
+import { EstadoSistema } from '@/components/Sistema';
+import { Boton } from '@/ui';
 
 export default function NoEncontrada() {
   return (
-    <Marco barra={false}>
-      <div className="estado">
-        <Image
-          className="estado__handy"
-          src="/img/handy-llave-rota.webp"
-          alt=""
-          width={120}
-          height={120}
-        />
-        <h1 className="subtitulo">No encontramos esta página</h1>
-        <Link className="boton" href={'/' as Route}>
-          Volver al inicio
-        </Link>
-      </div>
+    <Marco>
+      <EstadoSistema
+        handy={{ img: 'handy-llave-rota', ancho: 581, alto: 547 }}
+        titulo="No encontramos esta ==página=="
+        acciones={
+          <>
+            <Boton icono="casa" href="/inicio/">
+              Ir al inicio
+            </Boton>
+            <Boton variante="contorno" icono="pregunta" href="/ayuda/">
+              Centro de ayuda
+            </Boton>
+          </>
+        }
+      >
+        <p>
+          Puede que el enlace esté viejo o que ya no tengas acceso. No se perdió nada de tu cuenta.
+        </p>
+      </EstadoSistema>
     </Marco>
   );
 }

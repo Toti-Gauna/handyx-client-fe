@@ -1,5 +1,8 @@
-/* Tokens de marca de Handy, copiados de Handy-landing-page-fe/src/brand/tokens.ts (misma fuente que el portal). */
+/* Tokens de Handyx. Dos capas:
+   1. Marca: copiados de Handy-landing-page-fe/src/brand/tokens.ts (misma fuente que la landing y el portal).
+   2. Semánticos: el rol de cada valor en la app. Las pantallas y componentes usan solo esta capa. */
 :root {
+  /* ── 1. Marca ─────────────────────────────────────────────────────────────────────────────────── */
   --color-azul: #1f57a8;
   --color-azul-ui: #4a72b0;
   --color-azul-personajes: #2f6bff;
@@ -24,7 +27,226 @@
   --radio-xl: 36px;
   --radio-pastilla: 999px;
 
-  /* Fuentes empaquetadas con @fontsource: el portal no pide recursos a terceros. */
+  /* Fuentes empaquetadas con @fontsource: la app no pide recursos a terceros. */
   --fuente: 'DM Sans Variable', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fuente-titulos: 'Archivo Variable', 'Archivo', 'Arial Black', system-ui, sans-serif;
+
+  /* ── 2. Semánticos ────────────────────────────────────────────────────────────────────────────── */
+
+  /* Superficies */
+  --sup-app: #f4f5f8; /* fuera de la columna de la app */
+  --sup-base: var(--color-fondo); /* fondo de pantalla */
+  --sup-tarjeta: #ffffff;
+  --sup-hundida: #f3f5f9; /* cajas dentro de tarjetas (condiciones, horario) */
+  --sup-mosaico: var(--color-mosaico);
+  --sup-marca: var(--color-azul); /* barra inferior, paneles azules */
+  --sup-marca-tinte: #e9eff9;
+  --sup-esqueleto-brillo: #f6f6f6;
+
+  /* Texto */
+  --texto-titulo: var(--color-tinta);
+  --texto-cuerpo: var(--color-texto);
+  --texto-suave: var(--color-texto-suave); /* 5.3:1 sobre blanco */
+  --texto-sobre-marca: #ffffff;
+  --texto-enlace: var(--color-azul);
+  --texto-deshabilitado: #a8b0c0; /* solo controles deshabilitados (exentos de contraste), siempre con otra señal */
+
+  /* Líneas */
+  --linea: #e6e9ef;
+  --linea-fuerte: var(--color-borde);
+  --linea-foco: var(--color-azul-personajes);
+
+  /* Acciones. Aceptar/confirmar y rechazar/cancelar nunca se distinguen solo por color:
+     también cambian ícono (check / cruz), texto, relleno (lleno / contorno) y posición. */
+  --accion-primaria: var(--color-azul);
+  --accion-primaria-base: #143e7e;
+  --accion-destacada: var(--color-amarillo);
+  --accion-destacada-base: #d8d65e;
+  --accion-neutra: var(--color-mosaico);
+  --accion-neutra-base: #d3d6dc;
+  --accion-peligro: #b3261e; /* 6.5:1 sobre blanco (el rojo de marca no llega a 4.5:1 en texto chico) */
+  --accion-peligro-base: #7f1b15;
+
+  /* Estados (siempre con texto e ícono además del color) */
+  --estado-ok: #146c3f;
+  --estado-ok-fondo: #e6f5ec;
+  --estado-alerta: #8a5a00;
+  --estado-alerta-fondo: #fff5d6;
+  --estado-error: var(--accion-peligro);
+  --estado-error-fondo: #fdecea;
+  --estado-info: var(--color-azul);
+  --estado-info-fondo: var(--sup-marca-tinte);
+  --estado-info-borde: #c3d3ee;
+  --estado-ok-borde: #b7e2c6;
+  --estado-alerta-borde: #f2d58b;
+  --estado-error-borde: #f2b8b4;
+  --estado-neutro: #4b5568;
+  --estado-neutro-fondo: #eef0f4;
+
+  /* Importes: el total siempre en la escala más grande del bloque y con cifras tabulares. */
+  --importe-total: var(--color-azul);
+
+  /* Tipografía (escala 1.2) */
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-md: 1rem;
+  --t-lg: 1.2rem;
+  --t-xl: 1.5rem;
+  --t-2xl: clamp(1.6rem, 6vw, 2rem);
+  --peso-texto: 400;
+  --peso-medio: 600;
+  --peso-fuerte: 800;
+  --peso-titulo: 900;
+
+  /* Espaciado (base 4) */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 20px;
+  --esp-6: 24px;
+  --esp-8: 32px;
+
+  /* Elevación */
+  --elev-1: 0 1px 3px rgb(14 29 54 / 0.06), 0 8px 22px -8px rgb(14 29 54 / 0.16);
+  --elev-2: 0 2px 6px rgb(14 29 54 / 0.08), 0 16px 32px -12px rgb(14 29 54 / 0.24);
+  --elev-tactil: 5px; /* altura de la base que se hunde en botones táctiles */
+
+  /* Íconos y objetivos táctiles */
+  --icono-sm: 18px;
+  --icono-md: 24px;
+  --icono-lg: 30px;
+  --toque-min: 44px;
+
+  /* Movimiento: funcional y corto. Con prefers-reduced-motion se anula (app.css). */
+  --dur-rapida: 120ms;
+  --dur-media: 220ms;
+  --curva: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Capas */
+  --capa-barra: 20;
+  --capa-aviso-prueba: 30;
+
+  /* ── 3. HandIA premium (fase R, prototipo en /diseno/handia/) ─────────────────────────────────────
+     Extienden la marca, no la reemplazan: el azul y el amarillo de Handyx con más luz y más profundidad.
+     Se usan solo en HandIA; cuando Ignacio elija una dirección (R2) quedan los de esa dirección. */
+  --hia-abismo: #060d1f; /* el fondo más hondo de "noche azul" */
+  --hia-noche: #0b1a3a;
+  --hia-azul-hondo: #12306b;
+  --hia-azul-luz: #5c8dff; /* brillo del azul de los personajes */
+  --hia-celeste: #9fd0ff;
+  --hia-hielo: #eaf3ff;
+  --hia-ambar: #ffcf5a; /* el centro caliente de la lamparita */
+  --hia-miel: #ffe8a3;
+  --hia-crema: #fffaf0;
+  --hia-papel: #fbf7ee;
+  --hia-texto-claro: #f4f7ff; /* 15:1 sobre --hia-noche */
+  --hia-texto-claro-suave: #c4d2ef; /* 9.6:1 sobre --hia-noche */
+  --hia-riesgo: #ff8a7a; /* solo borde y brillo; el texto del riesgo va en claro con ícono */
+
+  /* ── 4. Lenguaje de HandIA (R3) · dirección de trabajo "Luz cálida+" ─────────────────────────────
+     Luz cálida (A) + texto grande y brillo desde los controles (B) + ficha de vidrio (C). Lo usan las clases .hia-*
+     de styles/handia.css y los componentes de components/handia/. Cambiar de dirección = cambiar solo este bloque. */
+  --hia-voz-fondo:
+    radial-gradient(70% 36% at 50% 30%, rgb(255 207 90 / 0.22), transparent 70%),
+    radial-gradient(90% 40% at 50% 108%, rgb(92 141 255 / 0.55), transparent 70%),
+    linear-gradient(180deg, var(--hia-azul-hondo), var(--hia-noche) 72%);
+  --hia-voz-texto: var(--hia-texto-claro);
+  --hia-voz-suave: var(--hia-texto-claro-suave);
+  --hia-chat-fondo:
+    radial-gradient(90% 34% at 50% 0%, var(--hia-miel), transparent 72%), var(--hia-papel);
+  --hia-chat-texto: var(--color-tinta);
+  --hia-chat-suave: var(--color-texto-suave);
+  --hia-luz: var(--hia-ambar); /* el halo del personaje */
+  --hia-aro: var(--hia-miel); /* el aro que gira al pensar, el nivel al escuchar */
+  --hia-aro-claro: var(--hia-ambar); /* lo mismo sobre fondo claro */
+  --hia-mancha-1: var(--hia-miel);
+  --hia-mancha-2: var(--hia-celeste);
+  --hia-mancha-3: var(--hia-ambar);
+
+  /* Vidrio: claro (chat, ficha) y oscuro (voz). Siempre con borde: el desenfoque solo no separa. */
+  --hia-vidrio: rgb(255 255 255 / 0.66);
+  --hia-vidrio-borde: rgb(255 255 255 / 0.9);
+  --hia-vidrio-sombra: 0 14px 34px -16px rgb(31 87 168 / 0.45), 0 2px 6px rgb(14 29 54 / 0.06);
+  --hia-vidrio-oscuro: rgb(244 247 255 / 0.11);
+  --hia-vidrio-oscuro-borde: rgb(244 247 255 / 0.22);
+  --hia-desenfoque: blur(18px) saturate(1.3);
+  --hia-brillo-control: 0 -12px 56px -8px rgb(255 207 90 / 0.5);
+
+  /* Burbujas */
+  --hia-burbuja-ia: var(--hia-crema);
+  --hia-burbuja-ia-borde: rgb(14 29 54 / 0.08);
+  --hia-burbuja-yo: var(--color-azul);
+  --hia-burbuja-yo-texto: var(--texto-sobre-marca);
+
+  /* Formas y tipografía */
+  --hia-radio-burbuja: 20px;
+  --hia-radio-tarjeta: 22px;
+  --hia-radio-telefono: 44px;
+  --hia-t-display: clamp(1.45rem, 5.6vw, 1.75rem); /* transcripción y saludo, en Archivo */
+  --hia-t-display-alto: 1.18;
+
+  /* Movimiento (R5). Con "reducir movimiento" no hay animación: cada estado se ve en su forma final. */
+  --hia-dur-micro: 160ms; /* chips, presión de botones */
+  --hia-dur-entrada: 380ms; /* burbujas, tarjetas */
+  --hia-dur-estado: 520ms; /* cambio de estado del orbe */
+  --hia-dur-escena: 700ms; /* chat ↔ voz */
+  --hia-curva-entrada: cubic-bezier(0.16, 1, 0.3, 1); /* sale rápido y se asienta */
+  --hia-curva-resorte: cubic-bezier(
+    0.34,
+    1.56,
+    0.64,
+    1
+  ); /* un rebote chico: solo personaje y chispas */
+  --hia-curva-salida: cubic-bezier(0.7, 0, 0.84, 0);
+
+  /* Inicio con HandIA y modo voz oscuro (pedido de Ignacio del 07/11: "como ChatGPT", menos amarillo verdoso,
+     controles más finos). La esfera es cielo Handyx con una luz cálida abajo: la lamparita hecha luz. */
+  --hia-negro: #030407;
+  --hia-boton-oscuro: #15171c;
+  --hia-boton-oscuro-borde: rgb(255 255 255 / 0.09);
+  --hia-texto-oscuro-suave: #a9b0bf; /* 8.6:1 sobre --hia-negro */
+  --hia-cielo-hondo: #2350d8;
+  --hia-nube: rgb(255 255 255 / 0.92);
+  --hia-burbuja-gris: #eef0f4;
+  --hia-composer-sombra: 0 6px 24px -10px rgb(14 29 54 / 0.28), 0 1px 3px rgb(14 29 54 / 0.08);
+}
+
+/* Sistema de diseño de la app del usuario (src/styles/ds.css, src/ui/). */
+:root {
+  --ds-c-000: #000;
+  --ds-c-0c2550: #0c2550;
+  --ds-c-0e1a30: #0e1a30;
+  --ds-c-0f2c5c: #0f2c5c;
+  --ds-c-17468e: #17468e;
+  --ds-c-3a78d0: #3a78d0;
+  --ds-c-7fe0a8: #7fe0a8;
+  --ds-c-aeb6c4: #aeb6c4;
+  --ds-c-c7cdd8: #c7cdd8;
+  --ds-c-c9d3e6: #c9d3e6;
+  --ds-c-d9dee7: #d9dee7;
+  --ds-c-dce7f7: #dce7f7;
+  --ds-c-fbfbd2: #fbfbd2;
+  --ds-c-ffcf5a: #ffcf5a;
+  --ds-c-fff: #fff;
+  --ds-azul: var(--color-azul);
+  --ds-hondo: #143e7e;
+  --ds-tinte: #e9eff9;
+  --ds-amarillo: var(--color-amarillo);
+  --ds-amarillo-base: #c9c85a;
+  --ds-noche: var(--color-noche);
+  --ds-tinta: var(--color-tinta);
+  --ds-texto: var(--color-texto);
+  --ds-suave: var(--color-texto-suave);
+  --ds-mosaico: var(--color-mosaico);
+  --ds-mosaico-base: #d3d6dc;
+  --ds-borde: #e3e7ee;
+  --ds-gris: #f4f5f7;
+  --ds-exito: #137140;
+  --ds-exito-fondo: #e3f4ea;
+  --ds-error: #a8261c;
+  --ds-error-fondo: #fce8e6;
+  --ds-sombra: 0 2px 6px rgba(14, 29, 54, 0.06), 0 18px 34px -24px rgba(14, 29, 54, 0.45);
+  --ds-sombra-1: 0 1px 2px rgba(14, 29, 54, 0.08), 0 4px 12px -4px rgba(14, 29, 54, 0.12);
+  --ds-titulo: 'Archivo Variable', 'Archivo', 'Arial Black', system-ui, sans-serif;
 }

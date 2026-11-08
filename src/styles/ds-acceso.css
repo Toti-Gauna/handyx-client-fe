@@ -1,0 +1,402 @@
+/* Acceso y alta (Fase 7, fila A del lienzo). Piezas de src/ui/acceso.tsx sobre los tokens de ds.css. Todo en rem. */
+
+.dsa-pantalla {
+  background: var(--ds-c-fff);
+  color: var(--ds-tinta);
+  font-family: var(--fuente);
+}
+.dsa-pantalla .pantalla__scroll {
+  display: flex;
+  flex-direction: column;
+}
+.dsa-pantalla .ds-cuerpo {
+  padding-top: 1rem;
+}
+
+/* ── Barra compacta: volver + título chico centrado ────────────────────────────────────────────────────── */
+.dsa-barra {
+  display: grid;
+  grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 4rem;
+  padding: 0.625rem 1rem 0;
+  background: var(--ds-c-fff);
+}
+.dsa-barra__textos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+.dsa-barra__titulo {
+  margin: 0;
+  font-family: var(--ds-titulo);
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 1.0625rem;
+}
+.dsa-barra__sub {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ds-suave);
+}
+.dsa-atras {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1px solid var(--ds-borde);
+  background: var(--ds-c-fff);
+  box-shadow: var(--ds-sombra-1);
+  color: var(--ds-tinta);
+  cursor: pointer;
+  text-decoration: none;
+}
+.dsa-atras svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ── Cabecera azul con ilustración ─────────────────────────────────────────────────────────────────────── */
+.dsa-cabecera {
+  position: relative;
+  flex: none;
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+  border-radius: 0 0 2.25rem 2.25rem;
+  overflow: hidden;
+}
+.dsa-cabecera--casa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3.5rem 2.5rem 1.5rem;
+}
+.dsa-cabecera--ciudad {
+  border-radius: 0;
+}
+.dsa-marca {
+  position: absolute;
+  top: 1.875rem;
+  left: 1.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.dsa-marca strong {
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: 2.75rem;
+  line-height: 1;
+}
+.dsa-marca span {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.hx a.dsa-saltar,
+.dsa-saltar {
+  position: absolute;
+  top: 0.875rem;
+  right: 1rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border-radius: 1.375rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--ds-c-fff);
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.dsa-ciudad-pie {
+  margin-top: -0.25rem;
+}
+
+/* ── Código de 6 dígitos: un solo campo real sobre seis cajas ──────────────────────────────────────────── */
+.dsa-etiqueta-campo {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--ds-texto);
+}
+.dsa-codigo {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.5rem;
+  border-radius: 1rem;
+}
+.dsa-codigo__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  font-size: 1rem;
+  cursor: text;
+}
+.dsa-codigo:focus-within {
+  outline: 3px solid var(--ds-azul);
+  outline-offset: 4px;
+}
+.dsa-codigo__caja {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.75rem;
+  border-radius: 1rem;
+  border: 1.5px solid var(--ds-borde);
+  background: var(--ds-c-fff);
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-size: 1.625rem;
+  color: var(--ds-tinta);
+}
+.dsa-codigo:focus-within .dsa-codigo__caja[data-actual] {
+  border: 2px solid var(--ds-azul);
+}
+.dsa-codigo[data-error] .dsa-codigo__caja {
+  border-color: var(--ds-error);
+}
+.dsa-error {
+  display: flex;
+  gap: 0.375rem;
+  align-items: flex-start;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ds-error);
+}
+.dsa-error svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* ── Enlace de texto (reenviar, entrar con contraseña) ─────────────────────────────────────────────────── */
+.hx a.dsa-enlace,
+.dsa-enlace {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--ds-azul);
+  font: 800 0.875rem var(--fuente);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.dsa-enlace:disabled {
+  color: var(--ds-suave);
+  text-decoration: none;
+  cursor: default;
+}
+
+/* ── Casilla de aceptación ─────────────────────────────────────────────────────────────────────────────── */
+.dsa-casilla {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  min-height: 2.75rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 1rem;
+  border: 1.5px solid var(--ds-borde);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.dsa-casilla input {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  accent-color: var(--ds-azul);
+}
+.dsa-casilla:has(input:checked) {
+  border: 2px solid var(--ds-azul);
+  background: var(--ds-tinte);
+}
+.dsa-textos {
+  font-size: 0.875rem;
+  color: var(--ds-texto);
+}
+.dsa-textos summary {
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  color: var(--ds-azul);
+  font-weight: 800;
+  cursor: pointer;
+}
+.dsa-textos h2 {
+  font-size: 1rem;
+  margin: 0.75rem 0 0.25rem;
+}
+
+/* ── Opción con letra (Google) ─────────────────────────────────────────────────────────────────────────── */
+.dsa-letra {
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--ds-tinta);
+  background: var(--ds-mosaico);
+}
+
+/* ── Segmentos (tipo de vivienda) ──────────────────────────────────────────────────────────────────────── */
+.dsa-seg {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 1rem;
+  background: var(--ds-mosaico);
+}
+.dsa-seg button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: none;
+  color: var(--ds-texto);
+  font: 800 0.9375rem var(--fuente);
+  cursor: pointer;
+}
+.dsa-seg button[aria-checked='true'] {
+  background: var(--ds-c-fff);
+  color: var(--ds-tinta);
+  box-shadow: var(--ds-sombra-1);
+}
+
+/* ── Contador (ambientes) ──────────────────────────────────────────────────────────────────────────────── */
+.dsa-contadores > .dsa-contador:first-child {
+  border-top: 0;
+}
+.dsa-contador {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.75rem;
+  border-top: 1px solid var(--ds-borde);
+}
+.dsa-contador__texto {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+.dsa-contador__control {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+.dsa-contador__control output {
+  width: 1.5rem;
+  text-align: center;
+  font-size: 1.0625rem;
+  font-weight: 800;
+}
+.dsa-contador__boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: 0;
+  line-height: 1;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--ds-borde);
+  background: var(--ds-c-fff);
+  color: var(--ds-tinta);
+  font: 800 1.25rem var(--fuente);
+  cursor: pointer;
+}
+.dsa-contador__boton--mas {
+  border: 0;
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+  box-shadow: 0 3px 0 var(--ds-hondo);
+}
+.dsa-contador__boton:disabled {
+  opacity: 0.4;
+  cursor: default;
+  box-shadow: none;
+}
+
+/* ── Equipos ───────────────────────────────────────────────────────────────────────────────────────────── */
+.dsa-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.dsa-chips .ds-pastilla {
+  gap: 0.5rem;
+  min-height: 3rem;
+}
+.dsa-chips .ds-pastilla svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ── Foto por ambiente ─────────────────────────────────────────────────────────────────────────────────── */
+.dsa-foto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+}
+.dsa-foto__vacio,
+.dsa-foto img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 6.5rem;
+  border-radius: 1rem;
+  object-fit: cover;
+}
+.dsa-foto__vacio {
+  border: 2px dashed var(--ds-c-aeb6c4);
+  background: var(--ds-gris);
+  color: var(--ds-azul);
+  cursor: pointer;
+}
+.dsa-foto__vacio:focus-within {
+  outline: 3px solid var(--ds-azul);
+  outline-offset: 2px;
+}
+.dsa-foto__vacio svg {
+  width: 1.625rem;
+  height: 1.625rem;
+}
+.dsa-foto__nombre {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+}
+.dsa-foto__nombre svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--ds-exito);
+}
+
+/* ── Ilustración centrada (sello de listo) ─────────────────────────────────────────────────────────────── */
+.dsa-centro {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+}

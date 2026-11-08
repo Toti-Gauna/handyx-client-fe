@@ -1,0 +1,809 @@
+/* Sistema de diseño · mensajes, cuenta, ayuda y errores (lienzo design/usuario, filas M y X). Lo importa
+   src/ui/mensajes.tsx. Mismo criterio que ds.css: rem (respeta el tamaño de letra de la persona), tokens --ds-*,
+   toques de 44 px o más y texto de 12 px como mínimo (11 px solo en etiquetas en mayúsculas). */
+
+/* ── Pantalla con cuerpo que se desplaza y mensajes anclados abajo ─────────────────────────────────────── */
+.ds-m .pantalla__scroll {
+  display: flex;
+  flex-direction: column;
+}
+.ds-m .pantalla__scroll > .ds-chat {
+  flex: 1 0 auto;
+}
+.ds-m .ds-chat .ds-burbuja:not(.ds-burbuja--yo),
+.ds-m-sel__cont .ds-burbuja:not(.ds-burbuja--yo) {
+  align-self: flex-start;
+}
+.ds-m .ds-burbuja {
+  width: fit-content;
+  overflow-wrap: anywhere;
+}
+.ds-m .ds-burbuja img {
+  display: block;
+  max-width: 100%;
+  border-radius: 0.875rem;
+}
+.ds-m-fila {
+  display: contents;
+}
+.ds-m-nota-centro {
+  align-self: center;
+  margin: 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ds-suave);
+}
+.ds-m-dia {
+  align-self: center;
+}
+
+/* ── Barra con título centrado (chat, soporte, subpantallas de Cuenta) ─────────────────────────────────── */
+.ds-m-barra {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) minmax(3rem, auto);
+  align-items: center;
+  gap: 0.5rem;
+  padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.5rem;
+  background: var(--ds-c-fff);
+}
+.ds-m-barra__redondo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ds-c-fff);
+  color: var(--ds-tinta);
+  box-shadow: var(--ds-sombra-1);
+  text-decoration: none;
+}
+.ds-m-barra__redondo svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+.ds-m-barra__textos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+.ds-m-barra__textos h1 {
+  margin: 0;
+  max-width: 100%;
+  font-family: var(--ds-titulo);
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ds-tinta);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ds-m-barra__textos small {
+  max-width: 100%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ds-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ds-m-barra__accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  border: 1.5px solid var(--ds-azul);
+  border-radius: 999px;
+  background: var(--ds-c-fff);
+  color: var(--ds-azul);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.ds-m-barra--seleccion {
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+}
+.ds-m-barra--seleccion h1 {
+  color: var(--ds-c-fff);
+  font-size: 1.125rem;
+}
+.ds-m-barra--seleccion .ds-m-barra__redondo {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--ds-c-fff);
+  box-shadow: none;
+}
+.ds-m-barra--seleccion .ds-m-barra__textos {
+  align-items: flex-start;
+}
+.ds-m-barra__texto {
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ── Escribir (redactor del chat) ──────────────────────────────────────────────────────────────────────── */
+.ds-m-escribir {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  background: var(--ds-c-fff);
+  border-top: 1px solid var(--ds-borde);
+}
+.ds-m-escribir__mas,
+.ds-m-escribir__enviar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.ds-m-escribir__mas {
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+  box-shadow: 0 3px 0 var(--ds-hondo);
+}
+.ds-m-escribir__mas:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--ds-hondo);
+}
+.ds-m-escribir__enviar {
+  background: var(--ds-mosaico);
+  color: var(--ds-azul);
+}
+.ds-m-escribir__enviar:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.ds-m-escribir__enviar:not(:disabled) {
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+}
+.ds-m-escribir svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.ds-m-escribir__campo {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: 3rem;
+  max-height: 7.5rem;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-radius: 1.5rem;
+  background: var(--ds-gris);
+  color: var(--ds-tinta);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.35;
+  resize: none;
+}
+.ds-m-escribir__campo::placeholder {
+  color: var(--ds-suave);
+}
+
+/* Respuestas rápidas: una sola fila que se desliza de costado */
+/* Las respuestas rápidas bajan de línea en vez de esconderse a un costado (con la letra grande se ven todas). */
+.ds-m-rapidas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem 0;
+}
+.ds-m-rapidas .ds-pastilla {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* ── Tarjeta dentro del chat (propuesta, otro horario, presupuesto) ────────────────────────────────────── */
+.ds-m-tarjeta {
+  align-self: flex-start;
+  width: 88%;
+  border-radius: 1.25rem;
+  border: 1px solid var(--ds-borde);
+  background: var(--ds-c-fff);
+  box-shadow: var(--ds-sombra);
+  overflow: hidden;
+}
+.ds-m-tarjeta--propia {
+  align-self: flex-end;
+}
+.ds-m-tarjeta__cuerpo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.375rem;
+  padding: 0.75rem 0.875rem;
+}
+.ds-m-tarjeta__cuerpo .ds-chip {
+  align-self: stretch;
+  justify-content: flex-start;
+}
+.ds-m-tarjeta__titulo {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.ds-m-tarjeta__sub {
+  font-size: 0.8125rem;
+  color: var(--ds-suave);
+}
+.ds-m-tarjeta__acciones {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  border-top: 1px solid var(--ds-borde);
+}
+.ds-m-tarjeta__accion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0 0.5rem;
+  border: 0;
+  background: var(--ds-c-fff);
+  color: var(--ds-hondo);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ds-m-tarjeta__accion + .ds-m-tarjeta__accion {
+  border-left: 1px solid var(--ds-borde);
+}
+.ds-m-tarjeta__accion--principal {
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+}
+.ds-m-tarjeta__estado {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  border-top: 1px solid var(--ds-borde);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ds-suave);
+}
+.ds-m-detalle {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid var(--ds-borde);
+}
+.ds-m-detalle > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+}
+.ds-m-detalle dd {
+  margin: 0;
+  font-weight: 800;
+}
+.ds-m-detalle__total {
+  align-items: baseline;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--ds-borde);
+}
+
+/* ── Lista de conversaciones ───────────────────────────────────────────────────────────────────────────── */
+.ds-m-lista {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ds-m-conv {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 4.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ds-borde);
+  color: var(--ds-tinta);
+  text-decoration: none;
+}
+.ds-m-conv__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.ds-m-conv__linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.ds-m-conv__linea strong {
+  font-size: 1rem;
+}
+.ds-m-conv__hora {
+  flex: none;
+  font-size: 0.75rem;
+  color: var(--ds-suave);
+}
+.ds-m-conv__rubro {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ds-hondo);
+}
+.ds-m-conv__previa {
+  min-width: 0;
+  font-size: 0.875rem;
+  color: var(--ds-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ds-m-conv__cuenta {
+  flex: none;
+  box-sizing: border-box;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 0.75rem;
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ds-m-asistente {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--ds-azul);
+}
+.ds-m-buscar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 3rem;
+  padding: 0 0.875rem;
+  border-radius: 1rem;
+  background: var(--ds-gris);
+  color: var(--ds-suave);
+}
+.ds-m-buscar svg {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.ds-m-buscar input {
+  flex: 1;
+  min-width: 0;
+  height: 2.75rem;
+  border: 0;
+  background: none;
+  color: var(--ds-tinta);
+  font: inherit;
+  font-size: 1rem;
+}
+.ds-m-buscar--blanco {
+  min-height: 3.25rem;
+  background: var(--ds-c-fff);
+  padding: 0 1rem;
+}
+
+/* ── Selección de mensajes ─────────────────────────────────────────────────────────────────────────────── */
+.ds-m-sel {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.625rem;
+  border: 0;
+  border-radius: 1.25rem;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ds-m-sel[aria-checked='true'] {
+  background: var(--ds-tinte);
+  box-shadow: inset 0 0 0 1.5px var(--ds-c-c9d3e6);
+}
+.ds-m-sel__marca {
+  flex: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  border: 2px solid var(--ds-suave);
+  background: var(--ds-c-fff);
+  color: var(--ds-c-fff);
+}
+.ds-m-sel[aria-checked='true'] .ds-m-sel__marca {
+  border-color: var(--ds-azul);
+  background: var(--ds-azul);
+}
+.ds-m-sel__marca svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+.ds-m-sel__cont {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+.ds-m-acciones {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0.75rem calc(1rem + env(safe-area-inset-bottom, 0px));
+  padding: 0.375rem;
+  border-radius: 1.5rem;
+  background: var(--ds-c-fff);
+  border: 1px solid var(--ds-borde);
+  box-shadow:
+    0 2px 6px rgba(14, 29, 54, 0.08),
+    0 22px 40px -20px rgba(14, 29, 54, 0.5);
+}
+.ds-m-acciones button {
+  flex: 1;
+  min-width: 0;
+  min-height: 3.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1875rem;
+  padding: 0.25rem;
+  border: 0;
+  border-radius: 1rem;
+  background: none;
+  color: var(--ds-tinta);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  cursor: pointer;
+}
+.ds-m-acciones button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.ds-m-acciones button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.ds-m-acciones .ds-m-acciones__rojo {
+  color: var(--ds-error);
+}
+
+/* ── Hoja «Sumar al chat» ──────────────────────────────────────────────────────────────────────────────── */
+.ds-m-adjuntar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+.ds-m-adjuntar__op {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 7rem;
+  padding: 0.75rem 0.375rem;
+  border: 0;
+  border-radius: 1.125rem;
+  background: var(--ds-mosaico);
+  color: var(--ds-tinta);
+  font: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ds-m-adjuntar__op strong {
+  font-size: 0.8125rem;
+}
+.ds-m-adjuntar__op span.ds-fila-enlace__sub {
+  font-size: 0.75rem;
+}
+
+/* ── Cuenta ────────────────────────────────────────────────────────────────────────────────────────────── */
+.ds-m-cuenta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  padding: max(1rem, env(safe-area-inset-top)) 1rem 1.375rem;
+  background: var(--ds-azul);
+  border-radius: 0 0 1.875rem 1.875rem;
+  color: var(--ds-c-fff);
+}
+.ds-m-cuenta__fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ds-m-cuenta__fila .ds-etiqueta {
+  color: var(--ds-c-fff);
+}
+.ds-m-cuenta__quien {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  min-width: 0;
+}
+.ds-m-cuenta__quien .ds-avatar {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+}
+.ds-m-cuenta__nombre {
+  margin: 0;
+  font-family: var(--ds-titulo);
+  font-size: 1.625rem;
+  font-weight: 900;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+.ds-m-cuenta__zona {
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+.ds-m-cuenta__datos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+}
+.ds-m-cuenta__datos > div {
+  display: flex;
+  flex-direction: column;
+  padding: 0.625rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.14);
+}
+.ds-m-cuenta__datos dd {
+  margin: 0;
+  font-family: var(--ds-titulo);
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+.ds-m-cuenta__datos dt {
+  order: 2;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.ds-m-movimiento {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ds-borde);
+}
+.ds-m-movimiento:first-child {
+  border-top: 0;
+}
+.ds-m-movimiento__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1875rem;
+}
+.ds-m-movimiento__textos strong {
+  font-size: 0.9375rem;
+}
+.ds-m-movimiento__sub {
+  font-size: 0.8125rem;
+  color: var(--ds-suave);
+}
+.ds-m-peligro {
+  margin-top: 0.5rem;
+}
+
+/* ── Ayuda ─────────────────────────────────────────────────────────────────────────────────────────────── */
+.ds-m-temas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+.ds-m-tema {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 5.5rem;
+  padding: 0.875rem 0.375rem;
+  border: 0;
+  border-radius: 1.25rem;
+  background: var(--ds-mosaico);
+  box-shadow: 0 4px 0 var(--ds-mosaico-base);
+  color: var(--ds-tinta);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ds-m-tema[aria-pressed='true'] {
+  background: var(--ds-tinte);
+  box-shadow: inset 0 0 0 2px var(--ds-azul);
+}
+.ds-m-tema svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--ds-azul);
+}
+.ds-m-pregunta {
+  border-top: 1px solid var(--ds-borde);
+}
+.ds-m-pregunta summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  list-style: none;
+}
+.ds-m-pregunta summary::-webkit-details-marker {
+  display: none;
+}
+.ds-m-pregunta summary svg {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.15s;
+}
+.ds-m-pregunta[open] summary svg {
+  transform: rotate(180deg);
+}
+.ds-m-pregunta p {
+  margin: 0 0 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--ds-texto);
+}
+.ds-m-respuesta p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ds-texto);
+}
+
+/* ── Errores a pantalla completa ───────────────────────────────────────────────────────────────────────── */
+.ds-m-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 1.25rem 1rem;
+  text-align: center;
+}
+.ds-m-error .ds-titulo,
+.ds-m-error .ds-sub {
+  text-align: center;
+}
+.ds-m-error .ds-sub {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ds-texto);
+}
+.ds-m-error .ds-sub p {
+  margin: 0 0 0.5rem;
+}
+.ds-m-error__dibujo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12rem;
+  height: 10rem;
+}
+.ds-m-error__dibujo img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-m-pregunta summary svg {
+    transition: none;
+  }
+}
+
+/* ── Segmentos ─────────────────────────────────────────────────────────────────────────────────────────── */
+.ds-m-seg {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 1rem;
+  background: var(--ds-mosaico);
+}
+.ds-m-seg button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 0.75rem;
+  background: none;
+  color: var(--ds-texto);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.ds-m-seg button[aria-selected='true'] {
+  background: var(--ds-c-fff);
+  color: var(--ds-tinta);
+  font-weight: 800;
+  box-shadow: var(--ds-sombra-1);
+}
+.ds-m-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+}
+
+/* Enlace de texto con toque de 44 px (dentro de una fila) */
+.ds-m-enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ds-azul);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+/* Agenda en teléfonos angostos (360 px): el calendario usa el ancho de la tarjeta para que cada día mida 44 px. */
+@media (max-width: 24rem) {
+  .ds-tarjeta > .cal {
+    margin-inline: -0.875rem;
+  }
+}

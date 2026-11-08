@@ -1,0 +1,250 @@
+/* Pantalla de carga (components/Splash.tsx). Línea de tiempo, en segundos:
+   0      azul de la marca, liso
+   0,05   onda amarilla desde el centro · 0,55 onda azul vivo · 1,05 vuelve el azul de la marca
+   0,2    los Handys entran saltando de a uno (cada 0,1 s) hasta su lugar
+   1,05   las letras de "Handyx" caen de a una (cada 0,07 s) delante de ellos: quedan asomados, agarrados de su letra
+   1,55   cada Handy aprieta su letra y se balancea · 1,6 confeti de mosaicos · 1,75 el lema
+   2,5    la pantalla se cierra en un círculo hacia el centro y deja ver la app (termina a los 2,95 s) */
+
+.splash {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 1.6rem;
+  overflow: hidden;
+  background-color: var(--color-azul);
+  clip-path: circle(150% at 50% 50%);
+  animation: splash-cerrar 0.45s cubic-bezier(0.65, 0, 0.35, 1) 2.5s forwards;
+  /* Mientras se ve, un toque la saltea y no llega a la app (nada se toca sin querer); al terminar, queda oculta. */
+  pointer-events: auto;
+}
+
+.splash--salir {
+  animation: splash-salir 0.15s ease-in forwards;
+}
+
+/* Navegadores automatizados (salvo ?splash=1) y "reducir movimiento": sin pantalla de carga. */
+.sin-splash .splash {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash {
+    display: none;
+  }
+}
+
+/* ── Ondas de color (círculos que crecen desde el centro, uno encima del otro) ─────────────────────────── */
+.splash__onda {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300vmax;
+  height: 300vmax;
+  margin: -150vmax 0 0 -150vmax;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: splash-onda 0.55s cubic-bezier(0.65, 0, 0.35, 1) var(--d) forwards;
+}
+.splash__onda--1 {
+  --d: 0.05s;
+  background: var(--color-amarillo);
+}
+.splash__onda--2 {
+  --d: 0.55s;
+  background: var(--color-azul-personajes);
+}
+.splash__onda--3 {
+  --d: 1.05s;
+  background-color: var(--color-azul);
+}
+
+/* ── Logotipo armado con sus letras ─────────────────────────────────────────────────────────────────────── */
+.splash__marca {
+  position: relative;
+  z-index: 1;
+  width: min(84vw, 380px);
+  aspect-ratio: 720 / 158;
+}
+
+/* Cada letra es un recorte del logotipo real (misma imagen, desplazada), en blanco. */
+.splash__letra {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+  animation: splash-letra 0.62s cubic-bezier(0.34, 1.56, 0.64, 1) calc(1.05s + var(--i) * 0.07s)
+    both;
+}
+.splash__letra img {
+  position: absolute;
+  top: 0;
+  max-width: none;
+  height: 100%;
+  filter: brightness(0) invert(1);
+}
+
+/* Cada Handy: detrás de su letra, con los pies escondidos: se asoma por arriba y se agarra del borde. */
+.splash__handy {
+  position: absolute;
+  z-index: 1;
+  left: var(--x);
+  bottom: calc(100% - var(--tope) - 24%);
+  width: var(--tam);
+  transform: translateX(-50%);
+}
+.splash__handy img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 100%;
+  /* Contorno blanco de calco: se lee sobre cualquiera de los fondos (el engranaje es azul). */
+  filter: drop-shadow(0 0 0.12rem rgb(255 255 255 / 0.95))
+    drop-shadow(0 0.35rem 0.4rem rgb(14 29 54 / 0.25));
+  animation:
+    splash-saltar 0.95s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.2s + var(--i) * 0.1s) both,
+    splash-agarrar 0.9s ease-in-out calc(1.4s + var(--l) * 0.07s) both;
+}
+
+/* ── Confeti de mosaicos ────────────────────────────────────────────────────────────────────────────────── */
+.splash__confeti {
+  position: absolute;
+  z-index: 3;
+  top: 40%;
+  left: 50%;
+  width: 4.5%;
+  aspect-ratio: 1;
+  border-radius: 28%;
+  opacity: 0;
+  animation: splash-confeti 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 1.6s both;
+}
+.splash__confeti--amarillo {
+  background: var(--color-amarillo);
+}
+.splash__confeti--blanco {
+  background: var(--texto-sobre-marca);
+}
+.splash__confeti--celeste {
+  background: var(--color-azul-personajes);
+  box-shadow: 0 0 0 2px var(--texto-sobre-marca);
+}
+
+.splash__lema {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: var(--texto-sobre-marca);
+  font-family: var(--fuente);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  animation: splash-aparecer 0.45s ease-out 1.75s both;
+}
+
+/* ── Animaciones ────────────────────────────────────────────────────────────────────────────────────────── */
+@keyframes splash-onda {
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Entra desde abajo de la pantalla, cae con aplastamiento y rebota en su lugar. */
+@keyframes splash-saltar {
+  0% {
+    opacity: 0;
+    transform: translateY(320%) scale(0.9);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-60%) scale(0.94, 1.1);
+  }
+  48% {
+    transform: translateY(0) scale(1.16, 0.82);
+  }
+  64% {
+    transform: translateY(-28%) scale(0.96, 1.05);
+  }
+  80% {
+    transform: translateY(0) scale(1.06, 0.94);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* La letra cae desde arriba girando un poco y rebota al apoyarse. */
+@keyframes splash-letra {
+  from {
+    opacity: 0;
+    transform: translateY(-160%) rotate(-10deg);
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* El Handy aprieta su letra y se balancea, colgado. */
+@keyframes splash-agarrar {
+  0% {
+    transform: none;
+  }
+  18% {
+    transform: translateY(6%) scale(1.06, 0.92);
+  }
+  42% {
+    transform: rotate(-8deg);
+  }
+  68% {
+    transform: rotate(6deg);
+  }
+  86% {
+    transform: rotate(-2deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes splash-confeti {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.4) rotate(0deg);
+  }
+  8%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--dx) * 100%), calc(var(--dy) * 100%)) scale(1)
+      rotate(var(--giro));
+  }
+}
+
+@keyframes splash-aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Salida: la pantalla se cierra en un círculo hacia el centro y queda oculta. */
+@keyframes splash-cerrar {
+  to {
+    clip-path: circle(0% at 50% 50%);
+    visibility: hidden;
+  }
+}
+
+@keyframes splash-salir {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

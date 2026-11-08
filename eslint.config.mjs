@@ -5,7 +5,17 @@ import nextTs from 'eslint-config-next/typescript';
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
-  globalIgnores(['.next/**', 'out/**', 'next-env.d.ts', 'node_modules/**', 'tests/e2e/**']),
+  globalIgnores([
+    '.next/**',
+    'out/**',
+    'next-env.d.ts',
+    'node_modules/**',
+    'tests/e2e/**',
+    // Fuente del lienzo de diseño (generadores y tableros .dc.html): no es código de la app.
+    'design/**',
+    // Copia del worker de MapLibre (scripts/mapa-worker.mjs).
+    'public/mapa/maplibre-gl-worker.js',
+  ]),
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',

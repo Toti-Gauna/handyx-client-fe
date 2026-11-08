@@ -4,23 +4,16 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
 import { FotoSubida } from '@/components/FotoSubida';
+import { MapaHx } from '@/components/MapaHx';
+import { ESTADOS_BUSQUEDA, PedidoBuscando } from '@/components/PedidoBuscando';
 import { Enlace, ruta } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
-import {
-  Aviso,
-  Boton,
-  Campo,
-  Cargando,
-  Datos,
-  ErrorEstado,
-  Hoja,
-  Pastilla,
-  Vacio,
-} from '@/components/ui';
+import { Barra, ChipEstado, HandyRubro, Pantalla, entra } from '@/components/hx';
+import { Icono } from '@/components/Icono';
+import { Aviso, Boton, Campo, Cargando, ErrorEstado, Hoja, Vacio } from '@/components/ui';
 import type { Pedido } from '@/contracts/v1/pedidos';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { RUBROS_INFO, TIPOS_INFO, etiquetaPedido } from '@/domain/etiquetas';
-import { cuando, horaDeInstante } from '@/domain/fechas';
+import { cuando, fechaLarga, horaDeInstante } from '@/domain/fechas';
 import { pesos } from '@/domain/dinero';
 
 const MOTIVOS = [
@@ -46,7 +39,7 @@ export default function DetallePedido() {
         </Enlace>
       </Vacio>
     );
-  if (pedido.estado === 'cargando') return <Cargando />;
+  if (pedido.estado === 'cargando') return <Cargando forma="mapa" />;
   if (pedido.estado === 'error' && pedido.error)
     return <ErrorEstado error={pedido.error} onReintentar={pedido.recargar} />;
   const p = pedido.datos;
@@ -95,203 +88,8 @@ export default function DetallePedido() {
     p.estado,
   );
 
-  return (
+  const hojas = (
     <>
-      <Titulo texto={`${RUBROS_INFO[p.rubro].nombre} · ==${TIPOS_INFO[p.tipo].nombre}==`} />
-      <p>
-        <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-          {e.texto}
-        </Pastilla>
-      </p>
-
-      {accion.error ? (
-        <Aviso
-          tipo={accion.error.codigo === 'conflicto' ? 'alerta' : 'error'}
-          titulo={accion.error.codigo === 'conflicto' ? 'Esto cambió' : 'No se pudo'}
-        >
-          <p>{accion.error.mensaje}</p>
-          {accion.error.codigo === 'conflicto' ? (
-            <Boton
-              chico
-              variante="claro"
-              onClick={() => {
-                accion.limpiar();
-                pedido.recargar();
-              }}
-            >
-              Actualizar
-            </Boton>
-          ) : null}
-        </Aviso>
-      ) : null}
-
-      {p.estado === 'buscando' ? (
-        <Aviso tipo="info" titulo="Estamos buscando especialistas" rol="status">
-          <p>Te avisamos cuando lleguen propuestas. No podemos prometer cuándo.</p>
-          <p>
-            Seguimos buscando hasta las {horaDeInstante(p.busqueda.ventanaHasta)} (intento{' '}
-            {p.busqueda.intento} de {p.busqueda.maxIntentos}).
-          </p>
-        </Aviso>
-      ) : null}
-      {p.estado === 'con_propuestas' ? (
-        <Aviso
-          tipo="ok"
-          titulo={
-            p.propuestasPendientes
-              ? `Tenés ${p.propuestasPendientes} ${p.propuestasPendientes === 1 ? 'propuesta' : 'propuestas'}`
-              : 'Las propuestas vencieron'
-          }
-          rol="status"
-        >
-          {p.propuestasPendientes ? (
-            <p>Compará, aceptá, rechazá o contraofertá. Nada queda acordado hasta que aceptes.</p>
-          ) : (
-            <p>
-              Ninguna sigue vigente. La búsqueda sigue hasta las{' '}
-              {horaDeInstante(p.busqueda.ventanaHasta)}.
-            </p>
-          )}
-        </Aviso>
-      ) : null}
-      {p.estado === 'sin_respuesta' ? (
-        <Aviso
-          tipo="alerta"
-          titulo={
-            p.tipo === 'urgente' ? 'Nadie respondió en 20 minutos' : 'Todavía no hay propuestas'
-          }
-        >
-          <p>
-            {p.tipo === 'urgente'
-              ? 'Ningún especialista respondió a tu pedido urgente.'
-              : 'Pasaron 12 horas sin propuestas.'}{' '}
-            Podés revisar el pedido y relanzar la búsqueda
-            {p.busqueda.intento < p.busqueda.maxIntentos
-              ? ` (intento ${p.busqueda.intento + 1} de ${p.busqueda.maxIntentos})`
-              : ''}
-            , pedir una búsqueda manual o cancelar.
-          </p>
-        </Aviso>
-      ) : null}
-      {p.estado === 'busqueda_manual' ? (
-        <Aviso tipo="info" titulo="El equipo de Handy está buscando por vos" rol="status">
-          <p>
-            Una persona busca especialistas para tu pedido. No podemos prometer un plazo ni que haya
-            disponibles. Te avisamos si aparece una propuesta.
-          </p>
-        </Aviso>
-      ) : null}
-      {p.estado === 'cancelado' ? <Aviso tipo="info">Cancelaste este pedido.</Aviso> : null}
-      {p.estado === 'vencido' ? (
-        <Aviso tipo="info">
-          La fecha que pediste ya pasó sin un acuerdo. Podés hacer un pedido nuevo.
-        </Aviso>
-      ) : null}
-
-      <section className="tarjeta">
-        <div className="tarjeta__cuerpo">
-          <Datos
-            filas={[
-              [
-                'Dónde',
-                `${p.ubicacion.barrio ? `${p.ubicacion.barrio}, ` : ''}${p.ubicacion.ciudad}`,
-              ],
-              ...(f
-                ? [
-                    [
-                      'Cuándo (solicitud)',
-                      `${f.fecha.split('-').reverse().join('/')} · ${f.desde}${f.hasta ? ` a ${f.hasta}` : ''}`,
-                    ] as const,
-                  ]
-                : ([['Cuándo', 'Lo antes posible']] as const)),
-              [
-                'Precio que propusiste',
-                p.precioPropuestoCentavos ? pesos(p.precioPropuestoCentavos) : 'Ninguno',
-              ],
-              [
-                'Aceptación automática',
-                p.autoaceptacion
-                  ? `Hasta ${pesos(p.autoaceptacion.montoMaximoCentavos)}`
-                  : 'Desactivada',
-              ],
-              ['Pedido', cuando(p.creadoEn)],
-            ]}
-          />
-          <p style={{ margin: '10px 0 0' }}>{p.descripcion}</p>
-          {p.fotos.length ? (
-            <ul className="fotos">
-              {p.fotos.map((x) => (
-                <li key={x.id} className="foto">
-                  <FotoPrivada url={x.url} alt="Foto del pedido" />
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      </section>
-
-      <div className="acciones">
-        {['con_propuestas'].includes(p.estado) ? (
-          <Enlace className="boton" href={ruta('/pedidos/propuestas/', { pedido: p.id })}>
-            Ver propuestas{p.propuestasPendientes ? ` (${p.propuestasPendientes})` : ''}
-          </Enlace>
-        ) : null}
-        {p.estado === 'sin_respuesta' && p.busqueda.intento < p.busqueda.maxIntentos ? (
-          <Boton
-            icono="reintentar"
-            cargando={accion.pendiente}
-            onClick={() => correr('pedidoRelanzar', p)}
-          >
-            Relanzar la búsqueda
-          </Boton>
-        ) : null}
-        {p.estado === 'sin_respuesta' ? (
-          <Boton
-            variante="claro"
-            cargando={accion.pendiente}
-            onClick={() => correr('pedidoBusquedaManual', p)}
-          >
-            Pedir búsqueda manual
-          </Boton>
-        ) : null}
-        {p.estado === 'contratado' && p.trabajoId ? (
-          <Enlace className="boton" href={ruta('/trabajos/detalle/', { id: p.trabajoId })}>
-            Ver el trabajo
-          </Enlace>
-        ) : null}
-        {p.estado === 'buscando' ? (
-          <Boton
-            variante="claro"
-            icono="editar"
-            onClick={() => {
-              setDescripcion(p.descripcion);
-              setFotos(null);
-              setHoja('editar');
-            }}
-          >
-            Editar el pedido
-          </Boton>
-        ) : null}
-        {puedeCancelar ? (
-          <Boton variante="peligro" icono="cerrar" onClick={() => setHoja('cancelar')}>
-            Cancelar el pedido
-          </Boton>
-        ) : null}
-        {['cancelado', 'vencido'].includes(p.estado) ? (
-          <Enlace className="boton" href={ruta('/pedir/', { rubro: p.rubro, tipo: p.tipo })}>
-            Pedir de nuevo
-          </Enlace>
-        ) : null}
-        {p.estado === 'sin_respuesta' ? (
-          <Enlace
-            className="boton boton--texto"
-            href={ruta('/pedir/', { rubro: p.rubro, tipo: p.tipo })}
-          >
-            Hacer un pedido nuevo
-          </Enlace>
-        ) : null}
-      </div>
-
       <Hoja
         abierta={hoja === 'cancelar'}
         onCerrar={() => setHoja(null)}
@@ -354,5 +152,204 @@ export default function DetallePedido() {
         {pedido.refrescando ? 'Actualizando' : ''}
       </p>
     </>
+  );
+
+  if (ESTADOS_BUSQUEDA.includes(p.estado))
+    return (
+      <>
+        <PedidoBuscando
+          p={p}
+          pendiente={accion.pendiente}
+          error={hoja ? null : (accion.error?.mensaje ?? null)}
+          onEditar={() => {
+            setDescripcion(p.descripcion);
+            setFotos(null);
+            setHoja('editar');
+          }}
+          onCancelar={() => setHoja('cancelar')}
+          onRelanzar={() => void correr('pedidoRelanzar', p)}
+          onBusquedaManual={() => void correr('pedidoBusquedaManual', p)}
+        />
+        {hojas}
+      </>
+    );
+
+  const principal =
+    p.estado === 'con_propuestas' ? (
+      <Enlace className="hd-boton" href={ruta('/pedidos/propuestas/', { pedido: p.id })}>
+        <Icono nombre="etiqueta" />
+        Ver propuestas{p.propuestasPendientes ? ` (${p.propuestasPendientes})` : ''}
+      </Enlace>
+    ) : p.estado === 'contratado' && p.trabajoId ? (
+      <Enlace className="hd-boton" href={ruta('/trabajos/detalle/', { id: p.trabajoId })}>
+        Ver el trabajo
+        <Icono nombre="derecha" />
+      </Enlace>
+    ) : ['cancelado', 'vencido'].includes(p.estado) ? (
+      <Enlace className="hd-boton" href={ruta('/pedir/', { rubro: p.rubro, tipo: p.tipo })}>
+        <Icono nombre="reintentar" />
+        Pedir de nuevo
+      </Enlace>
+    ) : null;
+
+  return (
+    <Pantalla
+      arriba={
+        <Barra
+          titulo={`${RUBROS_INFO[p.rubro].nombre} · ==${TIPOS_INFO[p.tipo].nombre}==`}
+          volver={{ href: '/pedidos/', etiqueta: 'Volver a Actividad' }}
+          icono={RUBROS_INFO[p.rubro].icono}
+          sub={f ? `Pedido para el ${fechaLarga(f.fecha)} · ${f.desde} h` : 'Lo antes posible'}
+        />
+      }
+      pie={
+        principal || puedeCancelar ? (
+          <>
+            {principal}
+            {puedeCancelar ? (
+              <button
+                type="button"
+                className="hd-boton hd-boton--fantasma du-rojo"
+                onClick={() => setHoja('cancelar')}
+              >
+                <Icono nombre="cerrar" />
+                Cancelar el pedido
+              </button>
+            ) : null}
+          </>
+        ) : undefined
+      }
+      clase="du-pedido-hx"
+    >
+      <div className="du-cuerpo">
+        <div className="du-pedido-hx__estado" {...entra(1)}>
+          <ChipEstado e={e} vivo />
+        </div>
+        {accion.error ? (
+          <Aviso
+            tipo={accion.error.codigo === 'conflicto' ? 'alerta' : 'error'}
+            titulo={accion.error.codigo === 'conflicto' ? 'Esto cambió' : 'No se pudo'}
+          >
+            <p>{accion.error.mensaje}</p>
+            {accion.error.codigo === 'conflicto' ? (
+              <Boton
+                chico
+                variante="claro"
+                onClick={() => {
+                  accion.limpiar();
+                  pedido.recargar();
+                }}
+              >
+                Actualizar
+              </Boton>
+            ) : null}
+          </Aviso>
+        ) : null}
+
+        {p.estado === 'con_propuestas' ? (
+          <section
+            className="hd-tarjeta hd-tarjeta--amarillo du-pedido-hx__aviso"
+            role="status"
+            data-vt-destino
+            {...entra(2, 'pop')}
+          >
+            <HandyRubro rubro={p.rubro} clase="du-pedido-hx__handy" />
+            <span>
+              <strong>
+                {p.propuestasPendientes
+                  ? `Tenés ${p.propuestasPendientes} ${p.propuestasPendientes === 1 ? 'propuesta' : 'propuestas'}`
+                  : 'Las propuestas vencieron'}
+              </strong>
+              <small>
+                {p.propuestasPendientes
+                  ? 'Compará, aceptá, rechazá o contraofertá. Nada queda acordado hasta que aceptes.'
+                  : `Ninguna sigue vigente. La búsqueda sigue hasta las ${horaDeInstante(p.busqueda.ventanaHasta)}.`}
+              </small>
+            </span>
+          </section>
+        ) : null}
+        {p.estado === 'cancelado' ? (
+          <p className="du-nota" {...entra(2)}>
+            <Icono nombre="info" />
+            <span>Cancelaste este pedido.</span>
+          </p>
+        ) : null}
+        {p.estado === 'vencido' ? (
+          <p className="du-nota" {...entra(2)}>
+            <Icono nombre="reloj" />
+            <span>La fecha que pediste ya pasó sin un acuerdo. Podés hacer un pedido nuevo.</span>
+          </p>
+        ) : null}
+
+        {p.ubicacion.coordenadas ? (
+          <div className="du-pedido-hx__mapa" {...entra(3)}>
+            <MapaHx
+              modo="ver"
+              centro={p.ubicacion.coordenadas}
+              etiqueta="Mapa: dónde es el trabajo"
+              clase="detalle-mapa"
+            />
+          </div>
+        ) : null}
+
+        <section className="du-bloque" aria-labelledby="pedido-t" {...entra(4)}>
+          <h2 id="pedido-t" className="hd-sobre du-sobre">
+            Tu pedido
+          </h2>
+          <div className="hd-tarjeta hd-tarjeta--gris du-pedido-hx__datos">
+            <p className="du-pedido-hx__descripcion">{p.descripcion}</p>
+            {p.fotos.length ? (
+              <ul className="fotos">
+                {p.fotos.map((x) => (
+                  <li key={x.id} className="foto">
+                    <FotoPrivada url={x.url} alt="Foto del pedido" />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            <dl className="du-datos-hx__lista">
+              {(
+                [
+                  [
+                    'Dónde',
+                    `${p.ubicacion.barrio ? `${p.ubicacion.barrio}, ` : ''}${p.ubicacion.ciudad}`,
+                  ],
+                  f
+                    ? [
+                        'Cuándo (solicitud)',
+                        `${f.fecha.split('-').reverse().join('/')} · ${f.desde}${f.hasta ? ` a ${f.hasta}` : ''}`,
+                      ]
+                    : ['Cuándo', 'Lo antes posible'],
+                  [
+                    'Precio que propusiste',
+                    p.precioPropuestoCentavos ? pesos(p.precioPropuestoCentavos) : 'Ninguno',
+                  ],
+                  [
+                    'Aceptación automática',
+                    p.autoaceptacion
+                      ? `Hasta ${pesos(p.autoaceptacion.montoMaximoCentavos)}`
+                      : 'Desactivada',
+                  ],
+                  ['Pedido', cuando(p.creadoEn)],
+                ] as const
+              ).map(([dt, dd]) => (
+                <div key={dt} className="hd-dato">
+                  <dt>{dt}</dt>
+                  <dd>{dd}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <Enlace
+            className="du-pedido-hx__reclamo"
+            href={ruta('/reclamos/nuevo/', { pedido: p.id })}
+          >
+            <Icono nombre="alerta" />
+            ¿Algo salió mal? Abrí un reclamo
+          </Enlace>
+        </section>
+      </div>
+      {hojas}
+    </Pantalla>
   );
 }

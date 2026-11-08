@@ -1,5 +1,6 @@
 // Mundos de los 18 escenarios obligatorios (src/mapa/escenarios.ts). Cada uno arma un estado reproducible,
 // ficticio y sin backend. `?escenario=<id>` los activa en la vista de prueba.
+import { poblarHogar } from './draft4.ts';
 import type { Rubro } from '../../contracts/v1/pedidos.ts';
 import { prueba } from '../prueba.ts';
 import {
@@ -35,7 +36,8 @@ const UBICACION = {
   direccion: 'Calle Ficticia 1650',
   referencia: null,
   origen: 'manual' as const,
-  coordenadas: null,
+  // Punto público de La Perla, marcado en el mapa (no es la casa de nadie).
+  coordenadas: { lat: -37.9905, lng: -57.5475, precisionMetros: 25 },
 };
 
 const PERFIL = {
@@ -61,6 +63,8 @@ export function iniciarSesion(
     aceptadaEn: '2026-11-10T13:00:00.000Z',
   }));
   m.estadoCuenta = 'activa';
+  // Toda cuenta de prueba con sesión tiene su casa cargada (Mi hogar no queda vacío en ningún escenario).
+  if (m.d4.hogar.ambientes.length === 0) poblarHogar(m);
   m.feeAceptada =
     opciones.feeAceptada === false
       ? null
@@ -215,6 +219,7 @@ export function poblarBase(m: Mundo): void {
     haceMs: 3 * HORA,
   });
   notificar(m, 'propuesta_aceptada', { tipo: 'trabajo', id: proximo.id });
+  poblarHogar(m);
   m.contenido = 'base';
 }
 

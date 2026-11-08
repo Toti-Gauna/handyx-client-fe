@@ -1,13 +1,14 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { Icono } from '@/components/Icono';
 import { Enlace, ruta, useIr } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, EstadoConsulta, Vacio } from '@/components/ui';
+import type { NombreIcono } from '@/components/trazos';
+import { EstadoConsulta } from '@/components/ui';
 import type { Notificacion, TIPOS_NOTIFICACION } from '@/contracts/v1/servicio';
 import { cliente } from '@/data';
 import { useConsulta } from '@/data/hooks';
+import { FilaEnlace, Nota, Texto, Titulo } from '@/ui';
+import { BarraCentro, EscenaVacio, PantallaM } from '@/ui/mensajes';
 import { estadoPush, suscribirPush, type EstadoPush } from '@/data/push';
 import { cuando } from '@/domain/fechas';
 import type { z } from 'zod';
@@ -25,9 +26,27 @@ const TEXTO: Record<(typeof TIPOS_NOTIFICACION)[number], string> = {
   trabajo_en_camino: 'El especialista va en camino',
   trabajo_llego: 'El especialista llegó',
   trabajo_terminado: 'Hay novedades del trabajo',
+  trabajo_cancelado: 'El especialista canceló el trabajo',
   pago_verificado: 'Se verificó un pago',
   reclamo_actualizado: 'Tu reclamo tuvo novedades',
   baja_actualizada: 'Novedades de la eliminación de tu cuenta',
+};
+
+const ICONO: Partial<Record<(typeof TIPOS_NOTIFICACION)[number], NombreIcono>> = {
+  propuesta_recibida: 'etiqueta',
+  propuesta_vencida: 'reloj',
+  propuesta_aceptada: 'check',
+  propuesta_rechazada: 'cerrar',
+  busqueda_sin_respuesta: 'lupa',
+  busqueda_manual_iniciada: 'lupa',
+  mensaje_nuevo: 'chat',
+  trabajo_en_camino: 'caminar',
+  trabajo_llego: 'pin',
+  trabajo_terminado: 'checkCirculo',
+  trabajo_cancelado: 'cerrar',
+  pago_verificado: 'billetera',
+  reclamo_actualizado: 'escudo',
+  baja_actualizada: 'usuario',
 };
 
 function destino(n: Aviso_): string {
@@ -67,60 +86,57 @@ export default function Avisos() {
   }
 
   return (
-    <>
-      <Titulo texto="Tus ==avisos==" />
-      {push === 'pendiente' ? (
-        <Aviso tipo="info" titulo="¿Querés que te avisemos en el celular?">
-          <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
-            Activar avisos del celular
-          </Enlace>
-        </Aviso>
-      ) : push === 'denegado' || push === 'ios_sin_instalar' || push === 'no_soportado' ? (
-        <Aviso tipo="info">
-          Los avisos del celular no están activos. No pasa nada: los ves acá cuando abrís la app.{' '}
-          <Enlace className="enlace-tarjeta" href="/cuenta/notificaciones/">
-            Más info
-          </Enlace>
-        </Aviso>
-      ) : null}
-      <EstadoConsulta consulta={lista}>
-        {(d) =>
-          d.items.length === 0 ? (
-            <Vacio
-              titulo="No tenés avisos"
-              texto="Acá aparecen las propuestas, los mensajes y las novedades de tus trabajos."
-              handy="/img/handy-gota.webp"
-            />
-          ) : (
-            <ul className="lista-tarjetas">
-              {d.items.map((n) => (
-                <li key={n.id}>
-                  <button
-                    type="button"
-                    className="tarjeta tarjeta--enlace"
-                    style={{ width: '100%', textAlign: 'left', font: 'inherit', cursor: 'pointer' }}
-                    onClick={() => void abrir(n)}
-                  >
-                    <div className="tarjeta__cuerpo tarjeta__fila">
-                      <span>
-                        <strong className="tarjeta__titulo" style={{ margin: 0 }}>
-                          {n.leidaEn ? '' : '● '}
-                          {TEXTO[n.tipo]}
-                          {n.leidaEn ? '' : ' (nuevo)'}
-                        </strong>
-                        <span className="texto-suave" style={{ display: 'block' }}>
-                          {cuando(n.creadaEn)}
-                        </span>
-                      </span>
-                      <Icono nombre="derecha" />
-                    </div>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )
-        }
-      </EstadoConsulta>
-    </>
+    <PantallaM
+      arriba={
+        <BarraCentro
+          titulo="Tus avisos"
+          volver={{ href: '/inicio/', etiqueta: 'Volver al inicio' }}
+        />
+      }
+    >
+      <div className="ds-cuerpo ds-cuerpo--raiz">
+        {push === 'pendiente' ? (
+          <Nota icono="campana">
+            ¿Querés que te avisemos en el celular?{' '}
+            <Enlace href="/cuenta/notificaciones/">Activar avisos del celular</Enlace>
+          </Nota>
+        ) : push === 'denegado' || push === 'ios_sin_instalar' || push === 'no_soportado' ? (
+          <Nota icono="info" tono="gris">
+            Los avisos del celular no están activos. No pasa nada: los ves acá cuando abrís la app.{' '}
+            <Enlace href="/cuenta/notificaciones/">Más info</Enlace>
+          </Nota>
+        ) : null}
+        <EstadoConsulta consulta={lista}>
+          {(d) =>
+            d.items.length === 0 ? (
+              <div className="ds-m-vacio">
+                <EscenaVacio />
+                <Titulo nivel={2} tam={1.375} texto="No tenés avisos" />
+                <Texto>
+                  Acá aparecen las propuestas, los mensajes y las novedades de tus trabajos.
+                </Texto>
+              </div>
+            ) : (
+              <ul
+                className="ds-pila"
+                style={{ listStyle: 'none', margin: 0, padding: 0, ['--ds-gap' as string]: 0 }}
+              >
+                {d.items.map((n) => (
+                  <li key={n.id}>
+                    <FilaEnlace
+                      icono={ICONO[n.tipo] ?? 'campana'}
+                      tono={n.leidaEn ? 'gris' : 'tinte'}
+                      titulo={TEXTO[n.tipo]}
+                      sub={`${cuando(n.creadaEn)}${n.leidaEn ? '' : ' · nuevo'}`}
+                      onClick={() => void abrir(n)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </EstadoConsulta>
+      </div>
+    </PantallaM>
   );
 }

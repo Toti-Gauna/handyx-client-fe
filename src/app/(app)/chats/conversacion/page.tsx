@@ -1,32 +1,32 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { FotoPrivada } from '@/components/FotoPrivada';
-import { Icono } from '@/components/Icono';
+import { useEffect, useRef, useState } from 'react';
 import { Enlace, ruta } from '@/components/nav';
-import { TarjetaPropuesta } from '@/components/Propuesta';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, Boton, Cargando, ErrorEstado, Vacio } from '@/components/ui';
-import { TIPOS_MEDIA } from '@/contracts/v1/pedidos';
-import type { Mensaje } from '@/contracts/v1/servicio';
+import { useAhora } from '@/components/SesionProvider';
+import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { cliente } from '@/data';
 import { ErrorCliente } from '@/data/cliente';
 import { avisarSiSesion, useConsulta } from '@/data/hooks';
-import { horaDeInstante } from '@/domain/fechas';
+import { RUBROS_INFO } from '@/domain/etiquetas';
+import { Boton, Nota } from '@/ui';
+import { BarraCentro, PantallaM, textoParaCopiar } from '@/ui/mensajes';
+import { BarraSeleccion } from '../_piezas';
+import { Adjuntar } from './_Adjuntar';
+import { Linea, type Entrada } from './_Linea';
+import { PieEscribir, PieSeleccion } from './_Pies';
+import { useEnvios } from './_useEnvios';
 
-interface Saliente {
-  readonly clienteId: string;
-  readonly texto?: string;
-  readonly archivo?: File;
-  mediaId?: string;
-  estado: 'enviando' | 'error';
-  error?: string;
-  readonly creadoEn: number;
-}
+const ESPERA_LARGA_MS = 500;
 
+/**
+ * Conversación (lienzo M-Chat, M-Presupuesto, M-Adjuntar y M-Seleccion): los mensajes quedan anclados abajo, sobre
+ * el redactor; las propuestas llegan como tarjetas que se aceptan ahí mismo; «Sumar» abre foto, medida y Mi hogar;
+ * y mantener apretado un mensaje (o «Seleccionar») pasa al modo selección.
+ */
 export default function Conversacion() {
   const id = useSearchParams().get('id');
+  const ahora = useAhora(60_000);
   const lista = useConsulta('conversaciones', { consulta: { limite: 50 } }, { cada: 6_000 });
   const mensajes = useConsulta(
     'mensajes',
@@ -45,11 +45,15 @@ export default function Conversacion() {
     conv?.trabajoId ? { parametros: { id: conv.trabajoId } } : null,
     { cada: 8_000 },
   );
-  const [salientes, setSalientes] = useState<Saliente[]>([]);
+  const envios = useEnvios(id, mensajes.recargar);
   const [texto, setTexto] = useState('');
   const [aviso, setAviso] = useState<string | null>(null);
-  const fondo = useRef<HTMLLIElement>(null);
+  const [sumando, setSumando] = useState(false);
+  const [elegidos, setElegidos] = useState<ReadonlySet<string> | null>(null);
+  const fondo = useRef<HTMLDivElement>(null);
   const entradaFoto = useRef<HTMLInputElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const seleccionando = elegidos !== null;
   const noLeidos = conv?.noLeidos ?? 0;
   const { recargar: recargarLista } = lista;
 
@@ -60,99 +64,42 @@ export default function Conversacion() {
       .then(recargarLista, (e) => e instanceof ErrorCliente && avisarSiSesion(e));
   }, [id, noLeidos, recargarLista]);
 
-  const delServidor = useMemo(() => [...(mensajes.datos?.items ?? [])].reverse(), [mensajes.datos]);
-  const pendientes = salientes.filter((s) => !delServidor.some((m) => m.clienteId === s.clienteId));
+  const delServidor = [...(mensajes.datos?.items ?? [])].reverse();
   const tarjetas = (propuestas.datos?.items ?? []).filter((p) => p.conversacionId === id);
-  const entradas = useMemo(() => {
-    type E = {
-      t: string;
-      k: string;
-      msg?: Mensaje;
-      prop?: (typeof tarjetas)[number];
-      sal?: Saliente;
-    };
-    const todas: E[] = [
-      ...delServidor.map((m) => ({ t: m.creadoEn, k: m.id, msg: m })),
-      ...tarjetas.map((p) => ({ t: p.creadaEn, k: p.id, prop: p })),
-      ...pendientes.map((s) => ({ t: new Date(s.creadoEn).toISOString(), k: s.clienteId, sal: s })),
-    ];
-    return todas.sort((a, b) => a.t.localeCompare(b.t));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delServidor, propuestas.datos, id, salientes]);
+  const pendientes = envios.salientes.filter(
+    (s) => !delServidor.some((m) => m.clienteId === s.clienteId),
+  );
+  const entradas: Entrada[] = [
+    ...delServidor.map((m): Entrada => ({ t: m.creadoEn, k: m.id, tipo: 'msg', msg: m })),
+    ...tarjetas.map((p): Entrada => ({ t: p.creadaEn, k: p.id, tipo: 'prop', prop: p })),
+    ...pendientes.map((s): Entrada => ({
+      t: new Date(s.creadoEn).toISOString(),
+      k: s.clienteId,
+      tipo: 'sal',
+      sal: s,
+    })),
+  ].sort((a, b) => a.t.localeCompare(b.t));
 
   useEffect(() => {
     fondo.current?.scrollIntoView({ block: 'end' });
-  }, [entradas.length]);
+  }, [entradas.length, seleccionando]);
 
-  async function mandar(s: Saliente) {
-    if (!id) return;
-    setSalientes((xs) =>
-      xs.map((x) =>
-        x.clienteId === s.clienteId ? { ...x, estado: 'enviando', error: undefined as never } : x,
-      ),
-    );
-    try {
-      let mediaId = s.mediaId;
-      if (s.archivo && !mediaId) {
-        const f = new FormData();
-        f.set('archivo', s.archivo);
-        mediaId = (await cliente.llamar('media', { cuerpo: f })).id;
-        s.mediaId = mediaId;
-      }
-      const cuerpo = mediaId
-        ? { clienteId: s.clienteId, tipo: 'foto' as const, mediaId }
-        : { clienteId: s.clienteId, tipo: 'texto' as const, texto: s.texto ?? '' };
-      await cliente.llamar('mensajeEnviar', {
-        parametros: { id },
-        cuerpo,
-        claveIdempotencia: s.clienteId,
-      });
-      mensajes.recargar();
-    } catch (e) {
-      const err = e instanceof ErrorCliente ? e : null;
-      if (err) avisarSiSesion(err);
-      setSalientes((xs) =>
-        xs.map((x) =>
-          x.clienteId === s.clienteId
-            ? { ...x, estado: 'error', error: err?.mensaje ?? 'No pudimos enviarlo.' }
-            : x,
-        ),
-      );
-    }
-  }
-
-  function enviarTexto(e: React.FormEvent) {
-    e.preventDefault();
-    const t = texto.trim();
-    if (!t) return;
-    const s: Saliente = {
-      clienteId: crypto.randomUUID(),
-      texto: t,
-      estado: 'enviando',
-      creadoEn: Date.now(),
-    };
-    setSalientes((xs) => [...xs, s]);
-    setTexto('');
-    void mandar(s);
-  }
-
-  function elegirFoto(archivos: FileList | null) {
-    const archivo = archivos?.[0];
-    if (entradaFoto.current) entradaFoto.current.value = '';
-    if (!archivo) return;
-    if (!(TIPOS_MEDIA as readonly string[]).includes(archivo.type))
-      return setAviso('Solo se aceptan fotos JPG, PNG o WebP.');
-    if (archivo.size > 5 * 1024 * 1024) return setAviso('La foto puede pesar hasta 5 MB.');
-    setAviso(null);
-    const s: Saliente = {
-      clienteId: crypto.randomUUID(),
-      archivo,
-      estado: 'enviando',
-      creadoEn: Date.now(),
-    };
-    setSalientes((xs) => [...xs, s]);
-    void mandar(s);
-  }
+  // Mantener apretado un mensaje empieza la selección (lo mismo que «Seleccionar»).
+  const parar = () => {
+    if (timer.current) clearTimeout(timer.current);
+  };
+  const pulsar = (mid: string) => ({
+    onPointerDown: () => {
+      timer.current = setTimeout(() => {
+        setElegidos(new Set([mid]));
+        setAviso(null);
+      }, ESPERA_LARGA_MS);
+    },
+    onPointerUp: parar,
+    onPointerLeave: parar,
+    onPointerMove: parar,
+    onContextMenu: (e: React.SyntheticEvent) => e.preventDefault(),
+  });
 
   if (!id)
     return (
@@ -185,156 +132,148 @@ export default function Conversacion() {
         }
       />
     );
+  const esp = conv.especialista.nombrePublico;
   const cerrado = trabajo.datos
     ? ['finalizado', 'cancelado'].includes(trabajo.datos.estado)
     : false;
+  const rapidas = conv.trabajoId
+    ? ['Te espero', '¿Necesitás algo más para el trabajo?', '¡Gracias!']
+    : ['¿Incluye los materiales?', '¿Podés otro día u horario?', '¿Te mando más fotos?'];
+  const sub = `${conv.trabajoId ? 'Trabajo' : 'Pedido'} · ${conv.especialista.rubros.map((r) => RUBROS_INFO[r].nombre).join(' · ')}`;
+  const elegibles = delServidor.filter((m) => m.autor !== 'sistema').map((m) => m.id);
+
+  async function copiar() {
+    const t = textoParaCopiar(delServidor, elegidos ?? new Set(), esp);
+    if (!t) return setAviso('Las fotos no se copian: elegí mensajes con texto.');
+    try {
+      await navigator.clipboard.writeText(t);
+      setAviso('Copiado.');
+    } catch {
+      setAviso('No pudimos copiar. Probá de nuevo.');
+    }
+  }
+  function responder() {
+    const m = delServidor.find((x) => elegidos?.has(x.id) && x.texto);
+    if (m?.texto) setTexto(`«${m.texto.slice(0, 120)}» `);
+    setElegidos(null);
+  }
 
   return (
-    <>
-      <Titulo texto={conv.especialista.nombrePublico} />
-      <p style={{ margin: 0 }}>
-        <Enlace
-          className="enlace-tarjeta"
-          href={
-            conv.trabajoId
-              ? ruta('/trabajos/detalle/', { id: conv.trabajoId })
-              : ruta('/pedidos/detalle/', { id: conv.pedidoId })
-          }
-        >
-          {conv.trabajoId ? 'Ver el trabajo' : 'Ver el pedido'}
-        </Enlace>
-      </p>
-      {!conv.trabajoId ? (
-        <Aviso tipo="info">
-          Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una propuesta.
-        </Aviso>
-      ) : null}
-      {cerrado ? (
-        <Aviso tipo="info" titulo="El trabajo terminó">
-          Esta conversación quedó solo de lectura.
-        </Aviso>
-      ) : null}
-
-      <ul className="chat" aria-label="Conversación" aria-live="polite">
-        {entradas.length === 0 ? (
-          <li className="burbuja burbuja--sistema">Todavía no hay mensajes. Escribí el primero.</li>
-        ) : null}
-        {entradas.map((e) => {
-          if (e.prop)
-            return (
-              <li key={e.k} className="tarjeta-propuesta" style={{ listStyle: 'none' }}>
-                <ul className="lista-tarjetas">
-                  <TarjetaPropuesta p={e.prop} />
-                </ul>
-              </li>
-            );
-          if (e.sal) {
-            const s = e.sal;
-            return (
-              <li
-                key={e.k}
-                className={`burbuja burbuja--yo${s.estado === 'error' ? ' burbuja--error' : ''}`}
+    <PantallaM
+      arriba={
+        elegidos ? (
+          <BarraSeleccion
+            cantidad={elegidos.size}
+            onSalir={() => setElegidos(null)}
+            onTodos={() => setElegidos(new Set(elegibles))}
+          />
+        ) : (
+          <BarraCentro
+            titulo={esp}
+            sub={sub}
+            volver={{ href: '/chats/', etiqueta: 'Volver a mensajes' }}
+            tituloPestana={`Chat con ${esp}`}
+            accion={
+              <button
+                type="button"
+                className="ds-m-barra__accion"
+                onClick={() => {
+                  setAviso(null);
+                  setElegidos(new Set());
+                }}
               >
-                {s.archivo ? <span>📷 {s.archivo.name}</span> : s.texto}
-                <span className="burbuja__meta">
-                  {s.estado === 'enviando' ? 'Enviando…' : 'No se envió'}
-                </span>
-                {s.estado === 'error' ? (
-                  <span role="alert" style={{ display: 'block' }}>
-                    {s.error}{' '}
-                    <button
-                      type="button"
-                      className="boton boton--texto boton--chico"
-                      style={{ color: '#fff' }}
-                      onClick={() => void mandar(s)}
-                    >
-                      Reintentar
-                    </button>
-                    <button
-                      type="button"
-                      className="boton boton--texto boton--chico"
-                      style={{ color: '#fff' }}
-                      onClick={() =>
-                        setSalientes((xs) => xs.filter((x) => x.clienteId !== s.clienteId))
-                      }
-                    >
-                      Descartar
-                    </button>
-                  </span>
-                ) : null}
-              </li>
-            );
-          }
-          const m = e.msg as Mensaje;
-          if (m.autor === 'sistema')
-            return (
-              <li key={e.k} className="burbuja burbuja--sistema">
-                {m.texto}
-              </li>
-            );
-          return (
-            <li key={e.k} className={`burbuja${m.autor === 'usuario' ? ' burbuja--yo' : ''}`}>
-              {m.media ? (
-                <FotoPrivada className="burbuja__foto" url={m.media.url} alt="Foto enviada" />
-              ) : (
-                m.texto
-              )}
-              <span className="burbuja__meta">
-                {m.autor === 'usuario' ? 'Vos' : conv.especialista.nombrePublico} ·{' '}
-                {horaDeInstante(m.creadoEn)}
-                {m.autor === 'usuario' ? ' · enviado' : ''}
-              </span>
-            </li>
-          );
-        })}
-        <li ref={fondo} aria-hidden="true" style={{ listStyle: 'none' }} />
-      </ul>
-
-      {aviso ? (
-        <Aviso tipo="alerta" rol="status">
-          {aviso}
-        </Aviso>
-      ) : null}
-      {!cerrado ? (
-        <form className="compositor" onSubmit={enviarTexto}>
-          <input
-            ref={entradaFoto}
-            type="file"
-            accept={TIPOS_MEDIA.join(',')}
-            hidden
-            aria-label="Elegir una foto"
-            onChange={(e) => elegirFoto(e.target.files)}
+                Seleccionar
+              </button>
+            }
           />
-          <Boton
-            variante="claro"
-            aria-label="Enviar una foto"
-            onClick={() => entradaFoto.current?.click()}
-          >
-            <Icono nombre="camara" />
-          </Boton>
-          <label className="sr-only" htmlFor="mensaje">
-            Mensaje
-          </label>
-          <textarea
-            id="mensaje"
-            className="entrada"
-            rows={1}
-            maxLength={2000}
-            placeholder="Escribí un mensaje"
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey && e.currentTarget.form) {
-                e.preventDefault();
-                e.currentTarget.form.requestSubmit();
-              }
+        )
+      }
+      pie={
+        elegidos ? (
+          <PieSeleccion
+            cantidad={elegidos.size}
+            aviso={aviso}
+            onCopiar={() => void copiar()}
+            onResponder={responder}
+            onAviso={setAviso}
+          />
+        ) : cerrado ? (
+          <div className="ds-cuerpo">
+            <Nota icono="info" tono="gris">
+              El trabajo terminó: esta conversación quedó solo de lectura.
+            </Nota>
+          </div>
+        ) : (
+          <PieEscribir
+            texto={texto}
+            onTexto={setTexto}
+            onEnviar={() => {
+              envios.mandarTexto(texto.trim());
+              setTexto('');
             }}
+            onSumar={() => setSumando(true)}
+            rapidas={rapidas}
+            aviso={aviso}
+            entradaFoto={entradaFoto}
+            onFoto={(f) => setAviso(f ? envios.mandarFoto(f) : null)}
           />
-          <Boton type="submit" aria-label="Enviar el mensaje" disabled={!texto.trim()}>
-            <Icono nombre="enviar" />
+        )
+      }
+    >
+      <div className="ds-chat" role="log" aria-label="Conversación" aria-live="polite">
+        <span className="ds-m-dia">
+          <Boton
+            variante="suave"
+            chico
+            ancho={false}
+            icono="derecha"
+            href={
+              conv.trabajoId
+                ? ruta('/trabajos/detalle/', { id: conv.trabajoId })
+                : ruta('/pedidos/detalle/', { id: conv.pedidoId })
+            }
+          >
+            {conv.trabajoId ? 'Ver el trabajo' : 'Ver el pedido'}
           </Boton>
-        </form>
-      ) : null}
-    </>
+        </span>
+        {!conv.trabajoId ? (
+          <Nota icono="info" tono="gris">
+            Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una propuesta.
+          </Nota>
+        ) : null}
+        {entradas.length === 0 ? (
+          <p className="ds-m-nota-centro">Todavía no hay mensajes. Escribí el primero.</p>
+        ) : null}
+        <Linea
+          entradas={entradas}
+          ahora={ahora}
+          esp={esp}
+          tarjetas={tarjetas}
+          elegidos={elegidos}
+          onElegidos={(e) => {
+            setAviso(null);
+            setElegidos(e);
+          }}
+          pulsar={pulsar}
+          onCambio={() => {
+            propuestas.recargar();
+            mensajes.recargar();
+          }}
+          onReintentar={(s) => void envios.mandar(s)}
+          onDescartar={envios.descartar}
+        />
+        {!elegidos && tarjetas.length ? (
+          <p className="ds-m-nota-centro">
+            Las tarjetas se aceptan acá mismo y quedan en el pedido.
+          </p>
+        ) : null}
+        <div ref={fondo} aria-hidden="true" />
+      </div>
+      <Adjuntar
+        abierta={sumando}
+        onCerrar={() => setSumando(false)}
+        onFoto={() => entradaFoto.current?.click()}
+      />
+    </PantallaM>
   );
 }

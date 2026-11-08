@@ -1,92 +1,102 @@
 'use client';
 
-import { useSesion } from '@/components/SesionProvider';
-import { Enlace } from '@/components/nav';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, Boton, Datos } from '@/components/ui';
-import { AVISO_LEGAL_PROVISORIO, TEXTOS_LEGALES } from '@/content/textos';
-import { useEnvio } from '@/data/hooks';
-import { diaMes } from '@/domain/fechas';
+import { useState } from 'react';
+import { Cargando } from '@/components/ui';
+import { AVISO_LEGAL_PROVISORIO } from '@/content/textos';
+import { cliente } from '@/data';
+import { ErrorCliente } from '@/data/cliente';
+import { avisarSiSesion, useConsulta } from '@/data/hooks';
+import { AccionesFijas, Boton, FilaEnlace, Interruptor, Nota, Tarjeta, Texto } from '@/ui';
+import { AvatarAsistente, BarraCentro, PantallaM } from '@/ui/mensajes';
+import { Exportacion } from './_Exportacion';
+import { Textos } from './_Textos';
 
+const VOLVER = { href: '/cuenta/', etiqueta: 'Volver a tu cuenta' };
+
+/**
+ * Privacidad (lienzo X-Privacidad): HandIA y tus datos, los recordatorios del hogar (se pueden pausar todos), lo que
+ * compartiste, descargar mis datos y borrar la cuenta (la baja real, con su estado). Los textos y lo aceptado, abajo.
+ */
 export default function Privacidad() {
-  const { sesion, recargar } = useSesion();
-  const { enviar, pendiente, error } = useEnvio();
-  const pendientes = sesion.pendientes.documentos;
+  const recordatorios = useConsulta('recordatorios', {});
+  const [error, setError] = useState<string | null>(null);
+  const [cambiando, setCambiando] = useState(false);
+  const items = recordatorios.datos?.items ?? [];
+  const activos = items.some((r) => r.activo);
 
-  async function aceptar(documento: 'terminos' | 'privacidad', version: string) {
-    const r = await enviar(
-      'aceptacion',
-      { cuerpo: { documento, version } },
-      `${documento}|${version}`,
-    );
-    if (r?.ok) recargar();
+  async function cambiar(activo: boolean) {
+    setCambiando(true);
+    setError(null);
+    try {
+      for (const r of items.filter((x) => x.activo !== activo))
+        await cliente.llamar('recordatorioEditar', {
+          parametros: { id: r.id },
+          cuerpo: { activo },
+        });
+    } catch (e) {
+      if (e instanceof ErrorCliente) avisarSiSesion(e);
+      setError('No pudimos cambiarlos. Probá de nuevo.');
+    } finally {
+      setCambiando(false);
+      recordatorios.recargar();
+    }
   }
 
   return (
-    <>
-      <Titulo texto="==Privacidad== y textos" />
-      <Aviso tipo="alerta">{AVISO_LEGAL_PROVISORIO}</Aviso>
-      {pendientes.length ? (
-        <Aviso tipo="info" titulo="Hay textos nuevos para aceptar">
-          {pendientes.map((d) => (
-            <p key={d.documento}>
-              <Boton
-                chico
-                onClick={() => aceptar(d.documento as 'terminos' | 'privacidad', d.version)}
-                cargando={pendiente}
-              >
-                Aceptar{' '}
-                {TEXTOS_LEGALES[d.documento as 'terminos' | 'privacidad'].titulo.toLowerCase()}
-              </Boton>
-            </p>
-          ))}
-        </Aviso>
-      ) : null}
-      {error ? <Aviso tipo="error">{error.mensaje}</Aviso> : null}
-      <h2 className="subtitulo">Lo que aceptaste</h2>
-      <section className="tarjeta">
-        <div className="tarjeta__cuerpo">
-          {sesion.aceptaciones.length ? (
-            <Datos
-              filas={sesion.aceptaciones.map(
-                (a) =>
-                  [
-                    a.documento === 'terminos'
-                      ? 'Términos de uso'
-                      : a.documento === 'privacidad'
-                        ? 'Privacidad'
-                        : 'Tarifa',
-                    `${a.version} · ${diaMes(a.aceptadaEn)}`,
-                  ] as const,
-              )}
+    <PantallaM
+      arriba={<BarraCentro titulo="Privacidad" volver={VOLVER} />}
+      pie={
+        <AccionesFijas nota="Se borra todo salvo lo que la ley obliga a guardar.">
+          <Boton variante="peligro" icono="tacho" href="/cuenta/baja/">
+            Borrar mi cuenta
+          </Boton>
+        </AccionesFijas>
+      }
+    >
+      <div className="ds-cuerpo">
+        <Nota icono="alerta" tono="amarillo">
+          {AVISO_LEGAL_PROVISORIO}
+        </Nota>
+        <Tarjeta etiqueta="HandIA y tus datos">
+          <div className="ds-fila">
+            <AvatarAsistente />
+            <div className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+              <strong style={{ fontSize: '1.0625rem' }}>HandIA y tus datos</strong>
+              <Texto>
+                Funciona en tu celular, sin IA externa. Saca teléfonos, emails y documentos antes de
+                procesar, y nunca recibe fotos ni los datos de tu cuenta. Usarla es opcional.
+              </Texto>
+            </div>
+          </div>
+        </Tarjeta>
+        <div className="ds-pila" style={{ ['--ds-gap' as string]: 0 }}>
+          {recordatorios.estado === 'cargando' ? (
+            <Cargando />
+          ) : items.length ? (
+            <Interruptor
+              etiqueta="Recordatorios del hogar"
+              sub={cambiando ? 'Cambiando…' : 'Usan tu ficha de la casa. Los podés pausar todos.'}
+              activo={activos}
+              onCambiar={(v) => void cambiar(v)}
             />
           ) : (
-            <p style={{ margin: 0 }}>Todavía no aceptaste ningún texto.</p>
+            <Texto>No tenés recordatorios del hogar cargados.</Texto>
           )}
+          {error ? (
+            <Nota icono="alerta" tono="error" rol="alert">
+              {error}
+            </Nota>
+          ) : null}
+          <FilaEnlace
+            icono="compartir"
+            titulo="Lo que compartiste"
+            sub="Medidas y modelo 3D: solo con quien elijas, por pedido"
+            href="/hogar/compartidos/"
+          />
         </div>
-      </section>
-      {Object.values(TEXTOS_LEGALES).map((t) => (
-        <details key={t.version}>
-          <summary>{t.titulo}</summary>
-          {t.parrafos.map((x) => (
-            <p key={x}>{x}</p>
-          ))}
-        </details>
-      ))}
-      <h2 className="subtitulo">HandIA</h2>
-      <Aviso tipo="info" titulo="Desactivada">
-        No enviamos tus datos personales ni documentos a servicios de inteligencia artificial. Si
-        algún día se activa, te pedimos un consentimiento aparte.
-      </Aviso>
-      <h2 className="subtitulo">Tus derechos</h2>
-      <p>
-        Podés pedir acceso, corrección o eliminación de tus datos. La eliminación de la cuenta se
-        hace desde{' '}
-        <Enlace className="enlace-tarjeta" href="/cuenta/baja/">
-          Eliminar cuenta
-        </Enlace>
-        .
-      </p>
-    </>
+        <Exportacion />
+        <Textos />
+      </div>
+    </PantallaM>
   );
 }

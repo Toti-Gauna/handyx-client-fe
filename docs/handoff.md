@@ -1,6 +1,573 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 2 · Mockup completo — lotes 2.1 a 2.5 listos.** Próxima: Fase 3 · lote 3.1 (rama `fase-3-diseno`).
+**Fase actual: 7 · App de usuario completa sobre el contrato draft.4 (BE y FE). Sigue la Fase 5 (deploy, con autorización).**
+
+**Fase 7 · App de usuario completa (08/11/2026, rama `handia-premium`).** Ignacio aprobó el lienzo
+<https://claude.ai/artifact/A4T5bqyE8WEiQkwD4ogDaZ> (fuente en `design/usuario/`, decisiones en
+[`diseno-usuario-deluxe.md`](diseno-usuario-deluxe.md), plan en [`plan-olas.md`](plan-olas.md)) y pidió construirlo
+entero, con componentes reutilizables y **usable por una persona de 90 años** (guía: [`fase7-guia-pantallas.md`](fase7-guia-pantallas.md)).
+
+- **Contrato `1.0.0-draft.4`** (dueño `handyx-client-be`, rama `fase-7-app-usuario`, implementado y probado contra la base):
+  acceso con código por email sin invitación ni contraseña, segunda verificación, sesiones abiertas, exportación de
+  datos, `Propuesta.detalle`, reseña, informe, Mi hogar (ambientes, equipos), compartidos por pedido, recordatorios y
+  camino del hogar. Servidor simulado en `src/data/mock/draft4.ts` (código de prueba `246810`), alineado con el BE.
+- **Sistema de diseño atómico** en `src/ui/` (átomos → moléculas → organismos → escenas SVG) con `src/styles/ds.css`
+  y una hoja por grupo (`ds-<grupo>.css`); colores solo como tokens en `tokens.css`. Barra de pestañas nueva: Inicio,
+  Actividad, HandIA (centro), Mensajes, Mi hogar; Cuenta desde el avatar.
+- **Pantallas** registradas en `src/mapa/fase7/*.ts` (reemplazan las base con el mismo id): acceso y «Armá tu casa»;
+  Inicio, chat de HandIA y modo voz con esfera; pedir en 3 toques con la escena que arma el pedido; propuestas,
+  comparar, perfil y turno confirmado; seguimiento, adicional, informe, antes y después, conformidad, pago y reseña;
+  obras por etapas; mensajes con selección y adjuntos; actividad; cuenta con seguridad y privacidad; ayuda y errores;
+  Mi hogar (4 puertas) y el camino; herramientas en el teléfono (medir, nivel, linterna; 3D y AR «Experimental»).
+- **Huecos del contrato (para draft.5, no inventados en pantalla):** listar adicionales y cambios pendientes de un
+  trabajo (hoy `propuestas` del pedido trae solo cotizaciones, en el BE y en el simulado: el adicional llega solo por
+  aviso); secreto TOTP para la app autenticadora; segundo factor en `LoginEntrada`; teléfono en el perfil; motivo al
+  rechazar; reseñas y trabajos recientes del especialista; rango orientativo de precio; preferencias de avisos por
+  tema; vínculo equipo → trabajo (garantía); último mensaje en la lista de chats; renglones del presupuesto.
+- **Afuera del repo:** proveedor de email aprobado (sin él el acceso por código responde `no_disponible` en
+  producción), almacenamiento de archivos (fotos de Mi hogar), `API_PUBLIC_ORIGIN` para la exportación.
+
+**Siguiente para HandIA:** plan por fases H0–H7 en [`handia-premium-plan.md`](handia-premium-plan.md) (modo voz estilo
+ChatGPT Voice con los Handys, chat premium, agente, cámara, OpenAI + ElevenLabs). H1 espera las imágenes de ChatGPT.
+
+**Fase R (rediseño de HandIA), 07/11:** R1–R6 y R8 listos; **R7 espera a Ignacio** (prueba con 5 personas:
+[guía](handia-r7-prueba.md), y su aprobación). Ignacio eligió prototipar dentro del proyecto: **`/diseno/handia/`**
+(solo vista de prueba, grupo `src/app/(prototipo)/`) con 4 secciones: 22 pantallas en alta + puertas de entrada,
+lenguaje, movimiento y sonido (GSAP 3.15.0, Web Audio, vibración; solo en el prototipo) y las 3 direcciones de R2.
+Se avanzó con la dirección recomendada **Luz cálida+** (tokens.css §4; cambiarla es cambiar ese bloque). Base para
+H2/H3: `styles/handia.css` + `components/handia/piezas.tsx`, galería en `/diseno/#handia`
+([R8](handia-r8-base.md)). Docs: [R1](handia-r1-referentes.md), [R2](handia-r2-direcciones.md),
+[R3–R6](handia-r3-r6-diseno.md). También se corrigió la franja transparente de `handy-lamparita(-rota).webp`.
+
+**Rama `handia-premium` (07/11/2026, pedido de Ignacio: "HandIA superpremium, con modo voz").** Sale de `fase-3-diseno`
+y no dispara el deploy. HandIA conversa como un especialista antes de cotizar, **todo en el celular, sin IA externa**:
+`src/domain/handia-motor.ts` (estado → respuestas y opciones; lo usan igual el chat y la voz) con las guías de
+`handia-guias.ts` (2 a 4 preguntas por rubro con opciones y palabras clave). Deduce lo que ya se contó y pregunta solo
+lo que falta, entiende correcciones y negaciones ("no es la luz"), repregunta una vez si la respuesta no encaja, avisa
+riesgos primero (gas, monóxido, electricidad, agua y luz), da consejos seguros "mientras tanto", sugiere pedir para hoy
+sin prometer tiempos y arma una **ficha editable** ("Así lo leen los especialistas", sin huecos de datos tachados; lo
+editado vuelve a pasar por el tachado). **Modo voz** a pantalla completa (lamparita que reacciona: escucha, piensa,
+habla), manos libres, lee las opciones, órdenes ("repetí", "pará", "volver al chat") y dictado en el chat: solo con
+**reconocimiento en el dispositivo** (`processLocally`/`ondevice-only`, ofrece descargarlo una vez) y **voces del
+sistema**; si el navegador mandaría la voz a un servidor, no escucha y lo explica (Safari/iOS hoy: solo lee en voz
+alta). Al navegador se le pregunta por la voz local **recién al abrir el modo voz y solo en Chrome o Edge**: en
+Chromium 153 sin el componente de voz (el de las pruebas automáticas) esa consulta cerraba la pestaña. Pruebas: `tests/handia-motor.test.ts`, `tests/voz.test.ts`, `tests/e2e/handia.cjs` (voz simulada local y "en la
+nube", axe del chat, la ficha y el modo voz). Pendiente de Ignacio: si HandIA se habilita también con la API real (hoy
+sigue inactiva ahí, aunque ya no manda nada a ningún servidor) y si se aceptaría reconocimiento de voz en la nube con
+consentimiento explícito para los navegadores sin reconocimiento local.
+
+**Lote 4.7 · Viaje en vivo y conexión preparada (02/11/2026).** El seguimiento del trabajo en camino muestra la posición
+del especialista, el recorrido y la llegada estimada **que manda el servidor**, solo mientras comparte
+(`src/domain/viaje.ts` arma los textos, sin calcular tiempos; `MapaHx` dibuja el recorrido y encuadra según su tamaño
+real; la nota fija es `status` y lo que falta no se anuncia en cada actualización). Datos: `cliente.escuchar()` por SSE
+(`EventSource` con credenciales) con respaldo JSON cada 5 s; la vista de prueba simula el viaje con el reloj del mundo.
+Arreglos de paso: el marcador del especialista se duplicaba en cada posición (promesas cruzadas) y el texto de los pasos
+del seguimiento no llegaba a AA (4,3:1 → 5,6:1). **Conexión con la API real lista sin cambiar código**
+([`docs/conexion-api.md`](conexion-api.md)): aviso si el contrato del servidor no coincide, `npm run api:verificar`
+(orígenes, mismo sitio, CORS, cookie, SSE) y `tests/e2e/api-real.cjs`; ensayado contra `handyx-client-be` local con la
+base aislada (verificador 17 ✔; registro con invitación real y sesión en cookie HttpOnly). **Requisito para la Fase 5:**
+PWA y API bajo el mismo dominio (`app.` y `api.`), porque la cookie es `SameSite=Lax` host-only.
+
+**Lotes 4.1 a 4.6 sobre el esquema conciliado.** Decisión de
+Ignacio (31/10): el esquema canónico es el de la sesión de especialista (`claude/pensive-hypatia-jajjgm`, conciliado con
+el nuestro), y lo de `fase-4-backend` se rehízo encima en la rama **`fase-4-backend-conciliado`** de
+`handyx-client-be` (commit `a3fd8bd`, ya con el contrato `1.0.0-draft.3` de la sesión de especialista;
+`fase-4-backend` queda como referencia). Acceso y cuenta; pedidos y propuestas
+con idempotencia y aceptación concurrente; trabajos y agenda, cambios de acuerdo, chat (con mensajes del sistema),
+reclamos y avisos; pago directo (efectivo; el checkout de Mercado Pago responde `funcion_inactiva` hasta validar la
+integración) y métricas sin datos personales, probados contra PostgreSQL local aislado; y la **integración con la API de
+especialista**: las dos APIs contra la misma base recorren el servicio de punta a punta (6 flujos, incluida una carrera); detalle en `handyx-client-be/docs/handoff.md` de esa rama.
+**Contrato `1.0.0-draft.2`** (también decisión de Ignacio): el viaje en vivo muestra posición, trayecto y llegada
+estimada del servidor; reemplaza la decisión 7 del rediseño y quedó en `AGENTS.md`. Copiarlo acá y armar la pantalla es
+el lote **4.7** (listo, arriba). Abierto para Ignacio: qué comisión copia el acuerdo (la vigente al crear la propuesta, acá;
+la vigente al aceptar, en la API de especialista). Siguen sin contrato: `favoritos`, el historial general y la zona del especialista. Para
+producto: se puede seguir chateando con un especialista aunque el pedido se haya contratado con otro (igual que el
+simulado). La Fase 3 (rediseño, lotes 3.1 a 3.9) está completa ([`docs/plan.md`](plan.md)).
+Fecha: 02/11/2026. Rama: `fase-3-diseno` (parte de `fase-2-mockup`; los PR de las Fases 1 y 2 siguen abiertos, por eso el
+PR de esta fase apunta a `fase-2-mockup`). Modelo de la sesión: **Claude Opus 5.5**, como recomienda el plan para la
+Fase 4.
+
+Estado real: **mock navegable y probado en un navegador real; nada conectado, nada desplegado, ningún gasto, ningún dato
+real.** El contrato v1 y `handyx-client-be` no cambiaron.
+
+## Rediseño · lote 3.9 · Pulido premium y QA
+
+Pedido de Ignacio: "Seguí con 3.9".
+
+- **Transiciones de pantalla** (`src/components/transicion.ts`, View Transitions del navegador): fundido corto al navegar
+  y, al tocar una tarjeta (pedido, trabajo, propuesta, reclamo), la tarjeta crece hasta el encabezado del detalle. La
+  barra de pestañas queda quieta. Sin soporte o con "reducir movimiento", se navega sin animación; nunca demora una
+  acción (si la pantalla nueva tarda, la transición se suelta).
+- **Título grande** de Actividad y Mensajes que se compacta al bajar (ligado al desplazamiento, solo CSS).
+- **Gestos** (`src/components/gestos.tsx`): la hoja azul de la búsqueda y del seguimiento tiene tres alturas (achicada,
+  a medio abrir, abierta) con la manija como botón real de 44 px: toque, arrastre o flechas. Las hojas de diálogo se
+  cierran deslizándolas hacia abajo (lo mismo que Escape o tocar afuera; nunca confirman nada).
+- **Estados del sistema**: esqueletos con la forma de la pantalla que viene (lista, detalle, mapa con hoja azul), error
+  con Handy roto en el kit, 404 y sin conexión en el kit (`Sistema.tsx`), aviso de **versión nueva** del service worker
+  ("Actualizar" o "Después"; nunca recarga sola; `sw.js` VERSION v3 espera el "activar" de la app). En la vista de prueba
+  se simula desde el panel.
+- **Últimas pantallas al kit**: detalle del pedido (con propuestas, contratado, cancelado, vencido; atajo a un reclamo),
+  reclamos (lista y detalle con historial en línea de tiempo) y la vuelta del pago de Mercado Pago (pendiente, falló,
+  cancelado, confirmado; volver del checkout sigue sin confirmar nada).
+- **Catálogo completo**: `npm run capturas` falla si alguna pantalla del mapa queda sin captura (40 de 40 con captura).
+- **Comparación con la demo**: `npm run comparar` deja en `docs/screens/comparacion/` 20 pares demo | app (390 × 844)
+  con su índice. Ajustes que salieron de mirarla: filas de Cuenta en tinta (no en azul de enlace) y "Respuesta" en la
+  barra de la ayuda.
+- Pruebas: e2e nuevo `tests/e2e/pulido.cjs` (en `npm run e2e`). La prueba PWA ahora espera a que la conversación y la
+  propuesta terminen de cargar antes de cortar la red (antes dependía de la demora simulada).
+
+### Comandos ejecutados (30/10/2026, local)
+
+| Comando                                            | Resultado                                                                                         |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                                |
+| `npm test`                                         | **166 pruebas OK**                                                                                |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                      |
+| `npm run e2e`                                      | recorrido · 19 escenarios · **accesibilidad 299 de 299** · teclado · PWA · HandIA · mapa · pulido |
+| `npm run capturas`                                 | 99 capturas + 19 escenarios; las 40 pantallas del mapa con captura                                |
+| `npm run comparar`                                 | 20 pares demo · app en `docs/screens/comparacion/`                                                |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas                 |
+
+### Qué queda de la Fase 3 para después
+
+- Datos reales del mapa (`npm run mdp:datos`, necesita internet o permitir `build.protomaps.com` y `github.com`).
+- Especialistas guardados (decisión 4): necesita `favoritos` (4.3).
+- Dispositivos reales y lectores de pantalla reales: lote 5.2.
+
+## Rediseño · lote 3.8 · Cuenta y ayuda
+
+Pedido de Ignacio: "Vamos con 3.8".
+
+- **Cuenta** (u-cuenta): avatar con iniciales, nombre y barrio; tarifa de Handy 0 % con el contador y "no es un
+  descuento" (tercer lugar del aviso); instalar (si el navegador lo permite); accesos Cuenta (datos, direcciones, pagos
+  registrados, agenda, reclamos) y Configuración (avisos del celular, tarifa y demo, privacidad, centro de ayuda, eliminar
+  cuenta); cerrar sesión ("no elimina tu cuenta"). Sin foto de perfil (el contrato no la tiene) y sin "modo
+  especialista" hasta su app (4.6).
+- **Datos personales** (u-datos): el perfil en lectura (lo que falta dice "Sin completar", nunca inventado; nacimiento
+  como `20/03/1990`) y "Editar mis datos" con el mismo formulario del alta. `?editar=1` abre la edición.
+- **Direcciones** (`/cuenta/direcciones/`): la principal es la del perfil; se pueden guardar hasta 4 más con nombre
+  (Casa, Trabajo, Otra) y elegirlas al pedir (chips en el paso de dirección). **No está en el contrato v1**: en la vista
+  de prueba quedan en memoria (se pierden al recargar, nunca en el navegador); con la API real solo está la principal y
+  agregar dice "Pronto" hasta `direcciones` (4.2).
+- **Pagos registrados** (`/cuenta/pagos/`, u-pagos **sin tarjetas**): los pagos de cada trabajo con su estado real
+  (reportado ≠ verificado), quién lo registró y el enlace al pago del trabajo. Usa `trabajos` + `pagos` del contrato v1
+  (una consulta por trabajo; con muchos trabajos convendría un endpoint agregado en la Fase 4).
+- **Avisos del celular, privacidad, tarifa y demo** en el kit (mismas reglas y textos; interruptor accesible).
+- **Centro de ayuda** (u-ayuda) con 9 preguntas y **respuesta** (`/ayuda/respuesta/?p=`, u-ayuda-detalle) con atajo,
+  "¿Te sirvió?" (el voto queda en la pantalla: no se envía ni se guarda; si no sirvió, ofrece soporte) y otras preguntas.
+- **Eliminar cuenta**: baja real con contraseña y confirmación; el estado verdadero paso a paso (Recibida › En proceso ›
+  Completada) y lo que se conserva por obligación legal.
+- El botón del pin de Inicio abre Direcciones y "Cambiar la dirección" abre la edición de datos.
+
+Queda del 3.7 sin hacer: **especialistas guardados** (decisión 4, u-contactos), que necesita `favoritos` (4.3).
+
+### Comandos ejecutados (30/10/2026, local)
+
+| Comando                                            | Resultado                                                                                                      |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                                             |
+| `npm test`                                         | **166 pruebas OK** (12 nuevas de cuenta, pagos, direcciones, ayuda y baja)                                     |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                                   |
+| `npm run e2e`                                      | recorrido · 19 escenarios (nuevo: cuenta y ayuda) · accesibilidad 279 chequeos · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas                              |
+
+## Rediseño · lote 3.7 · Actividad, mensajes y soporte
+
+Pedido de Ignacio: "Seguí con el lote 3.7".
+
+- **Actividad** (`/pedidos/`, y `/agenda/` abre la pestaña Agenda): segmentos **En curso** (arriba "Espera tu
+  respuesta": propuestas para elegir y trabajos para confirmar; después "En marcha"), **Agenda** (calendario y el día) e
+  **Historial**. Tarjetas con franja de la demo; el enlace dice qué abre (rubro y especialista).
+- **Mensajes**: filas con avatar, rubros, momento y no leídos; HandIA y Soporte al final.
+- **Chat**: cabecera del especialista con "Ver el trabajo/pedido", burbujas, propuestas dentro de la conversación,
+  **respuestas rápidas** según el momento (antes de contratar, preguntas; con el trabajo en marcha, coordinar) que
+  **completan el mensaje** sin mandarlo, foto, "No se envió" con Reintentar (mismo `clienteId`, no duplica).
+- **Soporte** (`/soporte/`, decisión 5): chat con el equipo; lo atiende una persona, sin IA ni plazos. No está en el
+  contrato v1: en la vista de prueba responde un acuse simulado y rotulado; con la API real queda "todavía no
+  disponible" (con Ayuda y reclamos) hasta la conversación con Operations (Fase 4.4).
+- **Avisos** como tarjetas con ícono por tipo y "nuevo"; **cambiar turno** en el kit (siempre una propuesta que la otra
+  parte acepta).
+
+### Comandos ejecutados (30/10/2026, local)
+
+| Comando                                            | Resultado                                                                         |
+| -------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                |
+| `npm test`                                         | **154 pruebas OK** (6 nuevas de actividad, mensajes y soporte)                    |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                      |
+| `npm run e2e`                                      | recorrido · 18 escenarios · accesibilidad · teclado · PWA · HandIA · mapa         |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas |
+
+## Rediseño · lote 3.6 · Trabajo en curso y cierre
+
+Pedido de Ignacio: "Seguí con lote 3.6".
+
+- **Seguimiento** (u-seguimiento) mientras el trabajo está activo: tu casa en el mapa, el horario acordado, hoja azul con
+  "{especialista} va para tu casa" y la tira Confirmado › En camino › Llegó › Trabajando; lo acordado desplegable; etapas
+  de la obra con "Confirmar esta etapa"; pago, cambiar turno, reclamo y cancelar; el especialista con el chat al pie.
+  **Sin tiempos de llegada** y "nosotros no seguimos tu ubicación ni la del especialista" (la llegada la marca él).
+- **Cierre**: cuando el especialista termina, "Falta tu confirmación" (en una obra, cada etapa primero); recién al
+  confirmar, **"¡Listo, quedó arreglado!"** (u-terminado) con el ticket del pago, pagar, **calificar** y reclamo.
+- **Pago**: un ticket por trabajo o por etapa, métodos como tarjetas, **deslizar para confirmar** con el botón de siempre
+  y el **comprobante del registro** (estado, fechas, código; no es una factura). Reportado ≠ verificado.
+- **Reseña** (`/trabajos/resena/`, u-resena): estrellas, lo mejor o lo que estuvo mal, comentario **sin datos
+  personales** (se tachan antes de enviar). No está en el contrato v1: en la vista de prueba se guarda en memoria; con la
+  API real queda "todavía no disponible" hasta `resenaCrear` (Fase 4.4).
+- **Reclamo** nuevo en el kit, a pantalla completa.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                                   |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                          |
+| `npm test`                                         | **148 pruebas OK** (10 nuevas del trabajo y la reseña)                                      |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                |
+| `npm run e2e`                                      | recorrido (hasta la reseña) · 18 escenarios · accesibilidad · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas           |
+
+## Rediseño · lote 3.5 · Propuestas y decisión
+
+Pedido de Ignacio: "Seguí con 3.5".
+
+- **Tarjetas** (lista y comparación): "Ver perfil" abre la propuesta y "Elegir" abre directamente "Confirmá el turno";
+  en la comparación, "Elegir" solo en las que se pueden aceptar.
+- **Propuesta = perfil + propuesta** (u-perfil): verificaciones reales (o "Sin verificaciones todavía"), rubros,
+  trabajos con Handyx, qué incluye, total final con desglose, horario y vigencia, contrapropuesta, chat e historial de
+  la negociación. Pie: Rechazar | Aceptar.
+- **Confirmá el turno** (u-confirmar): quién, qué, cuándo, dónde y la plata; cómo se paga (informativo: el contrato no
+  guarda la forma de pago, se elige al pagar); **deslizá para confirmar** (no acepta a medias; vuelve si el servidor
+  rechaza; sin animaciones que apuren) y siempre el botón "Sí, acepto estas condiciones" como alternativa accesible.
+- **Contrapropuesta** en el kit, a pantalla completa (sin barra de pestañas).
+- Pendiente de contrato (Fase 4.3): el historial general y la zona del especialista.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                                     |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                            |
+| `npm test`                                         | **138 pruebas OK** (8 nuevas de propuestas)                                                   |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                                  |
+| `npm run e2e`                                      | recorrido (acepta deslizando) · 18 escenarios · accesibilidad · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas             |
+
+## Rediseño · lote 3.4 · Inicio y pedir
+
+Pedido de Ignacio: "Seguí con el lote 3.4".
+
+- **Inicio**: el chip de la dirección abre una hoja con el mini mapa de tu casa, la dirección y "Cambiar la dirección";
+  los rubros muestran su Handy (caño, lamparita, llave, engranaje, gota; albañilería con su ícono hasta tener personaje).
+- **Pedir** (`/pedir/`, sin barra de pestañas), una decisión por pantalla, como la demo:
+  rubro › **para cuándo** (Urgencia · Programado · Obra) › **día y franja** (tira de 7 días, 6 franjas, "otra fecha" en
+  el calendario, "otro horario"; las franjas de hoy que ya pasaron no se pueden elegir) › **contanos** (resumen, texto y
+  fotos) › **dirección** con el mapa › **revisar** con "Cambiar" en cada dato, precio y aceptación automática como
+  opciones y "Pedir presupuestos". Si el servidor rechaza un dato, vuelve al paso de ese dato. Mismo cuerpo de
+  `pedidoCrear` que antes (contrato sin cambios).
+- **Búsqueda** (`PedidoBuscando`, como u-buscando): mapa con tu casa y el pulso, "Buscando en La Perla", hoja azul con
+  el estado, hasta cuándo sigue la búsqueda (nunca cuándo llega alguien), editar y cancelar; **sin respuesta** con el
+  Handy roto, relanzar (respeta el límite de intentos), búsqueda manual y pedido nuevo; **búsqueda manual** con el
+  equipo de Handy buscando.
+- **Arreglado en el camino**: las fotos subidas se perdían al ir y volver entre pasos (`useFotos` guarda su estado en el
+  flujo).
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                            |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                   |
+| `npm test`                                         | **130 pruebas OK** (9 nuevas de pedir)                                               |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                         |
+| `npm run e2e`                                      | recorrido · 18 escenarios · **221** de accesibilidad · teclado · PWA · HandIA · mapa |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas    |
+
+### Sigue pendiente del 3.3
+
+El extracto real del mapa (`npm run mdp:datos`, necesita internet: ver abajo). Hasta entonces se ve el mapa ilustrado.
+
+## Rediseño · lote 3.3 · Mapa
+
+Pedido de Ignacio: "Vamos con 3.3". Mapa propio de Mar del Plata, sin cuentas, claves ni terceros:
+
+- **MapLibre 6** (6.15: la 5 tenía una vulnerabilidad crítica de XSS) + **`pmtiles`** + capas de
+  **`@protomaps/basemaps`** con el **estilo Handyx** de la demo (`src/geo/estilo.ts`): tierra gris clara, calles
+  blancas, mar celeste con costa amarilla, plazas verdes, barrios en mayúsculas espaciadas. Sin capas de íconos (no hace
+  falta sprite). Fuentes Noto (OFL) en `public/mapa/fuentes/`; el worker de MapLibre se copia a `public/mapa/` en
+  `predev`/`prebuild` (MapLibre 6 lo busca al lado de su módulo, que Next empaqueta).
+- **`MapaHx`**: `elegir` (movés el mapa y el pin queda en el centro; al soltar guarda el punto con su precisión y dice
+  "Estás cerca de {barrio}") y `ver` (tu casa, pulso mientras se busca, especialista aproximado solo si hay dato).
+  Atribución "© OpenStreetMap" visible.
+- **Dónde aparece**: dirección del onboarding y de "Mis datos" (`FormUbicacion`), detalle del pedido (con pulso mientras
+  busca), trabajo en camino (tu casa; la posición del especialista necesita `trabajoUbicacionEspecialista`, Fase
+  4.4/4.6; nunca tiempos de llegada) y la galería `/diseno/`.
+- **Sin el archivo del mapa** (como hoy): el SVG de la demo con el rótulo "Mapa ilustrativo" y "escribí la dirección";
+  el build detecta si el archivo está (`NEXT_PUBLIC_MAPA_DATOS`) y si no, no lo pide.
+- La usuaria ficticia del mock tiene un punto público de La Perla, para ver el mapa de búsqueda.
+- Pruebas: `tests/mapa-geo.test.ts` (13) y `tests/e2e/mapa.cjs`, que prueba el camino de MapLibre con un **mapa
+  sintético** (`tests/fixtures/mapa-prueba.pmtiles`, calles en grilla y un "Barrio de Prueba", generado por
+  `scripts/mapa-prueba.mjs`; nunca se publica). Capturas: `screens/rediseno-3-3/mapa.jpg` (rotuladas).
+
+### Falta: generar el mapa real (necesita internet)
+
+En esta sesión la red no deja llegar a `build.protomaps.com` (de donde se recorta el extracto) ni compilar la
+herramienta `pmtiles`. Dos caminos:
+
+1. **En tu máquina** (con internet): bajá `pmtiles` de https://github.com/protomaps/go-pmtiles/releases (un binario),
+   y en `handyx-client-fe`:
+   ```sh
+   npm run mdp:datos          # recorta Mar del Plata (zoom 0-15) a public/mapa/mdp.pmtiles
+   npm run mdp:verificar      # tipo, zoom, límites, capas y peso
+   npm run build && npm run preview
+   ```
+2. **En esta sesión**: habilitá `build.protomaps.com` (y `github.com`, para la herramienta) en los dominios permitidos del
+   entorno (menú del entorno › Editar › Network access) y lo genero yo.
+
+El archivo no se versiona (`.gitignore`); en la Fase 5 se genera antes del build que se sube a Hostinger. CSP de la
+Fase 5: `worker-src 'self'` y `connect-src 'self'` alcanzan (todo es del mismo origen).
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                               |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                      |
+| `npm test`                                         | **121 pruebas OK** (13 nuevas del mapa)                                                 |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                            |
+| `npm run e2e`                                      | recorrido · 18 escenarios · 209 de accesibilidad · teclado · PWA · HandIA · **mapa OK** |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas ni críticas       |
+
+## Rediseño · lote 3.2 · Acceso y onboarding
+
+Pedido de Ignacio: "Seguí con el 3.2". Todo a pantalla completa con el kit de la demo, como las apps on-demand:
+
+- **Bienvenida**: azul con el mosaico, logo en blanco, 3 tarjetas deslizables con los Handys (contá qué pasó, recibí
+  propuestas, elegís vos), "Crear cuenta" y "Ya tengo cuenta" (aclara que la demo es con invitación).
+- **Ingresar en 2 pasos**: email › contraseña con ver/ocultar; el email elegido queda arriba con "Cambiar".
+- **Registro por pasos**: invitación › email › contraseña con medidor › textos (sin tildar por defecto) › **confirmar
+  email** › "¡Listo!" con la tarifa 0 % hasta el 10/12 (1 de 3 lugares). Si el servidor rechaza un dato, vuelve al paso
+  de ese dato. La confirmación del email **no está en el contrato v1**: en la vista de prueba es un paso simulado y
+  rotulado; con la API real no aparece hasta que el BE la sume (Fase 4, con el proveedor de email).
+- **Recuperar en 3 pasos**: email › "Revisá tu email" (con reenviar) › contraseña nueva con medidor.
+- **Onboarding**: nombre › sobre vos › **pre-permiso de ubicación** ("¿Usamos tu ubicación?", el navegador pregunta solo
+  después del toque) › dirección › **pre-permiso de avisos** (solo si el navegador puede preguntar) › Inicio con el modal
+  del fee (2 de 3). La dirección en el mapa llega con el mapa (3.3).
+- **Arreglado en el camino**: al guardar un paso del perfil y pasar enseguida al siguiente, el segundo guardado salía
+  con la versión vieja y mostraba "Tu perfil cambió en otro lado" sin que nada hubiera cambiado. Ahora cada paso usa la
+  versión que devolvió el anterior.
+- La bienvenida se compacta en pantallas bajas (360×640) y se desplaza en apaisado.
+- Piezas nuevas en `src/components/acceso.tsx` (`Flujo`, `BotonHx`, `CampoContrasena`, `Escena`); el perfil se separó
+  en `usePerfil` + `CamposPerfil` (lo comparten el onboarding y "Mis datos"). Pasos de acceso compartidos por los e2e en
+  `tests/e2e/acceso.cjs`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                           |
+| `npm test`                                         | **108 pruebas OK** (9 nuevas de acceso)                                      |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios                                                 |
+| `npm run e2e`                                      | recorrido OK · 18 escenarios · 209 de accesibilidad · teclado · PWA · HandIA |
+| `npm run capturas`                                 | catálogo regenerado con las pantallas de acceso por paso                     |
+
+### Próximo paso
+
+Hecho en el lote 3.3 (arriba).
+
+## Pantalla de carga mejorada y HandIA incluida
+
+Pedido de Ignacio: "mejora la pantalla de carga", "handia va incluido".
+
+- **Pantalla de carga**: ondas de color desde el centro (amarillo → azul vivo → azul liso, sin los bloques del fondo); los 5 Handys entran
+  saltando, las letras de "Handyx" (recortes del logotipo real) caen de a una delante de ellos y cada uno queda agarrado
+  de su letra; confeti de mosaicos y salida en círculo. 2,95 s; se saltea con un toque; sin "reducir movimiento" no aparece.
+- **HandIA** (`/handia/`, como `u-handia` de la demo), a pantalla completa desde la tarjeta de Inicio "Contale a HandIA":
+  - sugiere el rubro ("Rubro detectado"); la persona confirma, elige entre dos si hay duda o elige de la lista si no hay
+    pistas (no inventa); "Es otro rubro" explica que Handyx trabaja con 6;
+  - aviso de seguridad primero con olor a gas o chispas;
+  - **datos personales tachados antes de enviar** (emails, teléfonos, documentos) con aviso; nunca fotos ni documentos;
+  - "Pedir para hoy" o "Programar turno" abren Pedir con el rubro y el texto precargado desde un **borrador en memoria**
+    (nunca por la URL ni en el navegador); la persona revisa y manda;
+  - en la vista de prueba responde un asistente simulado (reglas locales, sin IA ni red). **Con la API real queda
+    inactiva** ("todavía no está disponible") hasta que `handyx-client-be` sume `handiaMensaje` (Fase 4: vuelve a tachar,
+    llama al proveedor sin datos de cuenta ni fotos, no guarda la conversación; la clave vive en su entorno privado y no
+    se compra nada sin autorización).
+- Textos de privacidad y ayuda actualizados; versión de privacidad de la demo `privacidad-demo-2026-11-v2`.
+- Reglas (`AGENTS.md`), plan, inventario, contrato del mock y mapa de pantallas actualizados.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                           |
+| `npm test`                                         | **99 pruebas OK** (11 nuevas de HandIA)                                      |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · suma `/handia/`                               |
+| `npm run e2e`                                      | recorrido OK · 18 escenarios · 209 de accesibilidad · teclado · PWA · HandIA |
+| `npm run capturas`                                 | catálogo regenerado (suma `handia` y `handia-detectado`)                     |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas        |
+
+## Rediseño · lote 3.1 · Dirección de arte, sistema y pantallas modelo
+
+Ignacio aprobó el plan de rediseño con las decisiones recomendadas ("Vamos con 3.1").
+
+- **Kit de la demo, no uno parecido**: `npm run kit` copia el CSS de la demo de la landing (`.hd-*`, `.app-*`, `.du-*`) a
+  `src/styles/kit/` con cambios mecánicos; lo propio de la app está en `kit/ajustes.css`. Componentes en
+  `src/components/hx.tsx`.
+- **Marco nuevo**: sin cabecera fija; pantalla de app nativa (solo se desplaza el cuerpo); 4 pestañas Inicio · Actividad
+  · Mensajes · Cuenta (Actividad abre Mis pedidos hasta el lote 3.7). Las pantallas sin rediseñar conviven: su
+  encabezado ya usa la barra "← Título" de la demo.
+- **Pantalla de carga**: primera versión (reemplazada por la mejorada de arriba).
+- **Inicio** (como `u-inicio`): dirección, "¿Qué necesitás hoy?", rubros, ticket de lo prioritario (trabajo en curso,
+  propuestas, pedido, próximo turno), "¿No sabés qué rubro es?" (ahora abre HandIA) y "Quiero…" con las tareas de la demo, que
+  precargan el pedido (`?tarea=`; nunca texto libre por la URL).
+- **Propuestas** (como `u-presupuestos`): hoja azul "Te llegaron N · Ordenadas por llegada" con las tarjetas de la demo,
+  verificaciones reales, tarifa 0 %, "Consultar | Elegir" (elegir lleva al detalle, que pide confirmación) y "Comparar"
+  en tabla.
+- **Galería** `/diseno/` (vista de prueba).
+- **Arreglado en el camino**: la página `/sin-conexion/` guardada por el service worker no tenía sus scripts sin red;
+  ahora la instalación también guarda los archivos que esa página necesita (`VERSION` v2).
+- Comparaciones demo/app, secuencia de la pantalla de carga y galería: `docs/screens/rediseno-3-1/`. Catálogo completo
+  regenerado en `docs/screens/capturas/`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                             |
+| -------------------------------------------------- | --------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                    |
+| `npm test`                                         | **88 pruebas OK** (kit generado sin editar, pantalla de carga)        |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · 38 rutas                               |
+| `node tests/e2e/accesibilidad.cjs`                 | 203 de 203 (la primera corrida del rediseño dio 26 con fallas)        |
+| `node tests/e2e/teclado.cjs` · `pwa.cjs`           | 13 de 13 · 26 de 26 (incluye la pantalla de carga)                    |
+| `node tests/e2e/recorrido.cjs` · `escenarios.cjs`  | OK · 18 de 18                                                         |
+| `npm run capturas`                                 | 66 capturas + 18 escenarios                                           |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas |
+
+### Próximo paso
+
+Hecho en el lote 3.2 (arriba).
+
+---
+
+# Histórico · Fase 3 antes del rediseño
+
+## Lote 3.3 · Motion, PWA y capturas
+
+- **Movimiento funcional** (pantalla nueva, tarjetas que llegan, hojas, búsqueda en curso, toque): 120–220 ms, nunca en
+  botones de aceptar/pagar, sin sonido ni vibración; `prefers-reduced-motion` lo anula todo (incluido el fondo de las hojas).
+- **PWA instalable**: `manifest.webmanifest` (íconos de la landing, normales y adaptables, atajos), instalación desde
+  Cuenta (el aviso automático se retiene), ayuda para iPhone. Chromium no reporta errores de instalabilidad.
+- **Service worker propio** (`public/sw.js`, sin dependencias, solo en producción): guarda archivos públicos del mismo
+  origen (páginas por ruta sin query, estáticos, ilustraciones); nunca la API, escrituras ni datos; no encola nada.
+  Sin red: página guardada o `/sin-conexion/` (pantalla real, reemplaza al marcador de la Fase 1).
+- **Sin conexión sin éxitos ficticios**: aviso fijo; las acciones fallan a la vista (aceptar no crea el trabajo, el
+  mensaje queda "No se envió"); las pantallas guardadas muestran error, no datos; al volver la red, recargan. El mock
+  también falla con el navegador sin red.
+- **Capturas**: `npm run capturas` genera el catálogo (66 capturas + los 18 escenarios) en
+  [`docs/screens/capturas/`](screens/capturas/README.md). La revisión encontró y corrigió capturas tomadas durante la
+  carga, guiones automáticos que cortaban títulos ("del ho-gar") y "comisión" en la pantalla de pago (ahora "tarifa").
+- Bug encontrado y corregido en el camino: con un archivo mal nombrado en la precarga, el service worker no se instalaba
+  (la precarga es todo o nada); ahora una prueba verifica que cada archivo exista.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                     |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                            |
+| `npm test`                                         | **84 pruebas OK** (8 archivos; nuevo `tests/pwa.test.ts` con 12)              |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · 37 rutas (36 páginas + `manifest.webmanifest`) |
+| `node tests/e2e/pwa.cjs`                           | 22 de 22 OK                                                                   |
+| `node tests/e2e/accesibilidad.cjs` · `teclado.cjs` | 203 de 203 · 13 de 13                                                         |
+| `node tests/e2e/recorrido.cjs` · `escenarios.cjs`  | OK · 18 de 18                                                                 |
+| `npm run capturas`                                 | 66 capturas + 18 escenarios                                                   |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas         |
+
+### Para el despliegue (Fase 5)
+
+`sw.js` con `Cache-Control: no-cache` (si no, las actualizaciones tardan); `manifest.webmanifest` con
+`application/manifest+json`; HTTPS obligatorio para el service worker. Probar instalación y sin conexión en Chrome Android y
+Safari iOS en el lote 5.2.
+
+## Lote 3.2 · Responsive y accesibilidad
+
+- **Auditoría reproducible** (`tests/e2e/accesibilidad.cjs`, axe-core 4.14 como dependencia de desarrollo): 32 rutas y 5
+  hojas abiertas × 360, 390, 820, 1280 px y horizontal, más texto al 200 %. Primera corrida: **181 de 203 chequeos con
+  fallas**; final: **203 de 203 OK**.
+- Corregido: objetivos táctiles < 44 px (panel de prueba, desplegables de ayuda y privacidad, enlaces sueltos, días del
+  calendario a 360 px), nombre accesible de los días del calendario, orden de títulos de la agenda, desbordes con texto
+  al 200 % (pestañas, títulos, filas de datos, importes).
+- **Teclado y lector** (`tests/e2e/teclado.cjs`, 13 de 13): saltar al contenido, foco al h1 al navegar, título de pestaña
+  por pantalla, foco en el primer error al enviar, hojas que abren en su título (un Enter no confirma), Escape devuelve
+  el foco, pastillas leídas como "Estado: …", Aceptar/Rechazar descritos por el resumen, "Aire acondicionado" completo.
+  Se revisó el árbol de accesibilidad de Chromium; no hubo lector de pantalla real ni dispositivos (queda para el 5.2).
+- **Responsive**: tablet con columna de 600 px y hojas centradas; escritorio con navegación lateral; horizontal con
+  barra compacta y rótulo de prueba no fijo.
+- Guía actualizada en [`docs/diseno.md`](diseno.md); QA en [`docs/qa.md`](qa.md); capturas en `docs/screens/lote-3-2/`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                            | Resultado                                                                                      |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` · `typecheck`      | OK                                                                                             |
+| `npm test`                                         | **72 pruebas OK** (7 archivos; `tests/diseno.test.ts` suma 6 guardas de accesibilidad)         |
+| `npm run mapa:check` · `contracts:check` · `build` | OK · contrato v1 sin cambios · 36 páginas                                                      |
+| `node tests/e2e/accesibilidad.cjs`                 | 203 de 203 chequeos OK                                                                         |
+| `node tests/e2e/teclado.cjs`                       | 13 de 13 OK                                                                                    |
+| `node tests/e2e/recorrido.cjs` · `escenarios.cjs`  | OK · 18 de 18                                                                                  |
+| `npm audit`                                        | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas; axe-core no suma avisos |
+
+`npm run e2e` ahora corre los cuatro scripts en orden.
+
+## Lote 3.1 · Sistema visual y navegación
+
+Referencia: la demo de la landing (`/demo/`, construida y capturada en local), comparada pantalla por pantalla con la app.
+
+- **Tokens semánticos** sobre los de marca (`src/styles/tokens.css`): superficies, texto, acciones, estados, importes,
+  tipografía, espaciado, elevación, íconos, movimiento y capas. Cero colores sueltos en el resto del CSS (lo vigila una prueba).
+  Contrastes ajustados: pastilla "ok" (3,5 → 6,5:1) y etiquetas inactivas de la barra (4,2 → 5,0:1).
+- **Navegación**: `Encabezado` con botón de volver (destino fijo, nombre accesible) en las 17 pantallas internas, en
+  lugar de los enlaces "← Volver…"; botón de avisos azul y táctil como en la demo; pestaña activa de la barra con fondo y
+  punto amarillo, además del color.
+- **Inicio**: un panel azul con **una** prioridad (trabajo en curso › propuestas › pedido buscando › próximo turno) y su
+  acción; rubros; "¿Para cuándo?" con ícono, título y explicación por tipo de pedido.
+- **Importes**: `Desglose` (precio del especialista + tarifa de Handy = total, cifras tabulares, total grande en azul) en
+  la propuesta, la hoja de aceptar y el trabajo; la tabla comparativa empieza por el total.
+- **Propuestas**: tarjeta con avatar de iniciales, verificaciones del backend, total, condiciones (horario y vigencia) en
+  caja propia y alcance; en el chat se usa la misma tarjeta, **sin el doble borde**.
+- **Decisión**: rechazar (contorno rojo, cruz, izquierda) y aceptar (azul lleno, check, derecha), las dos con hoja de
+  confirmación; la de rechazar con Handy y botón rojo lleno. Contrapropuesta y chat, debajo.
+- **Chat**: el compositor ya no queda tapado por la barra inferior (`--barra-alto` coincide con la barra real).
+- **Pedir**: el rubro elegido muestra un tilde además del cambio de color.
+- Guía: [`docs/diseno.md`](diseno.md). Capturas antes/después (390 px, datos ficticios): `docs/screens/lote-3-1/`.
+
+### Comandos ejecutados (29/10/2026, local)
+
+| Comando                                                        | Resultado                                                                    |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `npm run format:check` · `lint` (React Compiler) · `typecheck` | OK                                                                           |
+| `npm test`                                                     | **66 pruebas OK** (7 archivos; nuevo `tests/diseno.test.ts` con 7 pruebas)   |
+| `npm run mapa:check` · `contracts:check`                       | OK · contrato v1 idéntico al de `handyx-client-be`                           |
+| `npm run build`                                                | 36 páginas estáticas                                                         |
+| `node tests/e2e/recorrido.cjs`                                 | OK, sin errores de consola                                                   |
+| `node tests/e2e/escenarios.cjs`                                | **18 de 18 escenarios OK**                                                   |
+| Desborde horizontal en 21 rutas × 360/390/768/1280 px          | ninguno                                                                      |
+| `npm audit`                                                    | 2 moderadas solo de desarrollo (`vitest` → `@vitest/mocker`), 0 altas; igual |
+
+Las pruebas e2e cambiaron solo en los nombres de dos controles: el botón "Aceptar" y la fila "Tarifa de Handy" de la tabla.
+
+### Decisiones de diseño (reversibles)
+
+1. "Tarifa de Handy" reemplaza "Comisión de Handy" en la interfaz (mismo dato: `comisionHandy`, calculada con `usuarioBp`);
+   el total para el usuario es precio + tarifa, sumado sin redondeos propios. Con 0 % el total es el precio.
+2. Avatar con iniciales: el contrato no tiene fotos de perfil (y no se agregan sin decisión de Producto).
+3. Volver con destino fijo, no `history.back()`: llegar desde un aviso o un enlace no rompe la vuelta.
+
+## Próximo paso
+
+Aprobar el plan de [`docs/rediseno.md`](rediseno.md) (o ajustar sus 10 decisiones) y arrancar el lote 3.1 del rediseño
+(Opus 5.5 high) en `fase-3-diseno`: dirección de arte, sistema y 3 pantallas modelo para aprobar antes de escalar. El PR
+#3 queda abierto como borrador de la fase hasta completar el rediseño.
+
+---
+
+# Histórico · Fase 2 · Mockup completo
+
+**Fase 2 · Mockup completo — lotes 2.1 a 2.5 listos.**
 Fecha: 29/10/2026. Rama: `fase-2-mockup` (parte de `fase-1-bases`; el PR de la Fase 1 sigue abierto, por eso el PR de esta fase apunta a esa rama).
 Modelo de la sesión: **Claude Sonnet 5.5**, como recomienda el plan para la Fase 2 (la Fase 1 se hizo con Opus 5.5).
 
@@ -70,11 +637,9 @@ y edad mínima. Ninguna cambia el contrato v1; si el servidor real decide otra c
 | Notion (TECH-03 y tickets)                                | no se consultó en esta sesión                         | conciliar el modelo en 4.1                      |
 | Accesibilidad medida, dispositivos reales, service worker | trabajo de la Fase 3                                  | lotes 3.2 y 3.3                                 |
 
-## Próximo paso
+## Próximo paso (al cerrar la Fase 2)
 
-Fase 3 · lote 3.1 (recomendado Opus 5.5 high; cambiar con `/model`), rama `fase-3-diseno` desde `fase-2-mockup`: unificar el sistema
-visual con la landing (hoy hay doble borde en las tarjetas de propuesta dentro del chat y la barra inferior tapa parte del
-compositor), distinguir aceptar/rechazar sin depender del color, y revisar jerarquía de importes y navegación.
+Fase 3 · lote 3.1 — hecho, ver arriba.
 
 ---
 

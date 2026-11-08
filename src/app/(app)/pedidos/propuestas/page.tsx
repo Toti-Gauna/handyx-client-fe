@@ -1,199 +1,154 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import { Enlace, ruta } from '@/components/nav';
-import { PerfilProfesional, TarjetaPropuesta, Vigencia } from '@/components/Propuesta';
-import { Titulo } from '@/components/Titulo';
-import { Aviso, Boton, Cargando, ErrorEstado, Vacio } from '@/components/ui';
-import { useConsulta } from '@/data/hooks';
+import { ruta } from '@/components/nav';
+import { ChipEstadoPropuesta, TarjetaOferta } from '@/components/Propuesta';
+import { useAhora } from '@/components/SesionProvider';
+import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
+import { candidataDe, destacada } from '@/domain/comparar';
 import { pesos } from '@/domain/dinero';
-import { cuando } from '@/domain/fechas';
+import { RUBROS_INFO } from '@/domain/etiquetas';
+import { Boton, Chip, FilaEnlace, MosaicoIcono, Nota, Tarjeta, Titulo } from '@/ui';
+import { AccionBarra, ChipPromedio, PantallaPedir } from '@/ui/pedir';
+import { usePropuestasDelPedido } from './_datos';
 
+const NUEVA_MS = 30 * 60_000;
+
+/**
+ * Propuestas de un pedido (Fase 7 · C-Propuestas): cada tarjeta con quién es, el precio en tinte con «Detalle», datos
+ * chicos del detalle, verificaciones reales y Rechazar · Ver perfil · Aceptar (que abren el detalle o la hoja: nada se
+ * decide desde la tarjeta). En el orden en que llegaron. Las visitas van marcadas como «Consulta».
+ */
 export default function Propuestas() {
   const pedidoId = useSearchParams().get('pedido');
-  const pedido = useConsulta('pedido', pedidoId ? { parametros: { id: pedidoId } } : null, {
-    cada: 4_000,
-  });
-  const lista = useConsulta(
-    'propuestas',
-    pedidoId ? { parametros: { id: pedidoId }, consulta: { limite: 50 } } : null,
-    { cada: 4_000 },
-  );
-  const [tabla, setTabla] = useState(false);
+  const d = usePropuestasDelPedido(pedidoId);
+  const ahora = useAhora(60_000);
 
   if (!pedidoId)
     return (
       <Vacio titulo="Falta el pedido" texto="El enlace está incompleto.">
-        <Enlace className="boton boton--chico" href="/pedidos/">
+        <Boton href="/pedidos/" chico>
           Ver mis pedidos
-        </Enlace>
+        </Boton>
       </Vacio>
     );
-  const error = lista.error ?? pedido.error;
-  if (error)
-    return (
-      <ErrorEstado
-        error={error}
-        onReintentar={() => {
-          lista.recargar();
-          pedido.recargar();
-        }}
-      />
-    );
-  if (!lista.datos || !pedido.datos) return <Cargando />;
+  if (d.error) return <ErrorEstado error={d.error} onReintentar={d.recargar} />;
+  if (!d.lista.datos || !d.pedido.datos) return <Cargando />;
 
-  // Todas las ofertas del especialista; las contrapropuestas del usuario se ven en el detalle y en el chat.
-  const cotizaciones = lista.datos.items.filter((p) => p.tipo === 'cotizacion');
-  const ofertas = cotizaciones.filter((p) => p.autorRol === 'especialista');
-  const vigentes = ofertas.filter((p) => p.estado === 'pendiente');
-  const otras = ofertas.filter((p) => p.estado !== 'pendiente');
-  const mias = cotizaciones.filter((p) => p.autorRol === 'usuario' && p.estado === 'pendiente');
+  const p = d.pedido.datos;
+  const { vigentes, mias, anteriores } = d;
+  const candidatas = vigentes.map((x) => candidataDe(x)).filter((c) => c !== null);
+  const mejor = destacada(candidatas);
+  const comparar = ruta('/propuestas/comparar/', { pedido: p.id });
+  const precios = candidatas.map((c) => c.totalCentavos);
+  const n = vigentes.length;
 
   return (
-    <>
-      <Titulo texto="Tus ==propuestas==" />
-      <p>
-        <Enlace className="enlace-tarjeta" href={ruta('/pedidos/detalle/', { id: pedidoId })}>
-          ← Volver al pedido
-        </Enlace>
-      </p>
-      {pedido.datos.estado === 'contratado' && pedido.datos.trabajoId ? (
-        <Aviso tipo="ok" titulo="Ya hay un acuerdo">
-          <Enlace
-            className="enlace-tarjeta"
-            href={ruta('/trabajos/detalle/', { id: pedido.datos.trabajoId })}
-          >
-            Ver el trabajo
-          </Enlace>
-        </Aviso>
+    <PantallaPedir
+      titulo="Propuestas"
+      sub={`${RUBROS_INFO[p.rubro].nombre} · ${n} ${n === 1 ? 'propuesta' : 'propuestas'}`}
+      volver={{ href: ruta('/pedidos/detalle/', { id: p.id }), etiqueta: 'Volver al pedido' }}
+      accion={
+        candidatas.length >= 2 ? (
+          <AccionBarra icono="columnas" etiqueta="Comparar lado a lado" href={comparar} />
+        ) : undefined
+      }
+      pie={
+        candidatas.length >= 2 ? (
+          <Boton href={comparar} variante="contorno" icono="columnas">
+            Comparar lado a lado
+          </Boton>
+        ) : undefined
+      }
+    >
+      {precios.length >= 2 ? (
+        <Tarjeta tono="noche" etiqueta="Precios de las propuestas">
+          <div className="ds-fila">
+            <MosaicoIcono icono="grafico" tam={2.5} tono="velo" />
+            <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+              <span className="ds-etiqueta">De las propuestas que llegaron</span>
+              <strong style={{ fontSize: '1.0625rem' }}>
+                {pesos(Math.min(...precios))} a {pesos(Math.max(...precios))}
+              </strong>
+              <span className="ds-sub">El precio lo pone cada especialista.</span>
+            </span>
+          </div>
+        </Tarjeta>
+      ) : null}
+
+      <div className="ds-fila" style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <Titulo
+          nivel={2}
+          tam={1.375}
+          texto={
+            n ? `${n} ==${n === 1 ? 'propuesta' : 'propuestas'}==` : 'Sin propuestas ==vigentes=='
+          }
+        />
+        {n > 1 ? <span className="ds-sub">En el orden en que llegaron</span> : null}
+      </div>
+
+      {p.estado === 'contratado' && p.trabajoId ? (
+        <FilaEnlace
+          icono="check"
+          tono="azul"
+          titulo="Ya hay un acuerdo"
+          sub="Ver el trabajo"
+          href={ruta('/trabajos/detalle/', { id: p.trabajoId })}
+        />
       ) : null}
       {mias.length ? (
-        <Aviso tipo="info" titulo="Esperando respuesta">
+        <Nota icono="reloj">
           Tu contrapropuesta está pendiente: nada queda acordado hasta que el especialista la
           acepte.
-        </Aviso>
+        </Nota>
       ) : null}
-      {vigentes.length === 0 && mias.length === 0 && pedido.datos.estado !== 'contratado' ? (
-        <Aviso tipo="alerta" titulo="No hay propuestas vigentes">
-          Las propuestas que llegaron ya vencieron o se resolvieron.
-        </Aviso>
-      ) : null}
-
-      {vigentes.length > 1 ? (
-        <div className="acciones" style={{ marginBottom: 8 }}>
-          <Boton variante="claro" chico aria-pressed={tabla} onClick={() => setTabla(!tabla)}>
-            {tabla ? 'Ver como tarjetas' : 'Comparar en tabla'}
-          </Boton>
-        </div>
-      ) : null}
-      {vigentes.length > 1 ? (
-        <p className="texto-suave">Ordenadas por llegada. No es una recomendación ni un ranking.</p>
+      {n === 0 && mias.length === 0 && p.estado !== 'contratado' ? (
+        <Nota icono="info" tono="gris">
+          {anteriores.length
+            ? 'Las propuestas que llegaron ya vencieron o se resolvieron.'
+            : 'Todavía no llegaron propuestas. Te avisamos cuando llegue cada una.'}
+        </Nota>
       ) : null}
 
-      {tabla && vigentes.length > 1 ? (
-        <div
-          style={{ overflowX: 'auto' }}
-          role="region"
-          aria-label="Comparación de propuestas"
-          tabIndex={0}
-        >
-          <table className="tabla">
-            <thead>
-              <tr>
-                <th scope="col">&nbsp;</th>
-                {vigentes.map((p) => (
-                  <th key={p.id} scope="col">
-                    {p.especialista.nombrePublico}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Precio</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>
-                    <strong>{pesos(p.monto.centavos)}</strong>
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">Comisión de Handy</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>{pesos(p.comisionHandy.importe.centavos)}</td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">Horario</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>{p.horario ? cuando(p.horario.inicio) : 'A coordinar'}</td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">Qué incluye</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>{p.alcance}</td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">Verificaciones</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>
-                    <PerfilProfesional e={{ ...p.especialista, trabajosRealizados: null }} />
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">Vigencia</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>
-                    <Vigencia hasta={p.venceEn} />
-                  </td>
-                ))}
-              </tr>
-              <tr>
-                <th scope="row">&nbsp;</th>
-                {vigentes.map((p) => (
-                  <td key={p.id}>
-                    <Enlace
-                      className="boton boton--chico"
-                      href={ruta('/propuestas/detalle/', { id: p.id })}
-                    >
-                      Ver y responder
-                    </Enlace>
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <ul className="lista-tarjetas">
-          {vigentes.map((p) => (
-            <TarjetaPropuesta key={p.id} p={p} />
+      {vigentes.map((x) => (
+        <TarjetaOferta
+          key={x.id}
+          p={x}
+          marca={
+            mejor?.id === x.id ? (
+              <ChipPromedio href={comparar} />
+            ) : ahora - Date.parse(x.creadaEn) < NUEVA_MS ? (
+              <Chip tono="amarillo">Nueva</Chip>
+            ) : undefined
+          }
+        />
+      ))}
+      {mias.map((x) => (
+        <TarjetaOferta
+          key={x.id}
+          p={x}
+          marca={
+            <Chip tono="gris" icono="editar">
+              Tuya
+            </Chip>
+          }
+        />
+      ))}
+      {n > 1 ? (
+        <Nota icono="info" tono="gris">
+          Aceptar una cierra las demás. Si rechazás, no hace falta dar motivos.
+        </Nota>
+      ) : null}
+      {anteriores.length ? (
+        <details className="ds-pila">
+          <summary className="ds-boton ds-boton--suave ds-boton--chico">
+            Anteriores ({anteriores.length})
+          </summary>
+          {anteriores.map((x) => (
+            <TarjetaOferta key={x.id} p={x} marca={<ChipEstadoPropuesta p={x} />} />
           ))}
-        </ul>
-      )}
-
-      {mias.length ? (
-        <ul className="lista-tarjetas">
-          {mias.map((p) => (
-            <TarjetaPropuesta key={p.id} p={p} />
-          ))}
-        </ul>
-      ) : null}
-
-      {otras.length ? (
-        <details>
-          <summary>Anteriores ({otras.length})</summary>
-          <ul className="lista-tarjetas">
-            {otras.map((p) => (
-              <TarjetaPropuesta key={p.id} p={p} />
-            ))}
-          </ul>
         </details>
       ) : null}
-    </>
+    </PantallaPedir>
   );
 }
