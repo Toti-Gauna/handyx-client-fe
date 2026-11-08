@@ -119,7 +119,6 @@ const Sesiones = z.object({ items: z.array(SesionAbierta) }).strict();
 const Compartidos = z.object({ items: z.array(Compartido) }).strict();
 const Recordatorios = z.object({ items: z.array(Recordatorio) }).strict();
 
-
 const base = ['validacion', 'limite', 'no_disponible', 'error_interno'] as const;
 const sesion = [
   ...base,

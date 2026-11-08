@@ -148,7 +148,10 @@ export const VerificarCodigoEntrada = z
     email: Email,
     codigo: z.string().regex(/^\d{6}$/),
     aceptaciones: z.array(AceptacionEntrada).min(2).max(3).optional(),
-    segundoFactor: z.string().regex(/^\d{6}$/).optional(),
+    segundoFactor: z
+      .string()
+      .regex(/^\d{6}$/)
+      .optional(),
   })
   .strict();
 export const PROVEEDORES_ACCESO = ['google', 'apple'] as const;

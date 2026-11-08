@@ -33,9 +33,15 @@ export const DetallePropuesta = z
       .object({ incluidos: z.boolean(), descripcion: Texto(200).nullable() })
       .strict()
       .nullable(),
-    equipo: z.object({ personas: z.int().min(1).max(20), descripcion: Texto(120).nullable() }).strict(),
+    equipo: z
+      .object({ personas: z.int().min(1).max(20), descripcion: Texto(120).nullable() })
+      .strict(),
     duracion: z
-      .object({ minimo: z.int().min(1).max(365), maximo: z.int().min(1).max(365), unidad: z.enum(['horas', 'dias']) })
+      .object({
+        minimo: z.int().min(1).max(365),
+        maximo: z.int().min(1).max(365),
+        unidad: z.enum(['horas', 'dias']),
+      })
       .strict()
       .nullable(),
     garantiaDias: z.int().min(0).max(3650).nullable(),

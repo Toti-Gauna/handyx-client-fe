@@ -429,7 +429,7 @@ export function manejadoresDraft4(dep: {
       const pedido = m.d4.codigos.get(c.email);
       if (!pedido || pedido.venceMs < ahoraMs(m))
         throw falla(m, 'conflicto', 'El código venció. Pedí uno nuevo.', {
-          conflicto: 'ya_resuelta',
+          conflicto: 'vencida',
         });
       if (pedido.intentos >= 5)
         throw falla(m, 'limite', 'Hiciste demasiados intentos. Pedí un código nuevo.');
@@ -615,14 +615,14 @@ export function manejadoresDraft4(dep: {
       return compartido;
     }),
     compartidos: sesion((m) => {
-      // Vence solo cuando el pedido terminó o se canceló.
+      // Igual que el BE: sigue activo durante el trabajo contratado y vence cuando el trabajo termina o se cancela.
       for (const c of m.d4.compartidos) {
         const p = m.pedidos.find((x) => x.id === c.pedidoId);
-        if (
-          c.estado === 'activo' &&
-          p &&
-          ['cancelado', 'contratado', 'vencido'].includes(p.estado)
-        ) {
+        const t = m.trabajos.find((x) => x.pedidoId === c.pedidoId);
+        const terminado = t
+          ? t.estado === 'finalizado' || t.estado === 'cancelado'
+          : p !== undefined && ['cancelado', 'vencido'].includes(p.estado);
+        if (c.estado === 'activo' && terminado) {
           c.estado = 'vencido';
           c.finalizadoEn = ahoraIso(m);
         }

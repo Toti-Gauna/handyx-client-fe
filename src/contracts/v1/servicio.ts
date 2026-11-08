@@ -1,6 +1,16 @@
 // Contrato v1 · chat, pagos directos, reclamos y notificaciones.
 import { z } from 'zod';
-import { Actor, Centavos, FechaLocal, Id, Importe, Instante, Rol, Texto, Version } from './comunes.ts';
+import {
+  Actor,
+  Centavos,
+  FechaLocal,
+  Id,
+  Importe,
+  Instante,
+  Rol,
+  Texto,
+  Version,
+} from './comunes.ts';
 import { EspecialistaResumen, MediaRef } from './pedidos.ts';
 
 // ── Chat: ligado al pedido desde la primera cotización y al trabajo después ──────────────────────────
