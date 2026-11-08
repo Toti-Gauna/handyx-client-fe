@@ -88,10 +88,13 @@ export function CamposPerfil({
   perfil,
   grupos,
   geo,
+  compacto = false,
 }: {
   perfil: Perfil;
   grupos: readonly GrupoPerfil[];
   geo?: React.ComponentProps<typeof FormUbicacion>['geo'];
+  /** Alta: la ubicación con solo «Calle y número» a la vista. */
+  compacto?: boolean;
 }) {
   const { valores: v, set, errores } = perfil;
   return (
@@ -181,6 +184,7 @@ export function CamposPerfil({
           valor={v.ubicacion}
           onCambio={set.setUbicacion}
           errores={errores}
+          compacto={compacto}
           {...(geo ? { geo } : {})}
         />
       ) : null}

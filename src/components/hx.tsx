@@ -59,9 +59,9 @@ export function Pantalla({
   );
 }
 
-/** Cabecera de Inicio (la única pantalla con logo): avisos y dirección. */
+/** Cabecera de Inicio (la única pantalla con logo): avisos y la cuenta (avatar con iniciales). */
 export function CabeceraInicio() {
-  const { noLeidas } = useSesion();
+  const { noLeidas, sesion } = useSesion();
   return (
     <header className="app-cabecera app-cabecera--blanca">
       <div className="app-cabecera__fila">
@@ -82,8 +82,12 @@ export function CabeceraInicio() {
               </span>
             ) : null}
           </Enlace>
-          <Enlace href="/cuenta/direcciones/" className="app-cuadrado" aria-label="Tus direcciones">
-            <Icono nombre="pin" />
+          <Enlace href="/cuenta/" className="app-cuadrado" aria-label="Tu cuenta">
+            <span className="app-cuadrado__avatar" aria-hidden="true">
+              {iniciales(
+                [sesion.perfil.nombre, sesion.perfil.apellido].filter(Boolean).join(' '),
+              ) || <Icono nombre="usuario" />}
+            </span>
           </Enlace>
         </span>
       </div>

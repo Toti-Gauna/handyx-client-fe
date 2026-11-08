@@ -1,0 +1,412 @@
+/* Mi hogar y camino del hogar (src/ui/hogar.tsx, lienzo design/usuario fila H y G). Solo tokens, medidas en rem. */
+
+/* ── Barra con acción a la derecha ────────────────────────────────────────────────────────────────────── */
+.dsh-barra {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem 0.25rem;
+}
+.dsh-barra > .du-barra {
+  flex: 1;
+  min-width: 0;
+}
+.dsh-barra .du-barra__textos {
+  align-items: center;
+  text-align: center;
+}
+.dsh-barra__accion {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+.dsh-barra__accion svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ── Textos chicos y enlaces en línea ─────────────────────────────────────────────────────────────────── */
+.dsh-suave {
+  font-size: 0.75rem;
+  color: var(--ds-suave);
+}
+.dsh-pct {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--ds-suave);
+}
+.dsh-enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: 800 0.875rem var(--fuente);
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Cabecera de Mi hogar: la ficha con su barra amarilla ─────────────────────────────────────────────── */
+.dsh-ficha {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.14);
+}
+.dsh-ficha .ds-progreso {
+  background: rgba(255, 255, 255, 0.25);
+}
+.dsh-ficha .ds-progreso > span {
+  background: var(--ds-amarillo);
+}
+.dsh-ficha__titulo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8125rem;
+  font-weight: 800;
+}
+.dsh-ficha__cuenta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.75rem;
+}
+.dsh-ficha__cuenta strong {
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: 1.125rem;
+}
+
+/* ── Ambientes: tarjeta con portada, foto y «Sumar» punteado ──────────────────────────────────────────── */
+.dsh-amb {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.375rem;
+  overflow: hidden;
+  background: var(--ds-c-fff);
+  border: 1px solid var(--ds-borde);
+  box-shadow: var(--ds-sombra-1);
+  color: var(--ds-tinta);
+  text-decoration: none;
+}
+.dsh-amb__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.625rem 0.75rem 0.75rem;
+}
+.dsh-amb__textos strong {
+  font-size: 0.9375rem;
+}
+.dsh-foto {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: var(--ds-gris);
+}
+.dsh-sumar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 12rem;
+  border-radius: 1.375rem;
+  border: 2px dashed var(--ds-c-aeb6c4);
+  background: var(--ds-gris);
+  color: var(--ds-azul);
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-decoration: none;
+  text-align: center;
+}
+.dsh-sumar svg {
+  width: 1.625rem;
+  height: 1.625rem;
+}
+.dsh-portada {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+.dsh-portada > .ds-chip {
+  position: absolute;
+  left: 0.625rem;
+  bottom: 0.625rem;
+}
+.dsh-fotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.dsh-fotos .dsh-foto {
+  border-radius: 0.875rem;
+}
+.dsh-cita {
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border-radius: 1rem;
+  background: var(--ds-gris);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+/* ── Pestañas de vista (segmentado) ───────────────────────────────────────────────────────────────────── */
+.dsh-seg {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 1.125rem;
+  background: var(--ds-mosaico);
+}
+.dsh-seg__item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  border-radius: 0.875rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--ds-suave);
+  text-decoration: none;
+  text-align: center;
+}
+.dsh-seg__item[aria-current='page'] {
+  background: var(--ds-c-fff);
+  color: var(--ds-tinta);
+  box-shadow: var(--ds-sombra-1);
+}
+
+/* ── Elegir el ambiente (Algo se rompió) ──────────────────────────────────────────────────────────────── */
+.dsh-elegir {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.dsh-elegir__amb {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.375rem;
+  border-radius: 1.125rem;
+  border: 1px solid var(--ds-borde);
+  background: var(--ds-c-fff);
+  font: 800 0.8125rem var(--fuente);
+  color: var(--ds-tinta);
+  cursor: pointer;
+  overflow: hidden;
+}
+.dsh-elegir__amb .ds-escena,
+.dsh-elegir__amb .dsh-foto {
+  border-radius: 0.75rem;
+}
+.dsh-elegir__amb[aria-checked='true'] {
+  border: 3px solid var(--ds-azul);
+  padding: calc(0.375rem - 2px);
+}
+.dsh-elegir__amb:focus-visible,
+.dsh-seg__item:focus-visible,
+.dsh-amb:focus-visible,
+.dsh-sumar:focus-visible,
+.dsh-nodo__texto:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: 2px;
+}
+
+/* ── Medallas ─────────────────────────────────────────────────────────────────────────────────────────── */
+.dsh-medalla {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--dsh-tam, 4rem);
+  height: var(--dsh-tam, 4rem);
+  border-radius: 50%;
+  background: var(--ds-mosaico);
+  box-shadow: 0 4px 0 var(--ds-mosaico-base);
+  color: var(--ds-suave);
+}
+.dsh-medalla[data-obtenida] {
+  background: var(--ds-amarillo);
+  box-shadow: 0 4px 0 var(--ds-amarillo-base);
+  color: var(--ds-tinta);
+}
+.dsh-medalla__aro {
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  border: 2px dashed currentColor;
+  opacity: 0.4;
+}
+.dsh-medalla svg {
+  width: 40%;
+  height: 40%;
+}
+.dsh-insignia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.75rem 0.375rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--ds-borde);
+  background: var(--ds-gris);
+  color: var(--ds-tinta);
+  text-decoration: none;
+  text-align: center;
+}
+.dsh-insignia[data-obtenida] {
+  background: var(--ds-c-fff);
+}
+.dsh-insignia strong {
+  font-size: 0.8125rem;
+}
+
+/* ── Camino: trazo en SVG y cinco hitos en zigzag ─────────────────────────────────────────────────────── */
+.dsh-camino {
+  position: relative;
+  margin: 0.5rem 0;
+}
+.dsh-camino > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.dsh-camino ol {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+.dsh-camino li {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6rem;
+}
+.dsh-nodo {
+  position: absolute;
+  top: 50%;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: -1.75rem 0 0 -1.75rem;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ds-c-fff);
+  border: 2px solid var(--ds-borde);
+  color: var(--ds-suave);
+}
+.dsh-nodo svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 2.5;
+}
+.dsh-nodo[data-estado='hecho'] {
+  background: var(--ds-azul);
+  border: 0;
+  box-shadow: 0 4px 0 var(--ds-hondo);
+  color: var(--ds-c-fff);
+}
+.dsh-nodo[data-estado='ahora'] {
+  background: var(--ds-amarillo);
+  border: 0;
+  box-shadow: 0 4px 0 var(--ds-amarillo-base);
+  color: var(--ds-tinta);
+}
+.dsh-nodo__texto {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  max-width: 11.5rem;
+  min-height: 2.75rem;
+  justify-content: center;
+  padding: 0.375rem 0.625rem;
+  box-sizing: border-box;
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--ds-sombra-1);
+  color: var(--ds-tinta);
+  text-decoration: none;
+}
+.dsh-nodo__texto strong {
+  font-size: 0.875rem;
+  line-height: 1.2;
+}
+.dsh-nodo__texto[data-lado='izq'] {
+  text-align: right;
+}
+
+/* ── Festejo de un hito ───────────────────────────────────────────────────────────────────────────────── */
+.dsh-festejo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 18rem;
+  background: var(--ds-azul);
+  border-radius: 0 0 2.25rem 2.25rem;
+  overflow: hidden;
+}
+.dsh-festejo__papel {
+  position: absolute;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 3px;
+}
+.dsh-festejo__papel[data-tono='amarillo'] {
+  background: var(--ds-amarillo);
+}
+.dsh-festejo__papel[data-tono='blanco'] {
+  background: var(--ds-c-fff);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dsh-festejo .dsh-medalla {
+    animation: dsh-aparece 0.5s ease-out both;
+  }
+}
+@keyframes dsh-aparece {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+
+/* ── Historial ────────────────────────────────────────────────────────────────────────────────────────── */
+.dsh-hist {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--ds-borde);
+  color: var(--ds-tinta);
+  text-decoration: none;
+}
+.dsh-hist:first-child {
+  border-top: 0;
+}
+.dsh-hist__fecha {
+  width: 3.25rem;
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--ds-suave);
+  text-transform: uppercase;
+}

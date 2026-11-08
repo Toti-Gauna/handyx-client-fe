@@ -1,26 +1,22 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Icono } from '@/components/Icono';
 import { Enlace } from '@/components/nav';
-import { TituloDocumento } from '@/components/TituloDocumento';
 import { ErrorCliente } from '@/data/cliente';
 import { escribirASoporte, soporteDisponible } from '@/data/soporte';
+import { Avatar, Burbuja, Nota, Pastilla, Titulo } from '@/ui';
+import { BarraCentro, Escribir, EscenaSoporte, PantallaM } from '@/ui/mensajes';
 
 interface Mensaje {
   readonly id: number;
   readonly de: 'yo' | 'equipo' | 'aviso';
   readonly texto: string;
 }
-const RAPIDAS = [
-  'Tengo un problema con un pago',
-  'Quiero cambiar un turno',
-  'Otra consulta',
-] as const;
+const TEMAS = ['Un pago', 'Un turno', 'Mi cuenta', 'Otra cosa'] as const;
 
 /**
- * Soporte (rediseño 3.7, como u-soporte de la demo): chat con el equipo de Handy. Lo atiende una persona; no hay IA ni
- * plazos prometidos. Para un problema con un trabajo, el reclamo deja todo registrado.
+ * Soporte (lienzo M-Soporte): chat con el equipo de Handyx. Lo atiende una persona; no hay IA ni plazos prometidos.
+ * Para un problema con un trabajo, el reclamo deja todo registrado. Con la API real queda inactivo hasta el contrato.
  */
 export default function Soporte() {
   const [mensajes, setMensajes] = useState<readonly Mensaje[]>([]);
@@ -30,14 +26,14 @@ export default function Soporte() {
   const siguiente = useRef(1);
 
   useEffect(() => {
-    fin.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    fin.current?.scrollIntoView({ block: 'end' });
   }, [mensajes, esperando]);
 
   const sumar = (...nuevos: Omit<Mensaje, 'id'>[]) =>
     setMensajes((m) => [...m, ...nuevos.map((x) => ({ ...x, id: siguiente.current++ }))]);
 
-  async function enviar(entrada: string) {
-    const t = entrada.trim();
+  async function enviar() {
+    const t = texto.trim();
     if (!t || esperando) return;
     setTexto('');
     sumar({ de: 'yo', texto: t });
@@ -52,130 +48,85 @@ export default function Soporte() {
   }
 
   return (
-    <div className="pantalla du-app du-chat-pantalla">
-      <TituloDocumento texto="Soporte" />
-      <header className="hd-chat-cabecera">
-        <div className="hd-chat-cabecera__fila">
-          <Enlace
-            href="/chats/"
-            className="hd-chat-cabecera__volver"
-            aria-label="Volver a mensajes"
-          >
-            <Icono nombre="atras" />
-          </Enlace>
-          <span className="hd-avatar hd-avatar--chico du-avatar-icono" aria-hidden="true">
-            <Icono nombre="chat" />
-          </span>
-          <h1 className="hd-chat-cabecera__quien">
-            <strong>Soporte de Handy</strong>
-            <small>
-              {soporteDisponible ? 'Vista de prueba · respuestas simuladas' : 'Equipo de Handy'}
-            </small>
-          </h1>
+    <PantallaM
+      arriba={
+        <BarraCentro
+          titulo="Soporte de Handyx"
+          sub={soporteDisponible ? 'Vista de prueba · respuestas simuladas' : 'Te responde una persona del equipo'}
+          volver={{ href: '/chats/', etiqueta: 'Volver a mensajes' }}
+          tituloPestana="Soporte"
+        />
+      }
+      pie={
+        soporteDisponible ? (
+          <Escribir
+            valor={texto}
+            onCambio={setTexto}
+            onEnviar={() => void enviar()}
+            placeholder="Contanos qué pasó"
+            etiqueta="Escribile al equipo"
+            deshabilitado={esperando}
+          />
+        ) : null
+      }
+    >
+      <div
+        className="ds-chat"
+        role="log"
+        aria-label="Conversación con el soporte"
+        aria-live="polite"
+        style={mensajes.length ? undefined : { justifyContent: 'flex-start' }}
+      >
+        <div className="ds-pila" style={{ alignItems: 'center', textAlign: 'center' }}>
+          <EscenaSoporte />
+          <Titulo nivel={2} tam={1.375} texto="¿En qué te ==ayudamos==?" />
         </div>
-      </header>
-      <div className="du-chat">
-        <div
-          className="du-chat__mensajes hd-scroll"
-          role="log"
-          aria-live="polite"
-          aria-label="Conversación con el soporte"
-          tabIndex={0}
-        >
-          <div className="du-chat__espacio" />
-          <div className="du-bienvenida">
-            <span className="du-bienvenida__ico" aria-hidden="true">
-              <Icono nombre="chat" />
-            </span>
-            <small>
-              <span>
-                Escribinos lo que necesites: te responde una persona del equipo de Handy. Si es un
-                problema con un trabajo, <Enlace href="/reclamos/nuevo/">abrí un reclamo</Enlace> y
-                queda todo registrado.
-              </span>
-            </small>
+        {!soporteDisponible ? (
+          <Nota icono="info" tono="amarillo" rol="status">
+            El chat con el equipo todavía no está disponible. Mirá la{' '}
+            <Enlace href="/ayuda/">ayuda</Enlace> o <Enlace href="/reclamos/nuevo/">abrí un reclamo</Enlace>:
+            queda todo registrado.
+          </Nota>
+        ) : mensajes.length === 0 ? (
+          <div className="ds-m-rapidas" style={{ flexWrap: 'wrap', justifyContent: 'center' }} role="group" aria-label="Temas">
+            {TEMAS.map((t) => (
+              <Pastilla key={t} elegida={false} onElegir={() => setTexto(`${t}: `)}>
+                {t}
+              </Pastilla>
+            ))}
           </div>
-          {mensajes.map((m) =>
-            m.de === 'aviso' ? (
-              <p key={m.id} className="du-nota du-nueva du-handia-aviso">
-                <Icono nombre="info" />
-                <span>
-                  {m.texto} Mientras tanto, mirá la <Enlace href="/ayuda/">ayuda</Enlace> o{' '}
-                  <Enlace href="/reclamos/nuevo/">abrí un reclamo</Enlace>.
-                </span>
-              </p>
-            ) : (
-              <div
-                key={m.id}
-                className={`du-burbuja du-nueva du-burbuja--${m.de === 'yo' ? 'propia' : 'otra'}`}
-              >
-                <span className="sr-only">{m.de === 'yo' ? 'Vos: ' : 'Equipo de Handy: '}</span>
-                <span>{m.texto}</span>
-              </div>
-            ),
-          )}
-          {esperando ? (
-            <div className="du-burbuja du-escribiendo" role="status">
-              <span className="sr-only">El equipo está escribiendo</span>
-              <span className="hd-escribiendo" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
+        ) : null}
+        {mensajes.map((m) =>
+          m.de === 'yo' ? (
+            <Burbuja key={m.id} de="yo">
+              <span className="ds-solo-lector">Vos: </span>
+              {m.texto}
+            </Burbuja>
+          ) : m.de === 'equipo' ? (
+            <div key={m.id} className="ds-mensaje">
+              <Avatar nombre="Handyx" tam={2.125} tono={5} />
+              <Burbuja autor="Equipo de Soporte" conAvatar={false}>
+                {m.texto}
+              </Burbuja>
             </div>
-          ) : null}
-          <div ref={fin} />
-        </div>
-        <div className="du-chat__pie">
-          {mensajes.length === 0 ? (
-            <div
-              className="hd-chips du-rapidas du-rapidas--envolver"
-              role="group"
-              aria-label="Temas"
-            >
-              {RAPIDAS.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  className="hd-chip hd-chip--tinte du-rapida"
-                  onClick={() => setTexto(r)}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
-          ) : null}
-          <form
-            className="du-escribir"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void enviar(texto);
-            }}
-          >
-            <label className="sr-only" htmlFor="soporte-texto">
-              Escribile al equipo
-            </label>
-            <input
-              id="soporte-texto"
-              className="du-escribir__campo"
-              placeholder="Escribile al equipo…"
-              autoComplete="off"
-              maxLength={1000}
-              value={texto}
-              disabled={esperando}
-              onChange={(e) => setTexto(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="du-escribir__enviar"
-              aria-label="Enviar al equipo"
-              disabled={esperando || !texto.trim()}
-            >
-              <Icono nombre="enviar" />
-            </button>
-          </form>
-        </div>
+          ) : (
+            <Nota key={m.id} icono="info" tono="amarillo" rol="alert">
+              {m.texto} Mientras tanto, mirá la <Enlace href="/ayuda/">ayuda</Enlace> o{' '}
+              <Enlace href="/reclamos/nuevo/">abrí un reclamo</Enlace>.
+            </Nota>
+          ),
+        )}
+        {esperando ? (
+          <div className="ds-mensaje" role="status">
+            <Avatar nombre="Handyx" tam={2.125} tono={5} />
+            <Burbuja conAvatar={false}>
+              <span className="ds-solo-lector">El equipo está escribiendo</span>
+              <span aria-hidden="true">…</span>
+            </Burbuja>
+          </div>
+        ) : null}
+        <div ref={fin} aria-hidden="true" />
       </div>
-    </div>
+    </PantallaM>
   );
 }

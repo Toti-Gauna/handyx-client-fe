@@ -1,17 +1,21 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
-import { BotonHx, Escena, Flujo } from '@/components/acceso';
+import type { CSSProperties } from 'react';
 import { CamposPerfil, ErroresPerfil, usePerfil } from '@/components/FormPerfil';
-import { useGeoPuntual } from '@/components/FormUbicacion';
-import { Enlace, useIr } from '@/components/nav';
-import { Aviso } from '@/components/ui';
+import { useIr } from '@/components/nav';
 import { activarPush, estadoPush, suscribirPush, type EstadoPush } from '@/data/push';
+import { Boton, FilaEnlace, MosaicoIcono, Nota } from '@/ui';
+import { PantallaPaso } from '@/ui/acceso';
 
-type Paso = 'datos' | 'vos' | 'permiso-ubicacion' | 'ubicacion' | 'avisos';
+type Paso = 'datos' | 'zona' | 'avisos';
+
+/** Después del alta sigue «Armá tu casa» (opcional); «después» salta al final del alta. */
+const SIGUIENTE = '/casa/';
+const DESPUES = '/registro/listo/';
 
 const RESULTADO_AVISOS: Partial<Record<EstadoPush, string>> = {
-  concedido: 'Listo: te vamos a avisar en este dispositivo.',
+  concedido: 'Listo: te vamos a avisar en este celular.',
   denegado:
     'No hay problema: los avisos los ves igual adentro de la app. Si cambiás de idea, se activan desde los ajustes del navegador.',
   no_soportado: 'Este navegador no permite avisos. Los ves igual adentro de la app.',
@@ -19,29 +23,33 @@ const RESULTADO_AVISOS: Partial<Record<EstadoPush, string>> = {
     'En iPhone, los avisos funcionan con la app instalada en la pantalla de inicio. Mientras tanto, los ves adentro de la app.',
 };
 
+const AVISOS = [
+  { icono: 'etiqueta', titulo: 'Propuestas nuevas', sub: 'Cuando un especialista te responde' },
+  {
+    icono: 'calendario',
+    titulo: 'Turno y llegada',
+    sub: 'El día antes y cuando sale para tu casa',
+  },
+  { icono: 'hogar', titulo: 'Recordatorios del hogar', sub: 'Mantenimientos que conviene hacer' },
+] as const;
+
 /**
- * Onboarding (rediseño 3.2): nombre › sobre vos › dirección (con el permiso de ubicación explicado antes de que pregunte
- * el navegador) › avisos (pre-permiso, solo si el dispositivo puede preguntar). Sin DNI ni documentos. Al terminar va a
- * Inicio, donde aparece el aviso de la tarifa del primer ingreso.
+ * Datos mínimos del alta (fila A del lienzo, pasos 3 a 5): nombre › zona (a mano o con un permiso puntual, nunca en
+ * segundo plano) › avisos (pre-permiso: el navegador pregunta solo después de tocar «Permitir avisos»). Sin DNI ni
+ * documentos. Lo demás del perfil se completa después, en Cuenta.
  */
 export default function Perfil() {
   const ir = useIr();
   const perfil = usePerfil();
-  const geo = useGeoPuntual(perfil.valores.ubicacion, perfil.set.setUbicacion);
   const push = useSyncExternalStore<EstadoPush | null>(suscribirPush, estadoPush, () => null);
   const [paso, setPaso] = useState<Paso>('datos');
   const [avisos, setAvisos] = useState<{ trabajando: boolean; texto: string | null }>({
     trabajando: false,
     texto: null,
   });
-  const conAvisos = paso === 'avisos' || push === 'pendiente';
-  const total = conAvisos ? 4 : 3;
-  const terminar = () => ir('/inicio/', { reemplazar: true });
 
-  async function guardarY(grupo: 1 | 2 | 3, siguiente: Paso | 'fin') {
-    if (!(await perfil.guardar([grupo]))) return;
-    if (siguiente === 'fin') terminar();
-    else setPaso(siguiente);
+  async function guardarY(grupo: 1 | 3, siguiente: Paso) {
+    if (await perfil.guardar([grupo])) setPaso(siguiente);
   }
 
   async function pedirAvisos() {
@@ -55,153 +63,112 @@ export default function Perfil() {
   }
 
   const despues = (
-    <Enlace href="/inicio/" className="hd-boton hd-boton--fantasma">
+    <Boton href={DESPUES} variante="contorno">
       Completar después
-    </Enlace>
+    </Boton>
   );
-  const enviarCon = (accion: () => void) => (e: React.FormEvent) => {
-    e.preventDefault();
-    accion();
-  };
 
   if (paso === 'datos')
     return (
-      <Flujo
+      <PantallaPaso
         titulo="¿Cómo te ==llamás==?"
-        sub="No pedimos DNI ni documentos: solo lo mínimo para coordinar un trabajo en tu casa."
-        paso={1}
-        total={total}
-        onSubmit={enviarCon(() => void guardarY(1, 'vos'))}
-        pie={
-          <>
-            <BotonHx type="submit" cargando={perfil.pendiente}>
-              Seguir
-            </BotonHx>
-            {despues}
-          </>
-        }
-      >
-        <CamposPerfil perfil={perfil} grupos={[1]} />
-        <ErroresPerfil perfil={perfil} />
-      </Flujo>
-    );
-
-  if (paso === 'vos')
-    return (
-      <Flujo
-        titulo="Contanos ==sobre vos=="
-        sub="Datos básicos de tu cuenta."
-        atras={{ alTocar: () => setPaso('datos'), etiqueta: 'Volver al paso anterior' }}
-        paso={2}
-        total={total}
-        onSubmit={enviarCon(() => void guardarY(2, 'permiso-ubicacion'))}
-        pie={
-          <>
-            <BotonHx type="submit" cargando={perfil.pendiente}>
-              Seguir
-            </BotonHx>
-            {despues}
-          </>
-        }
-      >
-        <CamposPerfil perfil={perfil} grupos={[2]} />
-        <ErroresPerfil perfil={perfil} />
-      </Flujo>
-    );
-
-  if (paso === 'permiso-ubicacion')
-    return (
-      <Flujo
-        titulo="¿Usamos tu ==ubicación==?"
-        sub="Sirve para ubicar tu casa. Te la pedimos una sola vez y solo si querés: no te seguimos ni la usamos en segundo plano."
-        atras={{ alTocar: () => setPaso('vos'), etiqueta: 'Volver al paso anterior' }}
+        sub="Solo lo justo para coordinar un arreglo en tu casa."
+        barra={{ titulo: 'Tus datos', sub: 'Paso 3 de 5' }}
         paso={3}
-        total={total}
-        ilustracion={<Escena handy="handy-cano" ancho={354} alto={405} />}
+        total={5}
+        onSubmit={() => void guardarY(1, 'zona')}
         pie={
           <>
-            <BotonHx
-              icono="pin"
-              cargando={geo.buscando}
-              onClick={async () => {
-                await geo.usar();
-                setPaso('ubicacion');
-              }}
-            >
-              Usar mi ubicación
-            </BotonHx>
-            <BotonHx variante="fantasma" onClick={() => setPaso('ubicacion')}>
-              Escribirla a mano
-            </BotonHx>
-          </>
-        }
-      >
-        <p className="du-nota du-nota--permiso">
-          Si tocás &quot;Usar mi ubicación&quot;, el navegador te va a preguntar. Podés decir que no
-          y escribir la dirección igual.
-        </p>
-      </Flujo>
-    );
-
-  if (paso === 'ubicacion')
-    return (
-      <Flujo
-        titulo="¿Dónde ==es tu casa==?"
-        sub="Calle y número, y una referencia si hace falta (piso, timbre, entre calles)."
-        atras={{ alTocar: () => setPaso('permiso-ubicacion'), etiqueta: 'Volver al paso anterior' }}
-        paso={3}
-        total={total}
-        onSubmit={enviarCon(() => void guardarY(3, push === 'pendiente' ? 'avisos' : 'fin'))}
-        pie={
-          <>
-            <BotonHx type="submit" cargando={perfil.pendiente}>
-              {push === 'pendiente' ? 'Seguir' : 'Terminar'}
-            </BotonHx>
+            <Boton type="submit" ocupado={perfil.pendiente}>
+              Seguir
+            </Boton>
             {despues}
           </>
         }
       >
-        <CamposPerfil perfil={perfil} grupos={[3]} geo={geo} />
+        <div className="ds-grilla" style={{ '--ds-gap': '0.75rem' } as CSSProperties}>
+          <CamposPerfil perfil={perfil} grupos={[1]} />
+        </div>
         <ErroresPerfil perfil={perfil} />
-      </Flujo>
+        <Nota icono="candado">
+          No te pedimos documentos. Tu nombre lo ve el especialista que elijas, cuando se acuerda el
+          turno.
+        </Nota>
+      </PantallaPaso>
     );
 
+  if (paso === 'zona')
+    return (
+      <PantallaPaso
+        titulo="¿En qué ==zona== estás?"
+        tam={1.75}
+        sub="Mové el mapa hasta tu puerta o escribí la calle y el número."
+        barra={{
+          titulo: 'Tu zona',
+          sub: 'Paso 4 de 5',
+          atras: { alTocar: () => setPaso('datos') },
+        }}
+        paso={4}
+        total={5}
+        onSubmit={() => void guardarY(3, 'avisos')}
+        pie={
+          <>
+            <Boton type="submit" ocupado={perfil.pendiente}>
+              Seguir
+            </Boton>
+            {despues}
+          </>
+        }
+      >
+        <CamposPerfil perfil={perfil} grupos={[3]} compacto />
+        <ErroresPerfil perfil={perfil} />
+        <Nota icono="candado">
+          Los especialistas ven solo la zona aproximada. La dirección exacta se comparte cuando
+          aceptás una propuesta.
+        </Nota>
+      </PantallaPaso>
+    );
+
+  const puedePreguntar = push === 'pendiente' && !avisos.texto;
+  const estado = avisos.texto ?? (push && push !== 'pendiente' ? RESULTADO_AVISOS[push] : null);
   return (
-    <Flujo
+    <PantallaPaso
       titulo="¿Te ==avisamos==?"
-      sub="Cuando llegan propuestas, mensajes o cambios en un trabajo. Nada de publicidad."
-      paso={4}
-      total={4}
-      ilustracion={<Escena handy="handy-lamparita" ancho={202} alto={346} tono="amarillo" />}
+      sub="Solo lo que te sirve. Nada de publicidad."
+      barra={{ titulo: 'Avisos', sub: 'Paso 5 de 5', atras: { alTocar: () => setPaso('zona') } }}
+      paso={5}
+      total={5}
       pie={
-        avisos.texto ? (
-          <BotonHx onClick={terminar}>Ir al inicio</BotonHx>
-        ) : (
+        puedePreguntar ? (
           <>
-            <BotonHx
-              icono="campana"
-              cargando={avisos.trabajando}
-              onClick={() => void pedirAvisos()}
-            >
-              Activar avisos
-            </BotonHx>
-            <BotonHx variante="fantasma" onClick={terminar}>
+            <Boton icono="campana" ocupado={avisos.trabajando} onClick={() => void pedirAvisos()}>
+              Permitir avisos
+            </Boton>
+            <Boton variante="contorno" onClick={() => ir(SIGUIENTE)}>
               Ahora no
-            </BotonHx>
+            </Boton>
           </>
+        ) : (
+          <Boton onClick={() => ir(SIGUIENTE)}>Seguir</Boton>
         )
       }
     >
-      {avisos.texto ? (
-        <Aviso tipo="info" rol="status">
-          {avisos.texto}
-        </Aviso>
+      <MosaicoIcono icono="campana" tam={4} tono="amarillo" />
+      <div className="ds-pila" style={{ '--ds-gap': '0' } as CSSProperties}>
+        {AVISOS.map((a) => (
+          <FilaEnlace key={a.titulo} icono={a.icono} titulo={a.titulo} sub={a.sub} />
+        ))}
+      </div>
+      {estado ? (
+        <Nota tono={push === 'concedido' ? 'exito' : 'gris'} rol="status">
+          {estado}
+        </Nota>
       ) : (
-        <p className="du-nota du-nota--permiso">
-          Si tocás &quot;Activar avisos&quot;, el navegador te va a preguntar. Los avisos dentro de
-          la app están siempre, actives o no los del celular.
-        </p>
+        <Nota icono="info">
+          Si tocás «Permitir avisos», el celular te va a preguntar. Los avisos dentro de la app
+          están siempre, actives o no los del celular.
+        </Nota>
       )}
-    </Flujo>
+    </PantallaPaso>
   );
 }

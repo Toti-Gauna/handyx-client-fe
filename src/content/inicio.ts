@@ -58,3 +58,13 @@ export const TAREAS: readonly Tarea[] = [
 ];
 
 export const tareaPorId = (id: string | null) => TAREAS.find((t) => t.id === id) ?? null;
+
+/** Sugerencias para empezar a hablar con HandIA (lienzo I-HandIA · «Probá con»). Se mandan como si las escribiera. */
+export const SUGERENCIAS_HANDIA: readonly {
+  readonly texto: string;
+  readonly icono: NombreIcono;
+}[] = [
+  { texto: 'Pierde la canilla del baño', icono: 'canilla' },
+  { texto: 'Saltó la térmica y no sube', icono: 'rayo' },
+  { texto: 'El calefón no prende', icono: 'llama' },
+];

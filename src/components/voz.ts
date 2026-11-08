@@ -84,6 +84,12 @@ export interface Voz {
   readonly hablando: boolean;
   /** Lo que se va reconociendo mientras la persona habla. */
   readonly parcial: string;
+  /** La parte de `parcial` que el reconocimiento todavía puede cambiar (se muestra tenue). */
+  readonly pendiente: string;
+  /** Lo último que se leyó en voz alta (tal como se dijo) y hasta qué letra se llegó: para los subtítulos. */
+  readonly dicho: { readonly texto: string; readonly hasta: number } | null;
+  /** Nombre de la voz del sistema que se usa para leer ('' si no hay). */
+  readonly nombreVoz: string;
   readonly error: ErrorVoz;
   /** Pregunta (una vez) si se puede escuchar en el dispositivo. */
   revisar(): Promise<Oido>;
@@ -109,6 +115,8 @@ export function useVoz(): Voz {
   const [escuchando, setEscuchando] = useState(false);
   const [hablando, setHablando] = useState(false);
   const [parcial, setParcial] = useState('');
+  const [pendiente, setPendiente] = useState('');
+  const [dicho, setDicho] = useState<{ texto: string; hasta: number } | null>(null);
   const [error, setError] = useState<ErrorVoz>(null);
   const reconocimiento = useRef<Reconocimiento | null>(null);
   const uriVoz = useSyncExternalStore(suscribirVoces, vozActual, sinVoz);
@@ -167,6 +175,7 @@ export function useVoz(): Voz {
           else provisorio += r[0]!.transcript;
         }
         setParcial((final + provisorio).trim());
+        setPendiente(provisorio.trim());
       };
       rec.onerror = (ev) => {
         setError(
@@ -183,11 +192,13 @@ export function useVoz(): Voz {
         reconocimiento.current = null;
         setEscuchando(false);
         setParcial('');
+        setPendiente('');
         if (final.trim()) alTerminar(final.trim());
       };
       reconocimiento.current = rec;
       setError(null);
       setParcial('');
+      setPendiente('');
       setEscuchando(true);
       try {
         rec.start();
@@ -207,16 +218,23 @@ export function useVoz(): Voz {
         return;
       }
       s.cancel();
-      const u = new SpeechSynthesisUtterance(paraHablar(texto));
+      const dice = paraHablar(texto);
+      const u = new SpeechSynthesisUtterance(dice);
       u.voice = voz;
       u.lang = voz.lang;
       u.rate = 1.03;
       u.pitch = 1.05;
+      u.onboundary = (ev) => setDicho({ texto: dice, hasta: ev.charIndex });
       u.onend = () => {
         setHablando(false);
+        setDicho({ texto: dice, hasta: dice.length });
         alTerminar?.();
       };
-      u.onerror = () => setHablando(false);
+      u.onerror = () => {
+        setHablando(false);
+        setDicho({ texto: dice, hasta: dice.length });
+      };
+      setDicho({ texto: dice, hasta: 0 });
       setHablando(true);
       s.speak(u);
     },
@@ -238,6 +256,14 @@ export function useVoz(): Voz {
     escuchando,
     hablando,
     parcial,
+    pendiente,
+    dicho,
+    nombreVoz: uriVoz
+      ? (sintesis()
+          ?.getVoices()
+          .find((v) => v.voiceURI === uriVoz)
+          ?.name.replace(/\s*\(.*\)$/, '') ?? '')
+      : '',
     error,
     revisar,
     oidoLocal,

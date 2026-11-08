@@ -1,18 +1,17 @@
 'use client';
-
-import type { Importe } from '@/contracts/v1/comunes';
+// Propuestas (Fase 7 · C-Propuestas): la tarjeta con jerarquía (quién, precio, datos chicos, verificaciones reales y
+// acciones) y los textos que salen del detalle de la propuesta (draft.4). La tarjeta no acepta ni rechaza: cada acción
+// lleva al detalle, al perfil o a la hoja de confirmación.
 import type { EspecialistaResumen } from '@/contracts/v1/pedidos';
-import type { Propuesta } from '@/contracts/v1/propuestas';
-import { pesos, porcentaje } from '@/domain/dinero';
-import { VERIFICACION_TEXTO, etiquetaPropuesta } from '@/domain/etiquetas';
-import { cuando } from '@/domain/fechas';
-import { Icono } from './Icono';
-import { Enlace, ruta } from './nav';
+import type { DetallePropuesta, Propuesta } from '@/contracts/v1/propuestas';
+import { etiquetaPropuesta } from '@/domain/etiquetas';
+import { cuando, fechaCorta, fechaDeInstante, horaDeInstante } from '@/domain/fechas';
+import { Avatar, Chip } from '@/ui';
+import { AccionesPropuesta, BloquePrecio, DatoMini } from '@/ui/pedir';
 import { Contador } from './Contador';
+import { Icono } from './Icono';
+import { ruta } from './nav';
 import { useAhora } from './SesionProvider';
-import { Pastilla } from './ui';
-
-type ComisionHandy = Propuesta['comisionHandy'];
 
 /** Iniciales para el avatar ("Especialista 1" → "E1"). Sin foto: el contrato no expone fotos de perfil. */
 export function iniciales(nombre: string): string {
@@ -24,48 +23,34 @@ export function iniciales(nombre: string): string {
     .toUpperCase();
 }
 
-export function Avatar({ nombre, grande = false }: { nombre: string; grande?: boolean }) {
-  return (
-    <span className={`avatar${grande ? ' avatar--grande' : ''}`} aria-hidden="true">
-      {iniciales(nombre)}
-    </span>
-  );
-}
+const VERIF_CORTO: Record<string, string> = {
+  identidad: 'Identidad',
+  antecedentes: 'Antecedentes',
+  matricula: 'Matrícula',
+};
 
 /** Verificaciones tal como las informa el backend. Sin datos, no se afirma nada. */
-export function Verificaciones({ e }: { e: EspecialistaResumen }) {
+export function Verificaciones({ e, conVacio = false }: { e: EspecialistaResumen; conVacio?: boolean }) {
+  if (!e.verificaciones.length)
+    return conVacio ? (
+      <Chip tono="gris" icono="info">
+        Todavía sin verificaciones registradas
+      </Chip>
+    ) : null;
   return (
-    <ul className="etiquetas" aria-label="Verificaciones registradas">
-      {e.verificaciones.length ? (
-        e.verificaciones.map((v) => (
-          <li key={v.tipo} className="etiqueta-v">
-            <Icono nombre="verificado" />
-            {VERIFICACION_TEXTO[v.tipo] ?? v.tipo}
-          </li>
-        ))
-      ) : (
-        <li className="etiqueta-v etiqueta-v--sin">Todavía sin verificaciones registradas</li>
-      )}
+    <ul
+      className="ds-fila"
+      aria-label="Verificaciones de Handyx"
+      style={{ listStyle: 'none', margin: 0, padding: 0, flexWrap: 'wrap', gap: '0.375rem' }}
+    >
+      {e.verificaciones.map((v) => (
+        <li key={v.tipo}>
+          <Chip tono="exito" icono="escudo">
+            {VERIF_CORTO[v.tipo] ?? v.tipo}
+          </Chip>
+        </li>
+      ))}
     </ul>
-  );
-}
-
-/** Datos profesionales autorizados. "Verificado" solo con dato real; sin rankings ni claims de matrícula. */
-export function PerfilProfesional({ e }: { e: EspecialistaResumen }) {
-  return (
-    <div className="perfil-pro">
-      <Avatar nombre={e.nombrePublico} />
-      <div className="perfil-pro__datos">
-        <strong className="perfil-pro__nombre">{e.nombrePublico}</strong>
-        <Verificaciones e={e} />
-        {e.trabajosRealizados !== null ? (
-          <p className="perfil-pro__trabajos">
-            {e.trabajosRealizados}{' '}
-            {e.trabajosRealizados === 1 ? 'trabajo realizado' : 'trabajos realizados'} en Handy
-          </p>
-        ) : null}
-      </div>
-    </div>
   );
 }
 
@@ -83,106 +68,129 @@ export function Vigencia({ hasta }: { hasta: string }) {
   );
 }
 
-/**
- * Desglose de un importe. La tarifa de Handy es la del usuario (`usuarioBp`) y la calcula el servidor; el total es
- * la suma, sin redondeos propios. El precio del especialista se le paga entero, directo a él.
- */
-export function Desglose({
-  monto,
-  comision,
-  etiquetaTotal = 'Total para vos',
-}: {
-  monto: Importe;
-  comision: ComisionHandy;
-  etiquetaTotal?: string;
-}) {
-  const total = monto.centavos + comision.importe.centavos;
-  return (
-    <dl className="desglose">
-      <div className="desglose__fila">
-        <dt>Precio del especialista</dt>
-        <dd>{pesos(monto.centavos)}</dd>
-      </div>
-      <div className="desglose__fila">
-        <dt>Tarifa de Handy ({porcentaje(comision.bp)})</dt>
-        <dd>{pesos(comision.importe.centavos)}</dd>
-      </div>
-      <div className="desglose__fila desglose__total">
-        <dt>{etiquetaTotal}</dt>
-        <dd className="importe">{pesos(total)}</dd>
-      </div>
-    </dl>
-  );
+// ── Textos del detalle ──────────────────────────────────────────────────────────────────────────────────
+const hora = (i: string) => horaDeInstante(i).replace(/:00$/, '');
+
+/** «Jue 19 · 10 a 12 h» o, sin horario (urgencias), «Horario al aceptar». */
+export function horarioCorto(p: Pick<Propuesta, 'horario'>): string {
+  if (!p.horario) return 'Horario al aceptar';
+  const { inicio, fin } = p.horario;
+  return `${fechaCorta(fechaDeInstante(inicio))} · ${hora(inicio)}${fin ? ` a ${hora(fin)}` : ''} h`;
 }
 
-/** Condiciones que se aceptan junto con el precio: horario y vigencia, en una caja propia. */
-export function Condiciones({ p }: { p: Propuesta }) {
-  return (
-    <ul className="condiciones">
-      <li>
-        <Icono nombre="calendario" />
-        <span>
-          <span className="condiciones__rotulo">Horario</span>
-          {p.horario ? cuando(p.horario.inicio) : 'Lo declara el especialista al aceptar'}
-        </span>
-      </li>
-      <li>
-        <Icono nombre="reloj" />
-        <span>
-          <span className="condiciones__rotulo">
-            {p.estado === 'pendiente' ? 'Vigencia' : 'Respondida'}
-          </span>
-          {p.estado === 'pendiente' ? (
-            <Vigencia hasta={p.venceEn} />
-          ) : p.respondidaEn ? (
-            cuando(p.respondidaEn)
-          ) : (
-            '—'
-          )}
-        </span>
-      </li>
-    </ul>
-  );
+export function duracionTexto(d: NonNullable<DetallePropuesta['duracion']>): string {
+  const u = d.unidad === 'horas' ? (d.maximo === 1 ? 'hora' : 'horas') : d.maximo === 1 ? 'día' : 'días';
+  return d.minimo === d.maximo ? `${d.maximo} ${u}` : `${d.minimo} a ${d.maximo} ${u}`;
+}
+export const equipoTexto = (e: DetallePropuesta['equipo']) =>
+  e.personas === 1 ? 'Va solo' : `${e.personas} personas`;
+export const garantiaTexto = (dias: number | null) =>
+  dias ? `${dias} días` : 'Sin garantía';
+export function materialesTexto(m: DetallePropuesta['materiales']): string | null {
+  if (!m) return null;
+  return m.incluidos ? 'Materiales incluidos' : 'Materiales aparte';
 }
 
-/**
- * Tarjeta de una propuesta (lista de propuestas y chat). No acepta ni rechaza: eso se hace en el detalle, con el
- * desglose completo y una confirmación explícita.
- */
-export function TarjetaPropuesta({ p, destacar = false }: { p: Propuesta; destacar?: boolean }) {
-  const e = etiquetaPropuesta(p);
-  const propia = p.autorRol === 'usuario';
-  const total = p.monto.centavos + p.comisionHandy.importe.centavos;
+export const totalDe = (p: Pick<Propuesta, 'monto' | 'comisionHandy'>) =>
+  p.monto.centavos + p.comisionHandy.importe.centavos;
+
+// ── Tarjeta ──────────────────────────────────────────────────────────────────────────────────────────────
+export function TarjetaOferta({ p, marca }: { p: Propuesta; marca?: React.ReactNode }) {
+  const e = p.especialista;
+  const d = p.detalle;
+  const visita = d?.oferta === 'visita';
+  const decidible = p.estado === 'pendiente' && p.autorRol === 'especialista';
+  const detalle = ruta('/propuestas/detalle/', { id: p.id });
+  const nombre = e.nombrePublico;
+  const minis: [Parameters<typeof DatoMini>[0]['icono'], string, string][] = !d
+    ? []
+    : visita
+      ? [
+          ['reloj', 'Dura', d.duracion ? duracionTexto(d.duracion) : 'A coordinar'],
+          ['billete', 'Trabajo', 'A presupuestar'],
+          ['ojo', 'Antes', 'Quiere ver'],
+        ]
+      : [
+          ['reloj', 'Dura', d.duracion ? duracionTexto(d.duracion) : 'A coordinar'],
+          ['escudo', 'Garantía', garantiaTexto(d.garantiaDias)],
+          ['personas', 'Equipo', equipoTexto(d.equipo)],
+        ];
   return (
     <article
-      className={`tarjeta tarjeta-prop${destacar ? ' tarjeta-prop--destacada' : ''}`}
-      aria-label={`${propia ? 'Tu contrapropuesta a' : 'Propuesta de'} ${p.especialista.nombrePublico}`}
+      className="ds-tarjeta dsp-prop"
+      data-vt-origen
+      aria-label={`${visita ? 'Visita' : 'Propuesta'} de ${nombre}`}
     >
-      <div className="tarjeta__cuerpo">
-        <div className="tarjeta-prop__cab">
-          <PerfilProfesional e={p.especialista} />
-          <Pastilla tono={e.tono} {...(e.icono ? { icono: e.icono } : {})}>
-            {propia ? `Tu contrapropuesta · ${e.texto}` : e.texto}
-          </Pastilla>
-        </div>
-        <div className="tarjeta-prop__monto">
-          <span className="tarjeta-prop__rotulo">Total para vos</span>
-          <span className="importe">{pesos(total)}</span>
-          <span className="tarjeta-prop__nota">
-            Precio {pesos(p.monto.centavos)} + tarifa de Handy{' '}
-            {pesos(p.comisionHandy.importe.centavos)} ({porcentaje(p.comisionHandy.bp)})
-          </span>
-        </div>
-        <Condiciones p={p} />
-        <p className="tarjeta-prop__alcance">
-          <span className="condiciones__rotulo">Incluye</span>
-          {p.alcance}
-        </p>
+      <div className="ds-fila">
+        <Avatar nombre={nombre} tam={3.125} />
+        <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.1875rem' }}>
+          <span className="dsp-prop__nombre">{nombre}</span>
+          {e.trabajosRealizados !== null ? (
+            <span className="dsp-dato-linea">
+              <Icono nombre="medalla" />
+              {e.trabajosRealizados === 0
+                ? 'Nuevo en Handyx'
+                : `${e.trabajosRealizados} ${e.trabajosRealizados === 1 ? 'trabajo' : 'trabajos'} con Handyx`}
+            </span>
+          ) : null}
+        </span>
+        {visita ? (
+          <Chip tono="tinte" icono="ojo">
+            Consulta
+          </Chip>
+        ) : (
+          marca
+        )}
       </div>
-      <Enlace className="tarjeta__franja" href={ruta('/propuestas/detalle/', { id: p.id })}>
-        {p.estado === 'pendiente' && !propia ? 'Ver y responder' : 'Ver detalle'}
-        <Icono nombre="derecha" />
-      </Enlace>
+      <BloquePrecio
+        tipo={visita ? 'Visita' : 'Propuesta'}
+        centavos={totalDe(p)}
+        sub={visita ? 'Visita para ver y presupuestar' : (materialesTexto(d?.materiales ?? null) ?? undefined)}
+        fecha={
+          <Chip tono="blanco" icono="calendario">
+            {horarioCorto(p)}
+          </Chip>
+        }
+        href={detalle}
+        etiqueta={`Ver el detalle de ${nombre}`}
+      />
+      {minis.length ? (
+        <div className="dsp-minis">
+          {minis.map(([ic, t, v]) => (
+            <DatoMini key={t} icono={ic} etiqueta={t} valor={v} />
+          ))}
+        </div>
+      ) : null}
+      <Verificaciones e={e} />
+      {p.estado === 'pendiente' ? (
+        <span className="dsp-dato-linea">
+          <Icono nombre="reloj" />
+          <span>
+            Propuesta <Vigencia hasta={p.venceEn} />
+          </span>
+        </span>
+      ) : null}
+      {decidible ? (
+        <AccionesPropuesta
+          nombre={nombre}
+          rechazar={ruta('/propuestas/detalle/', { id: p.id, rechazar: '1' })}
+          perfil={ruta('/propuestas/perfil/', { id: p.id })}
+          aceptar={visita ? detalle : ruta('/propuestas/detalle/', { id: p.id, elegir: '1' })}
+          textoAceptar={visita ? 'Ver visita' : 'Aceptar'}
+        />
+      ) : null}
     </article>
+  );
+}
+
+const TONO_CHIP = { ok: 'exito', gris: 'gris', azul: 'tinte', alerta: 'amarillo', error: 'error' } as const;
+
+/** Estado de una propuesta resuelta como chip (texto + ícono, nunca solo color). */
+export function ChipEstadoPropuesta({ p }: { p: Pick<Propuesta, 'estado'> }) {
+  const e = etiquetaPropuesta(p);
+  return (
+    <Chip tono={TONO_CHIP[e.tono]} {...(e.icono ? { icono: e.icono } : {})}>
+      {e.texto}
+    </Chip>
   );
 }

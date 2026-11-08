@@ -3,19 +3,31 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FotoPrivada } from '@/components/FotoPrivada';
-import { Icono } from '@/components/Icono';
-import { AvatarHx } from '@/components/hx';
 import { Enlace, ruta } from '@/components/nav';
-import { TarjetaPropuesta } from '@/components/Propuesta';
-import { TituloDocumento } from '@/components/TituloDocumento';
+import { useAhora } from '@/components/SesionProvider';
 import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { TIPOS_MEDIA } from '@/contracts/v1/pedidos';
+import type { Propuesta } from '@/contracts/v1/propuestas';
 import type { Mensaje } from '@/contracts/v1/servicio';
 import { cliente } from '@/data';
 import { ErrorCliente } from '@/data/cliente';
 import { avisarSiSesion, useConsulta } from '@/data/hooks';
 import { RUBROS_INFO } from '@/domain/etiquetas';
-import { horaDeInstante } from '@/domain/fechas';
+import { fechaDeInstante, horaDeInstante } from '@/domain/fechas';
+import { Boton, Burbuja, Chip, Nota, Pastilla } from '@/ui';
+import {
+  BarraAcciones,
+  BarraCentro,
+  BarraSeleccion,
+  Escribir,
+  FilaSeleccion,
+  PantallaM,
+  alternar,
+  etiquetaDia,
+  textoParaCopiar,
+} from '@/ui/mensajes';
+import { Adjuntar } from './_Adjuntar';
+import { TarjetaPropuestaChat } from './_TarjetaPropuesta';
 
 interface Saliente {
   readonly clienteId: string;
@@ -26,9 +38,16 @@ interface Saliente {
   error?: string;
   readonly creadoEn: number;
 }
+type Entrada =
+  | { t: string; k: string; tipo: 'msg'; msg: Mensaje }
+  | { t: string; k: string; tipo: 'prop'; prop: Propuesta }
+  | { t: string; k: string; tipo: 'sal'; sal: Saliente };
+
+const ESPERA_LARGA_MS = 500;
 
 export default function Conversacion() {
   const id = useSearchParams().get('id');
+  const ahora = useAhora(60_000);
   const lista = useConsulta('conversaciones', { consulta: { limite: 50 } }, { cada: 6_000 });
   const mensajes = useConsulta(
     'mensajes',
@@ -50,8 +69,11 @@ export default function Conversacion() {
   const [salientes, setSalientes] = useState<Saliente[]>([]);
   const [texto, setTexto] = useState('');
   const [aviso, setAviso] = useState<string | null>(null);
-  const fondo = useRef<HTMLLIElement>(null);
+  const [sumando, setSumando] = useState(false);
+  const [elegidos, setElegidos] = useState<ReadonlySet<string> | null>(null);
+  const fondo = useRef<HTMLDivElement>(null);
   const entradaFoto = useRef<HTMLInputElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const noLeidos = conv?.noLeidos ?? 0;
   const { recargar: recargarLista } = lista;
 
@@ -63,28 +85,30 @@ export default function Conversacion() {
   }, [id, noLeidos, recargarLista]);
 
   const delServidor = useMemo(() => [...(mensajes.datos?.items ?? [])].reverse(), [mensajes.datos]);
-  const pendientes = salientes.filter((s) => !delServidor.some((m) => m.clienteId === s.clienteId));
-  const tarjetas = (propuestas.datos?.items ?? []).filter((p) => p.conversacionId === id);
+  const tarjetas = useMemo(
+    () => (propuestas.datos?.items ?? []).filter((p) => p.conversacionId === id),
+    [propuestas.datos, id],
+  );
   const entradas = useMemo(() => {
-    type E = {
-      t: string;
-      k: string;
-      msg?: Mensaje;
-      prop?: (typeof tarjetas)[number];
-      sal?: Saliente;
-    };
-    const todas: E[] = [
-      ...delServidor.map((m) => ({ t: m.creadoEn, k: m.id, msg: m })),
-      ...tarjetas.map((p) => ({ t: p.creadaEn, k: p.id, prop: p })),
-      ...pendientes.map((s) => ({ t: new Date(s.creadoEn).toISOString(), k: s.clienteId, sal: s })),
+    const pendientes = salientes.filter((s) => !delServidor.some((m) => m.clienteId === s.clienteId));
+    const todas: Entrada[] = [
+      ...delServidor.map((m): Entrada => ({ t: m.creadoEn, k: m.id, tipo: 'msg', msg: m })),
+      ...tarjetas.map((p): Entrada => ({ t: p.creadaEn, k: p.id, tipo: 'prop', prop: p })),
+      ...pendientes.map(
+        (s): Entrada => ({
+          t: new Date(s.creadoEn).toISOString(),
+          k: s.clienteId,
+          tipo: 'sal',
+          sal: s,
+        }),
+      ),
     ];
     return todas.sort((a, b) => a.t.localeCompare(b.t));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [delServidor, propuestas.datos, id, salientes]);
+  }, [delServidor, tarjetas, salientes]);
 
   useEffect(() => {
     fondo.current?.scrollIntoView({ block: 'end' });
-  }, [entradas.length]);
+  }, [entradas.length, elegidos === null]);
 
   async function mandar(s: Saliente) {
     if (!id) return;
@@ -123,21 +147,16 @@ export default function Conversacion() {
     }
   }
 
-  function enviarTexto(e: React.FormEvent) {
-    e.preventDefault();
-    const t = texto.trim();
-    if (!t) return;
-    const s: Saliente = {
-      clienteId: crypto.randomUUID(),
-      texto: t,
-      estado: 'enviando',
-      creadoEn: Date.now(),
-    };
+  function encolar(s: Saliente) {
     setSalientes((xs) => [...xs, s]);
-    setTexto('');
     void mandar(s);
   }
-
+  function enviarTexto() {
+    const t = texto.trim();
+    if (!t) return;
+    encolar({ clienteId: crypto.randomUUID(), texto: t, estado: 'enviando', creadoEn: Date.now() });
+    setTexto('');
+  }
   function elegirFoto(archivos: FileList | null) {
     const archivo = archivos?.[0];
     if (entradaFoto.current) entradaFoto.current.value = '';
@@ -146,15 +165,22 @@ export default function Conversacion() {
       return setAviso('Solo se aceptan fotos JPG, PNG o WebP.');
     if (archivo.size > 5 * 1024 * 1024) return setAviso('La foto puede pesar hasta 5 MB.');
     setAviso(null);
-    const s: Saliente = {
-      clienteId: crypto.randomUUID(),
-      archivo,
-      estado: 'enviando',
-      creadoEn: Date.now(),
-    };
-    setSalientes((xs) => [...xs, s]);
-    void mandar(s);
+    encolar({ clienteId: crypto.randomUUID(), archivo, estado: 'enviando', creadoEn: Date.now() });
   }
+
+  // Mantener apretado un mensaje empieza la selección (lo mismo que «Seleccionar»).
+  const pulsar = (mid: string) => ({
+    onPointerDown: () => {
+      timer.current = setTimeout(() => {
+        setElegidos(new Set([mid]));
+        setAviso(null);
+      }, ESPERA_LARGA_MS);
+    },
+    onPointerUp: () => timer.current && clearTimeout(timer.current),
+    onPointerLeave: () => timer.current && clearTimeout(timer.current),
+    onPointerMove: () => timer.current && clearTimeout(timer.current),
+    onContextMenu: (e: React.SyntheticEvent) => e.preventDefault(),
+  });
 
   if (!id)
     return (
@@ -187,39 +213,116 @@ export default function Conversacion() {
         }
       />
     );
-  const cerrado = trabajo.datos
-    ? ['finalizado', 'cancelado'].includes(trabajo.datos.estado)
-    : false;
   const esp = conv.especialista.nombrePublico;
-  // Respuestas rápidas según el momento (antes de contratar, preguntas; con el trabajo en marcha, coordinar). Completan
-  // el mensaje: se manda recién con "Enviar", así un toque no manda nada sin querer.
+  const cerrado = trabajo.datos ? ['finalizado', 'cancelado'].includes(trabajo.datos.estado) : false;
   const rapidas = conv.trabajoId
     ? ['Te espero', '¿Necesitás algo más para el trabajo?', '¡Gracias!']
     : ['¿Incluye los materiales?', '¿Podés otro día u horario?', '¿Te mando más fotos?'];
+  const sub = `${conv.trabajoId ? 'Trabajo' : 'Pedido'} · ${conv.especialista.rubros.map((r) => RUBROS_INFO[r].nombre).join(' · ')}`;
+  const elegibles = delServidor.filter((m) => m.autor !== 'sistema').map((m) => m.id);
 
+  async function copiar() {
+    const t = textoParaCopiar(delServidor, elegidos ?? new Set(), esp);
+    if (!t) return setAviso('Las fotos no se copian: elegí mensajes con texto.');
+    try {
+      await navigator.clipboard.writeText(t);
+      setAviso('Copiado.');
+    } catch {
+      setAviso('No pudimos copiar. Probá de nuevo.');
+    }
+  }
+  const responder = () => {
+    const m = delServidor.find((x) => elegidos?.has(x.id) && x.texto);
+    if (m?.texto) setTexto(`«${m.texto.slice(0, 120)}» `);
+    setElegidos(null);
+  };
+
+  let diaPrevio = '';
   return (
-    <div className="pantalla du-app du-chat-pantalla du-conversacion">
-      <TituloDocumento texto={`Chat con ${esp}`} />
-      <header className="hd-chat-cabecera">
-        <div className="hd-chat-cabecera__fila">
-          <Enlace
-            href="/chats/"
-            className="hd-chat-cabecera__volver"
-            aria-label="Volver a mensajes"
-          >
-            <Icono nombre="atras" />
-          </Enlace>
-          <AvatarHx
-            nombre={esp}
-            verificado={conv.especialista.verificaciones.length > 0}
-            tamano="chico"
+    <PantallaM
+      arriba={
+        elegidos ? (
+          <BarraSeleccion
+            cantidad={elegidos.size}
+            onSalir={() => setElegidos(null)}
+            onTodos={() => setElegidos(new Set(elegibles))}
           />
-          <h1 className="hd-chat-cabecera__quien">
-            <strong>{esp}</strong>
-            <small>{conv.especialista.rubros.map((r) => RUBROS_INFO[r].nombre).join(' · ')}</small>
-          </h1>
-          <Enlace
-            className="du-conversacion__ver"
+        ) : (
+          <BarraCentro
+            titulo={esp}
+            sub={sub}
+            volver={{ href: '/chats/', etiqueta: 'Volver a mensajes' }}
+            tituloPestana={`Chat con ${esp}`}
+            accion={
+              <button type="button" className="ds-m-barra__accion" onClick={() => setElegidos(new Set())}>
+                Seleccionar
+              </button>
+            }
+          />
+        )
+      }
+      pie={
+        elegidos ? (
+          <div>
+            {aviso ? (
+              <p className="ds-m-nota-centro" role="status">
+                {aviso}
+              </p>
+            ) : (
+              <p className="ds-m-nota-centro">Borrar solo quita tus mensajes. Las tarjetas no se borran.</p>
+            )}
+            <BarraAcciones
+              cantidad={elegidos.size}
+              acciones={[
+                { texto: 'Copiar', icono: 'copiar', deshabilitada: !elegidos.size, onClick: () => void copiar() },
+                { texto: 'Reenviar', icono: 'reenviar', onClick: () => setAviso('Reenviar todavía no está disponible.') },
+                { texto: 'Responder', icono: 'chat', deshabilitada: !elegidos.size, onClick: responder },
+                { texto: 'Borrar los míos', icono: 'tacho', rojo: true, onClick: () => setAviso('Todavía no se pueden borrar mensajes.') },
+              ]}
+            />
+          </div>
+        ) : cerrado ? (
+          <div className="ds-cuerpo">
+            <Nota icono="info" tono="gris">
+              El trabajo terminó: esta conversación quedó solo de lectura.
+            </Nota>
+          </div>
+        ) : (
+          <div>
+            {aviso ? (
+              <div className="ds-cuerpo" style={{ paddingBottom: 0 }}>
+                <Nota icono="alerta" tono="amarillo" rol="status">
+                  {aviso}
+                </Nota>
+              </div>
+            ) : null}
+            <div className="ds-m-rapidas" role="group" aria-label="Respuestas rápidas">
+              {rapidas.map((r) => (
+                <Pastilla key={r} elegida={false} onElegir={() => setTexto(r)}>
+                  {r}
+                </Pastilla>
+              ))}
+            </div>
+            <input
+              ref={entradaFoto}
+              type="file"
+              accept={TIPOS_MEDIA.join(',')}
+              hidden
+              aria-label="Elegir una foto"
+              onChange={(e) => elegirFoto(e.target.files)}
+            />
+            <Escribir valor={texto} onCambio={setTexto} onEnviar={enviarTexto} onSumar={() => setSumando(true)} />
+          </div>
+        )
+      }
+    >
+      <div className="ds-chat" role="log" aria-label="Conversación" aria-live="polite">
+        <span className="ds-m-dia">
+          <Boton
+            variante="suave"
+            chico
+            ancho={false}
+            icono="derecha"
             href={
               conv.trabajoId
                 ? ruta('/trabajos/detalle/', { id: conv.trabajoId })
@@ -227,175 +330,113 @@ export default function Conversacion() {
             }
           >
             {conv.trabajoId ? 'Ver el trabajo' : 'Ver el pedido'}
-          </Enlace>
-        </div>
-      </header>
-
-      <div className="du-chat">
-        <ul
-          className="du-chat__mensajes hd-scroll du-conversacion__lista"
-          aria-label="Conversación"
-          aria-live="polite"
-          tabIndex={0}
-        >
-          <li className="du-chat__espacio" aria-hidden="true" />
-          {!conv.trabajoId ? (
-            <li className="du-nota du-nueva">
-              <Icono nombre="info" />
-              <span>
-                Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una
-                propuesta.
+          </Boton>
+        </span>
+        {!conv.trabajoId ? (
+          <Nota icono="info" tono="gris">
+            Podés hablar antes de contratar. Nada queda acordado hasta que aceptes una propuesta.
+          </Nota>
+        ) : null}
+        {entradas.length === 0 ? (
+          <p className="ds-m-nota-centro">Todavía no hay mensajes. Escribí el primero.</p>
+        ) : null}
+        {entradas.map((e) => {
+          const dia = fechaDeInstante(e.t);
+          const separador =
+            dia !== diaPrevio ? (
+              <span key={`d-${dia}`} className="ds-m-dia">
+                <Chip tono="gris">{etiquetaDia(e.t, ahora)}</Chip>
               </span>
-            </li>
-          ) : null}
-          {entradas.length === 0 ? (
-            <li className="du-nota">Todavía no hay mensajes. Escribí el primero.</li>
-          ) : null}
-          {entradas.map((e) => {
-            if (e.prop)
-              return (
-                <li key={e.k} className="du-conversacion__propuesta">
-                  <TarjetaPropuesta p={e.prop} />
-                </li>
-              );
-            if (e.sal) {
-              const s = e.sal;
-              return (
-                <li
-                  key={e.k}
-                  className={`du-burbuja du-burbuja--propia${s.estado === 'error' ? ' du-burbuja--error' : ''}`}
-                >
-                  <span>{s.archivo ? `📷 ${s.archivo.name}` : s.texto}</span>
-                  <small className="du-burbuja__meta">
-                    {s.estado === 'enviando' ? 'Enviando…' : 'No se envió'}
-                  </small>
-                  {s.estado === 'error' ? (
-                    <span role="alert" className="du-burbuja__error">
-                      {s.error}
-                      <button type="button" onClick={() => void mandar(s)}>
-                        Reintentar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setSalientes((xs) => xs.filter((x) => x.clienteId !== s.clienteId))
-                        }
-                      >
-                        Descartar
-                      </button>
-                    </span>
-                  ) : null}
-                </li>
-              );
-            }
-            const m = e.msg as Mensaje;
-            if (m.autor === 'sistema')
-              return (
-                <li key={e.k} className="du-nota du-conversacion__sistema">
-                  <Icono nombre="info" />
-                  <span>{m.texto}</span>
-                </li>
-              );
-            const mio = m.autor === 'usuario';
-            return (
-              <li key={e.k} className={`du-burbuja du-burbuja--${mio ? 'propia' : 'otra'}`}>
-                <span className="sr-only">{mio ? 'Vos: ' : `${esp}: `}</span>
-                {m.media ? (
-                  <FotoPrivada className="du-burbuja__foto" url={m.media.url} alt="Foto enviada" />
-                ) : (
-                  <span>{m.texto}</span>
-                )}
-                <small className="du-burbuja__meta">
-                  {horaDeInstante(m.creadoEn)}
-                  {mio ? ' · enviado' : ''}
-                </small>
-              </li>
-            );
-          })}
-          <li ref={fondo} aria-hidden="true" />
-        </ul>
-
-        <div className="du-chat__pie">
-          {aviso ? (
-            <p className="du-nota" role="status">
-              <Icono nombre="alerta" />
-              <span>{aviso}</span>
-            </p>
-          ) : null}
-          {cerrado ? (
-            <p className="du-nota">
-              <Icono nombre="info" />
-              <span>El trabajo terminó: esta conversación quedó solo de lectura.</span>
-            </p>
-          ) : (
-            <>
-              <div
-                className="hd-chips du-rapidas du-rapidas--envolver"
-                role="group"
-                aria-label="Respuestas rápidas"
-              >
-                {rapidas.map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    className="hd-chip hd-chip--tinte du-rapida"
-                    onClick={() => {
-                      setTexto(r);
-                      document.getElementById('mensaje')?.focus();
-                    }}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
-              <form className="du-escribir" onSubmit={enviarTexto}>
-                <input
-                  ref={entradaFoto}
-                  type="file"
-                  accept={TIPOS_MEDIA.join(',')}
-                  hidden
-                  aria-label="Elegir una foto"
-                  onChange={(e) => elegirFoto(e.target.files)}
-                />
-                <button
-                  type="button"
-                  className="du-escribir__foto"
-                  aria-label="Enviar una foto"
-                  onClick={() => entradaFoto.current?.click()}
-                >
-                  <Icono nombre="camara" />
-                </button>
-                <label className="sr-only" htmlFor="mensaje">
-                  Mensaje
-                </label>
-                <textarea
-                  id="mensaje"
-                  className="du-escribir__campo"
-                  rows={1}
-                  maxLength={2000}
-                  placeholder="Escribí un mensaje"
-                  value={texto}
-                  onChange={(e) => setTexto(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey && e.currentTarget.form) {
-                      e.preventDefault();
-                      e.currentTarget.form.requestSubmit();
-                    }
+            ) : null;
+          diaPrevio = dia;
+          let cuerpo: React.ReactNode;
+          if (e.tipo === 'prop')
+            cuerpo = (
+              <div className="ds-m-fila" inert={elegidos !== null || undefined}>
+                <TarjetaPropuestaChat
+                  p={e.prop}
+                  anterior={tarjetas.find((x) => x.id === e.prop.reemplazaA) ?? null}
+                  alCambiar={() => {
+                    propuestas.recargar();
+                    mensajes.recargar();
                   }}
                 />
-                <button
-                  type="submit"
-                  className="du-escribir__enviar"
-                  aria-label="Enviar el mensaje"
-                  disabled={!texto.trim()}
-                >
-                  <Icono nombre="enviar" />
-                </button>
-              </form>
-            </>
-          )}
-        </div>
+              </div>
+            );
+          else if (e.tipo === 'sal') {
+            const s = e.sal;
+            cuerpo = (
+              <>
+                <Burbuja de="yo" hora={s.estado === 'enviando' ? 'Enviando…' : 'No se envió'}>
+                  {s.archivo ? `Foto: ${s.archivo.name}` : s.texto}
+                </Burbuja>
+                {s.estado === 'error' ? (
+                  <div className="ds-fila" style={{ justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                    <Nota icono="alerta" tono="error" rol="alert">
+                      {s.error}
+                    </Nota>
+                    <Pastilla elegida={false} onElegir={() => void mandar(s)}>
+                      Reintentar
+                    </Pastilla>
+                    <Pastilla
+                      elegida={false}
+                      onElegir={() => setSalientes((xs) => xs.filter((x) => x.clienteId !== s.clienteId))}
+                    >
+                      Descartar
+                    </Pastilla>
+                  </div>
+                ) : null}
+              </>
+            );
+          } else if (e.msg.autor === 'sistema')
+            cuerpo = (
+              <Nota icono="info" tono="gris">
+                {e.msg.texto}
+              </Nota>
+            );
+          else {
+            const m = e.msg;
+            const mio = m.autor === 'usuario';
+            const globo = (
+              <Burbuja de={mio ? 'yo' : 'otro'} hora={horaDeInstante(m.creadoEn)}>
+                <span className="ds-solo-lector">{mio ? 'Vos: ' : `${esp}: `}</span>
+                {m.media ? (
+                  <FotoPrivada className="ds-m-foto" url={m.media.url} alt="Foto enviada" />
+                ) : (
+                  m.texto
+                )}
+              </Burbuja>
+            );
+            cuerpo = elegidos ? (
+              <FilaSeleccion
+                activa={elegidos.has(m.id)}
+                etiqueta={`${mio ? 'Tu mensaje' : `Mensaje de ${esp}`}, ${horaDeInstante(m.creadoEn)}`}
+                onAlternar={() => {
+                  setAviso(null);
+                  setElegidos(alternar(elegidos, m.id));
+                }}
+              >
+                {globo}
+              </FilaSeleccion>
+            ) : (
+              <div className="ds-m-fila" {...pulsar(m.id)}>
+                {globo}
+              </div>
+            );
+          }
+          return (
+            <div key={e.k} className="ds-m-fila">
+              {separador}
+              {cuerpo}
+            </div>
+          );
+        })}
+        {!elegidos && entradas.some((e) => e.tipo === 'prop') ? (
+          <p className="ds-m-nota-centro">Las tarjetas se aceptan acá mismo y quedan en el pedido.</p>
+        ) : null}
+        <div ref={fondo} aria-hidden="true" />
       </div>
-    </div>
+      <Adjuntar abierta={sumando} onCerrar={() => setSumando(false)} onFoto={() => entradaFoto.current?.click()} />
+    </PantallaM>
   );
 }

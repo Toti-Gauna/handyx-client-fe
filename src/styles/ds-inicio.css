@@ -1,0 +1,374 @@
+/* Piezas del Inicio y de HandIA (src/ui/inicio.tsx; lienzo design/usuario, fila I). Mismo criterio que ds.css: rem,
+   tokens semánticos, toques de 44 px o más y nada que se mueva si se pidió reducir el movimiento. */
+
+/* ── Cabecera de Inicio: la cuenta como avatar (círculo amarillo con iniciales) ───────────────────────── */
+.hx .app-cuadrado__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  border-radius: 50%;
+  background: var(--ds-amarillo);
+  color: var(--ds-tinta);
+  font: 900 0.8125rem var(--fuente);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.hx .app-cuadrado__avatar svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.hx a.app-cuadrado {
+  text-decoration: none;
+}
+
+/* ── Inicio ───────────────────────────────────────────────────────────────────────────────────────────── */
+.dsi-inicio {
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+.dsi-inicio__titulo {
+  white-space: nowrap;
+  font-size: min(1.6875rem, 7.2vw);
+}
+.dsi-inicio__quiero {
+  margin: 0.375rem 0 0;
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: 1.375rem;
+  line-height: 1.05;
+  color: var(--ds-azul);
+}
+.dsi-seccion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.dsi-cargando {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 5.5rem;
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--ds-gris);
+  color: var(--ds-suave);
+  font-size: 0.875rem;
+}
+
+/* Chip de la dirección */
+.dsi-direccion {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  max-width: 100%;
+  min-height: 2.75rem;
+  padding: 0 0.875rem;
+  border: 0;
+  border-radius: 1.375rem;
+  background: var(--ds-tinte);
+  color: var(--ds-hondo);
+  font: 800 0.8125rem var(--fuente);
+  cursor: pointer;
+}
+.dsi-direccion > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hx .dsi-direccion svg {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: var(--ds-azul);
+}
+.dsi-direccion:focus-visible,
+.dsi-handia:focus-visible,
+.dsi-tarea:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: 2px;
+}
+
+/* Tarjeta «Contale a HandIA» */
+.dsi-handia {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 0.875rem 0.875rem 0.75rem;
+  border-radius: 1.5rem;
+  background: var(--ds-azul);
+  box-shadow:
+    0 4px 0 var(--ds-hondo),
+    0 18px 30px -18px rgba(20, 62, 126, 0.8);
+  color: var(--ds-c-fff);
+  text-decoration: none;
+}
+.dsi-handia__luz {
+  position: relative;
+  flex: none;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.dsi-handia__luz i,
+.dsi-ia-avatar i {
+  position: absolute;
+  width: 72%;
+  height: 72%;
+  border-radius: 50%;
+  background: var(--ds-c-ffcf5a);
+  opacity: 0.55;
+  filter: blur(8px);
+}
+.dsi-handia__luz img {
+  position: relative;
+  width: 2.125rem;
+  height: auto;
+}
+.dsi-handia__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.dsi-handia__antes {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ds-c-dce7f7);
+}
+.dsi-handia__titulo {
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: 1.3125rem;
+  line-height: 1.05;
+}
+.dsi-handia__sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--ds-amarillo);
+}
+.hx .dsi-handia__sub svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+.dsi-handia__flecha {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--ds-amarillo);
+  box-shadow: 0 3px 0 var(--ds-amarillo-base);
+  color: var(--ds-tinta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hx .dsi-handia__flecha svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 2.5;
+}
+
+/* Mosaicos de «Quiero…» */
+.dsi-tarea {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 3.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 1.125rem;
+  background: var(--ds-mosaico);
+  box-shadow: 0 4px 0 var(--ds-mosaico-base);
+  color: var(--ds-tinta);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-decoration: none;
+}
+.dsi-tarea__ic {
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  background: var(--ds-c-fff);
+  color: var(--ds-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hx .dsi-tarea__ic svg {
+  width: 1.1875rem;
+  height: 1.1875rem;
+}
+.ds-mosaico:active,
+.dsi-tarea:active,
+.dsi-handia:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ds-mosaico-base);
+}
+
+/* Ticket: avatar con sello y fila de abajo */
+.dsi-avatar-sello {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+}
+.dsi-avatar-sello__marca {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  width: 1.25rem;
+  height: 1.25rem;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid var(--ds-c-fff);
+  background: var(--ds-exito);
+  color: var(--ds-c-fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hx .dsi-avatar-sello__marca svg {
+  width: 0.6875rem;
+  height: 0.6875rem;
+  stroke-width: 3.5;
+}
+.dsi-quien {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+}
+.dsi-quien strong {
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dsi-quien small {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--ds-suave);
+}
+.hx .dsi-quien small svg {
+  width: 0.9375rem;
+  height: 0.9375rem;
+}
+.dsi-fila-ticket {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-height: 2.75rem;
+}
+.dsi-fila-ticket__ic {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: var(--ds-tinte);
+  color: var(--ds-azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hx .dsi-fila-ticket__ic svg {
+  width: 1.1875rem;
+  height: 1.1875rem;
+}
+.dsi-fila-ticket strong {
+  font-size: 0.9375rem;
+}
+.dsi-fila-ticket__accion {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: var(--ds-azul);
+  white-space: nowrap;
+}
+.hx .dsi-fila-ticket__accion svg {
+  width: 1rem;
+  height: 1rem;
+}
+.ds-ticket:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: 3px;
+  border-radius: 1.5rem;
+}
+
+/* ── Avatar de HandIA (lamparita con luz) ─────────────────────────────────────────────────────────────── */
+.dsi-ia-avatar {
+  position: relative;
+  flex: none;
+  width: 1.875rem;
+  height: 1.875rem;
+  border-radius: 0.6rem;
+  background: var(--ds-azul);
+  box-shadow: 0 3px 0 var(--ds-hondo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.dsi-ia-avatar i {
+  filter: blur(3px);
+}
+.dsi-ia-avatar img {
+  position: relative;
+  width: 50%;
+  height: auto;
+}
+.dsi-ia-avatar--grande {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.8rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-mosaico:active,
+  .dsi-tarea:active,
+  .dsi-handia:active {
+    transform: none;
+  }
+}
+
+/* Dentro de la app, `.hx-app .icono` (kit/app.css) le gana a los tamaños de ds.css (`.ds-* svg`). Hasta que ds.css lo
+   resuelva, se restituyen acá los de las piezas que usan estas pantallas. */
+.hx-app .ds-mosaico svg {
+  width: 1.875rem;
+  height: 1.875rem;
+}
+.hx-app .ds-mosaico-ic svg {
+  width: 48%;
+  height: 48%;
+}
+.hx-app .ds-chip svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+.hx-app .ds-boton svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.hx-app .ds-nota svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}

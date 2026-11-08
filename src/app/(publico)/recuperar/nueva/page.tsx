@@ -29,7 +29,7 @@ export default function NuevaContrasena() {
       { cuerpo: { token, contrasena } },
       `${token}|${contrasena}`,
     );
-    if (r?.ok) ir('/ingresar/?motivo=clave', { reemplazar: true });
+    if (r?.ok) ir('/ingresar/clave/?motivo=clave', { reemplazar: true });
   }
 
   if (token === null) return null;
@@ -38,7 +38,7 @@ export default function NuevaContrasena() {
       <Flujo
         titulo="Enlace ==incompleto=="
         sub="Este enlace no es válido. Pedí uno nuevo y abrilo desde el email."
-        atras={{ href: '/ingresar/', etiqueta: 'Volver a ingresar' }}
+        atras={{ href: '/ingresar/clave/', etiqueta: 'Volver a ingresar' }}
         ilustracion={<Escena handy="handy-llave-rota" ancho={581} alto={547} />}
         pie={
           <Enlace href="/recuperar/" className="hd-boton">
@@ -51,7 +51,7 @@ export default function NuevaContrasena() {
   return (
     <Flujo
       titulo="Elegí una ==contraseña nueva=="
-      atras={{ href: '/ingresar/', etiqueta: 'Volver a ingresar' }}
+      atras={{ href: '/ingresar/clave/', etiqueta: 'Volver a ingresar' }}
       paso={3}
       total={3}
       onSubmit={(e) => {

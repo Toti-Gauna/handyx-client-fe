@@ -1,18 +1,25 @@
 'use client';
 
-// Actividad (rediseño 3.7): lo que está en curso (con lo que espera tu respuesta arriba), la agenda y el historial, en
-// una sola pestaña como en la demo.
-import Image from 'next/image';
+// Actividad (lienzo X-Actividad): lo que está en curso (con lo que espera tu respuesta arriba), la agenda y el
+// historial, en una sola pestaña con segmentos.
 import { useMemo, useState } from 'react';
 import type { Pedido } from '@/contracts/v1/pedidos';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import { useConsulta } from '@/data/hooks';
-import { fechaDeInstante, fechaLarga, hoyEnArgentina, type FechaISO } from '@/domain/fechas';
+import { pesos } from '@/domain/dinero';
+import {
+  RUBROS_INFO,
+  TIPOS_INFO,
+  etiquetaPedido,
+  etiquetaTrabajo,
+  type Etiqueta,
+} from '@/domain/etiquetas';
+import { cuando, fechaDeInstante, fechaLarga, hoyEnArgentina, type FechaISO } from '@/domain/fechas';
+import { Boton, Chip, Etiqueta as Rotulo, MosaicoIcono, Tarjeta, Texto, Titulo, type TonoChip } from '@/ui';
+import { EscenaVacio, PantallaM, Segmentos } from '@/ui/mensajes';
 import { Calendario } from './Calendario';
-import { Pantalla, entra } from './hx';
-import { Enlace } from './nav';
+import { ruta } from './nav';
 import { useAhora } from './SesionProvider';
-import { TarjetaDePedido, TarjetaDeTrabajo } from './TarjetaPedido';
 import { TituloDocumento } from './TituloDocumento';
 import { Cargando, ErrorEstado } from './ui';
 
@@ -22,10 +29,18 @@ const TABS: readonly { id: VistaActividad; texto: string }[] = [
   { id: 'agenda', texto: 'Agenda' },
   { id: 'historial', texto: 'Historial' },
 ];
+const TONO: Record<Etiqueta['tono'], TonoChip> = {
+  azul: 'tinte',
+  ok: 'exito',
+  alerta: 'amarillo',
+  error: 'error',
+  gris: 'gris',
+};
 
 /** Necesita algo de la persona: elegir entre propuestas o confirmar que el trabajo terminó. */
 const esperaPedido = (p: Pedido) => p.estado === 'con_propuestas' && p.propuestasPendientes > 0;
 const esperaTrabajo = (t: Trabajo) => t.estado === 'terminado_por_especialista';
+const corto = (t: string, n: number) => (t.length > n ? `${t.slice(0, n)}…` : t);
 
 export function Actividad({ inicial = 'curso' }: { inicial?: VistaActividad }) {
   const [vista, setVista] = useState<VistaActividad>(inicial);
@@ -50,39 +65,29 @@ export function Actividad({ inicial = 'curso' }: { inicial?: VistaActividad }) {
   const listaTrabajos = (trabajos.datos?.items ?? []).filter(
     (t) => historial || vista === 'agenda' || !['finalizado', 'cancelado'].includes(t.estado),
   );
+  const listo = !cargando && !error;
 
   return (
-    <Pantalla
+    <PantallaM
       arriba={
-        <div className="du-actividad__cabeza">
+        <header className="ds ds-pila" style={{ padding: '1.25rem 1rem 0.5rem' }}>
           <TituloDocumento texto="Actividad" />
-          <h1 className="hd-titulo hd-titulo--grande">Actividad</h1>
-          <div className="du-segmentos" role="tablist" aria-label="Qué querés ver">
-            {TABS.map((t) => (
-              <button
-                key={t.id}
-                id={`tab-${t.id}`}
-                type="button"
-                role="tab"
-                aria-selected={vista === t.id}
-                aria-controls="panel-actividad"
-                className="du-segmentos__tab"
-                onClick={() => setVista(t.id)}
-              >
-                {t.texto}
-              </button>
-            ))}
-          </div>
-        </div>
+          <Titulo texto="==Actividad==" tam={2} />
+          <Segmentos
+            opciones={TABS}
+            valor={vista}
+            onCambio={setVista}
+            etiqueta="Qué querés ver"
+            idPanel="panel-actividad"
+          />
+        </header>
       }
-      clase="du-actividad"
     >
       <div
         id="panel-actividad"
         role="tabpanel"
-        aria-labelledby={`tab-${vista}`}
-        className="du-cuerpo du-actividad__panel"
-        key={vista}
+        aria-labelledby={`seg-${vista}`}
+        className="ds-cuerpo ds-cuerpo--raiz"
       >
         {cargando ? <Cargando /> : null}
         {error ? (
@@ -94,22 +99,15 @@ export function Actividad({ inicial = 'curso' }: { inicial?: VistaActividad }) {
             }}
           />
         ) : null}
-        {!cargando && !error && vista === 'curso' ? (
+        {listo && vista === 'curso' ? (
           <EnCurso pedidos={soloPedidos} trabajos={listaTrabajos} rubroDe={rubroDe} />
         ) : null}
-        {!cargando && !error && vista === 'agenda' ? (
+        {listo && vista === 'agenda' ? (
           <Agenda trabajos={listaTrabajos} rubroDe={rubroDe} />
         ) : null}
-        {!cargando && !error && historial ? (
+        {listo && historial ? (
           soloPedidos.length + listaTrabajos.length ? (
-            <ul className="du-lista-tarjetas" {...entra(1)}>
-              {listaTrabajos.map((t) => (
-                <TarjetaDeTrabajo key={t.id} t={t} rubro={rubroDe(t.pedidoId)} />
-              ))}
-              {soloPedidos.map((p) => (
-                <TarjetaDePedido key={p.id} p={p} />
-              ))}
-            </ul>
+            <Lista pedidos={soloPedidos} trabajos={listaTrabajos} rubroDe={rubroDe} />
           ) : (
             <Nada
               titulo="Todavía no hay historial"
@@ -118,66 +116,127 @@ export function Actividad({ inicial = 'curso' }: { inicial?: VistaActividad }) {
           )
         ) : null}
       </div>
-    </Pantalla>
+    </PantallaM>
   );
 }
 
-function EnCurso({
-  pedidos,
-  trabajos,
-  rubroDe,
+type RubroDe = (pedidoId: string) => Pedido['rubro'] | null;
+
+function Item({
+  href,
+  rubro,
+  titulo,
+  detalle,
+  etiqueta,
+  importe,
+  destino,
 }: {
-  pedidos: Pedido[];
-  trabajos: Trabajo[];
-  rubroDe: (pedidoId: string) => Pedido['rubro'] | null;
+  href: string;
+  rubro: Pedido['rubro'] | null;
+  titulo: string;
+  detalle: string;
+  etiqueta: Etiqueta;
+  importe?: string;
+  destino: string;
 }) {
-  const esperan = [...pedidos.filter(esperaPedido), ...trabajos.filter(esperaTrabajo)];
-  const resto = [
-    ...trabajos.filter((t) => !esperaTrabajo(t)),
-    ...pedidos.filter((p) => !esperaPedido(p)),
-  ];
-  const tarjeta = (x: Pedido | Trabajo) =>
-    'acuerdo' in x ? (
-      <TarjetaDeTrabajo key={x.id} t={x} rubro={rubroDe(x.pedidoId)} />
-    ) : (
-      <TarjetaDePedido key={x.id} p={x} />
-    );
-  if (!esperan.length && !resto.length)
+  return (
+    <li>
+      <Tarjeta pie={{ texto: 'Ver', href }} etiqueta={destino} como="article">
+        <div className="ds-fila">
+          <MosaicoIcono icono={rubro ? RUBROS_INFO[rubro].icono : 'obra'} tam={3.25} tono="gris" />
+          <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.1875rem' }}>
+            <strong style={{ fontSize: '1rem' }}>{titulo}</strong>
+            <span className="ds-fila-enlace__sub">{detalle}</span>
+          </span>
+        </div>
+        <span className="ds-fila" style={{ flexWrap: 'wrap', justifyContent: 'space-between' }}>
+          <Chip tono={TONO[etiqueta.tono]} {...(etiqueta.icono ? { icono: etiqueta.icono } : {})}>
+            <span className="ds-solo-lector">Estado: </span>
+            {etiqueta.texto}
+          </Chip>
+          {importe ? <strong>{importe}</strong> : null}
+        </span>
+      </Tarjeta>
+    </li>
+  );
+}
+
+const ItemPedido = ({ p }: { p: Pedido }) => (
+  <Item
+    href={ruta('/pedidos/detalle/', { id: p.id })}
+    rubro={p.rubro}
+    titulo={`${RUBROS_INFO[p.rubro].nombre} · ${TIPOS_INFO[p.tipo].nombre}`}
+    detalle={
+      p.estado === 'con_propuestas'
+        ? `${p.propuestasPendientes} ${p.propuestasPendientes === 1 ? 'propuesta espera' : 'propuestas esperan'} tu respuesta`
+        : corto(p.descripcion, 70)
+    }
+    etiqueta={etiquetaPedido(p)}
+    destino={`Pedido de ${RUBROS_INFO[p.rubro].nombre}`}
+  />
+);
+
+const ItemTrabajo = ({ t, rubro }: { t: Trabajo; rubro: Pedido['rubro'] | null }) => {
+  const inicio = t.acuerdo.horario?.inicio;
+  const titulo = rubro ? RUBROS_INFO[rubro].nombre : 'Trabajo';
+  return (
+    <Item
+      href={ruta('/trabajos/detalle/', { id: t.id })}
+      rubro={rubro}
+      titulo={titulo}
+      detalle={`${inicio ? cuando(inicio) : 'Horario a coordinar'} · ${t.especialista.nombrePublico}`}
+      etiqueta={etiquetaTrabajo(t)}
+      importe={pesos(t.acuerdo.monto.centavos + t.acuerdo.comisionHandy.importe.centavos)}
+      destino={`${titulo} con ${t.especialista.nombrePublico}`}
+    />
+  );
+};
+
+function Lista({ pedidos, trabajos, rubroDe }: { pedidos: Pedido[]; trabajos: Trabajo[]; rubroDe: RubroDe }) {
+  return (
+    <ul className="ds-pila" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+      {trabajos.map((t) => (
+        <ItemTrabajo key={t.id} t={t} rubro={rubroDe(t.pedidoId)} />
+      ))}
+      {pedidos.map((p) => (
+        <ItemPedido key={p.id} p={p} />
+      ))}
+    </ul>
+  );
+}
+
+function EnCurso({ pedidos, trabajos, rubroDe }: { pedidos: Pedido[]; trabajos: Trabajo[]; rubroDe: RubroDe }) {
+  const esperanP = pedidos.filter(esperaPedido);
+  const esperanT = trabajos.filter(esperaTrabajo);
+  const restoP = pedidos.filter((p) => !esperaPedido(p));
+  const restoT = trabajos.filter((t) => !esperaTrabajo(t));
+  if (!esperanP.length && !esperanT.length && !restoP.length && !restoT.length)
     return (
-      <Nada
-        titulo="No tenés nada en curso"
-        texto="Cuando pidas un servicio, lo seguís desde acá."
-      />
+      <Nada titulo="No tenés nada en curso" texto="Cuando pidas un servicio, lo seguís desde acá." pedir />
     );
   return (
     <>
-      {esperan.length ? (
-        <section className="du-bloque" aria-labelledby="espera" {...entra(1)}>
-          <h2 id="espera" className="hd-sobre du-sobre du-actividad__espera">
-            Espera tu respuesta
-          </h2>
-          <ul className="du-lista-tarjetas">{esperan.map(tarjeta)}</ul>
+      {esperanP.length + esperanT.length ? (
+        <section className="ds-pila" aria-labelledby="espera">
+          <Rotulo como="h2">
+            <span id="espera">Espera tu respuesta</span>
+          </Rotulo>
+          <Lista pedidos={esperanP} trabajos={esperanT} rubroDe={rubroDe} />
         </section>
       ) : null}
-      {resto.length ? (
-        <section className="du-bloque" aria-labelledby="en-marcha" {...entra(2)}>
-          <h2 id="en-marcha" className="hd-sobre du-sobre">
-            En marcha
-          </h2>
-          <ul className="du-lista-tarjetas">{resto.map(tarjeta)}</ul>
+      {restoP.length + restoT.length ? (
+        <section className="ds-pila" aria-labelledby="en-marcha">
+          <Rotulo como="h2">
+            <span id="en-marcha">En marcha</span>
+          </Rotulo>
+          <Lista pedidos={restoP} trabajos={restoT} rubroDe={rubroDe} />
         </section>
       ) : null}
     </>
   );
 }
 
-function Agenda({
-  trabajos,
-  rubroDe,
-}: {
-  trabajos: Trabajo[];
-  rubroDe: (pedidoId: string) => Pedido['rubro'] | null;
-}) {
+function Agenda({ trabajos, rubroDe }: { trabajos: Trabajo[]; rubroDe: RubroDe }) {
   const ahora = useAhora(60_000);
   const [elegido, setElegido] = useState<FechaISO | null>(null);
   const dia = elegido ?? hoyEnArgentina(new Date(ahora));
@@ -193,41 +252,30 @@ function Agenda({
   const delDia = porDia.get(dia) ?? [];
   return (
     <>
-      <div className="hd-tarjeta du-actividad__calendario" {...entra(1)}>
-        <Calendario
-          valor={dia}
-          onElegir={setElegido}
-          marcas={new Set(porDia.keys())}
-          sinPasados={false}
-        />
-      </div>
-      <h2 className="hd-sobre du-sobre" aria-live="polite">
-        {fechaLarga(dia)}
-      </h2>
+      <Tarjeta como="div">
+        <Calendario valor={dia} onElegir={setElegido} marcas={new Set(porDia.keys())} sinPasados={false} />
+      </Tarjeta>
+      <Rotulo como="h2">
+        <span aria-live="polite">{fechaLarga(dia)}</span>
+      </Rotulo>
       {delDia.length ? (
-        <ul className="du-lista-tarjetas">
-          {delDia.map((t) => (
-            <TarjetaDeTrabajo key={t.id} t={t} rubro={rubroDe(t.pedidoId)} />
-          ))}
-        </ul>
+        <Lista pedidos={[]} trabajos={delDia} rubroDe={rubroDe} />
       ) : (
-        <p className="du-nota">
-          <span>No tenés nada este día. Los días con puntito tienen trabajos.</span>
-        </p>
+        <Texto>No tenés nada este día. Los días con puntito tienen trabajos.</Texto>
       )}
     </>
   );
 }
 
-function Nada({ titulo, texto }: { titulo: string; texto: string }) {
+function Nada({ titulo, texto, pedir = false }: { titulo: string; texto: string; pedir?: boolean }) {
   return (
-    <div className="du-vacio-hx" {...entra(1)}>
-      <Image className="hd-handy" src="/img/handy-gota.webp" alt="" width={93} height={125} />
-      <p className="hd-titulo hd-titulo--chico">{titulo}</p>
-      <p className="du-vacio-hx__texto">{texto}</p>
-      <Enlace href="/pedir/" className="hd-boton">
-        Pedir un servicio
-      </Enlace>
+    <div className="ds-m-vacio">
+      <EscenaVacio />
+      <Titulo nivel={2} tam={1.375} texto={titulo} />
+      <Texto>{texto}</Texto>
+      {pedir ? (
+        <Boton href="/pedir/">Pedir un servicio</Boton>
+      ) : null}
     </div>
   );
 }

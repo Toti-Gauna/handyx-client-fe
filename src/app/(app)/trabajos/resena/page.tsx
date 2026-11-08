@@ -2,218 +2,192 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { BotonHx, Escena, Flujo } from '@/components/acceso';
-import { AvatarHx } from '@/components/hx';
-import { Icono } from '@/components/Icono';
+import { Barra, Pantalla } from '@/components/hx';
 import { Enlace, ruta } from '@/components/nav';
-import { Aviso, Campo, Cargando, ErrorEstado, Vacio } from '@/components/ui';
-import { ErrorCliente } from '@/data/cliente';
-import { useConsulta } from '@/data/hooks';
-import { enviarResena, resenaDe, resenaDisponible, type Resena } from '@/data/resena';
+import { TituloDocumento } from '@/components/TituloDocumento';
+import { estadoDeCarga } from '@/components/Trabajo';
+import { Aviso } from '@/components/ui';
+import type { Resena } from '@/contracts/v1/servicio';
+import { useConsulta, useEnvio } from '@/data/hooks';
+import {
+  DESTACADOS_TEXTO,
+  TEXTO_PUNTAJE,
+  opcionesPara,
+  prepararResena,
+  type Destacado,
+} from '@/data/resena';
 import { RUBROS_INFO } from '@/domain/etiquetas';
-
-const BIEN = ['Puntual', 'Prolijo', 'Explicó todo', 'Buen trato'] as const;
-const MAL = ['Llegó tarde', 'Quedó a medias', 'Dejó desorden', 'Otra cosa'] as const;
+import { cuando } from '@/domain/fechas';
+import {
+  Avatar,
+  Boton,
+  Chip,
+  EscenaArreglado,
+  Estrellas,
+  EstrellasFijas,
+  Etiqueta,
+  Nota,
+  Pastilla,
+} from '@/ui';
+import '@/styles/ds-seguimiento.css';
 
 /**
- * Reseña (rediseño 3.6, como u-resena de la demo): solo de un trabajo que confirmaste que terminó. Estrellas, lo mejor o
- * lo que estuvo mal, y un comentario opcional sin datos personales. Si algo salió mal de verdad, el camino es un
- * reclamo: la reseña no lo reemplaza.
+ * Reseña: una hoja que sube sobre «¡Quedó arreglado!». Estrellas grandes, qué estuvo bien (o mal) y un comentario
+ * opcional sin datos personales. Solo de un trabajo finalizado, una por trabajo.
  */
 export default function ResenaTrabajo() {
   const id = useSearchParams().get('id');
   const trabajo = useConsulta('trabajo', id ? { parametros: { id } } : null);
+  const previa = useConsulta('resena', id ? { parametros: { id } } : null);
   const pedidoId = trabajo.datos?.pedidoId ?? null;
   const pedido = useConsulta('pedido', pedidoId ? { parametros: { id: pedidoId } } : null);
-  const [estrellas, setEstrellas] = useState<Resena['estrellas'] | null>(null);
-  const [destacados, setDestacados] = useState<string[]>([]);
+  const accion = useEnvio();
+  const [puntaje, setPuntaje] = useState(0);
+  const [destacados, setDestacados] = useState<Destacado[]>([]);
   const [comentario, setComentario] = useState('');
-  const [enviando, setEnviando] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [enviada, setEnviada] = useState<Resena | null>(() => (id ? resenaDe(id) : null));
+  const [enviada, setEnviada] = useState<Resena | null>(null);
 
-  if (!id)
-    return (
-      <Vacio titulo="Falta el trabajo">
-        <Enlace className="boton boton--chico" href="/pedidos/">
-          Ver mis pedidos
-        </Enlace>
-      </Vacio>
-    );
-  if (trabajo.estado === 'cargando') return <Cargando forma="detalle" />;
-  if (trabajo.estado === 'error' && trabajo.error)
-    return <ErrorEstado error={trabajo.error} onReintentar={trabajo.recargar} />;
+  const carga = estadoDeCarga(id, [trabajo]) ?? (previa.estado === 'cargando' ? estadoDeCarga(id, [previa]) : null);
   const t = trabajo.datos;
-  if (!t) return null;
+  if (carga || !t) return carga;
+
   const esp = t.especialista.nombrePublico;
   const volver = { href: ruta('/trabajos/detalle/', { id: t.id }), etiqueta: 'Volver al trabajo' };
-  const rubro = pedido.datos?.rubro;
+  const hecha = enviada ?? previa.datos;
 
-  if (enviada)
+  if (t.estado !== 'finalizado' && !hecha)
     return (
-      <Flujo
-        titulo="¡Gracias por ==calificar==!"
-        sub="Tu calificación nos ayuda a cuidar la calidad de cada trabajo."
-        atras={volver}
-        ilustracion={
-          <Escena handy="handy-lamparita" ancho={202} alto={346} tono="amarillo" tilde />
-        }
-        pie={
-          <Enlace href="/inicio/" className="hd-boton">
-            Volver al inicio
-          </Enlace>
-        }
-      >
-        <p className="du-nota">
-          <Icono nombre="info" />
-          <span>
-            Si algo salió mal y necesitás que lo revisemos, abrí un reclamo: la reseña no lo
-            reemplaza.
-          </span>
-        </p>
-      </Flujo>
+      <Pantalla arriba={<Barra titulo="Calificar" volver={volver} sub={esp} />}>
+        <div className="ds ds-cuerpo">
+          <Nota icono="info" rol="status">
+            Todavía no se puede calificar: primero confirmá que el trabajo terminó.
+          </Nota>
+          <Boton href={volver.href}>Volver al trabajo</Boton>
+        </div>
+      </Pantalla>
     );
 
-  if (t.estado !== 'finalizado')
-    return (
-      <Flujo
-        titulo="¿Cómo te ==fue==?"
-        atras={volver}
-        pie={
-          <Enlace href={volver.href} className="hd-boton">
-            Volver al trabajo
-          </Enlace>
-        }
-      >
-        <Aviso tipo="info" titulo="Todavía no se puede calificar">
-          Podés calificar a {esp} cuando confirmes que el trabajo terminó.
-        </Aviso>
-      </Flujo>
-    );
+  const rubro = pedido.datos ? RUBROS_INFO[pedido.datos.rubro].nombre : 'Trabajo';
+  const opciones = opcionesPara(puntaje);
 
-  const chips = estrellas === null ? [] : estrellas >= 4 ? BIEN : MAL;
-  async function enviar(e: React.FormEvent) {
-    e.preventDefault();
-    if (!estrellas || !id) return;
-    setEnviando(true);
-    setError(null);
-    try {
-      setEnviada(
-        await enviarResena({
-          trabajoId: id,
-          estrellas,
-          destacados: destacados.filter((d) => (chips as readonly string[]).includes(d)),
-          comentario,
-        }),
-      );
-    } catch (err) {
-      setError(err instanceof ErrorCliente ? err.mensaje : 'No pudimos enviar la reseña.');
-    } finally {
-      setEnviando(false);
-    }
+  async function publicar() {
+    const r = await accion.enviar(
+      'resenaCrear',
+      { parametros: { id: t!.id }, cuerpo: prepararResena(puntaje, destacados, comentario) },
+      `${puntaje}|${destacados.join()}|${comentario}`,
+    );
+    if (r?.ok) setEnviada(r.datos);
   }
 
   return (
-    <Flujo
-      titulo="¿Cómo te ==fue==?"
-      atras={volver}
-      onSubmit={enviar}
-      pie={
-        <BotonHx
-          type="submit"
-          icono="enviar"
-          cargando={enviando}
-          disabled={!estrellas || !resenaDisponible}
-        >
-          Enviar
-        </BotonHx>
-      }
-    >
-      <div className="du-resena-hx__quien">
-        <AvatarHx
-          nombre={esp}
-          verificado={t.especialista.verificaciones.length > 0}
-          tamano="grande"
-        />
-        <p className="hd-titulo hd-titulo--chico">{esp}</p>
-        {rubro ? (
-          <span className="hd-chip hd-chip--tinte">
-            <Icono nombre={RUBROS_INFO[rubro].icono} />
-            {RUBROS_INFO[rubro].nombre}
-          </span>
-        ) : null}
-      </div>
-      {!resenaDisponible ? (
-        <Aviso tipo="info" titulo="Las reseñas todavía no están disponibles">
-          Te avisamos cuando puedas calificar a {esp}.
-        </Aviso>
-      ) : null}
-      <fieldset className="du-estrellas-hx">
-        <legend className="sr-only">Calificación de 1 a 5 estrellas</legend>
-        {([1, 2, 3, 4, 5] as const).map((n) => (
-          <button
-            key={n}
-            type="button"
-            className="du-estrella-hx"
-            aria-pressed={estrellas !== null && n <= estrellas}
-            aria-label={n === 1 ? '1 estrella' : `${n} estrellas`}
-            onClick={() => {
-              setEstrellas(n);
-              setDestacados([]);
-            }}
-          >
-            <Icono nombre="estrella" />
-          </button>
-        ))}
-      </fieldset>
-      <p className="du-resena-hx__ayuda" role="status">
-        {estrellas === null
-          ? 'Tocá las estrellas para calificar'
-          : estrellas === 1
-            ? '1 estrella'
-            : `${estrellas} estrellas`}
-      </p>
-      {chips.length ? (
-        <fieldset className="du-resena-hx__chips">
-          <legend className="hd-sobre du-sobre">
-            {estrellas !== null && estrellas >= 4
-              ? '¿Qué fue lo mejor?'
-              : 'Contanos qué estuvo mal'}
-          </legend>
-          <div className="hd-chips">
-            {chips.map((c) => (
-              <button
-                key={c}
-                type="button"
-                className="hd-chip hd-chip--tinte du-chip-voto"
-                aria-pressed={destacados.includes(c)}
-                onClick={() =>
-                  setDestacados((d) => (d.includes(c) ? d.filter((x) => x !== c) : [...d, c]))
-                }
-              >
-                {c}
-              </button>
-            ))}
+    <div className="pantalla du-app hd-entrando">
+      <TituloDocumento texto={hecha ? 'Gracias por calificar' : `¿Cómo te fue con ${esp}?`} />
+      <div className="pantalla__scroll">
+        <div className="ds dss-resena">
+          <div className="dss-resena__escena" aria-hidden="true">
+            <div className="ds-escena-cabecera">
+              <EscenaArreglado alto={300} />
+            </div>
+            <p className="dss-resena__titulo">¡Quedó arreglado!</p>
           </div>
-        </fieldset>
-      ) : null}
-      <Campo
-        etiqueta="Contá algo más (opcional)"
-        opcional
-        ayuda="Sin datos personales: si escribís un teléfono o un email, lo sacamos antes de enviar."
-      >
-        {(p) => (
-          <textarea
-            {...p}
-            className="entrada"
-            maxLength={500}
-            rows={3}
-            value={comentario}
-            onChange={(e) => setComentario(e.target.value)}
-          />
-        )}
-      </Campo>
-      {error ? <Aviso tipo="error">{error}</Aviso> : null}
-    </Flujo>
+          <div className="dss-resena__hoja">
+            <span className="dss-resena__avatar">
+              <Avatar nombre={esp} tam={5} />
+            </span>
+            {hecha ? (
+              <>
+                <div className="ds-pila dss-centro">
+                  <h1 className="ds-titulo" style={{ ['--ds-tam' as string]: '1.5rem' }}>
+                    ¡Gracias por calificar!
+                  </h1>
+                  <span className="ds-fila-enlace__sub">
+                    {rubro} · {cuando(hecha.creadaEn).split(' · ')[0]}
+                  </span>
+                </div>
+                <div className="dss-centro">
+                  <EstrellasFijas valor={hecha.puntaje} />
+                </div>
+                {hecha.destacados.length ? (
+                  <div className="dss-resena__pastillas">
+                    {hecha.destacados.map((d) => (
+                      <Chip key={d} tono="tinte">
+                        {DESTACADOS_TEXTO[d]}
+                      </Chip>
+                    ))}
+                  </div>
+                ) : null}
+                {hecha.comentario ? <blockquote className="dss-cita">{hecha.comentario}</blockquote> : null}
+                <Nota icono="info">
+                  Si algo salió mal y necesitás que lo revisemos, abrí un reclamo: la reseña no lo
+                  reemplaza.
+                </Nota>
+                <Boton href="/inicio/">Volver al inicio</Boton>
+              </>
+            ) : (
+              <>
+                <div className="ds-pila dss-centro" style={{ ['--ds-gap' as string]: '0.25rem' }}>
+                  <h1 className="ds-titulo" style={{ ['--ds-tam' as string]: '1.5rem' }}>
+                    ¿Cómo te fue con {esp}?
+                  </h1>
+                  <span className="ds-fila-enlace__sub">{rubro}</span>
+                </div>
+                <Estrellas
+                  valor={puntaje}
+                  onElegir={(n) => {
+                    setPuntaje(n);
+                    setDestacados([]);
+                  }}
+                />
+                <strong className="dss-centro" style={{ color: 'var(--ds-hondo)' }}>
+                  {puntaje ? TEXTO_PUNTAJE[puntaje] : 'Tocá las estrellas para calificar'}
+                </strong>
+                {opciones.length ? (
+                  <>
+                    <Etiqueta>{puntaje >= 4 ? '¿Qué estuvo bien?' : '¿Qué pasó?'}</Etiqueta>
+                    <div className="dss-resena__pastillas" role="group" aria-label="Qué destacás">
+                      {opciones.map((d) => (
+                        <Pastilla
+                          key={d}
+                          elegida={destacados.includes(d)}
+                          onElegir={() =>
+                            setDestacados((a) => (a.includes(d) ? a.filter((x) => x !== d) : [...a, d]))
+                          }
+                        >
+                          {DESTACADOS_TEXTO[d]}
+                        </Pastilla>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
+                <label className="dss-campo">
+                  Comentario (opcional)
+                  <textarea
+                    value={comentario}
+                    maxLength={500}
+                    onChange={(e) => setComentario(e.target.value)}
+                    placeholder="Contanos cómo fue"
+                    aria-describedby="resena-privacidad"
+                  />
+                </label>
+                <p id="resena-privacidad" className="ds-fila-enlace__sub" style={{ margin: 0 }}>
+                  Se publica con tu nombre y la inicial del apellido. Sacamos teléfonos, emails y documentos.
+                </p>
+                {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
+                <Boton
+                  deshabilitado={puntaje === 0}
+                  ocupado={accion.pendiente}
+                  onClick={() => void publicar()}
+                >
+                  Publicar la reseña
+                </Boton>
+                <Enlace className="dss-enlace-texto" href={volver.href}>
+                  Ahora no
+                </Enlace>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

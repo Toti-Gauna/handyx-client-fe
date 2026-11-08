@@ -34,7 +34,7 @@ export default function Recuperar() {
         ilustracion={<Escena handy="handy-gota" ancho={93} alto={125} tono="amarillo" />}
         pie={
           <>
-            <Enlace href="/ingresar/" className="hd-boton">
+            <Enlace href="/ingresar/clave/" className="hd-boton">
               Volver a ingresar
             </Enlace>
             <BotonHx variante="fantasma" cargando={pendiente} onClick={() => void pedir()}>
@@ -67,7 +67,7 @@ export default function Recuperar() {
     <Flujo
       titulo="Recuperá tu ==contraseña=="
       sub="Escribí el email de tu cuenta y te mandamos un enlace."
-      atras={{ href: '/ingresar/', etiqueta: 'Volver a ingresar' }}
+      atras={{ href: '/ingresar/clave/', etiqueta: 'Volver a ingresar' }}
       paso={1}
       total={3}
       onSubmit={(e) => {

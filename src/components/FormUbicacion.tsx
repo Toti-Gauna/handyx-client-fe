@@ -88,12 +88,15 @@ export function FormUbicacion({
   errores = {},
   onCobertura,
   geo: externo,
+  compacto = false,
 }: {
   valor: UbicacionForm;
   onCambio: (v: UbicacionForm) => void;
   errores?: Record<string, string>;
   onCobertura?: (cubierta: boolean | null) => void;
   geo?: ReturnType<typeof useGeoPuntual>;
+  /** Alta: solo «Calle y número» a la vista; ciudad, barrio y referencia, plegados (Mar del Plata por defecto). */
+  compacto?: boolean;
 }) {
   const interno = useGeoPuntual(valor, onCambio);
   const { buscando, resultado, usar } = externo ?? interno;
@@ -108,6 +111,66 @@ export function FormUbicacion({
   const [mapa, setMapa] = useState<EstadoMapa>('cargando');
   const [cerca, setCerca] = useState<string | null>(null);
   const fuera = valor.coordenadas ? !dentroDeMdp(valor.coordenadas) : false;
+  const ciudadCampo = (
+    <>
+      <Campo etiqueta="Ciudad" error={errores.ciudad} requerido>
+        {(p) => (
+          <input
+            {...p}
+            className="entrada"
+            autoComplete="address-level2"
+            value={valor.ciudad}
+            onChange={(e) => set('ciudad', e.target.value)}
+          />
+        )}
+      </Campo>
+      {cubierta === false ? (
+        <Aviso tipo="alerta" titulo={`Todavía no llegamos a ${ciudad}`}>
+          <p>
+            Empezamos en Mar del Plata. Guardamos tu ciudad como interés, pero por ahora no podés
+            pedir servicios ahí.
+          </p>
+        </Aviso>
+      ) : null}
+    </>
+  );
+  const barrio = (
+    <Campo etiqueta="Barrio" opcional>
+      {(p) => (
+        <input
+          {...p}
+          className="entrada"
+          value={valor.barrio}
+          onChange={(e) => set('barrio', e.target.value)}
+        />
+      )}
+    </Campo>
+  );
+  const direccion = (
+    <Campo etiqueta={compacto ? 'Calle y número' : 'Dirección'} error={errores.direccion} requerido>
+      {(p) => (
+        <input
+          {...p}
+          className="entrada"
+          autoComplete="street-address"
+          value={valor.direccion}
+          onChange={(e) => set('direccion', e.target.value)}
+        />
+      )}
+    </Campo>
+  );
+  const referencia = (
+    <Campo etiqueta="Referencia" opcional ayuda="Piso, timbre, entre calles…">
+      {(p) => (
+        <input
+          {...p}
+          className="entrada"
+          value={valor.referencia}
+          onChange={(e) => set('referencia', e.target.value)}
+        />
+      )}
+    </Campo>
+  );
   return (
     <div className="form-ubicacion">
       <MapaHx
@@ -168,56 +231,26 @@ export function FormUbicacion({
         </Aviso>
       ) : null}
 
-      <Campo etiqueta="Ciudad" error={errores.ciudad} requerido>
-        {(p) => (
-          <input
-            {...p}
-            className="entrada"
-            autoComplete="address-level2"
-            value={valor.ciudad}
-            onChange={(e) => set('ciudad', e.target.value)}
-          />
-        )}
-      </Campo>
-      {cubierta === false ? (
-        <Aviso tipo="alerta" titulo={`Todavía no llegamos a ${ciudad}`}>
-          <p>
-            Empezamos en Mar del Plata. Guardamos tu ciudad como interés, pero por ahora no podés
-            pedir servicios ahí.
-          </p>
-        </Aviso>
-      ) : null}
-      <Campo etiqueta="Barrio" opcional>
-        {(p) => (
-          <input
-            {...p}
-            className="entrada"
-            value={valor.barrio}
-            onChange={(e) => set('barrio', e.target.value)}
-          />
-        )}
-      </Campo>
-      <Campo etiqueta="Dirección" error={errores.direccion} requerido>
-        {(p) => (
-          <input
-            {...p}
-            className="entrada"
-            autoComplete="street-address"
-            value={valor.direccion}
-            onChange={(e) => set('direccion', e.target.value)}
-          />
-        )}
-      </Campo>
-      <Campo etiqueta="Referencia" opcional ayuda="Piso, timbre, entre calles…">
-        {(p) => (
-          <input
-            {...p}
-            className="entrada"
-            value={valor.referencia}
-            onChange={(e) => set('referencia', e.target.value)}
-          />
-        )}
-      </Campo>
+      {compacto ? (
+        <>
+          {direccion}
+          <details className="dsa-textos" open={errores.ciudad ? true : undefined}>
+            <summary>Otra ciudad, barrio o referencia</summary>
+            <div className="form-ubicacion">
+              {ciudadCampo}
+              {barrio}
+              {referencia}
+            </div>
+          </details>
+        </>
+      ) : (
+        <>
+          {ciudadCampo}
+          {barrio}
+          {direccion}
+          {referencia}
+        </>
+      )}
     </div>
   );
 }

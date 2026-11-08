@@ -1,0 +1,486 @@
+/* Seguimiento, cierre y obras (Fase 7). Piezas de src/ui/seguimiento.tsx sobre los tokens de ds.css. Todo en rem. */
+
+/* El pie fijo del sistema dentro del pie de las pantallas: sin doble borde ni doble relleno. */
+.du-pie > .ds-fijo {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* ── Atajos grises (Mensaje · Ayuda · Acuerdo) ────────────────────────────────────────────────────────── */
+.dss-atajos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.dss-atajo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-height: 4.5rem;
+  border: 0;
+  border-radius: 1.125rem;
+  background: var(--ds-mosaico);
+  box-shadow: 0 4px 0 var(--ds-mosaico-base);
+  color: var(--ds-tinta);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+.dss-atajo svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+/* ── Aviso amarillo que lleva a decidir (adicional, repuesto) ─────────────────────────────────────────── */
+.dss-pedido {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 4.5rem;
+  padding: 0.875rem;
+  border-radius: 1.375rem;
+  background: var(--ds-amarillo);
+  box-shadow: 0 4px 0 var(--ds-amarillo-base);
+  color: var(--ds-tinta);
+  text-decoration: none;
+}
+.dss-pedido strong {
+  font-size: 1rem;
+}
+.dss-pedido small {
+  font-size: 0.875rem;
+}
+
+/* ── Selector de dos o cuatro vistas (enlaces o botones) ──────────────────────────────────────────────── */
+.dss-seg {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: var(--ds-mosaico);
+}
+.dss-seg > * {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ds-tinta);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+}
+.dss-seg > [aria-current='page'],
+.dss-seg > [aria-pressed='true'] {
+  background: var(--ds-c-fff);
+  color: var(--ds-hondo);
+  font-weight: 800;
+  box-shadow: var(--ds-sombra-1);
+}
+
+/* ── Antes y después ──────────────────────────────────────────────────────────────────────────────────── */
+.dss-comparador {
+  --dss-pos: 50%;
+  position: relative;
+  aspect-ratio: 3 / 4;
+  max-height: 60vh;
+  width: 100%;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: var(--ds-tinte);
+}
+.dss-comparador img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dss-comparador__antes {
+  clip-path: inset(0 calc(100% - var(--dss-pos)) 0 0);
+}
+.dss-comparador__linea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--dss-pos) - 2px);
+  width: 4px;
+  background: var(--ds-c-fff);
+}
+.dss-comparador__asa {
+  position: absolute;
+  top: 50%;
+  left: var(--dss-pos);
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: -1.75rem 0 0 -1.75rem;
+  border-radius: 50%;
+  background: var(--ds-c-fff);
+  color: var(--ds-azul);
+  box-shadow: var(--ds-sombra);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dss-comparador__asa svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.dss-comparador__rango {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+.dss-comparador__rango:focus-visible ~ .dss-comparador__asa {
+  outline: 4px solid var(--ds-amarillo);
+  outline-offset: 2px;
+}
+.dss-comparador__chip {
+  position: absolute;
+  top: 0.75rem;
+}
+.dss-lado {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+}
+.dss-lado figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.dss-lado img,
+.dss-lado__vacia {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 1.125rem;
+  background: var(--ds-tinte);
+}
+.dss-lado__vacia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--ds-suave);
+}
+
+/* ── Avance con foto ──────────────────────────────────────────────────────────────────────────────────── */
+.dss-foto-avance {
+  width: 6.5rem;
+  height: 6rem;
+  flex: none;
+  object-fit: cover;
+  border-radius: 1rem;
+  background: var(--ds-tinte);
+}
+
+/* ── Totales y datos de plata ─────────────────────────────────────────────────────────────────────────── */
+.dss-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+}
+.dss-total--fuerte {
+  padding-top: 0.625rem;
+  border-top: 1px solid var(--ds-borde);
+}
+.ds-tarjeta--azul .dss-total--fuerte,
+.ds-tarjeta--noche .dss-total--fuerte {
+  border-top-color: rgba(255, 255, 255, 0.22);
+}
+.dss-claro {
+  color: var(--ds-c-dce7f7);
+}
+.dss-cita {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: var(--ds-gris);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+.dss-pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0.875rem;
+  border-radius: 1.125rem;
+  background: var(--ds-gris);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+.dss-pasos li {
+  display: flex;
+  gap: 0.625rem;
+  align-items: flex-start;
+}
+.dss-pasos b {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Obra: resumen, indicadores y filas ───────────────────────────────────────────────────────────────── */
+.dss-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.dss-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 1rem;
+  background: var(--ds-mosaico);
+}
+.dss-kpi small {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--ds-suave);
+}
+.dss-kpi strong {
+  font-family: var(--ds-titulo);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+.dss-anillo {
+  flex: none;
+}
+.dss-fila-etapa {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 4rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 1.125rem;
+  background: var(--ds-c-fff);
+  border: 1px solid var(--ds-borde);
+  color: var(--ds-tinta);
+  text-decoration: none;
+}
+.dss-fila-etapa[data-actual] {
+  background: var(--ds-c-fbfbd2);
+  border-color: var(--ds-amarillo);
+}
+.dss-fila-etapa__n {
+  flex: none;
+  width: 2.5rem;
+  height: 2.75rem;
+  border-radius: 0.875rem;
+  background: var(--ds-mosaico);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-size: 1.125rem;
+}
+.dss-fila-etapa[data-actual] .dss-fila-etapa__n {
+  background: var(--ds-azul);
+  color: var(--ds-c-fff);
+}
+.dss-barra-gasto {
+  display: flex;
+  height: 1rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--ds-mosaico);
+}
+.dss-barra-gasto > span {
+  display: block;
+  height: 100%;
+}
+.dss-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1rem;
+  font-size: 0.875rem;
+}
+.dss-leyenda i {
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.625rem;
+  margin-right: 0.375rem;
+  border-radius: 3px;
+}
+.dss-cambio {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.dss-cambio > span {
+  flex: 1;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  background: var(--ds-mosaico);
+  text-align: center;
+}
+.dss-cambio > span:last-child {
+  background: var(--ds-tinte);
+  color: var(--ds-hondo);
+}
+
+/* ── Seguimiento con mapa ─────────────────────────────────────────────────────────────────────────────── */
+.dss-mapa-zona {
+  position: relative;
+  flex: 0 0 38%;
+  min-height: 12rem;
+  background: var(--ds-tinte);
+}
+.dss-mapa-zona > :first-child {
+  width: 100%;
+  height: 100%;
+}
+.dss-mapa-zona .ds-cuadro {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
+  background: var(--ds-c-fff);
+  color: var(--ds-azul);
+  border: 1px solid var(--ds-borde);
+  box-shadow: var(--ds-sombra-1);
+}
+.dss-hoja-mapa {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-top: -1.5rem;
+  position: relative;
+  border-radius: 1.75rem 1.75rem 0 0;
+  background: var(--ds-c-fff);
+  box-shadow: 0 -10px 30px -18px rgba(14, 29, 54, 0.5);
+}
+.dss-codigo-llegada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0;
+  text-align: center;
+}
+
+/* ── Reseña: hoja que sube sobre «¡Quedó arreglado!» ──────────────────────────────────────────────────── */
+.dss-resena {
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ds-noche);
+}
+.dss-resena__escena {
+  position: relative;
+  filter: brightness(0.72);
+}
+.dss-resena__titulo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5.5rem;
+  margin: 0;
+  text-align: center;
+  font-family: var(--ds-titulo);
+  font-weight: 900;
+  font-size: 1.75rem;
+  color: var(--ds-c-fff);
+}
+.dss-resena__hoja {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  margin-top: -4rem;
+  padding: 3rem 1rem 1.5rem;
+  border-radius: 1.75rem 1.75rem 0 0;
+  background: var(--ds-c-fff);
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  box-shadow: 0 -14px 30px -16px rgba(14, 29, 54, 0.6);
+}
+.dss-resena__avatar {
+  position: absolute;
+  top: -2.5rem;
+  left: 50%;
+  margin-left: -2.5rem;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 5px var(--ds-c-fff),
+    0 12px 24px -8px rgba(14, 29, 54, 0.5);
+}
+.dss-resena__pastillas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.dss-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+.dss-campo textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.875rem;
+  border: 1.5px solid var(--ds-borde);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--ds-tinta);
+  resize: vertical;
+}
+.dss-centro {
+  align-self: center;
+  text-align: center;
+}
+.dss-enlace-texto {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--ds-azul);
+  text-decoration: none;
+  cursor: pointer;
+}

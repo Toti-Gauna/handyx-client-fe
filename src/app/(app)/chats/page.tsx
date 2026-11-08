@@ -1,114 +1,113 @@
 'use client';
 
-import Image from 'next/image';
-import { AvatarHx, Pantalla, entra } from '@/components/hx';
-import { Icono } from '@/components/Icono';
-import { Enlace, ruta } from '@/components/nav';
+import { useMemo, useState } from 'react';
+import { ruta } from '@/components/nav';
+import { useAhora } from '@/components/SesionProvider';
 import { TituloDocumento } from '@/components/TituloDocumento';
-import { EstadoConsulta } from '@/components/ui';
+import { Cargando, ErrorEstado } from '@/components/ui';
 import { useConsulta } from '@/data/hooks';
 import { RUBROS_INFO } from '@/domain/etiquetas';
-import { cuando } from '@/domain/fechas';
+import { diaMes, horaDeInstante } from '@/domain/fechas';
+import { Avatar, Nota, Titulo } from '@/ui';
+import {
+  AvatarAsistente,
+  CampoBuscar,
+  FilaConversacion,
+  PantallaM,
+  coincide,
+  etiquetaDia,
+} from '@/ui/mensajes';
 
 /**
- * Mensajes (rediseño 3.7, como u-mensajes): las conversaciones con especialistas (las que tienen mensajes sin leer,
- * marcadas), HandIA para armar un pedido y el soporte del equipo de Handy.
+ * Mensajes (lienzo M-Mensajes): las conversaciones con especialistas, HandIA para armar un pedido y el soporte.
+ * El contrato no trae el último mensaje: la línea de abajo dice en qué momento está la conversación.
  */
 export default function Chats() {
   const lista = useConsulta('conversaciones', { consulta: { limite: 50 } }, { cada: 5_000 });
+  const ahora = useAhora(60_000);
+  const [buscar, setBuscar] = useState('');
+  const filas = useMemo(
+    () =>
+      (lista.datos?.items ?? []).filter((c) =>
+        coincide(
+          `${c.especialista.nombrePublico} ${c.especialista.rubros.map((r) => RUBROS_INFO[r].nombre).join(' ')}`,
+          buscar,
+        ),
+      ),
+    [lista.datos, buscar],
+  );
+  const hora = (i: string | null) =>
+    !i ? undefined : etiquetaDia(i, ahora) === 'Hoy' ? horaDeInstante(i) : diaMes(i);
+  const mostrarFijas = coincide('HandIA tu asistente soporte de Handyx equipo', buscar);
+
   return (
-    <Pantalla
+    <PantallaM
       arriba={
-        <div className="du-actividad__cabeza">
+        <header className="ds ds-pila" style={{ padding: '1.25rem 1rem 0.5rem' }}>
           <TituloDocumento texto="Mensajes" />
-          <h1 className="hd-titulo hd-titulo--grande">Mensajes</h1>
-        </div>
-      }
-      clase="du-mensajes-hx"
-    >
-      <div className="du-cuerpo">
-        <EstadoConsulta consulta={lista}>
-          {(d) => (
-            <ul className="hd-tarjeta hd-tarjeta--compacta hd-lista du-chats-hx" {...entra(1)}>
-              {d.items.map((c, i) => (
-                <li key={c.id}>
-                  <Enlace
-                    className="hd-fila du-chat-fila"
-                    href={ruta('/chats/conversacion/', { id: c.id })}
-                  >
-                    <AvatarHx
-                      nombre={c.especialista.nombrePublico}
-                      verificado={c.especialista.verificaciones.length > 0}
-                      tono={i}
-                    />
-                    <span className="hd-fila__texto">
-                      <strong>{c.especialista.nombrePublico}</strong>
-                      <small>
-                        {c.especialista.rubros.map((r) => RUBROS_INFO[r].nombre).join(' · ')} ·{' '}
-                        {c.trabajoId ? 'Trabajo' : 'Antes de contratar'}
-                        {c.ultimoMensajeEn ? ` · ${cuando(c.ultimoMensajeEn)}` : ''}
-                      </small>
-                    </span>
-                    <span className="hd-fila__fin">
-                      {c.noLeidos ? (
-                        <span className="du-badge">
-                          {c.noLeidos}
-                          <span className="sr-only"> sin leer</span>
-                        </span>
-                      ) : null}
-                      <Icono nombre="derecha" />
-                    </span>
-                  </Enlace>
-                </li>
-              ))}
-              <li>
-                <Enlace className="hd-fila du-chat-fila" href="/handia/">
-                  <span className="du-ia-avatar" aria-hidden="true">
-                    <Image src="/img/handy-lamparita.webp" alt="" width={202} height={346} />
-                  </span>
-                  <span className="hd-fila__texto">
-                    <strong>HandIA</strong>
-                    <small>Te ayuda a armar un pedido</small>
-                  </span>
-                  <span className="hd-fila__fin">
-                    <Icono nombre="derecha" />
-                  </span>
-                </Enlace>
-              </li>
-              <li>
-                <Enlace className="hd-fila du-chat-fila" href="/soporte/">
-                  <span className="hd-avatar du-avatar-icono" aria-hidden="true">
-                    <Icono nombre="chat" />
-                  </span>
-                  <span className="hd-fila__texto">
-                    <strong>Soporte de Handy</strong>
-                    <small>Escribile al equipo</small>
-                  </span>
-                  <span className="hd-fila__fin">
-                    <Icono nombre="derecha" />
-                  </span>
-                </Enlace>
-              </li>
-            </ul>
-          )}
-        </EstadoConsulta>
-        <div className="hd-tarjeta hd-tarjeta--gris du-mensajes__nota" {...entra(2)}>
-          <Image
-            className="hd-handy du-mensajes__handy"
-            src="/img/handy-lamparita.webp"
-            alt=""
-            width={202}
-            height={346}
+          <Titulo texto="==Mensajes==" tam={2} />
+          <CampoBuscar
+            valor={buscar}
+            onCambio={setBuscar}
+            etiqueta="Buscar en mensajes"
+            placeholder="Buscar en mensajes"
           />
-          <p>
-            <Icono nombre="escudo" />
-            <span>
-              Las conversaciones con especialistas se abren cuando te mandan una propuesta: podés
-              preguntar lo que necesites antes de decidir.
-            </span>
+        </header>
+      }
+    >
+      <div className="ds-cuerpo ds-cuerpo--raiz">
+        {lista.estado === 'error' && lista.error ? (
+          <ErrorEstado error={lista.error} onReintentar={lista.recargar} />
+        ) : lista.estado === 'cargando' ? (
+          <Cargando />
+        ) : (
+          <ul className="ds-m-lista">
+            {mostrarFijas ? (
+              <FilaConversacion
+                href="/handia/"
+                titulo="HandIA"
+                rubro="Tu asistente"
+                previa="Te ayuda a armar un pedido"
+                fijada
+                avatar={<AvatarAsistente />}
+              />
+            ) : null}
+            {filas.map((c) => {
+              const e = c.especialista;
+              return (
+                <FilaConversacion
+                  key={c.id}
+                  href={ruta('/chats/conversacion/', { id: c.id })}
+                  titulo={e.nombrePublico}
+                  rubro={e.rubros.map((r) => RUBROS_INFO[r].nombre).join(' · ')}
+                  previa={c.trabajoId ? 'Trabajo contratado' : 'Antes de contratar'}
+                  {...(hora(c.ultimoMensajeEn) ? { hora: hora(c.ultimoMensajeEn)! } : {})}
+                  sinLeer={c.noLeidos}
+                  avatar={<Avatar nombre={e.nombrePublico} tam={3} />}
+                />
+              );
+            })}
+            {mostrarFijas ? (
+              <FilaConversacion
+                href="/soporte/"
+                titulo="Soporte de Handyx"
+                rubro="Personas del equipo"
+                previa="Escribile al equipo"
+                avatar={<Avatar nombre="Handyx" tam={3} tono={5} />}
+              />
+            ) : null}
+          </ul>
+        )}
+        {lista.estado === 'ok' && !filas.length && !mostrarFijas ? (
+          <p className="ds-texto" role="status">
+            No encontramos mensajes con «{buscar}».
           </p>
-        </div>
+        ) : null}
+        <Nota icono="candado" tono="gris">
+          Los chats se abren cuando hay un pedido o una obra. Nadie te puede escribir por fuera de
+          eso.
+        </Nota>
       </div>
-    </Pantalla>
+    </PantallaM>
   );
 }
