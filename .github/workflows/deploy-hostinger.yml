@@ -50,6 +50,20 @@ jobs:
           done
           echo "$(find out -type f | wc -l) archivos listos para subir"
 
+      - name: Qué secretos llegan al job (solo si están cargados o no; nunca el valor)
+        env:
+          S_SSH_HOST: ${{ secrets.HOSTINGER_SSH_HOST }}
+          S_SSH_USER: ${{ secrets.HOSTINGER_SSH_USER }}
+          S_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          S_SSH_KNOWN_HOSTS: ${{ secrets.HOSTINGER_SSH_KNOWN_HOSTS }}
+          S_FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
+          S_FTP_USER: ${{ secrets.HOSTINGER_FTP_USER }}
+          S_FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+        run: |
+          for n in S_SSH_HOST S_SSH_USER S_SSH_KEY S_SSH_KNOWN_HOSTS S_FTP_HOST S_FTP_USER S_FTP_PASSWORD; do
+            if [ -n "${!n}" ]; then echo "$n: cargado"; else echo "$n: VACÍO o inexistente"; fi
+          done
+
       - name: Avisar si faltan las credenciales
         if: env.HAY_SSH != 'true' && env.HAY_FTP != 'true'
         run: echo "::warning::Faltan los secretos de Hostinger (SSH o FTP); se compiló pero no se subió nada. Ver docs/deploy-hostinger.md."
