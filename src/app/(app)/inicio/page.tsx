@@ -97,7 +97,7 @@ export default function Inicio() {
         </Hoja>
 
         <div className="dsi-inicio__titulo">
-          <Titulo texto="¿Qué necesitás ==hoy==?" tam={1.6875} />
+          <Titulo texto="¿Qué necesitás ==hoy==?" />
         </div>
 
         {incompleto ? (

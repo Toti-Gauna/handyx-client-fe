@@ -28,9 +28,10 @@
   gap: 0.75rem;
   padding-top: 0.25rem;
 }
-.dsi-inicio__titulo {
+.dsi-inicio__titulo .ds-titulo {
   white-space: nowrap;
-  font-size: min(1.6875rem, 7.2vw);
+  /* En una línea: el título mide unas 13,4 veces su tamaño de letra. */
+  font-size: min(1.6875rem, calc((min(100vw, 480px) - 2rem) / 13.6));
 }
 .dsi-inicio__quiero {
   margin: 0.375rem 0 0;
