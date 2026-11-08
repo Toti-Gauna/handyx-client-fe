@@ -384,7 +384,7 @@ export function Pantallas() {
           titulo="Ayuda"
           nota="Quien entra a Ayuda queriendo pedir un arreglo encuentra el camino."
         >
-          <PantallaApp titulo="Centro de ayuda" activa="cuenta">
+          <PantallaApp titulo="Centro de ayuda" activa="inicio">
             <span className="hxs-buscar">
               <Icono nombre="lupa" className="hia-ico" /> Buscar en la ayuda
             </span>

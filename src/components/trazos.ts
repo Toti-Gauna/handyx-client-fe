@@ -122,6 +122,52 @@ export const TRAZOS = {
     '<path d="M3 3l18 18"/><path d="M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5.2-2.8M14.5 10.3A10 10 0 0 1 19 13M2 9.5a15 15 0 0 1 4.3-2.7M10.7 5.1A15 15 0 0 1 22 9.5"/><path d="M12 20h.01"/>',
   vibrar:
     '<rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 9v6M20 9v6M2 11v2M22 11v2"/>',
+  // Lienzo de la app del usuario (design/usuario): Mi hogar, herramientas, camino, chat y pagos
+  hogar:
+    '<path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><path d="M12 15.5c-1.6-1.3-3-2.2-3-3.6a1.6 1.6 0 0 1 3-.8 1.6 1.6 0 0 1 3 .8c0 1.4-1.4 2.3-3 3.6Z"/>',
+  regla: '<rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 7v4M10 7v3M14 7v4M18 7v3"/>',
+  cubo: '<path d="M12 2 21 7v10l-9 5-9-5V7l9-5Z"/><path d="M3 7l9 5 9-5M12 12v10"/>',
+  ar: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M12 7l5 3v5l-5 3-5-3v-5l5-3Z"/>',
+  nivel:
+    '<rect x="2" y="8" width="20" height="8" rx="2"/><rect x="9" y="10" width="6" height="4" rx="2"/><path d="M12 10v4"/>',
+  linterna: '<path d="M8 2h8v5l-2 3v12h-4V10L8 7V2Z"/><path d="M8 7h8M12 14v2"/>',
+  trofeo:
+    '<path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4"/>',
+  compartir:
+    '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/>',
+  personas:
+    '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.6c2.6.2 4.6 1.9 5.4 5.4"/>',
+  ducha:
+    '<path d="M4 20V8a4 4 0 0 1 8 0"/><path d="M9 8h6"/><path d="M10 12v1M13 12v1M16 12v1M11.5 15v1M14.5 15v1"/>',
+  sofa: '<path d="M4 11V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3"/><path d="M2 12a2 2 0 0 1 4 0v2h12v-2a2 2 0 0 1 4 0v5H2v-5Z"/><path d="M5 17v2M19 17v2"/>',
+  cama: '<path d="M3 18V7M21 18v-5a3 3 0 0 0-3-3h-8v6"/><path d="M3 15h18"/><circle cx="6.5" cy="11" r="2"/>',
+  cocina:
+    '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16"/><rect x="8" y="12" width="8" height="6" rx="1"/>',
+  lavarropas:
+    '<rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M7 5.5h3"/>',
+  termometro: '<path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0Z"/>',
+  copiar:
+    '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+  reenviar: '<path d="m14 5 7 7-7 7"/><path d="M21 12H9a6 6 0 0 0-6 6v1"/>',
+  medalla: '<circle cx="12" cy="15" r="6"/><path d="M8.5 9.5 6 2h4l2 5 2-5h4l-2.5 7.5"/>',
+  regalo:
+    '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18M12 9v12"/><path d="M12 9c-2-4-6-4-6-1.5S10 9 12 9Zm0 0c2-4 6-4 6-1.5S14 9 12 9Z"/>',
+  pulgar:
+    '<path d="M7 11v10H4V11h3Z"/><path d="M7 11l4-8a2 2 0 0 1 2.7 2.3L13 9h5.5a2 2 0 0 1 2 2.4l-1.4 7A2 2 0 0 1 17.1 20H7"/>',
+  documento: '<path d="M6 2h9l5 5v15H6V2Z"/><path d="M14 2v6h6M9 13h8M9 17h6"/>',
+  grafico: '<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+  columnas:
+    '<rect x="3" y="4" width="8" height="16" rx="2"/><rect x="13" y="4" width="8" height="16" rx="2"/>',
+  deslizar: '<path d="M12 3v18"/><path d="m7 8-4 4 4 4M17 8l4 4-4 4"/>',
+  obra: '<path d="M3 21h18"/><path d="M5 21V11l7-5 7 5v10"/><path d="M10 21v-6h4v6"/>',
+  tornillo:
+    '<path d="M9 3h6l-1 4h-4L9 3Z"/><path d="M12 7v13M9.5 10l5 1.5M9.5 13l5 1.5M9.5 16l5 1.5"/>',
+  billete:
+    '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+  efectivo:
+    '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9v6M19 9v6"/>',
+  filtro: '<path d="M3 5h18l-7 8v6l-4 2v-8L3 5Z"/>',
+  onda2: '<path d="M3 12h2M7 8v8M11 5v14M15 8v8M19 11v2"/>',
 } as const satisfies Record<string, string>;
 
 export type NombreIcono = keyof typeof TRAZOS;

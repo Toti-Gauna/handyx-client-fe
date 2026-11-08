@@ -211,3 +211,42 @@
   --hia-burbuja-gris: #eef0f4;
   --hia-composer-sombra: 0 6px 24px -10px rgb(14 29 54 / 0.28), 0 1px 3px rgb(14 29 54 / 0.08);
 }
+
+/* Sistema de diseño de la app del usuario (src/styles/ds.css, src/ui/). */
+:root {
+  --ds-c-000: #000;
+  --ds-c-0c2550: #0c2550;
+  --ds-c-0e1a30: #0e1a30;
+  --ds-c-0f2c5c: #0f2c5c;
+  --ds-c-17468e: #17468e;
+  --ds-c-3a78d0: #3a78d0;
+  --ds-c-7fe0a8: #7fe0a8;
+  --ds-c-aeb6c4: #aeb6c4;
+  --ds-c-c7cdd8: #c7cdd8;
+  --ds-c-c9d3e6: #c9d3e6;
+  --ds-c-d9dee7: #d9dee7;
+  --ds-c-dce7f7: #dce7f7;
+  --ds-c-fbfbd2: #fbfbd2;
+  --ds-c-ffcf5a: #ffcf5a;
+  --ds-c-fff: #fff;
+  --ds-azul: var(--color-azul);
+  --ds-hondo: #143e7e;
+  --ds-tinte: #e9eff9;
+  --ds-amarillo: var(--color-amarillo);
+  --ds-amarillo-base: #c9c85a;
+  --ds-noche: var(--color-noche);
+  --ds-tinta: var(--color-tinta);
+  --ds-texto: var(--color-texto);
+  --ds-suave: var(--color-texto-suave);
+  --ds-mosaico: var(--color-mosaico);
+  --ds-mosaico-base: #d3d6dc;
+  --ds-borde: #e3e7ee;
+  --ds-gris: #f4f5f7;
+  --ds-exito: #137140;
+  --ds-exito-fondo: #e3f4ea;
+  --ds-error: #a8261c;
+  --ds-error-fondo: #fce8e6;
+  --ds-sombra: 0 2px 6px rgba(14, 29, 54, 0.06), 0 18px 34px -24px rgba(14, 29, 54, 0.45);
+  --ds-sombra-1: 0 1px 2px rgba(14, 29, 54, 0.08), 0 4px 12px -4px rgba(14, 29, 54, 0.12);
+  --ds-titulo: 'Archivo Variable', 'Archivo', 'Arial Black', system-ui, sans-serif;
+}

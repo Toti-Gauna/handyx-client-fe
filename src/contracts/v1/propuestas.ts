@@ -22,6 +22,30 @@ export const TIPOS_PROPUESTA = ['cotizacion', 'cambio_acuerdo', 'adicional'] as 
 
 export const Horario = z.object({ inicio: Instante, fin: Instante.nullable() }).strict();
 
+/**
+ * draft.4 · Lo que el usuario necesita para decidir antes de contactar. `null` cuando el especialista no lo cargó
+ * (propuestas viejas): el cliente muestra solo lo que haya. `oferta: 'visita'` = consulta para ver antes de cotizar.
+ */
+export const DetallePropuesta = z
+  .object({
+    oferta: z.enum(['trabajo', 'visita']),
+    materiales: z
+      .object({ incluidos: z.boolean(), descripcion: Texto(200).nullable() })
+      .strict()
+      .nullable(),
+    equipo: z.object({ personas: z.int().min(1).max(20), descripcion: Texto(120).nullable() }).strict(),
+    duracion: z
+      .object({ minimo: z.int().min(1).max(365), maximo: z.int().min(1).max(365), unidad: z.enum(['horas', 'dias']) })
+      .strict()
+      .nullable(),
+    garantiaDias: z.int().min(0).max(3650).nullable(),
+    visitaPrevia: z.boolean(),
+    incluye: z.array(Texto(120)).max(12),
+    noIncluye: z.array(Texto(120)).max(12),
+  })
+  .strict();
+export type DetallePropuesta = z.infer<typeof DetallePropuesta>;
+
 export const Propuesta = z
   .object({
     id: Id,
@@ -35,6 +59,7 @@ export const Propuesta = z
     monto: Importe,
     comisionHandy: ComisionHandy,
     alcance: Texto(1000),
+    detalle: DetallePropuesta.nullable(),
     /** `null` en urgencias "ahora": el horario lo declara el especialista al aceptar el pedido. */
     horario: Horario.nullable(),
     venceEn: Instante,

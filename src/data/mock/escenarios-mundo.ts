@@ -1,5 +1,6 @@
 // Mundos de los 18 escenarios obligatorios (src/mapa/escenarios.ts). Cada uno arma un estado reproducible,
 // ficticio y sin backend. `?escenario=<id>` los activa en la vista de prueba.
+import { poblarHogar } from './draft4.ts';
 import type { Rubro } from '../../contracts/v1/pedidos.ts';
 import { prueba } from '../prueba.ts';
 import {
@@ -216,6 +217,7 @@ export function poblarBase(m: Mundo): void {
     haceMs: 3 * HORA,
   });
   notificar(m, 'propuesta_aceptada', { tipo: 'trabajo', id: proximo.id });
+  poblarHogar(m);
   m.contenido = 'base';
 }
 

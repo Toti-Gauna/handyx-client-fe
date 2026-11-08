@@ -14,6 +14,7 @@ import '@/styles/kit/ajustes.css';
 import '@/styles/splash.css';
 // Lenguaje visual de HandIA (fase R · R3/R8): clases .hia-* para los componentes de components/handia/.
 import '@/styles/handia.css';
+import '@/styles/ds.css';
 
 export const metadata: Metadata = {
   title: { default: 'Handyx', template: '%s · Handyx' },

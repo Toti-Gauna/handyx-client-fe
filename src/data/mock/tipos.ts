@@ -20,6 +20,7 @@ import type {
   Etapa,
 } from '../../contracts/v1/index.ts';
 import type { ViajeSimulado } from './viaje.ts';
+import type { EstadoDraft4 } from './draft4.ts';
 
 export type Conv = z.output<typeof Conversacion>;
 export type Evento = z.output<typeof EventoTrabajo>;
@@ -102,4 +103,6 @@ export interface Mundo {
   /** La sesión venció y todavía no se reingresó: todo responde `sesion_vencida` (no `no_autenticado`). */
   sesionVencida: boolean;
   contador: number;
+  /** Contrato draft.4: Mi hogar, compartidos, recordatorios, reseñas, acceso por código (src/data/mock/draft4.ts). */
+  d4: EstadoDraft4;
 }

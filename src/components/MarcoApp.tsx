@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
 import { FocoAlNavegar } from './FocoAlNavegar';
-import { NavApp } from './hx';
+import { BarraPestanas } from '@/ui/organismos';
 import { SesionProvider } from './SesionProvider';
 import { Cargando } from './ui';
 
@@ -38,7 +38,7 @@ export function MarcoApp({ children, barra }: { children: React.ReactNode; barra
           <main id="contenido" className="hx-cuerpo">
             <Suspense fallback={<Cargando />}>{children}</Suspense>
           </main>
-          {conBarra ? <NavApp /> : null}
+          {conBarra ? <BarraPestanas /> : null}
         </div>
       </SesionProvider>
     </div>

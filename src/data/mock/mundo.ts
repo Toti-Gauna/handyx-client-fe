@@ -2,6 +2,7 @@
 // Todo es ficticio: ids `de000000-…`, nombres inventados, direcciones inexistentes, emails `@example.test`.
 import type { EspecialistaResumen, Mundo, Notif } from './tipos.ts';
 import { AHORA_DEMO, POLITICA_DEMO } from './fixtures.ts';
+import { estadoDraft4Vacio } from './draft4.ts';
 import { idDemo } from './fixtures.ts';
 
 export const MIN = 60_000;
@@ -127,6 +128,7 @@ export function crearMundo(
     llamadasConSesion: 0,
     sesionVencida: false,
     contador: 0,
+    d4: estadoDraft4Vacio(),
   };
 }
 

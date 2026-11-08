@@ -36,6 +36,7 @@ import { locales } from '../media.ts';
 import { TOKEN_RECUPERACION_PRUEBA as TOKEN_PRUEBA } from '../prueba.ts';
 import { poblarBase } from './escenarios-mundo.ts';
 import { viajeDe } from './viaje.ts';
+import { estadoDraft4Vacio, manejadoresDraft4 } from './draft4.ts';
 import {
   HORA,
   MIN,
@@ -213,14 +214,79 @@ function refsDe(m: Mundo, ids: readonly string[], campo: string): Media[] {
 
 const ACTIVOS = ['buscando', 'con_propuestas', 'sin_respuesta', 'busqueda_manual'];
 
+/** Acceso por código (draft.4): si la cuenta existe inicia sesión; si no, la crea (alta directa). */
+function entrarComo(
+  m: Mundo,
+  email: string,
+  aceptaciones: { documento: string; version: string }[] | undefined,
+) {
+  const cuenta = m.cuentas.find((x) => x.email === email);
+  if (cuenta) {
+    m.cuentaId = cuenta.id;
+    m.sesionVencida = false;
+    m.llamadasConSesion = 0;
+    if (cuenta.id === m.cuentas[0]?.id && m.contenido === 'vacio') poblarBase(m);
+    return sesionDe(m);
+  }
+  const docs = new Set((aceptaciones ?? []).map((a) => a.documento));
+  if (!docs.has('terminos') || !docs.has('privacidad'))
+    throw falla(
+      m,
+      'validacion',
+      'Para crear tu cuenta, aceptá los términos y la política de privacidad.',
+      {
+        campos: [{ campo: 'aceptaciones', motivo: 'requerido' }],
+      },
+    );
+  return MANEJADORES.registro(m, {
+    p: {},
+    q: {},
+    c: { email, contrasena: 'sin-contrasena-por-codigo', aceptaciones },
+  });
+}
+
 // ── Manejadores ────────────────────────────────────────────────────────────────────────────────────────
+const DRAFT4 = manejadoresDraft4({ entrarComo, trabajoPropio: (m, id) => trabajoPropio(m, id) });
+
 export const MANEJADORES: Record<EndpointId, Manejador> = {
+  ...(DRAFT4 as Record<
+    | 'accesoCodigo'
+    | 'accesoVerificar'
+    | 'accesoProveedor'
+    | 'segundaVerificacion'
+    | 'segundaVerificacionActivar'
+    | 'segundaVerificacionApagar'
+    | 'sesionesAbiertas'
+    | 'sesionesCerrarOtras'
+    | 'exportacion'
+    | 'exportacionPedir'
+    | 'resenaCrear'
+    | 'resena'
+    | 'informe'
+    | 'hogar'
+    | 'hogarEditar'
+    | 'ambienteCrear'
+    | 'ambienteEditar'
+    | 'ambienteBorrar'
+    | 'equipoCrear'
+    | 'equipoEditar'
+    | 'equipoBorrar'
+    | 'compartir'
+    | 'compartidos'
+    | 'compartidoRevocar'
+    | 'recordatorios'
+    | 'recordatorioCrear'
+    | 'recordatorioEditar'
+    | 'camino',
+    Manejador
+  >),
   version: () => ({ contrato: VERSION_CONTRATO }),
   csrf: (m) => ({ csrfToken: m.csrf }),
 
   registro: (m, r) => {
     const c = cuerpo(r, RegistroEntrada);
-    if (!m.invitaciones.has(c.codigoInvitacion))
+    // draft.4: la invitación es opcional (alta directa); si viene, se valida igual.
+    if (c.codigoInvitacion !== undefined && !m.invitaciones.has(c.codigoInvitacion))
       throw falla(m, 'validacion', 'El código de invitación no es válido o ya se usó.', {
         campos: [{ campo: 'codigoInvitacion', motivo: 'formato' }],
       });
@@ -236,7 +302,7 @@ export const MANEJADORES: Record<EndpointId, Manejador> = {
         'No pudimos crear la cuenta con esos datos. Si ya tenés una, ingresá.',
         { conflicto: 'ya_resuelta' },
       );
-    m.invitaciones.delete(c.codigoInvitacion);
+    if (c.codigoInvitacion) m.invitaciones.delete(c.codigoInvitacion);
     const id = nuevoId(m);
     m.cuentas.push({ id, email: c.email, contrasena: c.contrasena });
     m.cuentaId = id;
@@ -254,6 +320,7 @@ export const MANEJADORES: Record<EndpointId, Manejador> = {
     m.reclamos = [];
     m.notificaciones = [];
     m.baja = null;
+    m.d4 = { ...estadoDraft4Vacio(), codigos: m.d4.codigos };
     m.aceptaciones = c.aceptaciones.map((a) => ({ ...a, aceptadaEn: ahoraIso(m) }));
     return sesionDe(m);
   },

@@ -3,6 +3,7 @@
 import type { CodigoError, MotivoConflicto } from '../../contracts/v1/comunes.ts';
 import { PARAMETROS, puedeTransicionar } from '../../contracts/v1/estados.ts';
 import { ErrorCliente } from '../cliente.ts';
+import { detalleSimulado } from './draft4.ts';
 import { HORA, MIN, ahoraIso, ahoraMs, instanteBA, iso, notificar, nuevoId } from './mundo.ts';
 import type {
   AcuerdoT,
@@ -160,6 +161,13 @@ export function proponer(
     monto: { centavos: o.centavos, moneda: 'ARS' },
     comisionHandy: comision(m, o.centavos),
     alcance: o.alcance,
+    detalle: detalleSimulado(
+      Math.max(
+        0,
+        m.especialistas.findIndex((e) => e.id === esp.id),
+      ),
+      o.centavos,
+    ),
     horario: o.horario === undefined ? horarioDe(pedido) : o.horario,
     venceEn: iso(
       o.venceEn ?? ahora + (urgente ? PARAMETROS.propuestaUrgenteMinutos * MIN : 24 * HORA),

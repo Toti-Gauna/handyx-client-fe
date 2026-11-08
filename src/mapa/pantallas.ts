@@ -2,6 +2,13 @@
 // Fuente única: de acá salen las páginas, la navegación y docs/screens/mapa-inicial.md (npm run mapa).
 // `demo` = pantalla de referencia visual en Handy-landing-page-fe (/demo/); manda este mapa, no la demo.
 import type { EndpointId } from '../contracts/v1/endpoints.ts';
+import { ACCESO7 } from './fase7/acceso.ts';
+import { HERRAMIENTAS7 } from './fase7/herramientas.ts';
+import { HOGAR7 } from './fase7/hogar.ts';
+import { INICIO7 } from './fase7/inicio.ts';
+import { MENSAJES7 } from './fase7/mensajes.ts';
+import { PEDIR7 } from './fase7/pedir.ts';
+import { SEGUIMIENTO7 } from './fase7/seguimiento.ts';
 
 export type Grupo =
   | 'acceso'
@@ -15,9 +22,13 @@ export type Grupo =
   | 'soporte'
   | 'avisos'
   | 'cuenta'
-  | 'sistema';
+  | 'sistema'
+  | 'hogar'
+  | 'herramientas'
+  | 'camino'
+  | 'obras';
 
-export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3' | '3.6' | '3.7' | '3.8';
+export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3' | '3.6' | '3.7' | '3.8' | '7';
 
 export interface Pantalla {
   readonly id: string;
@@ -39,12 +50,12 @@ export interface Pantalla {
   readonly nota?: string;
 }
 
-const p = (pantalla: Omit<Pantalla, 'tipo'> & { tipo?: Pantalla['tipo'] }): Pantalla => ({
+export const p = (pantalla: Omit<Pantalla, 'tipo'> & { tipo?: Pantalla['tipo'] }): Pantalla => ({
   tipo: 'pantalla',
   ...pantalla,
 });
 
-export const PANTALLAS: readonly Pantalla[] = [
+const BASE: readonly Pantalla[] = [
   // ── Acceso (demo cerrada: sin invitación no hay alta) ───────────────────────────────────────────
   p({
     id: 'bienvenida',
@@ -942,6 +953,22 @@ export const PANTALLAS: readonly Pantalla[] = [
   }),
 ];
 
+/**
+ * Fase 7 (app completa, lienzo design/usuario): cada grupo de pantallas declara las suyas en src/mapa/fase7/ y
+ * puede reemplazar una pantalla base con el mismo id (misma ruta, nueva versión).
+ */
+const FASE7: readonly Pantalla[] = [
+  ...ACCESO7,
+  ...INICIO7,
+  ...PEDIR7,
+  ...SEGUIMIENTO7,
+  ...MENSAJES7,
+  ...HOGAR7,
+  ...HERRAMIENTAS7,
+];
+const reemplazadas = new Set(FASE7.map((x) => x.id));
+export const PANTALLAS: readonly Pantalla[] = [...BASE.filter((x) => !reemplazadas.has(x.id)), ...FASE7];
+
 export const pantalla = (id: string): Pantalla => {
   const encontrada = PANTALLAS.find((item) => item.id === id);
   if (!encontrada) throw new Error(`Pantalla desconocida: ${id}`);
@@ -949,10 +976,12 @@ export const pantalla = (id: string): Pantalla => {
 };
 
 /** Barra inferior de la app (como la de la demo de la landing). */
+// Fase 7: Inicio · Actividad · HandIA (círculo del medio) · Mensajes · Mi hogar. Cuenta, desde el avatar del Inicio.
+// La barra la dibuja src/ui/organismos.tsx (BarraPestanas); esta lista la usa la prueba del mapa.
 export const NAVEGACION = [
   { id: 'inicio', etiqueta: 'Inicio', icono: 'casa' },
-  // "Actividad" junta pedidos, trabajos y agenda (rediseño, docs/rediseno.md §3); hasta el lote 3.7 abre Mis pedidos.
   { id: 'pedidos', etiqueta: 'Actividad', icono: 'calendario' },
+  { id: 'handia', etiqueta: 'HandIA', icono: 'handia' },
   { id: 'chats', etiqueta: 'Mensajes', icono: 'chat' },
-  { id: 'cuenta', etiqueta: 'Cuenta', icono: 'usuario' },
+  { id: 'hogar', etiqueta: 'Mi hogar', icono: 'hogar' },
 ] as const;
