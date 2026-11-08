@@ -1,9 +1,6 @@
 // Pantallas de la Fase 7 · herramientas (lienzo design/usuario). Una entrada por pantalla nueva o rediseñada;
 // mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-import type { Pantalla } from '../pantallas.ts';
-
-// Igual que `p` de pantallas.ts, que no se importa acá para no armar un ciclo de módulos.
-const p = (x: Omit<Pantalla, 'tipo'>): Pantalla => ({ tipo: 'pantalla', ...x });
+import { p, type Pantalla } from '../tipos.ts';
 
 const base = {
   grupo: 'herramientas',

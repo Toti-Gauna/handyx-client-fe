@@ -6,6 +6,11 @@ import { UMBRAL_DESLIZAR } from '@/components/Deslizar';
 const leer = (f: string) => readFileSync(f, 'utf8');
 const deslizar = leer('src/components/Deslizar.tsx');
 const detalle = leer('src/app/(app)/propuestas/detalle/page.tsx');
+// Fase 7: el cuerpo de la propuesta y las hojas de decisión se separaron de la página.
+const cuerpo = leer('src/app/(app)/propuestas/detalle/_Cuerpo.tsx');
+const hojas = leer('src/app/(app)/propuestas/detalle/_Hojas.tsx');
+const tarjetaPropuesta = leer('src/components/Propuesta.tsx');
+const decision = [detalle, cuerpo, hojas].join('\n');
 const ajustes = leer('src/styles/kit/ajustes.css');
 
 describe('deslizá para confirmar', () => {
@@ -20,7 +25,10 @@ describe('deslizá para confirmar', () => {
 
   it('siempre tiene al lado un botón que hace lo mismo sin arrastrar (WCAG 2.5.7)', () => {
     expect(deslizar).toMatch(/aria-hidden="true"/);
-    expect(detalle).toMatch(/<DeslizarConfirmar[\s\S]*Sí, acepto estas condiciones/);
+    // En la hoja de aceptar: el deslizador y, justo debajo, el botón que hace lo mismo (mismo onAceptar).
+    expect(hojas).toMatch(
+      /<DeslizarConfirmar[\s\S]*onConfirmar=\{onAceptar\}[\s\S]*onClick=\{\(\) => void onAceptar\(\)\}>\s*Sí, acepto estas condiciones/,
+    );
   });
 
   it('nada se mueve solo para apurar la decisión', () => {
@@ -35,18 +43,25 @@ describe('deslizá para confirmar', () => {
 
 describe('propuesta', () => {
   it('el perfil muestra solo verificaciones reales (o que no hay)', () => {
-    expect(detalle).toMatch(/<ChipsVerificacion e=\{e\} \/>/);
-    expect(detalle).toMatch(/Sin verificaciones todavía/);
+    expect(cuerpo).toMatch(/<Verificaciones e=\{e\} conVacio \/>/);
+    // Verificaciones solo las que manda el servidor; si no hay, se dice.
+    expect(tarjetaPropuesta).toMatch(/e\.verificaciones\.map/);
+    expect(tarjetaPropuesta).toMatch(/Todavía sin verificaciones registradas/);
   });
 
   it('el total final está a la vista antes de decidir, con el desglose', () => {
-    expect(detalle).toMatch(/Total final para vos/);
-    expect(detalle).toMatch(/Tarifa de Handyx/);
+    expect(cuerpo).toMatch(/Total final para vos/);
+    expect(cuerpo).toMatch(/Tarifa de Handyx \(/);
+    expect(cuerpo).toMatch(/<Precio /);
+    // Y en la hoja, antes de confirmar, el total sigue a la vista con la tarifa.
+    expect(hojas).toMatch(/<Monto centavos=\{totalDe\(p\)\}/);
+    expect(hojas).toMatch(/Tarifa de Handyx: \{porcentaje\(p\.comisionHandy\.bp\)\}/);
   });
 
   it('la forma de pago se informa, no se guarda una elección que el contrato no tiene', () => {
-    expect(detalle).toMatch(/lo elegís cuando termina el trabajo/);
-    expect(detalle).not.toMatch(/aria-pressed[^\n]*du-pago/);
+    expect(hojas).toMatch(/lo elegís cuando termina el trabajo/);
+    expect(decision).not.toMatch(/aria-pressed[^\n]*du-pago/);
+    expect(decision).not.toMatch(/medioPago|formaPago|metodoPago/);
   });
 
   it('"Elegir" abre la confirmación, que igual pide deslizar o confirmar', () => {

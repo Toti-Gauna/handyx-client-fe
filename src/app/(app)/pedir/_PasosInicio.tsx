@@ -141,7 +141,11 @@ export function PasoQue({ f, desdeInicio }: { f: Pedido; desdeInicio: boolean })
           icono="camara"
           texto={f.fotos.length ? `Fotos (${f.fotos.length})` : 'Foto'}
           onClick={() => f.ir('fotos')}
-          etiqueta={f.fotos.length ? `Fotos: ${f.fotos.length} sumadas` : 'Sumar fotos'}
+          etiqueta={
+            f.fotos.length
+              ? `Fotos (${f.fotos.length}): ver o sumar más`
+              : 'Foto: sumar fotos del problema'
+          }
         />
         <MiniAccion
           icono="regla"

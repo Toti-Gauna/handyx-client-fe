@@ -1,9 +1,6 @@
 // Pantallas de la Fase 7 · acceso (lienzo design/usuario). Una entrada por pantalla nueva o rediseñada;
 // mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-import type { Pantalla } from '../pantallas.ts';
-
-// Local (no `p` de pantallas.ts: ese módulo importa este y el ciclo lo dejaría sin inicializar).
-const p = (x: Omit<Pantalla, 'tipo'>): Pantalla => ({ tipo: 'pantalla', ...x });
+import { p, type Pantalla } from '../tipos.ts';
 
 const CODIGO = ['csrf', 'accesoCodigo', 'accesoVerificar', 'accesoProveedor'] as const;
 const ESTADOS_CODIGO = [

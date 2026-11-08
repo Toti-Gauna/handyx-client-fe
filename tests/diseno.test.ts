@@ -20,6 +20,8 @@ const sinComentarios = (s: string) =>
 const interfaz = [
   ...archivos('src/app', /\.tsx$/),
   ...archivos('src/components', /\.tsx?$/),
+  // Fase 7: las piezas de cada grupo viven en src/ui (también es texto visible).
+  ...archivos('src/ui', /\.tsx?$/),
   'src/domain/etiquetas.ts',
 ];
 
@@ -53,7 +55,7 @@ describe('sistema visual', () => {
 
   it('no hay rankings, superlativos ni claims de verificación inventados', () => {
     const prohibido =
-      /\b(el mejor|la mejor|los mejores|mejor puntuad\w*|recomendad[oa]s? por|top \d|m[aá]s barat[oa]|matriculad[oa]|verificad[oa] por handy\w*|especialistas? verificad[oa]s?|garantizad[oa])\b/i;
+      /\b(el mejor|la mejor|los mejores|las mejores|mejor puntuad\w*|mejor promedio|recomendad[oa]s? por|top \d|m[aá]s barat[oa]|matriculad[oa]|verificad[oa] por handy\w*|especialistas? verificad[oa]s?|garantizad[oa])\b/i;
     for (const f of interfaz) {
       expect(sinComentarios(readFileSync(f, 'utf8')), f).not.toMatch(prohibido);
     }
@@ -73,24 +75,43 @@ describe('sistema visual', () => {
   });
 
   it('aceptar y rechazar se distinguen por ícono, texto, relleno y posición, y piden confirmación', () => {
+    // Fase 7 (una decisión por pantalla): «Aceptar» es el botón principal, lleno y a todo el ancho, arriba; debajo, en
+    // otra fila, «Pedir cambios» (contorno) y «Rechazar» (peligro). Nunca uno al lado del otro con el mismo peso.
     const detalle = readFileSync('src/app/(app)/propuestas/detalle/page.tsx', 'utf8');
-    const botones = detalle.slice(detalle.indexOf('decision__botones'));
-    const rechazar = botones.indexOf('Rechazar');
-    const aceptar = botones.indexOf('Aceptar');
-    expect(rechazar).toBeGreaterThan(0);
-    expect(aceptar).toBeGreaterThan(rechazar); // rechazar a la izquierda, aceptar a la derecha
-    expect(botones.slice(0, rechazar)).toMatch(/variante="peligro"[\s\S]*icono="cerrar"/);
-    expect(botones.slice(rechazar, aceptar)).toMatch(/icono="check"/);
-    expect(botones.slice(rechazar, aceptar)).not.toMatch(/variante=/); // lleno (primario)
+    const hojas = readFileSync('src/app/(app)/propuestas/detalle/_Hojas.tsx', 'utf8');
+    const pie = detalle.slice(detalle.indexOf('const pie = decidible'));
+    const aceptar = pie.indexOf('Aceptar esta propuesta');
+    const fila = pie.indexOf('decision__botones');
+    const rechazar = pie.indexOf('Rechazar', fila);
+    expect(aceptar).toBeGreaterThan(0);
+    expect(fila).toBeGreaterThan(aceptar); // aceptar arriba, fuera de la fila secundaria
+    expect(rechazar).toBeGreaterThan(fila); // rechazar abajo, en la fila secundaria
+    const botonAceptar = pie.slice(0, aceptar);
+    expect(botonAceptar).toMatch(/<Boton icono="check" onClick=\{abrir\('aceptar'\)\}>/);
+    expect(botonAceptar).not.toMatch(/variante=/); // lleno (primario)
+    expect(pie.slice(fila, rechazar)).toMatch(
+      /<Boton variante="peligro" icono="cerrar" chico onClick=\{abrir\('rechazar'\)\}>\s*$/,
+    );
     // Ninguno de los dos actúa directo: abren la hoja de confirmación.
-    expect(botones.slice(0, aceptar + 40)).not.toMatch(/onClick=\{\(\) => (aceptar|rechazar)\(/);
-    expect(detalle).toMatch(/Sí, acepto estas condiciones/);
-    expect(detalle).toMatch(/Sí, rechazar/);
+    expect(pie.slice(0, rechazar + 40)).not.toMatch(/onClick=\{\(\) => (aceptar|rechazar)\(/);
+    expect(detalle).toMatch(/<HojaAceptar[\s\S]*abierta=\{hoja === 'aceptar' && decidible\}/);
+    expect(detalle).toMatch(/<HojaRechazar[\s\S]*abierta=\{hoja === 'rechazar' && decidible\}/);
+    // Y la confirmación también se distingue: check lleno contra cerrar en peligro.
+    expect(hojas).toMatch(
+      /<Boton icono="check" ocupado=\{pendiente\} onClick=\{\(\) => void onAceptar\(\)\}>\s*Sí, acepto estas condiciones/,
+    );
+    expect(hojas).toMatch(
+      /<Boton variante="peligro" icono="cerrar" ocupado=\{pendiente\} onClick=\{onRechazar\}>\s*Sí, rechazar/,
+    );
   });
 
   it('la tarjeta de propuesta no acepta ni rechaza: solo lleva al detalle', () => {
     const tarjeta = readFileSync('src/components/Propuesta.tsx', 'utf8');
     expect(tarjeta).not.toMatch(/propuestaAceptar|propuestaRechazar|<Boton/);
+    // La tarjeta de la Fase 7 (src/ui/pedir.tsx) tampoco llama a la API: sus «Aceptar» son enlaces al detalle.
+    expect(readFileSync('src/ui/pedir.tsx', 'utf8')).not.toMatch(
+      /propuestaAceptar|propuestaRechazar/,
+    );
   });
 
   it('las iniciales del avatar salen del nombre público', () => {

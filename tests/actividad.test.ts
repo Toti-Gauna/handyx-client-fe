@@ -20,15 +20,25 @@ describe('actividad', () => {
 });
 
 describe('mensajes', () => {
-  const conv = leer('src/app/(app)/chats/conversacion/page.tsx');
+  // Fase 7: la conversación se partió en piezas (_Pies.tsx dibuja las respuestas rápidas y _useEnvios.ts manda).
+  const dir = 'src/app/(app)/chats/conversacion/';
+  const conv = leer(`${dir}page.tsx`);
+  const pies = leer(`${dir}_Pies.tsx`);
+  const envios = leer(`${dir}_useEnvios.ts`);
 
   it('las respuestas rápidas completan el mensaje: nada se manda con un toque', () => {
-    expect(conv).toMatch(/setTexto\(r\);/);
-    expect(conv).not.toMatch(/enviarRapida/);
+    // La pastilla solo escribe el texto en el redactor (onTexto = setTexto); mandar es otro toque, en «Enviar».
+    expect(pies).toMatch(/onElegir=\{\(\) => onTexto\(r\)\}/);
+    expect(conv).toMatch(/onTexto=\{setTexto\}/);
+    for (const f of [conv, pies]) expect(f).not.toMatch(/enviarRapida/);
+    expect(pies).not.toMatch(/onElegir=\{\(\) => onEnviar/);
   });
 
   it('el reintento usa el mismo clienteId (no duplica)', () => {
-    expect(conv).toMatch(/claveIdempotencia: s\.clienteId/);
+    expect(envios).toMatch(/claveIdempotencia: s\.clienteId/);
+    // El id nuevo nace una sola vez, al encolar; reintentar vuelve a mandar el mismo envío.
+    expect(envios.match(/crypto\.randomUUID\(\)/g)).toHaveLength(1);
+    expect(conv).toMatch(/onReintentar=\{\(s\) => void envios\.mandar\(s\)\}/);
   });
 });
 

@@ -40,7 +40,10 @@ describe('Fase 7 · Inicio', () => {
 
   it('la cabecera lleva a la cuenta desde el avatar', () => {
     const hx = leer('src/components/hx.tsx');
-    expect(hx).toMatch(/href="\/cuenta\/" className="app-cuadrado" aria-label="Tu cuenta"/);
+    // El nombre accesible incluye las iniciales que se ven (WCAG 2.5.3) y siempre dice «tu cuenta».
+    expect(hx).toMatch(
+      /href="\/cuenta\/"\s+className="app-cuadrado"\s+aria-label=\{ini \? `\$\{ini\}, tu cuenta` : 'Tu cuenta'\}/,
+    );
   });
 });
 

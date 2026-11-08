@@ -126,7 +126,7 @@ function Fila({ recordatorio, onListo }: { recordatorio: Recordatorio; onListo: 
             chico
             ancho={false}
             icono="check"
-            etiqueta={`Ya hice: ${r.titulo}`}
+            etiqueta={`Ya lo hice: ${r.titulo}`}
             onClick={() => void editar({ hecho: true })}
           >
             Ya lo hice

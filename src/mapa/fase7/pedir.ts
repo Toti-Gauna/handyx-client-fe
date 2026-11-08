@@ -1,9 +1,6 @@
 // Pantallas de la Fase 7 · pedir (lienzo design/usuario). Una entrada por pantalla nueva o rediseñada;
 // mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-import type { Pantalla } from '../pantallas.ts';
-
-// Igual que `p` de pantallas.ts, que no se importa acá para no armar un ciclo de módulos.
-const p = (x: Omit<Pantalla, 'tipo'>): Pantalla => ({ tipo: 'pantalla', ...x });
+import { p, type Pantalla } from '../tipos.ts';
 
 export const PEDIR7: readonly Pantalla[] = [
   p({
@@ -86,7 +83,7 @@ export const PEDIR7: readonly Pantalla[] = [
     acceso: 'sesion',
     consulta: ['pedido'],
     acciones: [
-      '«La mejor en perfil y precio»: promedio con pesos públicos (precio 30, reseñas 25, verificaciones 20, garantía 15, fecha 10)',
+      '«Mayor puntaje en perfil y precio»: promedio con pesos públicos (precio 30, reseñas 25, verificaciones 20, garantía 15, fecha 10)',
       'Tabla lado a lado y «Ver» de cada una',
     ],
     estados: [

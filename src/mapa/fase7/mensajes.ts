@@ -1,9 +1,6 @@
 // Pantallas de la Fase 7 · mensajes, actividad, cuenta, ayuda y errores (lienzo design/usuario, filas M y X).
 // Una entrada por pantalla nueva o rediseñada; mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-import type { Pantalla } from '../pantallas.ts';
-
-// `p` de pantallas.ts no se importa: ese archivo importa este y quedaría un ciclo.
-const p = (pantalla: Omit<Pantalla, 'tipo'>): Pantalla => ({ tipo: 'pantalla', ...pantalla });
+import { p, type Pantalla } from '../tipos.ts';
 
 export const MENSAJES7: readonly Pantalla[] = [
   p({

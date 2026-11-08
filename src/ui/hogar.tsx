@@ -2,7 +2,6 @@
 // Piezas de Mi hogar y del camino del hogar (lienzo: design/usuario/gen/fila_hogar.py y fila_camino.py). Reglas
 // puras (textos, rutas al pedido, garantías, geometría del camino) y componentes compartidos por esas pantallas.
 // Estilos en src/styles/ds-hogar.css (clases `dsh-*`, solo tokens).
-import '@/styles/ds-hogar.css';
 import type { ReactNode } from 'react';
 import { Barra } from '@/components/hx';
 import { Icono } from '@/components/Icono';

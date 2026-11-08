@@ -7,7 +7,6 @@ import { Icono } from '@/components/Icono';
 import { Enlace } from '@/components/nav';
 import type { NombreIcono } from '@/components/trazos';
 import { pesos } from '@/domain/dinero';
-import '@/styles/ds-seguimiento.css';
 import { Chip, MosaicoIcono } from './atomos';
 
 // ── Atajos grises (Mensaje · Ayuda · Acuerdo) ────────────────────────────────────────────────────────────

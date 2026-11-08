@@ -1,25 +1,53 @@
 // Trabajo en curso y cierre (lote 3.6; viaje en vivo 4.7): seguimiento sin ETA propia, festejo después del hecho, pago, comprobante y reseña.
 import { readFileSync } from 'node:fs';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { prepararResena } from '../src/data/resena.ts';
 import { distanciaAprox, textosViaje } from '../src/domain/viaje.ts';
 
 const leer = (f: string) => readFileSync(f, 'utf8');
-const detalle = leer('src/app/(app)/trabajos/detalle/page.tsx');
-const pago = leer('src/app/(app)/trabajos/pago/page.tsx');
+// Fase 7: el detalle del trabajo se partió en seguimiento (agendado, en camino, llegó, trabajando) y cierre, y el pago
+// en elegir e informado.
+const DET = 'src/app/(app)/trabajos/detalle/';
+const pagina = leer(`${DET}page.tsx`);
+const seguimiento = leer(`${DET}Seguimiento.tsx`);
+const enCamino = leer(`${DET}EnCamino.tsx`);
+const cierre = leer(`${DET}Cierre.tsx`);
+const detalle = [
+  'page.tsx',
+  'Seguimiento.tsx',
+  'EnCamino.tsx',
+  'Cierre.tsx',
+  'Avisos.tsx',
+  'AtajosTrabajo.tsx',
+  'HojaCancelar.tsx',
+  'contexto.ts',
+]
+  .map((x) => leer(DET + x))
+  .join('\n');
+const trabajoTsx = leer('src/components/Trabajo.tsx');
+const etapas = leer('src/ui/moleculas.tsx');
+const elegir = leer('src/app/(app)/trabajos/pago/Elegir.tsx');
+const informado = leer('src/app/(app)/trabajos/pago/Informado.tsx');
 const resena = leer('src/app/(app)/trabajos/resena/page.tsx');
 const viajeTxt = leer('src/domain/viaje.ts');
 const SIN_ETA = /llegar[áa] en|\bETA\b|tarda(r[áa])? \d|minutos? de distancia|llega en \d/i;
 
 describe('seguimiento', () => {
-  it('las cuatro etapas de la demo, con el paso actual marcado', () => {
-    expect(detalle).toMatch(/'Confirmado'[\s\S]*'En camino'[\s\S]*'Llegó'[\s\S]*'Trabajando'/);
-    expect(detalle).toMatch(/aria-current=\{i === actual \? 'step' : undefined\}/);
+  it('las etapas del turno en orden, con el paso actual marcado', () => {
+    // Fase 7: las cuatro de la demo más el cierre («Terminado y pago»).
+    expect(trabajoTsx).toMatch(
+      /'Turno confirmado'[\s\S]*'En camino'[\s\S]*'Llegó'[\s\S]*'Trabajando'[\s\S]*'Terminado y pago'/,
+    );
+    expect(etapas).toMatch(/aria-current=\{estado === 'actual' \? 'step' : undefined\}/);
+    expect(enCamino).toMatch(
+      /pasos=\{pasosTurno\(t\)\}\s*hechas=\{HECHAS_POR_ESTADO\[t\.estado\]\}/,
+    );
   });
 
   it('sin tiempos de llegada propios ni seguimiento de tu ubicación', () => {
     expect(detalle).not.toMatch(SIN_ETA);
     expect(viajeTxt).not.toMatch(SIN_ETA);
-    expect(detalle).toMatch(
+    expect(enCamino).toMatch(
       /Nosotros no seguimos tu ubicación\. La del especialista se ve solo mientras viene en\s+camino y la comparte/,
     );
     // Ni reloj ni cuentas propias: la llegada estimada y lo que falta llegan del servidor.
@@ -29,10 +57,15 @@ describe('seguimiento', () => {
   });
 
   it('el viaje en vivo solo en camino y solo mientras comparte (decisión del 31/10)', () => {
-    expect(detalle).toMatch(/useViaje\(id, enCamino\)/);
-    expect(detalle).toMatch(/const enCamino = trabajo\.datos\?\.estado === 'en_camino';/);
-    expect(detalle).toMatch(/vivo\.viaje\?\.estado === 'compartiendo' \? vivo\.viaje : null/);
-    expect(detalle).toMatch(/trayecto=\{compartiendo\?\.trayecto\?\.linea \?\? null\}/);
+    // El viaje se consulta solo dentro de la pantalla «en camino», que se muestra solo con ese estado.
+    expect(seguimiento).toMatch(
+      /if \(c\.t\.estado === 'en_camino'\) return <EnCamino \{\.\.\.c\} \/>;/,
+    );
+    expect(detalle.match(/useViaje\(/g)).toHaveLength(1);
+    expect(enCamino).toMatch(/const vivo = useViaje\(t\.id, true\);/);
+    expect(enCamino).toMatch(/vivo\.viaje\?\.estado === 'compartiendo' \? vivo\.viaje : null/);
+    expect(enCamino).toMatch(/trayecto=\{compartiendo\?\.trayecto\?\.linea \?\? null\}/);
+    expect(enCamino).toMatch(/compartiendo\?\.ultimaPosicion\s*\?/);
   });
 });
 
@@ -101,51 +134,76 @@ describe('textos del viaje en vivo', () => {
 });
 
 describe('cierre', () => {
-  it('"¡Listo, quedó arreglado!" solo después de que confirmaste', () => {
-    expect(detalle).toMatch(/finalizado\s*\?\s*'¡Listo, quedó ==arreglado==!'/);
-    expect(detalle).toMatch(/const finalizado = t\.estado === 'finalizado';/);
+  it('"¡Quedó arreglado!" solo después de que confirmaste', () => {
+    expect(cierre).toMatch(
+      /\{finalizado \? \(\s*<Titulo nivel=\{2\} texto="¡Quedó ==arreglado==!"/,
+    );
+    expect(cierre).toMatch(/const finalizado = t\.estado === 'finalizado';/);
+    // Mientras está activo, ni el cierre: el seguimiento.
+    expect(pagina).toMatch(
+      /ACTIVOS\.includes\(t\.estado\) \? <Seguimiento \{\.\.\.contexto\} \/> : <Cierre/,
+    );
+    expect(seguimiento).not.toMatch(/arreglado/);
   });
 
   it('una obra no se cierra con etapas sin confirmar', () => {
-    expect(detalle).toMatch(/\{etapasListas \? \(\s*<BotonHx/);
+    expect(cierre).toMatch(/const etapasListas = etapasConfirmadas\(t\) === t\.etapas\.length;/);
+    expect(cierre).toMatch(/\{etapasListas \? \(\s*<Boton icono="documento"/);
+    const conformidad = leer('src/app/(app)/trabajos/conformidad/page.tsx');
+    expect(conformidad).toMatch(/\{puede && etapasListas \? \(/);
   });
 
-  it('un pago registrado por vos se muestra como reportado, no como pagado y verificado', () => {
-    expect(detalle).toMatch(/queda\s+“reportado” hasta que lo confirma otra parte/);
+  it('un pago registrado por vos se muestra como informado, no como pagado y verificado', () => {
+    expect(cierre).toMatch(/queda\s+“informado” hasta que se verifique/);
+    expect(cierre).toMatch(/pago\?\.estado === 'verificado'\s*\?\s*'PAGO VERIFICADO'/);
+    expect(informado).toMatch(/Informado no es verificado/);
+    expect(elegir).toMatch(/queda informado, todavía no verificado/);
   });
 });
 
 describe('pago', () => {
-  it('se confirma deslizando o con el botón de siempre', () => {
-    expect(pago).toMatch(/<DeslizarConfirmar[\s\S]*Ya le pagué en efectivo/);
+  it('se confirma con un botón explícito (sin arrastrar), con el importe y sin duplicar', () => {
+    // Fase 7: un solo botón principal que dice qué pasa y cuánto (WCAG 2.5.7: nada exige arrastrar).
+    expect(elegir).toMatch(/onClick=\{\(\) => void pagar\(\)\}/);
+    expect(elegir).toMatch(/`Ya le pagué \$\{pesos\(objetivo\.centavos\)\} en efectivo`/);
+    expect(elegir).not.toMatch(/DeslizarConfirmar/);
+    // Reintentar el mismo pago no lo registra dos veces.
+    expect(elegir).toMatch(/`\$\{objetivo\.etapaId\}\|\$\{metodo\}\|\$\{objetivo\.centavos\}`/);
+    // Volver del checkout no confirma nada: se consulta el estado real.
+    expect(elegir).toMatch(/ir\(ruta\('\/pagos\/retorno\/'/);
   });
 
   it('el comprobante es el registro de Handyx, no una factura', () => {
-    expect(pago).toMatch(/No es una factura/);
+    expect(informado).toMatch(/No es una factura/);
   });
 });
 
 describe('reseña', () => {
   it('solo de un trabajo que confirmaste que terminó', () => {
-    expect(resena).toMatch(/if \(t\.estado !== 'finalizado'\)/);
+    expect(resena).toMatch(/if \(t\.estado !== 'finalizado' && !hecha\)/);
+    expect(resena).toMatch(/primero confirmá que el trabajo terminó/);
+    // El servidor simulado también lo rechaza (como el BE).
+    expect(leer('src/data/mock/draft4.ts')).toMatch(
+      /resenaCrear: sesion\([\s\S]{0,120}if \(t\.estado !== 'finalizado'\)\s*throw falla/,
+    );
   });
 
-  it('el comentario se envía sin datos personales', async () => {
-    vi.resetModules();
-    const { enviarResena } = await import('@/data/resena');
-    const r = await enviarResena({
-      trabajoId: 'de000000-0000-4000-8000-000000009999',
-      estrellas: 5,
-      destacados: ['Puntual'],
-      comentario: 'Excelente, escribime a ana@example.test o al 223 155-123456',
-    });
+  it('el comentario se envía sin datos personales', () => {
+    const r = prepararResena(
+      5,
+      ['puntual'],
+      'Excelente, escribime a ana@example.test o al 223 155-123456',
+    );
     expect(r.comentario).not.toMatch(/ana@example|155-123456/);
     expect(r.comentario).toMatch(/Excelente/);
+    // Y la pantalla manda exactamente eso.
+    expect(resena).toMatch(/cuerpo: prepararResena\(puntaje, destacados, comentario\)/);
   });
 
-  it('con la API real queda inactiva hasta que exista resenaCrear', () => {
-    expect(leer('src/data/resena.ts')).toMatch(
-      /resenaDisponible = esVistaDePrueba[\s\S]*funcion_inactiva/,
-    );
+  it('se publica por resenaCrear del contrato (draft.4), sin guardar nada en el celular', () => {
+    // resenaCrear ya existe en el contrato: la reseña va al servidor; si el BE la tiene inactiva, se ve su error.
+    expect(resena).toMatch(/accion\.enviar\(\s*'resenaCrear'/);
+    expect(resena).toMatch(/accion\.error \? <Aviso tipo="error">/);
+    expect(leer('src/data/resena.ts')).not.toMatch(/localStorage|sessionStorage|indexedDB|fetch\(/);
   });
 });

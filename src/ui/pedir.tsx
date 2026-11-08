@@ -1,6 +1,5 @@
 'use client';
 // Piezas compartidas de pedir y propuestas (Fase 7 · lienzo design/usuario, filas P y C). Estilos: ds-pedir.css.
-import '@/styles/ds-pedir.css';
 import type { ReactNode } from 'react';
 import { Marcado, Pantalla, entra } from '@/components/hx';
 import { TituloDocumento } from '@/components/TituloDocumento';
@@ -294,17 +293,20 @@ export function AccionesPropuesta({
   );
 }
 
-/** Chip amarillo que lleva a comparar: es un promedio con reglas públicas, no una elección de Handyx. */
+/**
+ * Chip amarillo que lleva a comparar: es un puntaje con reglas públicas, no una elección de Handyx. Sin superlativos
+ * («la mejor»): dice el dato calculado, no un juicio (tests/diseno.test.ts).
+ */
 export function ChipPromedio({ href }: { href: string }) {
   return (
     <Enlace href={href} className="dsp-chip-enlace">
       <Icono nombre="trofeo" />
-      Mejor promedio
+      Mayor puntaje
     </Enlace>
   );
 }
 
-/** «La mejor en perfil y precio»: tarjeta amarilla corta (avatar, nombre, puntaje y una frase). */
+/** «Mayor puntaje en perfil y precio»: tarjeta amarilla corta (avatar, nombre, puntaje y una frase). */
 export function TarjetaPromedio({
   nombre,
   puntaje,
@@ -315,13 +317,13 @@ export function TarjetaPromedio({
   frase: string;
 }) {
   return (
-    <Tarjeta tono="amarilla" etiqueta="La mejor en perfil y precio">
+    <Tarjeta tono="amarilla" etiqueta="Mayor puntaje en perfil y precio">
       <div className="ds-fila">
         <Avatar nombre={nombre} tam={3} />
         <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
           <span className="ds-etiqueta ds-fila" style={{ color: 'inherit', gap: '0.3rem' }}>
             <Icono nombre="trofeo" />
-            La mejor en perfil y precio
+            Mayor puntaje en perfil y precio
           </span>
           <strong className="ds-titulo" style={{ ['--ds-tam' as string]: '1.25rem' }}>
             {nombre}

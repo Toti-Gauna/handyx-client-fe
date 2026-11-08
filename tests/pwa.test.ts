@@ -97,13 +97,29 @@ describe('movimiento', () => {
     }
   });
 
-  it('sin sonido ni vibración', () => {
-    // Única excepción: el prototipo de la fase R de HandIA (/diseno/handia/, solo vista de prueba) los muestra para
-    // que Ignacio los apruebe (R5). La app sigue sin sonido ni vibración hasta que H2 los construya aprobados.
+  it('sin sonido ni vibración (salvo el tono del modo voz, apagado hasta que la persona lo prende)', () => {
+    // Única excepción de prototipo: la fase R de HandIA (/diseno/handia/, solo vista de prueba) los muestra para
+    // que Ignacio los apruebe (R5). Lo aprobado en el lienzo de la Fase 7 (I-VozAjustes, design/usuario/gen/
+    // fila_inicio.py): «Sonido al empezar y terminar», un tono corto sin vibrar, APAGADO por defecto. Nada más suena.
     const prototipo = /src\/components\/handia-prototipo\//;
+    const tono = 'src/components/handia/voz-piezas.tsx';
     for (const f of archivos('src').filter((x) => /\.(ts|tsx)$/.test(x) && !prototipo.test(x))) {
-      expect(readFileSync(f, 'utf8'), f).not.toMatch(/new Audio\(|\.vibrate\(|AudioContext/);
+      const fuente = readFileSync(f, 'utf8');
+      expect(fuente, f).not.toMatch(/new Audio\(|\.vibrate\(|<audio\b/);
+      if (f.replaceAll('\\', '/') !== tono) expect(fuente, f).not.toMatch(/AudioContext/);
     }
+    // El tono: generado en el momento (sin archivos ni red), solo con el ajuste prendido, y el ajuste arranca apagado
+    // y no se guarda.
+    const piezas = readFileSync(tono, 'utf8');
+    expect(piezas.match(/new AudioContext\(\)/g)).toHaveLength(1);
+    expect(piezas).toMatch(
+      /if \(!activo \|\| typeof window === 'undefined' \|\| !\('AudioContext' in window\)\) return;\s*const ctx = new AudioContext\(\);/,
+    );
+    const panel = readFileSync('src/components/handia/voz-panel.tsx', 'utf8');
+    expect(panel).toMatch(
+      /const \[sonido, setSonido\] = useState\(false\);\s*useTono\(voz\.escuchando, sonido\);/,
+    );
+    expect(piezas).toMatch(/etiqueta="Sonido al empezar y terminar"[\s\S]*activo=\{sonido\}/);
   });
 
   it('prefers-reduced-motion anula animaciones (también del fondo de las hojas) y transiciones', () => {

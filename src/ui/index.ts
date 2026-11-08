@@ -4,3 +4,9 @@ export * from './atomos';
 export * from './moleculas';
 export * from './organismos';
 export * from './escenas';
+// Piezas de los grupos de la Fase 7 sin nombres repetidos. acceso, hogar y mensajes se importan directo
+// (`@/ui/acceso`, `@/ui/hogar`, `@/ui/mensajes`): los tres exportan su propio `Segmentos`.
+export * from './inicio';
+export * from './pedir';
+export * from './seguimiento';
+export * from './herramientas';

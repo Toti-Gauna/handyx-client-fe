@@ -3,7 +3,6 @@
 // de «Quiero…», el chip de la dirección, el avatar con sello y el avatar de HandIA. Estilos en src/styles/ds-inicio.css.
 import Image from 'next/image';
 import type { ReactNode } from 'react';
-import '@/styles/ds-inicio.css';
 import { Icono } from '@/components/Icono';
 import { Enlace } from '@/components/nav';
 import type { NombreIcono } from '@/components/trazos';

@@ -1,12 +1,31 @@
 # Handoff · Bloque 3 · App de usuario de Handyx
 
-**Fase actual: 4 · Backend y base conectados. Listos los lotes 4.1 a 4.7; sigue la Fase 5 (deploy, con autorización).**
+**Fase actual: 7 · App de usuario completa sobre el contrato draft.4 (BE y FE). Sigue la Fase 5 (deploy, con autorización).**
 
-**Diseño completo de la app del usuario (07/11, Fase 7 · U0): tercera ronda: registro sin invitación y 13 recorridos con pantallas, esperando su OK.** 102 pantallas, 13 recorridos, 12
-flujos y el tablero de revisión en el lienzo <https://claude.ai/artifact/A4T5bqyE8WEiQkwD4ogDaZ>, con la fuente en
-`design/usuario/` y las decisiones en [`diseno-usuario-deluxe.md`](diseno-usuario-deluxe.md). Chequeos en 0 (axe,
-toques de 44 px, letra de 11 px, nada tapado). **No se desarrolla nada hasta el OK.** Desarrollo por olas en
-[`plan-olas.md`](plan-olas.md).
+**Fase 7 · App de usuario completa (08/11/2026, rama `handia-premium`).** Ignacio aprobó el lienzo
+<https://claude.ai/artifact/A4T5bqyE8WEiQkwD4ogDaZ> (fuente en `design/usuario/`, decisiones en
+[`diseno-usuario-deluxe.md`](diseno-usuario-deluxe.md), plan en [`plan-olas.md`](plan-olas.md)) y pidió construirlo
+entero, con componentes reutilizables y **usable por una persona de 90 años** (guía: [`fase7-guia-pantallas.md`](fase7-guia-pantallas.md)).
+
+- **Contrato `1.0.0-draft.4`** (dueño `handyx-client-be`, rama `fase-7-app-usuario`, implementado y probado contra la base):
+  acceso con código por email sin invitación ni contraseña, segunda verificación, sesiones abiertas, exportación de
+  datos, `Propuesta.detalle`, reseña, informe, Mi hogar (ambientes, equipos), compartidos por pedido, recordatorios y
+  camino del hogar. Servidor simulado en `src/data/mock/draft4.ts` (código de prueba `246810`), alineado con el BE.
+- **Sistema de diseño atómico** en `src/ui/` (átomos → moléculas → organismos → escenas SVG) con `src/styles/ds.css`
+  y una hoja por grupo (`ds-<grupo>.css`); colores solo como tokens en `tokens.css`. Barra de pestañas nueva: Inicio,
+  Actividad, HandIA (centro), Mensajes, Mi hogar; Cuenta desde el avatar.
+- **Pantallas** registradas en `src/mapa/fase7/*.ts` (reemplazan las base con el mismo id): acceso y «Armá tu casa»;
+  Inicio, chat de HandIA y modo voz con esfera; pedir en 3 toques con la escena que arma el pedido; propuestas,
+  comparar, perfil y turno confirmado; seguimiento, adicional, informe, antes y después, conformidad, pago y reseña;
+  obras por etapas; mensajes con selección y adjuntos; actividad; cuenta con seguridad y privacidad; ayuda y errores;
+  Mi hogar (4 puertas) y el camino; herramientas en el teléfono (medir, nivel, linterna; 3D y AR «Experimental»).
+- **Huecos del contrato (para draft.5, no inventados en pantalla):** listar adicionales y cambios pendientes de un
+  trabajo (hoy `propuestas` del pedido trae solo cotizaciones, en el BE y en el simulado: el adicional llega solo por
+  aviso); secreto TOTP para la app autenticadora; segundo factor en `LoginEntrada`; teléfono en el perfil; motivo al
+  rechazar; reseñas y trabajos recientes del especialista; rango orientativo de precio; preferencias de avisos por
+  tema; vínculo equipo → trabajo (garantía); último mensaje en la lista de chats; renglones del presupuesto.
+- **Afuera del repo:** proveedor de email aprobado (sin él el acceso por código responde `no_disponible` en
+  producción), almacenamiento de archivos (fotos de Mi hogar), `API_PUBLIC_ORIGIN` para la exportación.
 
 **Siguiente para HandIA:** plan por fases H0–H7 en [`handia-premium-plan.md`](handia-premium-plan.md) (modo voz estilo
 ChatGPT Voice con los Handys, chat premium, agente, cámara, OpenAI + ElevenLabs). H1 espera las imágenes de ChatGPT.

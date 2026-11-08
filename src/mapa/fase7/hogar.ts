@@ -1,17 +1,10 @@
 // Pantallas de la Fase 7 · hogar y camino del hogar (lienzo design/usuario, filas H y G). Una entrada por pantalla
 // nueva o rediseñada; mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-// Sin `p()` de pantallas.ts: ese archivo importa este antes de definir `p` (orden de inicialización).
-import type { Pantalla } from '../pantallas.ts';
+import { p, type Pantalla } from '../tipos.ts';
 
 const h = (
   x: Omit<Pantalla, 'tipo' | 'lote' | 'acceso' | 'grupo'> & { grupo?: 'hogar' | 'camino' },
-): Pantalla => ({
-  tipo: 'pantalla',
-  grupo: 'hogar',
-  lote: '7',
-  acceso: 'sesion',
-  ...x,
-});
+): Pantalla => p({ grupo: 'hogar', lote: '7', acceso: 'sesion', ...x });
 
 const PRIVADA = 'la ficha es privada: nada se comparte sin elegirlo';
 

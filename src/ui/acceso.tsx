@@ -2,7 +2,6 @@
 // Piezas del acceso y el alta (fila A del lienzo): la pantalla por pasos con barra compacta, el código de 6 dígitos,
 // el contador de ambientes, los segmentos, la casilla de aceptación y la ciudad de la bienvenida. Estilos:
 // src/styles/ds-acceso.css (sobre los tokens de ds.css).
-import '@/styles/ds-acceso.css';
 import type { CSSProperties, FormEvent, ReactNode } from 'react';
 import { useEffect, useId, useRef } from 'react';
 import { Icono } from '@/components/Icono';

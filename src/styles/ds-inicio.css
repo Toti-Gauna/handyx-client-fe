@@ -89,6 +89,10 @@
 }
 .dsi-direccion:focus-visible,
 .dsi-handia:focus-visible,
+.dsi-tarea > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
 .dsi-tarea:focus-visible {
   outline: 3px solid var(--linea-foco);
   outline-offset: 2px;
@@ -274,6 +278,7 @@
 }
 .dsi-fila-ticket {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.625rem;
   min-height: 2.75rem;
@@ -303,7 +308,8 @@
   font-size: 0.8125rem;
   font-weight: 800;
   color: var(--ds-azul);
-  white-space: nowrap;
+  /* Con la letra agrandada baja a otra línea en vez de salirse del ticket. */
+  margin-inline-start: auto;
 }
 .hx .dsi-fila-ticket__accion svg {
   width: 1rem;

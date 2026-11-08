@@ -1,12 +1,9 @@
 // Pantallas de la Fase 7 · inicio (lienzo design/usuario). Una entrada por pantalla nueva o rediseñada;
 // mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-// Objetos literales (sin `p()`): pantallas.ts importa este archivo antes de definir `p`, y llamarlo acá al cargar el
-// módulo rompería por el orden de inicialización.
-import type { Pantalla } from '../pantallas.ts';
+import { p, type Pantalla } from '../tipos.ts';
 
 export const INICIO7: readonly Pantalla[] = [
-  {
-    tipo: 'pantalla',
+  p({
     id: 'inicio',
     ruta: '/inicio/',
     titulo: 'Inicio',
@@ -43,9 +40,8 @@ export const INICIO7: readonly Pantalla[] = [
     ],
     demo: ['u-inicio', 'u-sin-especialistas'],
     nota: 'Lienzo design/usuario · I-Inicio. Piezas en src/ui/inicio.tsx (estilos src/styles/ds-inicio.css).',
-  },
-  {
-    tipo: 'pantalla',
+  }),
+  p({
     id: 'handia',
     ruta: '/handia/',
     titulo: 'HandIA',
@@ -90,5 +86,5 @@ export const INICIO7: readonly Pantalla[] = [
     ],
     demo: ['u-handia'],
     nota: 'Lienzo design/usuario · I-HandIA, I-HandIAChat, I-HandIAPiensa, I-HandIAFicha, I-Voz, I-VozHabla, I-VozAjustes. Motor en el celular (src/domain/handia-motor.ts), sin IA externa. Con API real necesita el endpoint de HandIA en handyx-client-be (contrato v1.1); hasta entonces avisa que no está disponible.',
-  },
+  }),
 ];

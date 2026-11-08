@@ -156,8 +156,10 @@ export function Ticket({
       <span className="ds-ticket__abajo">{abajo}</span>
     </span>
   );
+  // Como enlace, el nombre accesible es lo que se ve (WCAG 2.5.3), con la etiqueta delante solo para el lector.
   return href ? (
-    <Enlace href={href} className="ds-ticket" aria-label={etiqueta}>
+    <Enlace href={href} className="ds-ticket">
+      {etiqueta ? <span className="ds-solo-lector">{etiqueta}: </span> : null}
       {papel}
     </Enlace>
   ) : (

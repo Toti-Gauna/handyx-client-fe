@@ -41,15 +41,17 @@ const enfocado = (p) =>
   });
   ok(visible, 'el enlace se ve al recibir el foco');
 
-  // 2. Enviar vacío: el foco va al primer campo inválido.
+  // 2. Enviar vacío: el foco va al primer campo inválido (Fase 7: el ingreso principal es con código).
   await p.goto(BASE + '/ingresar/', { waitUntil: 'networkidle' });
-  await p.getByRole('button', { name: 'Seguir' }).focus();
+  await p.getByRole('button', { name: 'Mandar el código' }).focus();
   await p.keyboard.press('Enter');
   await p.waitForTimeout(300);
   f = await enfocado(p);
   ok(f.tag === 'INPUT' && f.invalido, `con errores, el foco va al primer campo inválido (${f.tag} ${f.id})`);
 
-  // 3. Ingresar solo con teclado; al navegar, el foco va al h1 y el título de la pestaña cambia.
+  // 3. Ingresar solo con teclado (con contraseña, en /ingresar/clave/); al navegar, el foco va al h1 y el título de la
+  // pestaña cambia.
+  await p.goto(BASE + '/ingresar/clave/', { waitUntil: 'networkidle' });
   await p.getByLabel('Email').fill('usuaria@example.test');
   await p.getByLabel('Email').press('Enter');
   await p.getByLabel('Contraseña', { exact: true }).waitFor();
@@ -80,23 +82,22 @@ const enfocado = (p) =>
   ok(f.tag === 'H1', `después de navegar el foco queda en el h1 (${f.tag} «${f.texto}»)`);
 
   // 5. Hoja de aceptar: abre con foco en el título; Enter no acepta; Escape cierra y devuelve el foco.
-  await p.goto(BASE + '/pedidos/propuestas/?pedido=de000000-0000-4000-8000-000000001001&escenario=varias-propuestas', {
+  // Fase 7: «Aceptar esta propuesta» (ids del servidor simulado: la propuesta es …1015, ver accesibilidad.cjs).
+  await p.goto(BASE + '/propuestas/detalle/?id=de000000-0000-4000-8000-000000001015&escenario=varias-propuestas', {
     waitUntil: 'networkidle',
   });
-  await p.getByRole('link', { name: /^Ver perfil de/ }).first().click();
-  await p.waitForURL('**/propuestas/detalle/**');
-  await p.getByRole('button', { name: 'Aceptar', exact: true }).focus();
+  await p.getByRole('button', { name: 'Aceptar esta propuesta', exact: true }).focus();
   await p.keyboard.press('Enter');
   await p.waitForTimeout(400);
   f = await enfocado(p);
-  ok(f.tag === 'H2' && /Confirmá el turno/.test(f.texto), `la hoja abre con el foco en el título (${f.tag} «${f.texto}»)`);
+  ok(f.tag === 'H2' && /¿Aceptás la propuesta de/.test(f.texto), `la hoja abre con el foco en el título (${f.tag} «${f.texto}»)`);
   await p.keyboard.press('Enter');
   await p.waitForTimeout(600);
   ok(p.url().includes('/propuestas/detalle/'), 'un Enter apurado no acepta la propuesta');
   await p.keyboard.press('Escape');
   await p.waitForTimeout(300);
   f = await enfocado(p);
-  ok(f.texto === 'Aceptar', `Escape cierra la hoja y el foco vuelve a "Aceptar" («${f.texto}»)`);
+  ok(f.texto === 'Aceptar esta propuesta', `Escape cierra la hoja y el foco vuelve a "Aceptar esta propuesta" («${f.texto}»)`);
   // El foco no sale de la hoja abierta (diálogo modal).
   await p.keyboard.press('Enter');
   await p.waitForTimeout(300);
@@ -110,7 +111,7 @@ const enfocado = (p) =>
 
   // 6. Movimiento reducido: transiciones anuladas.
   await p.emulateMedia({ reducedMotion: 'reduce' });
-  const dur = await p.evaluate(() => getComputedStyle(document.querySelector('.boton')).transitionDuration);
+  const dur = await p.evaluate(() => getComputedStyle(document.querySelector('.ds-boton, .boton')).transitionDuration);
   ok(dur.split(',').every((d) => parseFloat(d) <= 0.001), `con movimiento reducido las transiciones se anulan (${dur})`);
 
   ok(errores.length === 0, `sin errores de página${errores.length ? ': ' + errores.join(' | ') : ''}`);

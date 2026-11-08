@@ -1,13 +1,8 @@
 // Pantallas de la Fase 7 · seguimiento, cierre y obras (lienzo design/usuario, filas S y O). Una entrada por pantalla
 // nueva o rediseñada; mismo id que una pantalla base = la reemplaza. Ver src/mapa/pantallas.ts.
-// Se arman como objetos (sin importar `p` de pantallas.ts): ese módulo importa éste y el ciclo dejaría `p` sin inicializar.
-import type { Pantalla } from '../pantallas.ts';
+import { p, type Pantalla } from '../tipos.ts';
 
-const pan = (x: Omit<Pantalla, 'tipo' | 'lote'>): Pantalla => ({
-  tipo: 'pantalla',
-  lote: '7',
-  ...x,
-});
+const pan = (x: Omit<Pantalla, 'tipo' | 'lote'>): Pantalla => p({ lote: '7', ...x });
 
 export const SEGUIMIENTO7: readonly Pantalla[] = [
   pan({

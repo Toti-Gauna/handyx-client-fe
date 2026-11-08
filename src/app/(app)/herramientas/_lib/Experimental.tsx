@@ -34,6 +34,7 @@ export function PantallaExperimental({
 }) {
   return (
     <Pantalla
+      soloTexto={titulo}
       arriba={
         <Barra
           titulo={titulo}

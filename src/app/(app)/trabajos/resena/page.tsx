@@ -29,7 +29,6 @@ import {
   Nota,
   Pastilla,
 } from '@/ui';
-import '@/styles/ds-seguimiento.css';
 
 /**
  * Reseña: una hoja que sube sobre «¡Quedó arreglado!». Estrellas grandes, qué estuvo bien (o mal) y un comentario

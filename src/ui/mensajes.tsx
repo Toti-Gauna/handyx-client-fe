@@ -3,7 +3,6 @@
 // moléculas de src/ui; los estilos propios están en src/styles/ds-mensajes.css. La lógica pura va arriba (con prueba).
 import Image from 'next/image';
 import type { ReactNode } from 'react';
-import '@/styles/ds-mensajes.css';
 import { Icono } from '@/components/Icono';
 import { Enlace } from '@/components/nav';
 import { TituloDocumento } from '@/components/TituloDocumento';

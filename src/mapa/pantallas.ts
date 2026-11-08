@@ -1,7 +1,6 @@
 // Mapa funcional inicial (Fase 1 · lote 1.2): pantalla → acciones → estados → API → entidad → prueba.
 // Fuente única: de acá salen las páginas, la navegación y docs/screens/mapa-inicial.md (npm run mapa).
 // `demo` = pantalla de referencia visual en Handy-landing-page-fe (/demo/); manda este mapa, no la demo.
-import type { EndpointId } from '../contracts/v1/endpoints.ts';
 import { ACCESO7 } from './fase7/acceso.ts';
 import { HERRAMIENTAS7 } from './fase7/herramientas.ts';
 import { HOGAR7 } from './fase7/hogar.ts';
@@ -9,51 +8,10 @@ import { INICIO7 } from './fase7/inicio.ts';
 import { MENSAJES7 } from './fase7/mensajes.ts';
 import { PEDIR7 } from './fase7/pedir.ts';
 import { SEGUIMIENTO7 } from './fase7/seguimiento.ts';
+import { p, type Pantalla } from './tipos.ts';
 
-export type Grupo =
-  | 'acceso'
-  | 'perfil'
-  | 'inicio'
-  | 'pedido'
-  | 'propuestas'
-  | 'chat'
-  | 'trabajo'
-  | 'pagos'
-  | 'soporte'
-  | 'avisos'
-  | 'cuenta'
-  | 'sistema'
-  | 'hogar'
-  | 'herramientas'
-  | 'camino'
-  | 'obras';
-
-export type Lote = '2.1' | '2.2' | '2.3' | '2.4' | '2.5' | '3.1' | '3.3' | '3.6' | '3.7' | '3.8' | '7';
-
-export interface Pantalla {
-  readonly id: string;
-  readonly tipo: 'pantalla' | 'modal';
-  /** Ruta del export estático (con barra final). Los detalles reciben el id por query (`?id=`). */
-  readonly ruta: `/${string}`;
-  readonly titulo: string;
-  readonly grupo: Grupo;
-  readonly lote: Lote;
-  /** `publica`: sin sesión. `sesion`: requiere cuenta (y perfil completo salvo en el alta). */
-  readonly acceso: 'publica' | 'sesion';
-  readonly consulta?: readonly string[];
-  readonly acciones: readonly string[];
-  readonly estados: readonly string[];
-  readonly endpoints: readonly EndpointId[];
-  readonly entidades: readonly string[];
-  readonly pruebas: readonly string[];
-  readonly demo?: readonly string[];
-  readonly nota?: string;
-}
-
-export const p = (pantalla: Omit<Pantalla, 'tipo'> & { tipo?: Pantalla['tipo'] }): Pantalla => ({
-  tipo: 'pantalla',
-  ...pantalla,
-});
+export type { Grupo, Lote, Pantalla } from './tipos.ts';
+export { p } from './tipos.ts';
 
 const BASE: readonly Pantalla[] = [
   // ── Acceso (demo cerrada: sin invitación no hay alta) ───────────────────────────────────────────
@@ -967,7 +925,10 @@ const FASE7: readonly Pantalla[] = [
   ...HERRAMIENTAS7,
 ];
 const reemplazadas = new Set(FASE7.map((x) => x.id));
-export const PANTALLAS: readonly Pantalla[] = [...BASE.filter((x) => !reemplazadas.has(x.id)), ...FASE7];
+export const PANTALLAS: readonly Pantalla[] = [
+  ...BASE.filter((x) => !reemplazadas.has(x.id)),
+  ...FASE7,
+];
 
 export const pantalla = (id: string): Pantalla => {
   const encontrada = PANTALLAS.find((item) => item.id === id);

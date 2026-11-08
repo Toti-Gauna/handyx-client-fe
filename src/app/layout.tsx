@@ -15,6 +15,15 @@ import '@/styles/splash.css';
 // Lenguaje visual de HandIA (fase R · R3/R8): clases .hia-* para los componentes de components/handia/.
 import '@/styles/handia.css';
 import '@/styles/ds.css';
+// Estilos propios de cada grupo de la Fase 7 (clases con prefijo: dsa-, dsi-, dsp-, dss-, ds-m-, dsh-, dh-), cargados
+// una vez acá para que el orden de la cascada no dependa de la ruta por la que se entró.
+import '@/styles/ds-acceso.css';
+import '@/styles/ds-inicio.css';
+import '@/styles/ds-pedir.css';
+import '@/styles/ds-seguimiento.css';
+import '@/styles/ds-mensajes.css';
+import '@/styles/ds-hogar.css';
+import '@/styles/ds-herramientas.css';
 
 export const metadata: Metadata = {
   title: { default: 'Handyx', template: '%s · Handyx' },
