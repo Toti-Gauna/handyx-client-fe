@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Pantalla } from '@/components/hx';
 import { ruta } from '@/components/nav';
-import { horarioCorto, totalDe } from '@/components/Propuesta';
+import { horarioCorto, nombreCorto, totalDe } from '@/components/Propuesta';
 import { TituloDocumento } from '@/components/TituloDocumento';
 import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { useConsulta } from '@/data/hooks';
@@ -34,7 +34,7 @@ export default function TurnoConfirmado() {
   const p = prop.datos;
   if (!p) return <Cargando forma="detalle" />;
   const e = p.especialista;
-  const primer = e.nombrePublico.split(/\s+/)[0] ?? '';
+  const primer = nombreCorto(e.nombrePublico);
   const chat = ruta('/chats/conversacion/', { id: p.conversacionId });
 
   if (p.estado !== 'aceptada' || !p.trabajoId)

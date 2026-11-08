@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { ruta } from '@/components/nav';
+import { nombreCorto } from '@/components/Propuesta';
 import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import { useConsulta } from '@/data/hooks';
 import { RUBROS_INFO } from '@/domain/etiquetas';
@@ -10,9 +11,9 @@ import { Avatar, Boton, Chip, DatoFila, Etiqueta, Nota, Tarjeta } from '@/ui';
 import { PantallaPedir } from '@/ui/pedir';
 
 const FILAS = [
-  { tipo: 'identidad', titulo: 'Identidad', icono: 'usuario' },
-  { tipo: 'antecedentes', titulo: 'Antecedentes', icono: 'escudo' },
-  { tipo: 'matricula', titulo: 'Matrícula', icono: 'documento' },
+  { tipo: 'identidad', titulo: 'Identidad', icono: 'usuario', o: 'a' },
+  { tipo: 'antecedentes', titulo: 'Antecedentes', icono: 'escudo', o: 'os' },
+  { tipo: 'matricula', titulo: 'Matrícula', icono: 'documento', o: 'a' },
 ] as const;
 
 /**
@@ -37,7 +38,7 @@ export default function PerfilEspecialista() {
   const p = prop.datos;
   if (!p) return <Cargando forma="detalle" />;
   const e = p.especialista;
-  const primer = e.nombrePublico.split(/\s+/)[0] ?? '';
+  const primer = nombreCorto(e.nombrePublico);
   const decidible = p.estado === 'pendiente' && p.autorRol === 'especialista';
   const verificada = (t: string) => e.verificaciones.find((v) => v.tipo === t) ?? null;
   const cifras: [string, string][] = [
@@ -99,12 +100,12 @@ export default function PerfilEspecialista() {
               key={f.tipo}
               icono={f.icono}
               etiqueta={f.titulo}
-              valor={v ? 'Revisada por Handyx' : 'Todavía no revisada'}
+              valor={v ? `Revisad${f.o} por Handyx` : `Todavía no revisad${f.o}`}
               sub={v ? `El ${fechaNumerica(fechaDeInstante(v.verificadoEn))}` : undefined}
               derecha={
                 v ? (
                   <Chip tono="exito" icono="check">
-                    Verificada
+                    Verificad{f.o}
                   </Chip>
                 ) : (
                   <Chip tono="gris" icono="info">

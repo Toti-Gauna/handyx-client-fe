@@ -8,7 +8,7 @@ import { estadoDeCarga, esObra } from '@/components/Trabajo';
 import { useConsulta } from '@/data/hooks';
 import { SelectorVistas } from '@/ui/seguimiento';
 
-export function useObra(extra: { cadaPagos?: number } = {}) {
+export function useObra(extra: { cadaPagos?: number; exigirObra?: boolean } = {}) {
   const id = useSearchParams().get('id');
   const trabajo = useConsulta('trabajo', id ? { parametros: { id } } : null, { cada: 6_000 });
   const pagos = useConsulta('pagos', id ? { parametros: { id } } : null, {
@@ -23,7 +23,7 @@ export function useObra(extra: { cadaPagos?: number } = {}) {
   );
   const t = trabajo.datos;
   let carga: ReactNode | null = estadoDeCarga(id, [trabajo, pagos, propuestas]);
-  if (!carga && t && !esObra(t))
+  if (!carga && t && extra.exigirObra !== false && !esObra(t))
     carga = estadoDeCarga(null, [], 'Este trabajo no es una obra por etapas');
   const lista = propuestas.datos?.items ?? [];
   return {

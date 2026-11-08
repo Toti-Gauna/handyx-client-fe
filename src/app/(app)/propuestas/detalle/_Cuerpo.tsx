@@ -3,6 +3,7 @@
 // que dijo el especialista. Solo lo que mandó el servidor: lo que no cargó, no se muestra.
 import { ruta } from '@/components/nav';
 import {
+  nombreCorto,
   Verificaciones,
   Vigencia,
   duracionTexto,
@@ -30,7 +31,7 @@ import {
 } from '@/ui';
 import { Cita } from '@/ui/pedir';
 
-const primer = (p: Propuesta) => p.especialista.nombrePublico.split(/\s+/)[0] ?? '';
+const primer = (p: Propuesta) => nombreCorto(p.especialista.nombrePublico);
 
 /** Cabecera: avatar, nombre, trabajos y verificaciones reales; «Ver perfil» debajo. */
 export function Quien({ p }: { p: Propuesta }) {
@@ -70,7 +71,7 @@ function Precio({ p, visita }: { p: Propuesta; visita: boolean }) {
   const m = materialesTexto(p.detalle?.materiales ?? null);
   return (
     <Tarjeta tono={visita ? 'noche' : 'azul'} etiqueta="Precio y horario">
-      <Etiqueta>{visita ? 'Es una consulta' : `Precio de ${primer(p)}`}</Etiqueta>
+      <Etiqueta>{visita ? 'Es una consulta' : `Precio de ${p.especialista.nombrePublico}`}</Etiqueta>
       {visita ? (
         <p style={{ margin: 0, fontSize: '0.9375rem', lineHeight: 1.4 }}>
           {primer(p)} quiere ver el problema antes de darte un precio del trabajo.
@@ -78,9 +79,11 @@ function Precio({ p, visita }: { p: Propuesta; visita: boolean }) {
       ) : null}
       <Monto centavos={totalDe(p)} tam={visita ? 1.875 : 2.625} color="inherit" />
       <span className="ds-sub">
-        Total final para vos: precio del especialista {pesos(p.monto.centavos)} + Tarifa de Handyx (
-        {porcentaje(p.comisionHandy.bp)}) {pesos(p.comisionHandy.importe.centavos)}
-        {visita ? ' · es lo que cuesta la visita' : ''}
+        Total final para vos. Precio del especialista:{' '}
+        <span style={{ whiteSpace: 'nowrap' }}>{pesos(p.monto.centavos)}</span> · Tarifa de Handyx (
+        {porcentaje(p.comisionHandy.bp)}):{' '}
+        <span style={{ whiteSpace: 'nowrap' }}>{pesos(p.comisionHandy.importe.centavos)}</span>
+        {visita ? '. Es lo que cuesta la visita.' : '.'}
       </span>
       {m && !visita ? (
         <span className="ds-fila" style={{ flexWrap: 'wrap', ['--ds-gap' as string]: '0.375rem' }}>

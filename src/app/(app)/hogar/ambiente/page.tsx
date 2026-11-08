@@ -14,6 +14,7 @@ import {
   Confirmar,
   EQUIPOS,
   PortadaAmbiente,
+  elAmbiente,
   faltaAmbiente,
   garantiaVigente,
   medidasTexto,
@@ -182,13 +183,13 @@ function Ficha({ ambiente: a, equipos }: { ambiente: Ambiente; equipos: readonly
         </blockquote>
       ) : null}
       <Boton variante="peligro" chico icono="tacho" onClick={() => setBorrar(true)}>
-        Quitar {a.nombre} de tu casa
+        Quitar {elAmbiente(a)} de tu casa
       </Boton>
       <Confirmar
         abierta={borrar}
-        titulo={`¿Quitar ${a.nombre}?`}
+        titulo={`¿Quitar ${elAmbiente(a)}?`}
         texto={`Se borran sus fotos, medidas y sus ${equipos.length} equipos. No se puede deshacer.`}
-        si={`Sí, quitar ${a.nombre}`}
+        si={`Sí, quitar ${elAmbiente(a)}`}
         ocupado={pendiente}
         error={error}
         onNo={() => setBorrar(false)}

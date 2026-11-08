@@ -350,26 +350,3 @@
     transform: none;
   }
 }
-
-/* Dentro de la app, `.hx-app .icono` (kit/app.css) le gana a los tamaños de ds.css (`.ds-* svg`). Hasta que ds.css lo
-   resuelva, se restituyen acá los de las piezas que usan estas pantallas. */
-.hx-app .ds-mosaico svg {
-  width: 1.875rem;
-  height: 1.875rem;
-}
-.hx-app .ds-mosaico-ic svg {
-  width: 48%;
-  height: 48%;
-}
-.hx-app .ds-chip svg {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-.hx-app .ds-boton svg {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-.hx-app .ds-nota svg {
-  width: 1.125rem;
-  height: 1.125rem;
-}

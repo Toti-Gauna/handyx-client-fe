@@ -68,7 +68,7 @@ export default function Conformidad() {
           <SelloListo tam={124} />
         </div>
         <div className="ds-pila" style={{ ['--ds-gap' as string]: '0.375rem' }}>
-          <Titulo texto="¿Quedó ==arreglado==?" tam={2} />
+          <Titulo nivel={2} texto="¿Quedó ==arreglado==?" tam={2} />
           <p className="ds-sub">
             Con un toque confirmás que el trabajo terminó. Después le pagás directo a {esp}.
           </p>

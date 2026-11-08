@@ -46,6 +46,12 @@ export const AMBIENTES: Record<TipoAmbiente, { nombre: string; icono: NombreIcon
 export const elAmbiente = (a: Pick<Ambiente, 'tipo' | 'nombre'>) =>
   a.nombre === AMBIENTES[a.tipo].nombre ? AMBIENTES[a.tipo].el : a.nombre;
 
+/** «del baño», «de la cocina», «de Baño de arriba». */
+export const delAmbiente = (a: Pick<Ambiente, 'tipo' | 'nombre'>) => {
+  const el = elAmbiente(a);
+  return el.startsWith('el ') ? `del ${el.slice(3)}` : `de ${el}`;
+};
+
 /** Cada equipo con su ícono y el rubro con el que se arma el pedido (null: lo elige la persona). */
 export const EQUIPOS: Record<TipoEquipo, { nombre: string; icono: NombreIcono; rubro: Rubro | null }> =
   {
@@ -195,14 +201,14 @@ export function compartibles(
     if (a.fotos.length)
       lista.push({
         item: { tipo: 'ambiente_fotos', refId: a.id },
-        titulo: `Fotos de ${elAmbiente(a)}`,
+        titulo: `Fotos ${delAmbiente(a)}`,
         sub: `${a.fotos.length} ${a.fotos.length === 1 ? 'foto' : 'fotos'}`,
         icono: 'camara',
       });
     if (a.medidas)
       lista.push({
         item: { tipo: 'ambiente_medidas', refId: a.id },
-        titulo: `Medidas de ${elAmbiente(a)}`,
+        titulo: `Medidas ${delAmbiente(a)}`,
         sub: `${medidasTexto(a.medidas)} · aproximadas`,
         icono: 'regla',
       });
@@ -231,7 +237,7 @@ export function nombreCompartido(i: ItemCompartido, hogar: Hogar | null): string
   if (i.tipo === 'informe') return 'Informe de un trabajo';
   if (i.tipo === 'equipo') return hogar?.equipos.find((e) => e.id === i.refId)?.nombre ?? 'Un equipo';
   const a = hogar?.ambientes.find((x) => x.id === i.refId);
-  const de = a ? ` de ${elAmbiente(a)}` : '';
+  const de = a ? ` ${delAmbiente(a)}` : '';
   return i.tipo === 'ambiente_fotos' ? `Fotos${de}` : `Medidas${de}`;
 }
 
@@ -250,7 +256,7 @@ export function BarraHogar({
   titulo: string;
   volver: { href: string; etiqueta: string };
   sub?: ReactNode;
-  accion?: { icono: NombreIcono; etiqueta: string; href?: string; onClick?: () => void };
+  accion?: { icono: NombreIcono; etiqueta: string; href?: string; onClick?: () => void } | undefined;
 }) {
   const dentro = accion ? <Icono nombre={accion.icono} /> : null;
   return (

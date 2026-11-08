@@ -2,15 +2,15 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
-import { Barra, entra, Pantalla } from '@/components/hx';
-import { Icono } from '@/components/Icono';
-import { Enlace, ruta } from '@/components/nav';
+import { ruta } from '@/components/nav';
 import { PREGUNTAS } from '@/content/textos';
+import { AccionesFijas, Boton, Chip, Etiqueta, FilaEnlace, Tarjeta, Texto, Titulo } from '@/ui';
+import { BarraCentro, PantallaM } from '@/ui/mensajes';
 
 /**
- * Respuesta del centro de ayuda (rediseño 3.8, como u-ayuda-detalle): la respuesta con su atajo, "¿Te sirvió?" y las
- * otras preguntas. El voto queda solo en esta pantalla: no se envía ni se guarda (no hay endpoint ni hace falta para
- * ayudar). Si no sirvió, se ofrece escribirle al equipo.
+ * Respuesta del centro de ayuda (lienzo X-Respuesta): la pregunta, la respuesta con su atajo, «¿Te sirvió?» y las
+ * otras preguntas. El voto queda solo en esta pantalla: no se envía ni se guarda. Si no sirvió, se ofrece escribirle
+ * al equipo.
  */
 export default function Respuesta() {
   const id = useSearchParams().get('p');
@@ -19,89 +19,71 @@ export default function Respuesta() {
   const sirvio = voto?.pregunta === q.id ? voto.sirvio : null;
 
   return (
-    <Pantalla
+    <PantallaM
       key={q.id}
       arriba={
-        <Barra
+        <BarraCentro
           titulo="Respuesta"
+          sub="Centro de ayuda"
           volver={{ href: '/ayuda/', etiqueta: 'Volver a las preguntas' }}
         />
       }
-      clase="du-ayuda-hx"
+      pie={
+        <AccionesFijas>
+          <Boton variante="contorno" icono="chat" href="/soporte/">
+            Escribirle a Soporte
+          </Boton>
+        </AccionesFijas>
+      }
     >
-      <div className="du-cuerpo du-ayuda">
-        <article className="du-respuesta" aria-labelledby="pregunta" {...entra(1)}>
-          <h2 id="pregunta" className="du-respuesta__pregunta">
-            <Icono nombre="pregunta" />
-            <span>{q.p}</span>
-          </h2>
-          <div className="du-respuesta__cuerpo">
-            <p>{q.r}</p>
-            {q.ir ? (
-              <Enlace className="hd-boton hd-boton--blanco du-boton-claro-hx" href={q.ir.href}>
-                {q.ir.texto}
-                <Icono nombre="flecha" />
-              </Enlace>
-            ) : null}
-          </div>
-        </article>
+      <div className="ds-cuerpo">
+        <Titulo nivel={2} tam={1.75} texto={q.p} />
+        <div className="ds-m-respuesta ds-pila">
+          <p>{q.r}</p>
+        </div>
+        {q.ir ? (
+          <Boton variante="suave" icono="flecha" href={q.ir.href}>
+            {q.ir.texto}
+          </Boton>
+        ) : null}
 
-        <section className="du-sirvio" aria-labelledby="sirvio-t" {...entra(2)}>
-          <h2 id="sirvio-t" className="hd-sobre">
-            ¿Te sirvió la respuesta?
-          </h2>
+        <Tarjeta etiqueta="¿Te sirvió la respuesta?">
+          <strong style={{ fontSize: '1.0625rem' }}>¿Te sirvió la respuesta?</strong>
           {sirvio === null ? (
-            <div className="du-sirvio__botones">
-              <button
-                type="button"
-                className="hd-boton hd-boton--chico hd-boton--blanco du-boton-claro-hx"
-                onClick={() => setVoto({ pregunta: q.id, sirvio: false })}
-              >
-                No
-              </button>
-              <button
-                type="button"
-                className="hd-boton hd-boton--chico"
-                onClick={() => setVoto({ pregunta: q.id, sirvio: true })}
-              >
+            <div className="ds-grilla">
+              <Boton variante="suave" icono="pulgar" onClick={() => setVoto({ pregunta: q.id, sirvio: true })}>
                 Sí
-              </button>
+              </Boton>
+              <Boton variante="suave" onClick={() => setVoto({ pregunta: q.id, sirvio: false })}>
+                No
+              </Boton>
             </div>
           ) : (
-            <div className="du-sirvio__gracias-hx" role="status">
-              <p className="hd-chip hd-chip--exito du-sirvio__gracias">
-                <Icono nombre="check" />
-                ¡Gracias por contarnos!
-              </p>
+            <div className="ds-pila" role="status">
+              <span>
+                <Chip tono="exito" icono="check">
+                  ¡Gracias por contarnos!
+                </Chip>
+              </span>
               {sirvio ? null : (
-                <Enlace className="hd-boton hd-boton--blanco du-boton-claro-hx" href="/soporte/">
-                  <Icono nombre="chat" />
+                <Boton variante="contorno" icono="chat" href="/soporte/">
                   Escribile al equipo
-                </Enlace>
+                </Boton>
               )}
             </div>
           )}
-        </section>
+        </Tarjeta>
 
-        <section className="du-bloque du-otras" aria-labelledby="otras-t" {...entra(3)}>
-          <h2 id="otras-t" className="hd-sobre du-sobre">
-            Otras preguntas
-          </h2>
-          <ul className="du-pastillas">
-            {PREGUNTAS.filter((x) => x.id !== q.id).map((x) => (
-              <li key={x.id}>
-                <Enlace
-                  className="du-pastilla du-pastilla--chica"
-                  href={ruta('/ayuda/respuesta/', { p: x.id })}
-                >
-                  <span>{x.p}</span>
-                  <Icono nombre="derecha" />
-                </Enlace>
-              </li>
-            ))}
-          </ul>
+        <section className="ds-pila" aria-labelledby="otras-t" style={{ ['--ds-gap' as string]: 0 }}>
+          <Etiqueta como="h2">
+            <span id="otras-t">Otras preguntas</span>
+          </Etiqueta>
+          {PREGUNTAS.filter((x) => x.id !== q.id).map((x) => (
+            <FilaEnlace key={x.id} icono="pregunta" titulo={x.p} href={ruta('/ayuda/respuesta/', { p: x.id })} />
+          ))}
         </section>
+        <Texto>Lo atiende una persona del equipo. No prometemos plazos.</Texto>
       </div>
-    </Pantalla>
+    </PantallaM>
   );
 }

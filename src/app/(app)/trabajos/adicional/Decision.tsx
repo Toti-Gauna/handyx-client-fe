@@ -47,7 +47,7 @@ export function Decision({ variante }: { variante: 'adicional' | 'repuesto' }) {
     href: ruta(rep ? '/obras/detalle/' : '/trabajos/detalle/', { id: t.id }),
     etiqueta: rep ? 'Volver a la obra' : 'Volver al trabajo',
   };
-  const decidible = p.estado === 'pendiente' && p.autorRol === 'especialista' /*TEMP*/;
+  const decidible = p.estado === 'pendiente' && p.tipo === 'adicional' && p.autorRol === 'especialista';
   const sumar = p.monto.centavos;
   const total = totalSiAprueba(t, sumar);
 
@@ -108,6 +108,7 @@ export function Decision({ variante }: { variante: 'adicional' | 'repuesto' }) {
       <div className="ds ds-cuerpo">
         <div className="ds-pila" style={{ ['--ds-gap' as string]: '0.375rem' }}>
           <Titulo
+            nivel={2}
             texto={rep ? '¿Aprobás este ==repuesto==?' : '¿Aprobás el ==adicional==?'}
             tam={1.75}
           />

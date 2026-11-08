@@ -3,21 +3,8 @@
 // sonido) y el tono corto al empezar y terminar de escuchar. Nada se guarda: los ajustes viven mientras dura el modo.
 import { useEffect, useRef } from 'react';
 import { Hoja } from '@/components/ui';
-import type { Voz } from '@/components/voz';
+import { type Voz, palabrasDichas } from '@/components/voz';
 import { Boton, Interruptor, MosaicoIcono } from '@/ui';
-
-/** Palabras con su posición en el texto, para marcar hasta dónde se leyó. */
-export function palabrasDichas(texto: string, hasta: number) {
-  const out: { p: string; estado: 'dicha' | 'actual' | 'falta' }[] = [];
-  const re = /\S+/g;
-  for (let m = re.exec(texto); m; m = re.exec(texto)) {
-    const fin = m.index + m[0].length;
-    const estado =
-      hasta >= texto.length || fin <= hasta ? 'dicha' : m.index <= hasta ? 'actual' : 'falta';
-    out.push({ p: m[0], estado });
-  }
-  return out;
-}
 
 export function Frase({
   momento,

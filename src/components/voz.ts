@@ -70,6 +70,19 @@ const vozActual = () => {
 };
 const sinVoz = () => '';
 
+/** Palabras con su posición en el texto, para marcar hasta dónde se leyó. */
+export function palabrasDichas(texto: string, hasta: number) {
+  const out: { p: string; estado: 'dicha' | 'actual' | 'falta' }[] = [];
+  const re = /\S+/g;
+  for (let m = re.exec(texto); m; m = re.exec(texto)) {
+    const fin = m.index + m[0].length;
+    const estado =
+      hasta >= texto.length || fin <= hasta ? 'dicha' : m.index <= hasta ? 'actual' : 'falta';
+    out.push({ p: m[0], estado });
+  }
+  return out;
+}
+
 export type ErrorVoz = 'permiso' | 'no_te_escuche' | 'no_disponible' | null;
 
 export interface Voz {

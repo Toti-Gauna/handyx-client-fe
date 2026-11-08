@@ -58,7 +58,7 @@ export function Informado({ t, objetivo, pago }: { t: Trabajo; objetivo: Objetiv
           <MosaicoIcono icono={mp ? 'tarjeta' : 'efectivo'} tam={5.25} />
         </div>
         <div className="ds-pila" style={{ ['--ds-gap' as string]: '0.375rem' }}>
-          <Titulo texto={titulo} tam={2} />
+          <Titulo nivel={2} texto={titulo} tam={2} />
           <p className="ds-sub" role="status">
             {sub}
           </p>

@@ -2,7 +2,7 @@
 // Hojas de decisión sobre la propuesta (C-Aceptar / C-Rechazar): se abren sobre la propuesta oscurecida. Aceptar pide
 // deslizar o el botón alternativo (WCAG 2.5.7); el foco arranca en el título, así un Enter apurado no confirma nada.
 import { DeslizarConfirmar } from '@/components/Deslizar';
-import { horarioCorto, totalDe } from '@/components/Propuesta';
+import { horarioCorto, nombreCorto, totalDe } from '@/components/Propuesta';
 import { Aviso, Hoja } from '@/components/ui';
 import type { Propuesta } from '@/contracts/v1/propuestas';
 import type { ErrorCliente } from '@/data/cliente';
@@ -11,7 +11,7 @@ import { RUBROS_INFO } from '@/domain/etiquetas';
 import { Avatar, Boton, Monto, Texto } from '@/ui';
 import { QueSigue } from '@/ui/pedir';
 
-const primer = (p: Propuesta) => p.especialista.nombrePublico.split(/\s+/)[0] ?? '';
+const primer = (p: Propuesta) => nombreCorto(p.especialista.nombrePublico);
 
 export function HojaAceptar({
   p,

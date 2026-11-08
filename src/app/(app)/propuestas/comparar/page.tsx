@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { Fragment } from 'react';
 import { usePropuestasDelPedido } from '@/app/(app)/pedidos/propuestas/_datos';
 import { Enlace, ruta } from '@/components/nav';
-import { horarioCorto, materialesTexto, garantiaTexto } from '@/components/Propuesta';
+import { garantiaTexto, horarioCorto, materialesTexto, nombreCorto } from '@/components/Propuesta';
 import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import type { Propuesta } from '@/contracts/v1/propuestas';
 import { candidataDe, esVisita, formatoPuntaje, frase, puntuar } from '@/domain/comparar';
@@ -13,7 +13,7 @@ import { RUBROS_INFO } from '@/domain/etiquetas';
 import { Avatar, Boton, Nota } from '@/ui';
 import { PantallaPedir, TarjetaPromedio } from '@/ui/pedir';
 
-const primerNombre = (p: Propuesta) => p.especialista.nombrePublico.split(/\s+/)[0] ?? '';
+const primerNombre = (p: Propuesta) => nombreCorto(p.especialista.nombrePublico);
 /** El nombre corto, salvo que dos lo compartan. */
 const nombreColumna = (p: Propuesta, todas: readonly Propuesta[]) =>
   todas.filter((x) => primerNombre(x) === primerNombre(p)).length > 1

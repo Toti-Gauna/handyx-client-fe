@@ -1,9 +1,10 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import { Barra, Pantalla } from '@/components/hx';
 import { ruta, useIr } from '@/components/nav';
 import { Aviso } from '@/components/ui';
-import { useEnvio } from '@/data/hooks';
+import { useConsulta, useEnvio } from '@/data/hooks';
 import { fechaDeInstante, fechaLarga, horaDeInstante } from '@/domain/fechas';
 import { pesos } from '@/domain/dinero';
 import { AccionesFijas, Boton, Nota, Tarjeta, Titulo } from '@/ui';
@@ -14,14 +15,20 @@ import { useObra } from '../compartido';
  * vale el horario actual.
  */
 export default function FechaObra() {
-  const o = useObra();
+  const o = useObra({ exigirObra: false });
+  const propuestaId = useSearchParams().get('propuesta');
+  const directa = useConsulta('propuesta', propuestaId ? { parametros: { id: propuestaId } } : null);
   const accion = useEnvio();
   const ir = useIr();
   const { t } = o;
   if (o.carga || !t) return o.carga;
   const esp = t.especialista.nombrePublico;
   const volver = { href: ruta('/obras/detalle/', { id: t.id }), etiqueta: 'Volver a la obra' };
-  const p = o.pendientes.find((x) => x.tipo === 'cambio_acuerdo') ?? null;
+  const candidata = directa.datos ?? o.pendientes.find((x) => x.tipo === 'cambio_acuerdo') ?? null;
+  const p =
+    candidata && candidata.tipo === 'cambio_acuerdo' && candidata.estado === 'pendiente' && candidata.trabajoId === t.id
+      ? candidata
+      : null;
   const dia = (i: string) => `${fechaLarga(fechaDeInstante(i))} · ${horaDeInstante(i)} h`;
   const antes = t.acuerdo.horario?.inicio ?? null;
   const nuevo = p?.horario?.inicio ?? null;
@@ -69,7 +76,7 @@ export default function FechaObra() {
         {p ? (
           <>
             <div className="ds-pila" style={{ ['--ds-gap' as string]: '0.375rem' }}>
-              <Titulo texto={suyo ? '¿Aceptás el ==cambio==?' : 'Tu ==cambio== espera respuesta'} tam={1.75} />
+              <Titulo nivel={2} texto={suyo ? '¿Aceptás el ==cambio==?' : 'Tu ==cambio== espera respuesta'} tam={1.75} />
               <p className="ds-sub">Mientras no se acepte, sigue valiendo el horario actual.</p>
             </div>
             {antes && nuevo ? (
@@ -99,7 +106,7 @@ export default function FechaObra() {
           </>
         ) : (
           <>
-            <Titulo texto="Sin cambios de ==fecha==" tam={1.75} />
+            <Titulo nivel={2} texto="Sin cambios de ==fecha==" tam={1.75} />
             <Nota icono="info" rol="status">
               No hay ningún cambio de fecha esperando respuesta. Si hace falta mover algo, proponé otro día y
               {` ${esp}`} lo ve.

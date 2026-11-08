@@ -194,3 +194,9 @@ export function ChipEstadoPropuesta({ p }: { p: Pick<Propuesta, 'estado'> }) {
     </Chip>
   );
 }
+
+/** Nombre corto para los textos («Julián»); si el segundo es un número («Especialista 1»), van los dos. */
+export function nombreCorto(nombre: string): string {
+  const [a = nombre, b] = nombre.trim().split(/\s+/);
+  return b && /^\d+$/.test(b) ? `${a} ${b}` : a;
+}

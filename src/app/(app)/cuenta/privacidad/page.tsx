@@ -57,13 +57,13 @@ export default function Privacidad() {
         <Tarjeta etiqueta="HandIA y tus datos">
           <div className="ds-fila">
             <AvatarAsistente />
-            <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+            <div className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
               <strong style={{ fontSize: '1.0625rem' }}>HandIA y tus datos</strong>
               <Texto>
                 Funciona en tu celular, sin IA externa. Saca teléfonos, emails y documentos antes de procesar, y
                 nunca recibe fotos ni los datos de tu cuenta. Usarla es opcional.
               </Texto>
-            </span>
+            </div>
           </div>
         </Tarjeta>
         <div className="ds-pila" style={{ ['--ds-gap' as string]: 0 }}>

@@ -77,7 +77,7 @@ export default function Obra() {
             icono="calendario"
             titulo={cambio.autorRol === 'especialista' ? `${esp} propone un cambio` : 'Tu cambio espera respuesta'}
             sub="Ver el cambio de fecha"
-            href={ruta('/obras/fecha/', { id: t.id })}
+            href={ruta('/obras/fecha/', { id: t.id, propuesta: cambio.id })}
           />
         ) : null}
         <PestanasObra id={t.id} activa="etapas" />

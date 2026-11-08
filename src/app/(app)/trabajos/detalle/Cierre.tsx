@@ -92,15 +92,15 @@ export function Cierre(c: ContextoTrabajo) {
         ) : null}
         <div className="ds-cuerpo">
           {finalizado ? (
-            <Titulo texto="¡Quedó ==arreglado==!" tam={2} />
+            <Titulo nivel={2} texto="¡Quedó ==arreglado==!" tam={2} />
           ) : cancelado ? (
-            <Titulo texto="Trabajo ==cancelado==" tam={1.75} />
+            <Titulo nivel={2} texto="Trabajo ==cancelado==" tam={1.75} />
           ) : (
             <>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <SelloListo tam={104} etiqueta="Terminó el trabajo" />
               </div>
-              <Titulo texto={`${esp} ==terminó== el trabajo`} tam={1.75} />
+              <Titulo nivel={2} texto={`${esp} ==terminó== el trabajo`} tam={1.75} />
             </>
           )}
           {t.estado === 'terminado_por_especialista' ? (
