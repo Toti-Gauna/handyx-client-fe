@@ -10,18 +10,12 @@ export const metadata: Metadata = { title: 'Sin conexión' };
  */
 export default function SinConexion() {
   return (
-    <EstadoSistema
-      handy={{ img: 'handy-cano-roto', ancho: 354, alto: 405 }}
-      titulo="Estás ==sin conexión=="
-      acciones={<Reintentar />}
-    >
+    <EstadoSistema sinSenal titulo="Estás sin ==conexión==" acciones={<Reintentar />}>
       <p>
-        No pudimos abrir esta pantalla. Lo que hayas intentado hacer sin conexión{' '}
-        <strong>no se envió</strong>: ni pedidos, ni respuestas a propuestas, ni pagos, ni mensajes.
+        No se mandó nada. Lo que hayas intentado hacer sin conexión <strong>no se envió</strong>: ni
+        pedidos, ni respuestas a propuestas, ni pagos, ni mensajes.
       </p>
-      <p className="sistema-hx__suave">
-        Cuando vuelva la señal, reintentá. Vas a ver el estado real que tiene el servidor.
-      </p>
+      <p>Cuando vuelva la señal, reintentá y revisá que tu mensaje o tu pedido se hayan enviado.</p>
     </EstadoSistema>
   );
 }

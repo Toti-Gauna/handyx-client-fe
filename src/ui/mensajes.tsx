@@ -603,30 +603,34 @@ export function Pregunta({ texto, abierta = false, children }: { texto: string; 
 // ── Errores a pantalla completa ──────────────────────────────────────────────────────────────────────────
 export function PantallaError({
   handy,
-  icono,
+  dibujo,
   titulo,
   sub,
   children,
 }: {
-  /** Handy roto (ruta en /img) o, sin él, el ícono sobre un mosaico. */
+  /** Handy roto (ruta en /img). */
   handy?: { img: string; ancho: number; alto: number };
-  icono?: NombreIcono;
+  /** Otra ilustración propia (p. ej. `EscenaSinSenal`) cuando no hay Handy. */
+  dibujo?: ReactNode;
+  /** Admite ==marca==. */
   titulo: string;
-  sub: string;
+  sub: ReactNode;
   children?: ReactNode;
 }) {
   return (
-    <div className="ds-m-error" role="alert">
+    <div className="ds-m-error">
       <TituloDocumento texto={titulo.replace(/==/g, '')} />
       <div className="ds-m-error__dibujo" aria-hidden="true">
         {handy ? (
           <Image src={`/img/${handy.img}.webp`} alt="" width={handy.ancho} height={handy.alto} priority />
         ) : (
-          <MosaicoIcono icono={icono ?? 'sinSenal'} tam={7.5} tono="gris" />
+          dibujo
         )}
       </div>
       <Titulo texto={titulo} tam={2.125} />
-      <p className="ds-sub">{sub}</p>
+      <div className="ds-sub" role="status">
+        {sub}
+      </div>
       {children}
     </div>
   );

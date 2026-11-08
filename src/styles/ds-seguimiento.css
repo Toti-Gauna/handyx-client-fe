@@ -202,6 +202,10 @@
   gap: 0.75rem;
   font-size: 0.9375rem;
 }
+.dss-total > span:last-child,
+.dss-total > strong:last-child {
+  white-space: nowrap;
+}
 .dss-total--fuerte {
   padding-top: 0.625rem;
   border-top: 1px solid var(--ds-borde);

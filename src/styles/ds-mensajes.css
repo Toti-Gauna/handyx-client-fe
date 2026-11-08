@@ -725,6 +725,14 @@
 .ds-m-error .ds-sub {
   text-align: center;
 }
+.ds-m-error .ds-sub {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ds-texto);
+}
+.ds-m-error .ds-sub p {
+  margin: 0 0 0.5rem;
+}
 .ds-m-error__dibujo {
   display: flex;
   align-items: center;

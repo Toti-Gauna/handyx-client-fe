@@ -67,7 +67,7 @@ export default function GastadoObra() {
           ))}
         </div>
         <Tarjeta etiqueta="De qué se compone">
-          <FilaTotal texto={`Mano de obra y materiales (${t.etapas.length} etapas)`} centavos={d.acuerdo} />
+          <FilaTotal texto="Obra acordada" centavos={d.acuerdo} />
           {d.adicional ? <FilaTotal texto="Repuestos y adicionales aprobados" centavos={d.adicional} /> : null}
           <FilaTotal texto="Tarifa de servicio" centavos={d.tarifa} />
           <FilaTotal texto="Total" centavos={tot.total} fuerte />

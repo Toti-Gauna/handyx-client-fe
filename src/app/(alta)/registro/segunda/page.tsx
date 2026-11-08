@@ -130,7 +130,7 @@ export default function SegundaVerificacion() {
       />
       {esVistaDePrueba ? (
         <Nota tono="amarillo">
-          Vista de prueba: el código es <strong className="codigo">{CODIGO_PRUEBA}</strong>.
+          Vista de prueba: el código es <strong>{CODIGO_PRUEBA}</strong>.
         </Nota>
       ) : null}
     </PantallaPaso>

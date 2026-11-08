@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Barra, Pantalla } from '@/components/hx';
-import { ruta, useIr } from '@/components/nav';
+import { Enlace, ruta, useIr } from '@/components/nav';
 import { Aviso } from '@/components/ui';
 import { useConsulta, useEnvio } from '@/data/hooks';
 import { fechaDeInstante, fechaLarga, horaDeInstante } from '@/domain/fechas';
@@ -29,7 +29,13 @@ export default function FechaObra() {
     candidata && candidata.tipo === 'cambio_acuerdo' && candidata.estado === 'pendiente' && candidata.trabajoId === t.id
       ? candidata
       : null;
-  const dia = (i: string) => `${fechaLarga(fechaDeInstante(i))} · ${horaDeInstante(i)} h`;
+  const dia = (i: string) => (
+    <>
+      {fechaLarga(fechaDeInstante(i))}
+      <br />
+      {horaDeInstante(i)} h
+    </>
+  );
   const antes = t.acuerdo.horario?.inicio ?? null;
   const nuevo = p?.horario?.inicio ?? null;
   const cambiaPrecio = p !== null && p.monto.centavos !== t.acuerdo.monto.centavos;
@@ -100,7 +106,7 @@ export default function FechaObra() {
             {cambiaPrecio ? (
               <Nota icono="alerta" tono="amarillo">
                 También cambia el precio: de {pesos(t.acuerdo.monto.centavos)} a {pesos(p.monto.centavos)}. Mirá el{' '}
-                <a href={ruta('/propuestas/detalle/', { id: p.id })}>detalle completo</a> antes de aceptar.
+                <Enlace href={ruta('/propuestas/detalle/', { id: p.id })}>detalle completo</Enlace> antes de aceptar.
               </Nota>
             ) : null}
           </>

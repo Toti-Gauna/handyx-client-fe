@@ -136,8 +136,8 @@ export function PasoEmail({
       ) : null}
       {esVistaDePrueba && modo === 'ingreso' ? (
         <Nota tono="amarillo">
-          Vista de prueba: cuenta ficticia <strong className="codigo">{CUENTA_PRUEBA.email}</strong>
-          . Con otro email se crea una cuenta nueva.
+          Vista de prueba: cuenta ficticia <strong>{CUENTA_PRUEBA.email}</strong>. Con otro email se
+          crea una cuenta nueva.
         </Nota>
       ) : null}
       <div className="ds-pila" style={{ '--ds-gap': '0' } as CSSProperties}>

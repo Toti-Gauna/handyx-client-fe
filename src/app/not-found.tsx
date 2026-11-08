@@ -1,8 +1,6 @@
-import type { Route } from 'next';
-import Link from 'next/link';
-import { Icono } from '@/components/Icono';
 import { Marco } from '@/components/Marco';
 import { EstadoSistema } from '@/components/Sistema';
+import { Boton } from '@/ui';
 
 export default function NoEncontrada() {
   return (
@@ -12,19 +10,17 @@ export default function NoEncontrada() {
         titulo="No encontramos esta ==página=="
         acciones={
           <>
-            <Link className="hd-boton" href={'/' as Route}>
-              <Icono nombre="casa" />
-              Volver al inicio
-            </Link>
-            <Link className="hd-boton hd-boton--fantasma" href={'/ayuda/' as Route}>
+            <Boton icono="casa" href="/inicio/">
+              Ir al inicio
+            </Boton>
+            <Boton variante="contorno" icono="pregunta" href="/ayuda/">
               Centro de ayuda
-            </Link>
+            </Boton>
           </>
         }
       >
         <p>
-          Puede que el enlace esté incompleto o que la pantalla ya no exista. No se perdió nada de
-          tu cuenta.
+          Puede que el enlace esté viejo o que ya no tengas acceso. No se perdió nada de tu cuenta.
         </p>
       </EstadoSistema>
     </Marco>

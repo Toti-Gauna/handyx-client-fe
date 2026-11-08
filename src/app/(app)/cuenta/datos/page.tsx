@@ -1,64 +1,57 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { FormPerfil } from '@/components/FormPerfil';
-import { AvatarHx, Barra, entra, Pantalla } from '@/components/hx';
-import { Icono } from '@/components/Icono';
-import { Enlace } from '@/components/nav';
 import { useSesion } from '@/components/SesionProvider';
-import { Aviso } from '@/components/ui';
+import type { Ubicacion } from '@/contracts/v1/cuenta';
+import { direccionesGuardadas, direccionesServidor, suscribirDirecciones } from '@/data/direcciones';
 import { fechaNumerica } from '@/domain/fechas';
 import { GENEROS_ETIQUETA, nombrePais } from '@/domain/formularios';
+import { AccionesFijas, Boton, Chip, DatoFila, Etiqueta, Nota, Tarjeta } from '@/ui';
+import { BarraCentro, Movimiento, PantallaM } from '@/ui/mensajes';
 
 const VOLVER = { href: '/cuenta/', etiqueta: 'Volver a tu cuenta' };
+const texto = (u: Ubicacion) => [u.direccion, u.barrio, u.ciudad].filter(Boolean).join(' · ');
 
 /**
- * Datos personales (rediseño 3.8, como u-datos): el perfil operativo en una lista y "Editar mis datos". Lo que falta
- * queda vacío (no se inventa) y no se piden DNI ni documentos. El email de ingreso no es parte del perfil.
+ * Tus datos y direcciones (lienzo X-Datos): el perfil operativo y las direcciones. Lo que falta queda vacío (no se
+ * inventa) y no se piden DNI ni documentos. El email de ingreso no es parte del perfil.
  */
 export default function Datos() {
   const { sesion } = useSesion();
   const [editando, setEditando] = useState(useSearchParams().get('editar') === '1');
   const [guardado, setGuardado] = useState(false);
+  const otras = useSyncExternalStore(suscribirDirecciones, direccionesGuardadas, direccionesServidor);
   const p = sesion.perfil;
   const nombre = [p.nombre, p.apellido].filter(Boolean).join(' ');
-  const u = p.ubicacion;
-  const filas: readonly [string, string | null][] = [
-    ['Nombre', nombre || null],
-    ['Fecha de nacimiento', p.fechaNacimiento ? fechaNumerica(p.fechaNacimiento) : null],
-    ['Nacionalidad', p.nacionalidad ? nombrePais(p.nacionalidad) : null],
-    ['Género', p.genero ? (GENEROS_ETIQUETA[p.genero] ?? null) : null],
-    [
-      'Dirección principal',
-      u ? [u.direccion, u.barrio, u.ciudad].filter(Boolean).join(', ') : null,
-    ],
-  ];
+  const filas = [
+    { icono: 'usuario', etiqueta: 'Nombre', valor: nombre || null },
+    { icono: 'calendario', etiqueta: 'Fecha de nacimiento', valor: p.fechaNacimiento ? fechaNumerica(p.fechaNacimiento) : null },
+    { icono: 'pin', etiqueta: 'Nacionalidad', valor: p.nacionalidad ? nombrePais(p.nacionalidad) : null },
+    { icono: 'personas', etiqueta: 'Género', valor: p.genero ? (GENEROS_ETIQUETA[p.genero] ?? null) : null },
+  ] as const;
 
   return (
-    <Pantalla
-      arriba={<Barra titulo={editando ? 'Editar mis datos' : 'Datos personales'} volver={VOLVER} />}
+    <PantallaM
+      arriba={<BarraCentro titulo={editando ? 'Editar mis datos' : 'Tus datos'} volver={VOLVER} />}
       pie={
-        editando ? undefined : (
-          <button
-            type="button"
-            className="hd-boton"
-            onClick={() => {
-              setGuardado(false);
-              setEditando(true);
-            }}
-          >
-            <Icono nombre="editar" />
-            Editar mis datos
-          </button>
+        editando ? null : (
+          <AccionesFijas>
+            <Boton
+              icono="editar"
+              onClick={() => {
+                setGuardado(false);
+                setEditando(true);
+              }}
+            >
+              Editar mis datos
+            </Boton>
+          </AccionesFijas>
         )
       }
-      clase="du-datos-hx"
     >
-      <div className="du-cuerpo du-datos">
-        <div className="du-yo du-yo--centro" {...entra(1, 'pop')}>
-          <AvatarHx nombre={nombre || 'Handyx'} tamano="grande" />
-        </div>
+      <div className="ds-cuerpo">
         {editando ? (
           <FormPerfil
             onGuardado={() => {
@@ -70,29 +63,39 @@ export default function Datos() {
         ) : (
           <>
             {guardado ? (
-              <Aviso tipo="ok" rol="status">
+              <Nota icono="check" tono="exito" rol="status">
                 Guardamos tus datos.
-              </Aviso>
+              </Nota>
             ) : null}
-            <dl className="hd-tarjeta hd-tarjeta--gris hd-tarjeta--compacta hd-lista" {...entra(2)}>
-              {filas.map(([etiqueta, valor]) => (
-                <div key={etiqueta} className="hd-fila du-fila-dato">
-                  <dt>{etiqueta}</dt>
-                  <dd className={valor ? undefined : 'du-falta'}>{valor ?? 'Sin completar'}</dd>
-                </div>
+            <Tarjeta etiqueta="Tus datos">
+              {filas.map((f) => (
+                <DatoFila key={f.etiqueta} icono={f.icono} etiqueta={f.etiqueta} valor={f.valor ?? 'Sin completar'} />
               ))}
-            </dl>
-            <p className="du-nota" {...entra(3)}>
-              <Icono nombre="escudo" />
-              <span>
-                No pedimos DNI ni documentos. Lo que falta queda vacío: no inventamos datos. Tu
-                dirección la ve solo el especialista con el que acordás un trabajo. Otras
-                direcciones, en <Enlace href="/cuenta/direcciones/">Direcciones</Enlace>.
-              </span>
-            </p>
+            </Tarjeta>
+            <Tarjeta etiqueta="Direcciones" pie={{ texto: 'Sumar una dirección', href: '/cuenta/direcciones/' }}>
+              <Etiqueta como="h2">Direcciones</Etiqueta>
+              {p.ubicacion ? (
+                <Movimiento
+                  icono="casa"
+                  titulo="Principal"
+                  sub={texto(p.ubicacion)}
+                  derecha={<Chip icono="check">Principal</Chip>}
+                />
+              ) : (
+                <Nota icono="info" tono="gris">
+                  Todavía no cargaste tu dirección.
+                </Nota>
+              )}
+              {otras.map((d) => (
+                <Movimiento key={d.id} icono={d.tipo === 'trabajo' ? 'maletin' : 'pin'} titulo={d.nombre} sub={texto(d.ubicacion)} />
+              ))}
+            </Tarjeta>
+            <Nota icono="candado" tono="gris">
+              Sin DNI ni CUIT. La dirección exacta la ve solo el especialista que elegís.
+            </Nota>
           </>
         )}
       </div>
-    </Pantalla>
+    </PantallaM>
   );
 }

@@ -205,8 +205,7 @@ export function FlujoCodigo({
       </Nota>
       {esVistaDePrueba ? (
         <Nota tono="amarillo" icono="info">
-          Vista de prueba: no se manda ningún email. El código es{' '}
-          <strong className="codigo">{CODIGO_PRUEBA}</strong>.
+          Vista de prueba: no se manda ningún email. El código es <strong>{CODIGO_PRUEBA}</strong>.
         </Nota>
       ) : null}
     </PantallaPaso>

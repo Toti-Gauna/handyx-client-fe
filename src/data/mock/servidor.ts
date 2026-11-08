@@ -246,7 +246,11 @@ function entrarComo(
 }
 
 // ── Manejadores ────────────────────────────────────────────────────────────────────────────────────────
-const DRAFT4 = manejadoresDraft4({ entrarComo, trabajoPropio: (m, id) => trabajoPropio(m, id) });
+const DRAFT4 = manejadoresDraft4({
+  entrarComo,
+  trabajoPropio: (m, id) => trabajoPropio(m, id),
+  refsDe,
+});
 
 export const MANEJADORES: Record<EndpointId, Manejador> = {
   ...(DRAFT4 as Record<

@@ -415,6 +415,7 @@ export function manejadoresDraft4(dep: {
     aceptaciones: { documento: string; version: string }[] | undefined,
   ) => unknown;
   trabajoPropio: (m: Mundo, id: string) => Trabajo;
+  refsDe: (m: Mundo, ids: readonly string[], campo: string) => Ambiente['fotos'];
 }): Record<string, Manejador> {
   // La sesión la exige el adaptador (cliente-mock.ts) según `acceso` del contrato.
   const sesion = (f: Manejador): Manejador => f;
@@ -441,8 +442,10 @@ export function manejadoresDraft4(dep: {
         throw falla(m, 'no_autenticado', 'Falta el código de tu segunda verificación.', {
           campos: [{ campo: 'segundoFactor', motivo: 'requerido' }],
         });
+      // Si la cuenta es nueva y faltan las aceptaciones, entrarComo falla y el código sigue valiendo (como el BE).
+      const sesionNueva = dep.entrarComo(m, c.email, c.aceptaciones);
       m.d4.codigos.delete(c.email);
-      return dep.entrarComo(m, c.email, c.aceptaciones);
+      return sesionNueva;
     },
     accesoProveedor: (m) => {
       throw falla(
@@ -534,8 +537,9 @@ export function manejadoresDraft4(dep: {
       const a = ambientePropio(m, r.p.id ?? '');
       const c = cuerpo(r, AmbienteEdicion);
       versionOk(m, a.version, c.version);
-      const { version: _v, fotoIds: _f, ...cambios } = c;
+      const { version: _v, fotoIds, ...cambios } = c;
       Object.assign(a, cambios, { version: a.version + 1 });
+      if (fotoIds) a.fotos = dep.refsDe(m, fotoIds, 'fotoIds');
       m.d4.hogar.version += 1;
       recalcularHogar(m);
       return ambientePropio(m, a.id);

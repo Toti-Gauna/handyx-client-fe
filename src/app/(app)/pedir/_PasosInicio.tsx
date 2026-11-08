@@ -190,10 +190,7 @@ export function PasoFotos({ f }: { f: Pedido }) {
         estado={f.estadoFotos}
         etiqueta="Sacar o elegir una foto"
       />
-      <Nota icono="escudo">
-        Que no se vean caras, documentos ni la dirección. Quedan privadas: solo las ven quienes
-        participan del pedido.
-      </Nota>
+      <Nota icono="escudo">Que no se vean caras, documentos ni la dirección.</Nota>
       <Nota icono="info" tono="gris">
         HandIA no ve tus fotos: van al pedido, para los especialistas.
       </Nota>
@@ -204,7 +201,7 @@ export function PasoFotos({ f }: { f: Pedido }) {
 export function PasoCuando({ f }: { f: Pedido }) {
   const volver: Volver = { alTocar: () => f.ir('revisar'), etiqueta: 'Volver a revisar el pedido' };
   return (
-    <PantallaPedir titulo="¿Para cuándo?" sub="Cambiar" volver={volver}>
+    <PantallaPedir titulo="¿Para cuándo?" volver={volver}>
       <div className="ds-pila">
         <Titulo nivel={2} texto="¿Para ==cuándo==?" id="para-cuando" />
         <Sub>

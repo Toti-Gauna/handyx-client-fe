@@ -160,7 +160,11 @@ export default function Perfil() {
         ))}
       </div>
       {estado ? (
-        <Nota tono={push === 'concedido' ? 'exito' : 'gris'} rol="status">
+        <Nota
+          tono={push === 'concedido' ? 'exito' : 'gris'}
+          icono={push === 'concedido' ? 'checkCirculo' : 'info'}
+          rol="status"
+        >
           {estado}
         </Nota>
       ) : (

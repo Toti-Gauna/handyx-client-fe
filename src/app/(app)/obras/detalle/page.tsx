@@ -95,13 +95,15 @@ export default function Obra() {
                   <span className="dss-fila-etapa__n" aria-hidden="true">
                     {e.orden}
                   </span>
-                  <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+                  <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.25rem' }}>
                     <strong style={{ fontSize: '1rem' }}>{e.titulo}</strong>
                     <span className="ds-fila-enlace__sub">{pesos(e.monto.centavos)}</span>
+                    <span>
+                      <Chip tono={est.tono} icono={e.estado === 'confirmada' ? 'check' : 'reloj'}>
+                        {est.texto}
+                      </Chip>
+                    </span>
                   </span>
-                  <Chip tono={est.tono} icono={e.estado === 'confirmada' ? 'check' : 'reloj'}>
-                    {est.texto}
-                  </Chip>
                   <Icono nombre="flecha" />
                 </Enlace>
               </li>
