@@ -237,7 +237,9 @@ export function BloquePrecio({
   etiqueta: string;
 }) {
   return (
-    <Enlace href={href} className="dsp-precio" aria-label={etiqueta}>
+    <Enlace href={href} className="dsp-precio">
+      {/* El nombre accesible es la etiqueta más lo que se ve (WCAG 2.5.3). */}
+      <span className="ds-solo-lector">{etiqueta}: </span>
       <span className="dsp-precio__izq">
         <span className="dsp-precio__tipo">{tipo}</span>
         <Monto centavos={centavos} tam={1.875} />
@@ -276,7 +278,7 @@ export function AccionesPropuesta({
       <Enlace
         href={perfil}
         className="ds-boton ds-boton--contorno ds-boton--chico"
-        aria-label={`Ver el perfil de ${nombre}`}
+        aria-label={`Ver perfil de ${nombre}`}
       >
         <Icono nombre="usuario" />
         Ver perfil

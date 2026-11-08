@@ -4,6 +4,7 @@ import '@/styles/app.css';
 import type { Metadata, Viewport } from 'next';
 import { AvisoVistaPrueba } from '@/components/PanelPrueba';
 import { AvisoContrato, AvisoRed, AvisoVersion, RegistroSW } from '@/components/Pwa';
+import { DesplazarConTeclado } from '@/components/DesplazarConTeclado';
 import { SCRIPT_SPLASH, Splash } from '@/components/Splash';
 import '@/styles/componentes.css';
 // Kit visual de la demo de la landing (generado con scripts/kit.mjs) y sus ajustes para la app.
@@ -55,6 +56,7 @@ export default function RaizLayout({ children }: { children: React.ReactNode }) 
         <AvisoContrato />
         <AvisoVersion />
         <RegistroSW />
+        <DesplazarConTeclado />
         {children}
       </body>
     </html>

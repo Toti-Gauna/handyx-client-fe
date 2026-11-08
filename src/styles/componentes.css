@@ -1292,3 +1292,9 @@ dialog.hoja[open]::backdrop {
 .buscando i:nth-child(3) {
   animation-delay: 0.3s;
 }
+
+/* Zona desplazable que se volvió enfocable (src/components/DesplazarConTeclado.tsx): el foco se ve. */
+.pantalla__scroll[data-teclado-scroll]:focus-visible {
+  outline: 3px solid var(--linea-foco);
+  outline-offset: -3px;
+}

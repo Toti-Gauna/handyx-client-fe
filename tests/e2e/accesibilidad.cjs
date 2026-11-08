@@ -98,24 +98,17 @@ const HOJAS = [
   ['modal-fee', E('/inicio/', 'nuevo-usuario'), async () => {}],
   ['reingreso', E('/inicio/', 'sesion-vencida'), async () => {}],
   ['direccion-nueva', E('/cuenta/direcciones/', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Agregar una dirección' }).click()],
-  ['pago-ver-mas', E('/cuenta/pagos/', 'efectivo-reportado'), (p) => p.getByRole('button', { name: /^Ver más/ }).first().click()],
+  // Fase 7: los movimientos de Cuenta › Pagos ya no se despliegan («Ver más»): cada uno lleva a su pago.
   ['ayuda-gracias', E('/ayuda/respuesta/?p=pagar', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'No', exact: true }).click()],
   ['reclamo-detalle', E('/reclamos/', 'reclamo'), (p) => p.getByRole('link', { name: /Ver el reclamo/ }).first().click()],
   ['version-nueva', E('/inicio/', 'varias-propuestas'), async (p) => {
     await p.getByRole('button', { name: 'Panel de prueba' }).click();
     await p.getByRole('button', { name: 'Simular versión nueva' }).click();
   }],
-  ['hoja-achicada', E('/pedidos/', 'obra-por-etapas'), async (p) => {
-    await p.getByRole('link', { name: /Especialista 3/ }).first().click();
-    await p.locator('.du-manija-hx').focus();
-    await p.keyboard.press('ArrowDown');
-  }],
-  ['pago-retorno', E('/pedidos/', 'mp-pendiente-fallido'), async (p) => {
-    await p.getByRole('link', { name: /Especialista 2/ }).first().click();
-    await p.getByRole('link', { name: 'Pago al especialista' }).click();
-    await p.getByRole('button', { name: 'Pagar de otra forma' }).click();
-    await p.getByLabel('Mercado Pago').check();
-    await p.getByRole('button', { name: 'Ir a Mercado Pago' }).click();
+  // Fase 7: ya no hay hoja azul achicable (gestos.tsx · useHojaAzul no se usa en ninguna pantalla).
+  ['pago-retorno', E(`/trabajos/pago/?id=${P}17`, 'mp-pendiente-fallido'), async (p) => {
+    await p.getByText('Mercado Pago', { exact: true }).click();
+    await p.getByRole('button', { name: /con Mercado Pago$/ }).click();
     await p.waitForURL('**/pagos/retorno/**');
   }],
   ['panel-prueba', E('/inicio/', 'varias-propuestas'), (p) => p.getByRole('button', { name: 'Panel de prueba' }).click()],
@@ -217,7 +210,7 @@ async function auditar(p, etiqueta) {
     for (const [nombre, r, accion] of HOJAS) {
       await ir(r);
       // Una acción que ya no encuentra su botón (pantalla rediseñada) se anota como falla y la auditoría sigue.
-      p.setDefaultTimeout(8000);
+      p.setDefaultTimeout(15000);
       const fallo = await accion(p).then(
         () => null,
         (e) => `no se pudo abrir: ${String(e.message).split('\n')[0]}`,

@@ -203,19 +203,16 @@
 }
 
 /* Respuestas rápidas: una sola fila que se desliza de costado */
+/* Las respuestas rápidas bajan de línea en vez de esconderse a un costado (con la letra grande se ven todas). */
 .ds-m-rapidas {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-.ds-m-rapidas::-webkit-scrollbar {
-  display: none;
 }
 .ds-m-rapidas .ds-pastilla {
-  flex: none;
-  white-space: nowrap;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 /* ── Tarjeta dentro del chat (propuesta, otro horario, presupuesto) ────────────────────────────────────── */
@@ -802,4 +799,11 @@
   color: var(--ds-azul);
   font-size: 0.9375rem;
   font-weight: 700;
+}
+
+/* Agenda en teléfonos angostos (360 px): el calendario usa el ancho de la tarjeta para que cada día mida 44 px. */
+@media (max-width: 24rem) {
+  .ds-tarjeta > .cal {
+    margin-inline: -0.875rem;
+  }
 }

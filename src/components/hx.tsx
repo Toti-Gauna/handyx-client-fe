@@ -42,7 +42,6 @@ export function Pantalla({
   children,
   clase = '',
   desplazable = true,
-  soloTexto,
 }: {
   arriba?: React.ReactNode;
   pie?: React.ReactNode;
@@ -50,20 +49,11 @@ export function Pantalla({
   clase?: string;
   /** false: el contenido maneja su propio desplazamiento (p. ej. una hoja azul que llena la pantalla). */
   desplazable?: boolean;
-  /**
-   * Nombre de la zona desplazable cuando adentro no hay nada que tome el foco (solo texto): así se puede desplazar
-   * con el teclado (WCAG 2.1.1).
-   */
-  soloTexto?: string;
 }) {
-  const enfocable =
-    desplazable && soloTexto ? { tabIndex: 0, role: 'region', 'aria-label': soloTexto } : {};
   return (
     <div className={`pantalla du-app hd-entrando ${clase}`.trim()}>
       {arriba}
-      <div className={desplazable ? 'pantalla__scroll' : 'pantalla__resto'} {...enfocable}>
-        {children}
-      </div>
+      <div className={desplazable ? 'pantalla__scroll' : 'pantalla__resto'}>{children}</div>
       {pie ? <div className="du-pie">{pie}</div> : null}
     </div>
   );
