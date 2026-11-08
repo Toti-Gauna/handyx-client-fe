@@ -16,7 +16,11 @@ import { Cargando } from './ui';
 const SIN_BARRA = [
   '/handia/',
   '/pedir/',
-  '/propuestas/contraoferta/',
+  '/propuestas/',
+  '/pedidos/propuestas/',
+  '/herramientas/medir/',
+  '/herramientas/nivel/',
+  '/herramientas/linterna/',
   '/trabajos/resena/',
   '/reclamos/nuevo/',
   '/trabajos/cambiar/',
