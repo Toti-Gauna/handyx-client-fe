@@ -9,14 +9,8 @@ import { useConsulta } from '@/data/hooks';
 import { RUBROS_INFO } from '@/domain/etiquetas';
 import { diaMes, horaDeInstante } from '@/domain/fechas';
 import { Avatar, Nota, Titulo } from '@/ui';
-import {
-  AvatarAsistente,
-  CampoBuscar,
-  FilaConversacion,
-  PantallaM,
-  coincide,
-  etiquetaDia,
-} from '@/ui/mensajes';
+import { AvatarAsistente, CampoBuscar, PantallaM, coincide, etiquetaDia } from '@/ui/mensajes';
+import { FilaConversacion } from './_piezas';
 
 /**
  * Mensajes (lienzo M-Mensajes): las conversaciones con especialistas, HandIA para armar un pedido y el soporte.

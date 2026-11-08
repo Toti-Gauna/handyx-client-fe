@@ -6,7 +6,8 @@ import type { Propuesta } from '@/contracts/v1/propuestas';
 import type { Mensaje } from '@/contracts/v1/servicio';
 import { fechaDeInstante, horaDeInstante } from '@/domain/fechas';
 import { Burbuja, Chip, Nota, Pastilla } from '@/ui';
-import { FilaSeleccion, alternar, etiquetaDia } from '@/ui/mensajes';
+import { alternar, etiquetaDia } from '@/ui/mensajes';
+import { FilaSeleccion } from '../_piezas';
 import type { Saliente } from './_useEnvios';
 import { TarjetaPropuestaChat } from './_TarjetaPropuesta';
 

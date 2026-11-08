@@ -3,7 +3,8 @@
 import type { RefObject } from 'react';
 import { TIPOS_MEDIA } from '@/contracts/v1/pedidos';
 import { Nota, Pastilla } from '@/ui';
-import { BarraAcciones, Escribir } from '@/ui/mensajes';
+import { Escribir } from '@/ui/mensajes';
+import { BarraAcciones } from '../_piezas';
 
 /** Abajo en selección: lo que se puede hacer con los mensajes elegidos (solo copiar es real). */
 export function PieSeleccion({

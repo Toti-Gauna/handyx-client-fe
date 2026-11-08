@@ -9,15 +9,8 @@ import { pesos, porcentaje } from '@/domain/dinero';
 import { etiquetaPropuesta } from '@/domain/etiquetas';
 import { cuando } from '@/domain/fechas';
 import { Boton, Monto, Nota, Texto } from '@/ui';
-import {
-  TarjetaChat,
-  Renglones,
-  horarioCorto,
-  tipoTarjeta,
-  tituloTarjeta,
-  totalPropuesta,
-  type AccionTarjeta,
-} from '@/ui/mensajes';
+import { Renglones, horarioCorto, tipoTarjeta, tituloTarjeta, totalPropuesta } from '@/ui/mensajes';
+import { TarjetaChat, type AccionTarjeta } from '../_piezas';
 
 const PIE: Record<ReturnType<typeof tipoTarjeta>, string> = {
   propuesta: 'Aceptar crea el trabajo con exactamente estas condiciones.',

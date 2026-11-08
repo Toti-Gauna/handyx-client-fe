@@ -2,7 +2,7 @@
 
 import { Hoja } from '@/components/ui';
 import { Boton, Nota } from '@/ui';
-import { OpcionAdjuntar } from '@/ui/mensajes';
+import { OpcionAdjuntar } from '../_piezas';
 
 /** «Sumar al chat» (lienzo M-Adjuntar): foto, medida y algo de Mi hogar. Las dos últimas se arman en su pantalla. */
 export function Adjuntar({

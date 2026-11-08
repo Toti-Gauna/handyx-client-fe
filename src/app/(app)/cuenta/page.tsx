@@ -13,7 +13,8 @@ import { useSesion } from '@/components/SesionProvider';
 import { useConsulta } from '@/data/hooks';
 import { resumirFee } from '@/domain/fee';
 import { Boton, FilaEnlace, Nota } from '@/ui';
-import { CabeceraCuenta, PantallaM } from '@/ui/mensajes';
+import { PantallaM } from '@/ui/mensajes';
+import { CabeceraCuenta } from './_CabeceraCuenta';
 
 /**
  * Cuenta (lienzo X-Cuenta): se entra desde el avatar del Inicio. Cabecera con tus iniciales y tus números reales,

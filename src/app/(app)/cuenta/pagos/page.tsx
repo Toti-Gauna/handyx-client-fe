@@ -91,7 +91,10 @@ export default function PagosRegistrados() {
                           <span className="ds-m-movimiento__sub">
                             {FUENTE[pago.fuente ?? 'nadie']}
                           </span>
-                          <Enlace href={ruta('/trabajos/pago/', { id: trabajo.id })}>
+                          <Enlace
+                            className="ds-m-enlace"
+                            href={ruta('/trabajos/pago/', { id: trabajo.id })}
+                          >
                             Ver el pago del trabajo
                           </Enlace>
                         </>

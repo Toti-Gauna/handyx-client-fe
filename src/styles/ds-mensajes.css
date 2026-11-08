@@ -793,3 +793,13 @@
   padding: 1.5rem 0.5rem;
   text-align: center;
 }
+
+/* Enlace de texto con toque de 44 px (dentro de una fila) */
+.ds-m-enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--ds-azul);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
