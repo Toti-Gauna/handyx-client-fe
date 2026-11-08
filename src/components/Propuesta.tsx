@@ -30,7 +30,13 @@ const VERIF_CORTO: Record<string, string> = {
 };
 
 /** Verificaciones tal como las informa el backend. Sin datos, no se afirma nada. */
-export function Verificaciones({ e, conVacio = false }: { e: EspecialistaResumen; conVacio?: boolean }) {
+export function Verificaciones({
+  e,
+  conVacio = false,
+}: {
+  e: EspecialistaResumen;
+  conVacio?: boolean;
+}) {
   if (!e.verificaciones.length)
     return conVacio ? (
       <Chip tono="gris" icono="info">
@@ -79,13 +85,13 @@ export function horarioCorto(p: Pick<Propuesta, 'horario'>): string {
 }
 
 export function duracionTexto(d: NonNullable<DetallePropuesta['duracion']>): string {
-  const u = d.unidad === 'horas' ? (d.maximo === 1 ? 'hora' : 'horas') : d.maximo === 1 ? 'día' : 'días';
+  const u =
+    d.unidad === 'horas' ? (d.maximo === 1 ? 'hora' : 'horas') : d.maximo === 1 ? 'día' : 'días';
   return d.minimo === d.maximo ? `${d.maximo} ${u}` : `${d.minimo} a ${d.maximo} ${u}`;
 }
 export const equipoTexto = (e: DetallePropuesta['equipo']) =>
   e.personas === 1 ? 'Va solo' : `${e.personas} personas`;
-export const garantiaTexto = (dias: number | null) =>
-  dias ? `${dias} días` : 'Sin garantía';
+export const garantiaTexto = (dias: number | null) => (dias ? `${dias} días` : 'Sin garantía');
 export function materialesTexto(m: DetallePropuesta['materiales']): string | null {
   if (!m) return null;
   return m.incluidos ? 'Materiales incluidos' : 'Materiales aparte';
@@ -145,7 +151,11 @@ export function TarjetaOferta({ p, marca }: { p: Propuesta; marca?: React.ReactN
       <BloquePrecio
         tipo={visita ? 'Visita' : 'Propuesta'}
         centavos={totalDe(p)}
-        sub={visita ? 'Visita para ver y presupuestar' : (materialesTexto(d?.materiales ?? null) ?? undefined)}
+        sub={
+          visita
+            ? 'Visita para ver y presupuestar'
+            : (materialesTexto(d?.materiales ?? null) ?? undefined)
+        }
         fecha={
           <Chip tono="blanco" icono="calendario">
             {horarioCorto(p)}
@@ -183,7 +193,13 @@ export function TarjetaOferta({ p, marca }: { p: Propuesta; marca?: React.ReactN
   );
 }
 
-const TONO_CHIP = { ok: 'exito', gris: 'gris', azul: 'tinte', alerta: 'amarillo', error: 'error' } as const;
+const TONO_CHIP = {
+  ok: 'exito',
+  gris: 'gris',
+  azul: 'tinte',
+  alerta: 'amarillo',
+  error: 'error',
+} as const;
 
 /** Estado de una propuesta resuelta como chip (texto + ícono, nunca solo color). */
 export function ChipEstadoPropuesta({ p }: { p: Pick<Propuesta, 'estado'> }) {

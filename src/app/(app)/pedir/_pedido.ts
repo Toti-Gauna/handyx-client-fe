@@ -22,14 +22,7 @@ import { armarDescripcion } from './_problemas';
 
 export type Tipo = (typeof TIPOS_PEDIDO)[number];
 export type Paso =
-  | 'rubro'
-  | 'que'
-  | 'fotos'
-  | 'revisar'
-  | 'cuando'
-  | 'programar'
-  | 'direccion'
-  | 'publicado';
+  'rubro' | 'que' | 'fotos' | 'revisar' | 'cuando' | 'programar' | 'direccion' | 'publicado';
 
 /** Franjas preferidas (P-Fecha). */
 export const FRANJAS = [
@@ -87,9 +80,7 @@ export function usePedido() {
     const tarea = tareaPorId(params.get('tarea'))?.problema;
     if (tarea) return tarea;
     const b = verBorrador();
-    return b && (params.get('desde') === 'handia' || b.rubro === rubroInicial)
-      ? b.descripcion
-      : '';
+    return b && (params.get('desde') === 'handia' || b.rubro === rubroInicial) ? b.descripcion : '';
   });
   const [fotos, setFotos] = useState<string[]>([]);
   const estadoFotos = useFotos(setFotos);

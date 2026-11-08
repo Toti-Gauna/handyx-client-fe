@@ -31,7 +31,11 @@ export default function Pedir() {
       >
         <Titulo
           nivel={2}
-          texto={estado === 'baja_solicitada' ? 'Pediste eliminar tu ==cuenta==' : 'Completá tu ==perfil=='}
+          texto={
+            estado === 'baja_solicitada'
+              ? 'Pediste eliminar tu ==cuenta=='
+              : 'Completá tu ==perfil=='
+          }
         />
         <Sub>
           {estado === 'baja_solicitada'

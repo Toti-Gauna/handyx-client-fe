@@ -71,7 +71,9 @@ function Precio({ p, visita }: { p: Propuesta; visita: boolean }) {
   const m = materialesTexto(p.detalle?.materiales ?? null);
   return (
     <Tarjeta tono={visita ? 'noche' : 'azul'} etiqueta="Precio y horario">
-      <Etiqueta>{visita ? 'Es una consulta' : `Precio de ${p.especialista.nombrePublico}`}</Etiqueta>
+      <Etiqueta>
+        {visita ? 'Es una consulta' : `Precio de ${p.especialista.nombrePublico}`}
+      </Etiqueta>
       {visita ? (
         <p style={{ margin: 0, fontSize: '0.9375rem', lineHeight: 1.4 }}>
           {primer(p)} quiere ver el problema antes de darte un precio del trabajo.
@@ -92,7 +94,10 @@ function Precio({ p, visita }: { p: Propuesta; visita: boolean }) {
           </Chip>
         </span>
       ) : null}
-      <strong className="ds-fila" style={{ ['--ds-gap' as string]: '0.5rem', fontSize: '0.875rem' }}>
+      <strong
+        className="ds-fila"
+        style={{ ['--ds-gap' as string]: '0.5rem', fontSize: '0.875rem' }}
+      >
         {p.horario ? `${cuando(p.horario.inicio)}` : horarioCorto(p)}
       </strong>
       {p.estado === 'pendiente' ? (
@@ -131,7 +136,8 @@ export function CuerpoPropuesta({ p }: { p: Propuesta }) {
             ))}
           </Tarjeta>
           <Nota icono="info" tono="gris">
-            Después de la visita te manda la propuesta del trabajo y decidís igual que con las demás.
+            Después de la visita te manda la propuesta del trabajo y decidís igual que con las
+            demás.
           </Nota>
         </>
       ) : d ? (

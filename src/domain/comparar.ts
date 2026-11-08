@@ -80,7 +80,9 @@ export function puntuar(cs: readonly Candidata[]): Puntaje[] {
     const factores: Record<Factor, number | null> = {
       precio: entre01(minimo / c.totalCentavos),
       resenas: conResenas ? (c.resenas ? entre01(c.resenas.promedio / 5) : 0.5) : null,
-      verificaciones: entre01(Math.min(c.verificaciones, VERIFICACIONES_TOPE) / VERIFICACIONES_TOPE),
+      verificaciones: entre01(
+        Math.min(c.verificaciones, VERIFICACIONES_TOPE) / VERIFICACIONES_TOPE,
+      ),
       garantia: entre01(Math.min(c.garantiaDias ?? 0, GARANTIA_TOPE) / GARANTIA_TOPE),
       fecha:
         c.inicio === null || primero === null
@@ -99,9 +101,7 @@ export function puntuar(cs: readonly Candidata[]): Puntaje[] {
   });
   lista.sort(
     (a, b) =>
-      b.puntaje - a.puntaje ||
-      a.c.creadaEn.localeCompare(b.c.creadaEn) ||
-      a.id.localeCompare(b.id),
+      b.puntaje - a.puntaje || a.c.creadaEn.localeCompare(b.c.creadaEn) || a.id.localeCompare(b.id),
   );
   return lista.map(({ id, puntaje, factores }) => ({ id, puntaje, factores }));
 }

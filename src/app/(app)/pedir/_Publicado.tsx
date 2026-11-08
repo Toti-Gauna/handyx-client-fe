@@ -34,14 +34,19 @@ export function PasoPublicado({ f }: { f: Pedido }) {
         <div className="ds-pila">
           <Titulo tam={2.125} texto="¡Pedido ==publicado==!" />
           <Sub>
-            Se lo mostramos a especialistas de {RUBROS_INFO[f.rubro].nombre} que trabajan en tu zona.
+            Se lo mostramos a especialistas de {RUBROS_INFO[f.rubro].nombre} que trabajan en tu
+            zona.
           </Sub>
         </div>
         <Tarjeta>
           <QueSigue
             pasos={[
               { icono: 'check', titulo: 'Publicado', sub: cuando, tono: 'azul' },
-              { icono: 'billete', titulo: 'Te llegan propuestas', sub: 'Con precio, fecha y perfil' },
+              {
+                icono: 'billete',
+                titulo: 'Te llegan propuestas',
+                sub: 'Con precio, fecha y perfil',
+              },
               {
                 icono: 'estrella',
                 titulo: 'Elegís vos',
@@ -60,8 +65,8 @@ export function PasoPublicado({ f }: { f: Pedido }) {
           />
         ) : null}
         <Nota icono="campana">
-          Te avisamos cuando llegue cada propuesta. Los especialistas responden cuando pueden: no hay
-          un tiempo fijo.
+          Te avisamos cuando llegue cada propuesta. Los especialistas responden cuando pueden: no
+          hay un tiempo fijo.
         </Nota>
       </div>
     </Pantalla>

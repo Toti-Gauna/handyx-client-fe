@@ -61,8 +61,10 @@ export default function Comparar() {
     ['Fecha', (x) => horarioCorto(x.p).replace(' · ', '\n')],
     [
       'Materiales',
-      (x) => (materialesTexto(x.p.detalle?.materiales ?? null) ?? '—').replace('Materiales i', 'I')
-        .replace('Materiales a', 'A'),
+      (x) =>
+        (materialesTexto(x.p.detalle?.materiales ?? null) ?? '—')
+          .replace('Materiales i', 'I')
+          .replace('Materiales a', 'A'),
     ],
     ['Garantía', (x) => (x.p.detalle ? garantiaTexto(x.p.detalle.garantiaDias) : '—')],
     ['Verificaciones', (x) => String(x.c.verificaciones)],

@@ -80,7 +80,9 @@ export default function Propuestas() {
         <Titulo
           nivel={2}
           tam={1.375}
-          texto={n ? `${n} ==${n === 1 ? 'propuesta' : 'propuestas'}==` : 'Sin propuestas ==vigentes=='}
+          texto={
+            n ? `${n} ==${n === 1 ? 'propuesta' : 'propuestas'}==` : 'Sin propuestas ==vigentes=='
+          }
         />
         {n > 1 ? <span className="ds-sub">En el orden en que llegaron</span> : null}
       </div>
@@ -96,7 +98,8 @@ export default function Propuestas() {
       ) : null}
       {mias.length ? (
         <Nota icono="reloj">
-          Tu contrapropuesta está pendiente: nada queda acordado hasta que el especialista la acepte.
+          Tu contrapropuesta está pendiente: nada queda acordado hasta que el especialista la
+          acepte.
         </Nota>
       ) : null}
       {n === 0 && mias.length === 0 && p.estado !== 'contratado' ? (
@@ -121,7 +124,15 @@ export default function Propuestas() {
         />
       ))}
       {mias.map((x) => (
-        <TarjetaOferta key={x.id} p={x} marca={<Chip tono="gris" icono="editar">Tuya</Chip>} />
+        <TarjetaOferta
+          key={x.id}
+          p={x}
+          marca={
+            <Chip tono="gris" icono="editar">
+              Tuya
+            </Chip>
+          }
+        />
       ))}
       {n > 1 ? (
         <Nota icono="info" tono="gris">

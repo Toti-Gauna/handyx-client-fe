@@ -12,7 +12,9 @@ export function usePropuestasDelPedido(pedidoId: string | null) {
     pedidoId ? { parametros: { id: pedidoId }, consulta: { limite: 50 } } : null,
     { cada: 4_000 },
   );
-  const cotizaciones: Propuesta[] = (lista.datos?.items ?? []).filter((x) => x.tipo === 'cotizacion');
+  const cotizaciones: Propuesta[] = (lista.datos?.items ?? []).filter(
+    (x) => x.tipo === 'cotizacion',
+  );
   return {
     pedido,
     lista,

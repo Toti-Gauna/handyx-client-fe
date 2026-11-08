@@ -43,9 +43,17 @@ export default function PerfilEspecialista() {
   const verificada = (t: string) => e.verificaciones.find((v) => v.tipo === t) ?? null;
   const cifras: [string, string][] = [
     ...(e.trabajosRealizados !== null
-      ? [[String(e.trabajosRealizados), e.trabajosRealizados === 1 ? 'trabajo' : 'trabajos'] as [string, string]]
+      ? [
+          [String(e.trabajosRealizados), e.trabajosRealizados === 1 ? 'trabajo' : 'trabajos'] as [
+            string,
+            string,
+          ],
+        ]
       : []),
-    [String(e.verificaciones.length), e.verificaciones.length === 1 ? 'verificación' : 'verificaciones'],
+    [
+      String(e.verificaciones.length),
+      e.verificaciones.length === 1 ? 'verificación' : 'verificaciones',
+    ],
     [String(e.rubros.length), e.rubros.length === 1 ? 'rubro' : 'rubros'],
   ];
 
@@ -53,7 +61,10 @@ export default function PerfilEspecialista() {
     <PantallaPedir
       titulo="Perfil"
       sub="Así lo ves antes de elegir"
-      volver={{ href: ruta('/propuestas/detalle/', { id: p.id }), etiqueta: 'Volver a la propuesta' }}
+      volver={{
+        href: ruta('/propuestas/detalle/', { id: p.id }),
+        etiqueta: 'Volver a la propuesta',
+      }}
       pie={
         <>
           {decidible ? (
@@ -72,7 +83,10 @@ export default function PerfilEspecialista() {
         </>
       }
     >
-      <div className="ds-pila dsp-centro" style={{ alignItems: 'center', ['--ds-gap' as string]: '0.375rem' }}>
+      <div
+        className="ds-pila dsp-centro"
+        style={{ alignItems: 'center', ['--ds-gap' as string]: '0.375rem' }}
+      >
         <Avatar nombre={e.nombrePublico} tam={5.25} />
         <h2 className="ds-titulo" style={{ ['--ds-tam' as string]: '1.625rem' }}>
           {e.nombrePublico}
@@ -83,7 +97,11 @@ export default function PerfilEspecialista() {
       </div>
       <div className="ds-grilla" style={{ ['--ds-cols' as string]: cifras.length }}>
         {cifras.map(([v, t]) => (
-          <span key={t} className="ds-tarjeta ds-tarjeta--hundida dsp-centro" style={{ gap: '0.125rem', padding: '0.75rem 0.375rem' }}>
+          <span
+            key={t}
+            className="ds-tarjeta ds-tarjeta--hundida dsp-centro"
+            style={{ gap: '0.125rem', padding: '0.75rem 0.375rem' }}
+          >
             <strong className="ds-titulo" style={{ ['--ds-tam' as string]: '1.375rem' }}>
               {v}
             </strong>

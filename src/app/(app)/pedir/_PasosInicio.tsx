@@ -7,17 +7,7 @@ import { RUBROS } from '@/contracts/v1/pedidos';
 import { dejarBorrador } from '@/data/borrador';
 import { RUBROS_INFO } from '@/domain/etiquetas';
 import { AVISO_SEGURIDAD, detectarRubro } from '@/domain/handia';
-import {
-  Boton,
-  Chip,
-  Etiqueta,
-  FilaEnlace,
-  MosaicoIcono,
-  Nota,
-  Opcion,
-  Sub,
-  Titulo,
-} from '@/ui';
+import { Boton, Chip, Etiqueta, FilaEnlace, MosaicoIcono, Nota, Opcion, Sub, Titulo } from '@/ui';
 import { MiniAccion, PantallaPedir, type Volver } from '@/ui/pedir';
 import type { Pedido } from './_pedido';
 import { PROBLEMAS } from './_problemas';
@@ -31,7 +21,12 @@ export function PasoRubro({ f }: { f: Pedido }) {
         <Titulo nivel={2} texto="¿Qué tipo de ==arreglo==?" />
         <Sub>Elegí el rubro. Si no sabés cuál es, HandIA te ayuda.</Sub>
       </div>
-      <div className="ds-grilla" style={{ ['--ds-cols' as string]: 3 }} role="group" aria-label="Rubros">
+      <div
+        className="ds-grilla"
+        style={{ ['--ds-cols' as string]: 3 }}
+        role="group"
+        aria-label="Rubros"
+      >
         {RUBROS.map((r) => (
           <button
             key={r}
@@ -92,7 +87,12 @@ export function PasoQue({ f, desdeInicio }: { f: Pedido; desdeInicio: boolean })
         <MosaicoIcono icono={info.icono} tam={3.5} />
         <Titulo nivel={2} tam={1.75} texto="¿Qué ==pasa==?" id="que-pasa" />
       </div>
-      <div className="ds-pila" role="radiogroup" aria-labelledby="que-pasa" style={{ ['--ds-gap' as string]: '0.5rem' }}>
+      <div
+        className="ds-pila"
+        role="radiogroup"
+        aria-labelledby="que-pasa"
+        style={{ ['--ds-gap' as string]: '0.5rem' }}
+      >
         {PROBLEMAS[rubro].map((p) => (
           <Opcion
             key={p}
@@ -133,7 +133,10 @@ export function PasoQue({ f, desdeInicio }: { f: Pedido; desdeInicio: boolean })
         <Etiqueta como="h3">Fotos y medidas</Etiqueta>
         <Chip tono="gris">Opcional</Chip>
       </div>
-      <div className="ds-grilla" style={{ ['--ds-cols' as string]: 3, ['--ds-gap' as string]: '0.5rem' }}>
+      <div
+        className="ds-grilla"
+        style={{ ['--ds-cols' as string]: 3, ['--ds-gap' as string]: '0.5rem' }}
+      >
         <MiniAccion
           icono="camara"
           texto={f.fotos.length ? `Fotos (${f.fotos.length})` : 'Foto'}
@@ -182,10 +185,14 @@ export function PasoFotos({ f }: { f: Pedido }) {
         <Titulo nivel={2} texto="Sumá ==fotos==" />
         <Sub>Opcional: ayudan a que las propuestas sean más justas. Hasta 5.</Sub>
       </div>
-      <FotoSubida onCambio={() => undefined} estado={f.estadoFotos} etiqueta="Sacar o elegir una foto" />
+      <FotoSubida
+        onCambio={() => undefined}
+        estado={f.estadoFotos}
+        etiqueta="Sacar o elegir una foto"
+      />
       <Nota icono="escudo">
-        Que no se vean caras, documentos ni la dirección. Quedan privadas: solo las ven quienes participan
-        del pedido.
+        Que no se vean caras, documentos ni la dirección. Quedan privadas: solo las ven quienes
+        participan del pedido.
       </Nota>
       <Nota icono="info" tono="gris">
         HandIA no ve tus fotos: van al pedido, para los especialistas.
@@ -200,9 +207,16 @@ export function PasoCuando({ f }: { f: Pedido }) {
     <PantallaPedir titulo="¿Para cuándo?" sub="Cambiar" volver={volver}>
       <div className="ds-pila">
         <Titulo nivel={2} texto="¿Para ==cuándo==?" id="para-cuando" />
-        <Sub>Si es urgente, no hace falta el calendario. Los especialistas proponen día y precio.</Sub>
+        <Sub>
+          Si es urgente, no hace falta el calendario. Los especialistas proponen día y precio.
+        </Sub>
       </div>
-      <div className="ds-pila" role="radiogroup" aria-labelledby="para-cuando" style={{ ['--ds-gap' as string]: '0.5rem' }}>
+      <div
+        className="ds-pila"
+        role="radiogroup"
+        aria-labelledby="para-cuando"
+        style={{ ['--ds-gap' as string]: '0.5rem' }}
+      >
         <Opcion
           icono="reloj"
           titulo="Lo antes posible"

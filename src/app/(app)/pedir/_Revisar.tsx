@@ -43,13 +43,18 @@ export function PasoRevisar({ f }: { f: Pedido }) {
           <MosaicoIcono icono={info.icono} tam={3.25} tono="velo" />
           <span className="ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
             <Etiqueta>Tu pedido</Etiqueta>
-            <strong className="ds-titulo" style={{ ['--ds-tam' as string]: '1.375rem', color: 'inherit' }}>
+            <strong
+              className="ds-titulo"
+              style={{ ['--ds-tam' as string]: '1.375rem', color: 'inherit' }}
+            >
               {info.nombre}
             </strong>
             {f.problema ? <span className="ds-sub">{f.problema}</span> : null}
           </span>
         </div>
-        {texto ? <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.4 }}>«{texto}»</p> : null}
+        {texto ? (
+          <p style={{ margin: 0, fontSize: '0.875rem', lineHeight: 1.4 }}>«{texto}»</p>
+        ) : null}
       </Tarjeta>
 
       <Tarjeta>

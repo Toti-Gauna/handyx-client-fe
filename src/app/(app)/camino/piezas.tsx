@@ -73,11 +73,9 @@ export function trazoCamino(puntos: readonly { x: number; y: number }[]): string
   return d;
 }
 
-/** Hasta qué hito llega el tramo azul: el de «ahora», o el último hecho. */
+/** Hasta qué hito llega el tramo azul: el más alto entre el de «ahora» y el último hecho. */
 export function hastaDonde(hitos: readonly Hito[]): number {
-  const ahora = hitos.findIndex((h) => h.estado === 'ahora');
-  if (ahora >= 0) return ahora;
-  return hitos.reduce((u, h, i) => (h.estado === 'hecho' ? i : u), -1);
+  return hitos.reduce((u, h, i) => (h.estado === 'falta' ? u : i), -1);
 }
 
 const ESTADO_TEXTO = { hecho: 'hecho', ahora: 'ahora', falta: 'falta' } as const;

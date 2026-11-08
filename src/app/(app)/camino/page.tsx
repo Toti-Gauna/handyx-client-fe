@@ -30,12 +30,13 @@ export default function CaminoDelHogar() {
               ? `${hechos} de ${hitos.length} · se avanza cuidando la casa, no gastando más`
               : 'Se avanza cuidando la casa, no gastando más'
           }
-          accion={
+        >
+          <span>
             <Chip tono="blanco" icono="check">
               Sin sorteos ni azar
             </Chip>
-          }
-        />
+          </span>
+        </CabeceraAzul>
       }
     >
       <TituloDocumento texto="Camino del hogar" />

@@ -33,7 +33,12 @@ export function BarraPedir({
           <Icono nombre="atras" />
         </Enlace>
       ) : (
-        <button type="button" className="du-atras" onClick={volver.alTocar} aria-label={volver.etiqueta}>
+        <button
+          type="button"
+          className="du-atras"
+          onClick={volver.alTocar}
+          aria-label={volver.etiqueta}
+        >
           <Icono nombre="atras" />
         </button>
       )}
@@ -396,14 +401,43 @@ export function SelloTurno() {
   return (
     <svg className="dsp-sello dsp-sello--entra" viewBox="0 0 350 240" aria-hidden="true">
       {papel.map(([x, y, r, c]) => (
-        <rect key={`${x}-${y}`} x={x} y={y} width="10" height="12" rx="2" fill={c} transform={`rotate(${r} ${x + 5} ${y + 6})`} />
+        <rect
+          key={`${x}-${y}`}
+          x={x}
+          y={y}
+          width="10"
+          height="12"
+          rx="2"
+          fill={c}
+          transform={`rotate(${r} ${x + 5} ${y + 6})`}
+        />
       ))}
       <circle cx="175" cy="120" r="80" fill="var(--ds-tinte)" />
       <circle cx="175" cy="126" r="58" fill="var(--ds-hondo)" />
       <circle cx="175" cy="120" r="58" fill="var(--ds-azul)" />
-      <path d="M150 120l17 17 34-36" stroke="var(--ds-c-fff)" strokeWidth="10" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="232" cy="62" r="22" fill="var(--ds-amarillo)" stroke="var(--ds-c-fff)" strokeWidth="4" />
-      <path d="M232 50l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8.1-7.2-3.8-7.2 3.8 1.4-8.1-5.9-5.7 8.1-1.2Z" fill="none" stroke="var(--ds-tinta)" strokeWidth="2" strokeLinejoin="round" />
+      <path
+        d="M150 120l17 17 34-36"
+        stroke="var(--ds-c-fff)"
+        strokeWidth="10"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="232"
+        cy="62"
+        r="22"
+        fill="var(--ds-amarillo)"
+        stroke="var(--ds-c-fff)"
+        strokeWidth="4"
+      />
+      <path
+        d="M232 50l3.6 7.4 8.1 1.2-5.9 5.7 1.4 8.1-7.2-3.8-7.2 3.8 1.4-8.1-5.9-5.7 8.1-1.2Z"
+        fill="none"
+        stroke="var(--ds-tinta)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

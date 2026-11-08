@@ -223,9 +223,10 @@ describe('Camino del hogar', () => {
     expect(trazoCamino([])).toBe('');
   });
 
-  it('el tramo azul llega al hito de ahora o al último hecho', () => {
+  it('el tramo azul llega al más alto entre el de ahora y el último hecho', () => {
     expect(hastaDonde([hito('a', 'hecho'), hito('b', 'ahora'), hito('c', 'falta')])).toBe(1);
     expect(hastaDonde([hito('a', 'hecho'), hito('b', 'hecho')])).toBe(1);
+    expect(hastaDonde([hito('a', 'ahora'), hito('b', 'hecho'), hito('c', 'falta')])).toBe(1);
     expect(hastaDonde([hito('a', 'falta')])).toBe(-1);
   });
 });

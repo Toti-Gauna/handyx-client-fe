@@ -79,7 +79,11 @@ export function PasoProgramar({ f }: { f: Pedido }) {
               />
             )}
           </Campo>
-          <Campo etiqueta="Hasta" opcional error={f.errores.hasta ?? f.errores['fechaSolicitada.hasta']}>
+          <Campo
+            etiqueta="Hasta"
+            opcional
+            error={f.errores.hasta ?? f.errores['fechaSolicitada.hasta']}
+          >
             {(p) => (
               <input
                 {...p}
@@ -118,9 +122,7 @@ export function PasoDireccion({ f }: { f: Pedido }) {
     >
       <div className="ds-pila">
         <Titulo nivel={2} texto="¿Dónde es el ==trabajo==?" />
-        <Sub>
-          Se comparte solo con el especialista que elijas, al aceptar su propuesta.
-        </Sub>
+        <Sub>Se comparte solo con el especialista que elijas, al aceptar su propuesta.</Sub>
       </div>
       <ElegirDireccion
         actual={f.ubicacion.direccion}

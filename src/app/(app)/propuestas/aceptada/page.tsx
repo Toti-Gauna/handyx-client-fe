@@ -46,7 +46,9 @@ export default function TurnoConfirmado() {
       </Vacio>
     );
 
-  const rubro = pedido.datos ? RUBROS_INFO[pedido.datos.rubro].nombre : RUBROS_INFO[e.rubros[0]!].nombre;
+  const rubro = pedido.datos
+    ? RUBROS_INFO[pedido.datos.rubro].nombre
+    : RUBROS_INFO[e.rubros[0]!].nombre;
   return (
     <Pantalla
       pie={
@@ -74,7 +76,10 @@ export default function TurnoConfirmado() {
             </span>
           </div>
           <Separador />
-          <div className="ds-fila" style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <div
+            className="ds-fila"
+            style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}
+          >
             <span className="ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
               <Etiqueta>Cuándo</Etiqueta>
               <strong style={{ fontSize: '1rem' }}>{horarioCorto(p)}</strong>

@@ -59,7 +59,10 @@ describe('comparar: promedio con pesos públicos', () => {
   });
 
   it('precio: la más económica suma más; con lo demás igual, gana', () => {
-    const r = puntuar([c('cara', { totalCentavos: 6_000_000 }), c('barata', { totalCentavos: 3_000_000 })]);
+    const r = puntuar([
+      c('cara', { totalCentavos: 6_000_000 }),
+      c('barata', { totalCentavos: 3_000_000 }),
+    ]);
     expect(r[0]?.id).toBe('barata');
     expect(r[1]?.factores.precio).toBeCloseTo(0.5);
   });
@@ -95,13 +98,18 @@ describe('comparar: promedio con pesos públicos', () => {
       candidataDe(propuesta({ detalle: { oferta: 'visita' } as Propuesta['detalle'] })),
     ).toBeNull();
     expect(candidataDe(propuesta({ tipo: 'adicional' }))).toBeNull();
-    expect(candidataDe(propuesta({ monto: { centavos: 0, moneda: 'ARS' } } as Partial<Propuesta>))).toBeNull();
+    expect(
+      candidataDe(propuesta({ monto: { centavos: 0, moneda: 'ARS' } } as Partial<Propuesta>)),
+    ).toBeNull();
   });
 
   it('el puntaje se muestra con coma y la frase no usa superlativos', () => {
     expect(formatoPuntaje(8.7)).toBe('8,7');
     expect(formatoPuntaje(10)).toBe('10,0');
-    const todas = puntuar([c('a', { garantiaDias: 90 }), c('b', { inicio: '2026-11-22T13:00:00.000Z' })]);
+    const todas = puntuar([
+      c('a', { garantiaDias: 90 }),
+      c('b', { inicio: '2026-11-22T13:00:00.000Z' }),
+    ]);
     const texto = frase(todas[0]!, c('a', { garantiaDias: 90 }), todas);
     expect(texto).toMatch(/^[A-ZÁÉÍÓÚ].*\.$/);
     expect(texto).toMatch(/garantía de 90 días/);
@@ -120,7 +128,8 @@ describe('pedir: ¿qué pasa?', () => {
     );
     expect(armarDescripcion(null, ' Gotea ')).toBe('Gotea');
     for (const r of RUBROS)
-      for (const o of PROBLEMAS[r]) expect(armarDescripcion(o, '').length).toBeGreaterThanOrEqual(10);
+      for (const o of PROBLEMAS[r])
+        expect(armarDescripcion(o, '').length).toBeGreaterThanOrEqual(10);
   });
 });
 
@@ -131,7 +140,9 @@ describe('pedir y propuestas: guardas del código', () => {
   const tarjeta = leer('src/components/Propuesta.tsx');
 
   it('se publica con la clave de idempotencia y las fotos no se pierden entre pasos', () => {
-    expect(pedido).toMatch(/envio\.enviar\('pedidoCrear', \{ cuerpo \}, JSON\.stringify\(cuerpo\)\)/);
+    expect(pedido).toMatch(
+      /envio\.enviar\('pedidoCrear', \{ cuerpo \}, JSON\.stringify\(cuerpo\)\)/,
+    );
     expect(pedido).toMatch(/const estadoFotos = useFotos\(setFotos\);/);
     expect(pedido).toMatch(/PASO_DEL_CAMPO/);
   });

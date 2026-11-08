@@ -44,7 +44,10 @@ export function HojaAceptar({
       }
     >
       <div className="ds ds-pila" style={{ ['--ds-gap' as string]: '0.875rem' }}>
-        <div className="ds-tarjeta" style={{ flexDirection: 'row', alignItems: 'center', boxShadow: 'none' }}>
+        <div
+          className="ds-tarjeta"
+          style={{ flexDirection: 'row', alignItems: 'center', boxShadow: 'none' }}
+        >
           <Avatar nombre={p.especialista.nombrePublico} tam={2.75} />
           <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
             <strong>
@@ -118,11 +121,7 @@ export function HojaRechazar({
   error: ErrorCliente | null;
 }) {
   return (
-    <Hoja
-      abierta={abierta}
-      onCerrar={onCerrar}
-      titulo={`¿Rechazás la propuesta de ${primer(p)}?`}
-    >
+    <Hoja abierta={abierta} onCerrar={onCerrar} titulo={`¿Rechazás la propuesta de ${primer(p)}?`}>
       <div className="ds ds-pila" style={{ ['--ds-gap' as string]: '0.875rem' }}>
         <Texto>
           Le avisamos a {primer(p)} con un mensaje amable, sin dar motivos. Podés seguir con las
