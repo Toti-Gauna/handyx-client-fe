@@ -14,8 +14,23 @@ import {
   etiquetaTrabajo,
   type Etiqueta,
 } from '@/domain/etiquetas';
-import { cuando, fechaDeInstante, fechaLarga, hoyEnArgentina, type FechaISO } from '@/domain/fechas';
-import { Boton, Chip, Etiqueta as Rotulo, MosaicoIcono, Tarjeta, Texto, Titulo, type TonoChip } from '@/ui';
+import {
+  cuando,
+  fechaDeInstante,
+  fechaLarga,
+  hoyEnArgentina,
+  type FechaISO,
+} from '@/domain/fechas';
+import {
+  Boton,
+  Chip,
+  Etiqueta as Rotulo,
+  MosaicoIcono,
+  Tarjeta,
+  Texto,
+  Titulo,
+  type TonoChip,
+} from '@/ui';
 import { EscenaVacio, PantallaM, Segmentos } from '@/ui/mensajes';
 import { Calendario } from './Calendario';
 import { ruta } from './nav';
@@ -102,9 +117,7 @@ export function Actividad({ inicial = 'curso' }: { inicial?: VistaActividad }) {
         {listo && vista === 'curso' ? (
           <EnCurso pedidos={soloPedidos} trabajos={listaTrabajos} rubroDe={rubroDe} />
         ) : null}
-        {listo && vista === 'agenda' ? (
-          <Agenda trabajos={listaTrabajos} rubroDe={rubroDe} />
-        ) : null}
+        {listo && vista === 'agenda' ? <Agenda trabajos={listaTrabajos} rubroDe={rubroDe} /> : null}
         {listo && historial ? (
           soloPedidos.length + listaTrabajos.length ? (
             <Lista pedidos={soloPedidos} trabajos={listaTrabajos} rubroDe={rubroDe} />
@@ -192,7 +205,15 @@ const ItemTrabajo = ({ t, rubro }: { t: Trabajo; rubro: Pedido['rubro'] | null }
   );
 };
 
-function Lista({ pedidos, trabajos, rubroDe }: { pedidos: Pedido[]; trabajos: Trabajo[]; rubroDe: RubroDe }) {
+function Lista({
+  pedidos,
+  trabajos,
+  rubroDe,
+}: {
+  pedidos: Pedido[];
+  trabajos: Trabajo[];
+  rubroDe: RubroDe;
+}) {
   return (
     <ul className="ds-pila" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
       {trabajos.map((t) => (
@@ -205,14 +226,26 @@ function Lista({ pedidos, trabajos, rubroDe }: { pedidos: Pedido[]; trabajos: Tr
   );
 }
 
-function EnCurso({ pedidos, trabajos, rubroDe }: { pedidos: Pedido[]; trabajos: Trabajo[]; rubroDe: RubroDe }) {
+function EnCurso({
+  pedidos,
+  trabajos,
+  rubroDe,
+}: {
+  pedidos: Pedido[];
+  trabajos: Trabajo[];
+  rubroDe: RubroDe;
+}) {
   const esperanP = pedidos.filter(esperaPedido);
   const esperanT = trabajos.filter(esperaTrabajo);
   const restoP = pedidos.filter((p) => !esperaPedido(p));
   const restoT = trabajos.filter((t) => !esperaTrabajo(t));
   if (!esperanP.length && !esperanT.length && !restoP.length && !restoT.length)
     return (
-      <Nada titulo="No tenés nada en curso" texto="Cuando pidas un servicio, lo seguís desde acá." pedir />
+      <Nada
+        titulo="No tenés nada en curso"
+        texto="Cuando pidas un servicio, lo seguís desde acá."
+        pedir
+      />
     );
   return (
     <>
@@ -253,7 +286,12 @@ function Agenda({ trabajos, rubroDe }: { trabajos: Trabajo[]; rubroDe: RubroDe }
   return (
     <>
       <Tarjeta como="div">
-        <Calendario valor={dia} onElegir={setElegido} marcas={new Set(porDia.keys())} sinPasados={false} />
+        <Calendario
+          valor={dia}
+          onElegir={setElegido}
+          marcas={new Set(porDia.keys())}
+          sinPasados={false}
+        />
       </Tarjeta>
       <Rotulo como="h2">
         <span aria-live="polite">{fechaLarga(dia)}</span>
@@ -267,15 +305,21 @@ function Agenda({ trabajos, rubroDe }: { trabajos: Trabajo[]; rubroDe: RubroDe }
   );
 }
 
-function Nada({ titulo, texto, pedir = false }: { titulo: string; texto: string; pedir?: boolean }) {
+function Nada({
+  titulo,
+  texto,
+  pedir = false,
+}: {
+  titulo: string;
+  texto: string;
+  pedir?: boolean;
+}) {
   return (
     <div className="ds-m-vacio">
       <EscenaVacio />
       <Titulo nivel={2} tam={1.375} texto={titulo} />
       <Texto>{texto}</Texto>
-      {pedir ? (
-        <Boton href="/pedir/">Pedir un servicio</Boton>
-      ) : null}
+      {pedir ? <Boton href="/pedir/">Pedir un servicio</Boton> : null}
     </div>
   );
 }

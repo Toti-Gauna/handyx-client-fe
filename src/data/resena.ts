@@ -18,7 +18,12 @@ export const DESTACADOS_TEXTO: Record<Destacado, string> = {
   no_explico: 'No explicó',
 };
 
-export const POSITIVOS: readonly Destacado[] = ['puntual', 'prolijo', 'explico_todo', 'buen_precio'];
+export const POSITIVOS: readonly Destacado[] = [
+  'puntual',
+  'prolijo',
+  'explico_todo',
+  'buen_precio',
+];
 export const NEGATIVOS: readonly Destacado[] = ['llego_tarde', 'dejo_sucio', 'no_explico'];
 
 export const TEXTO_PUNTAJE: Record<number, string> = {

@@ -27,7 +27,11 @@ export type TipoTarjeta = 'propuesta' | 'horario' | 'presupuesto' | 'cambio';
 export function tipoTarjeta(p: Propuesta, anterior: Propuesta | null): TipoTarjeta {
   if (p.tipo === 'adicional') return 'presupuesto';
   if (p.tipo === 'cambio_acuerdo') return 'cambio';
-  if (anterior && anterior.monto.centavos === p.monto.centavos && p.horario?.inicio !== anterior.horario?.inicio)
+  if (
+    anterior &&
+    anterior.monto.centavos === p.monto.centavos &&
+    p.horario?.inicio !== anterior.horario?.inicio
+  )
     return 'horario';
   return 'propuesta';
 }
@@ -42,7 +46,9 @@ export const TARJETA_INFO: Record<TipoTarjeta, { texto: string; icono: NombreIco
 /** «jue 19/11 de 10 a 12 h» (o «jue 19/11 · 10:00 h» sin hora de fin), siempre en Buenos Aires. */
 export function horarioCorto(h: Propuesta['horario']): string {
   if (!h) return 'Horario a definir';
-  const dia = fechaLarga(fechaDeInstante(h.inicio)).replace(/^(\S{3})\S*/, '$1').toLowerCase();
+  const dia = fechaLarga(fechaDeInstante(h.inicio))
+    .replace(/^(\S{3})\S*/, '$1')
+    .toLowerCase();
   const hora = (i: string) => horaDeInstante(i).replace(/:00$/, '').replace(/^0/, '');
   return h.fin ? `${dia} de ${hora(h.inicio)} a ${hora(h.fin)} h` : `${dia} · ${hora(h.inicio)} h`;
 }
@@ -50,7 +56,8 @@ export function horarioCorto(h: Propuesta['horario']): string {
 /** Total para la persona: precio del especialista más la tarifa de Handy que calcula el servidor (0 % en la demo). */
 export const totalPropuesta = (p: Propuesta) => p.monto.centavos + p.comisionHandy.importe.centavos;
 
-export const tituloTarjeta = (p: Propuesta) => `${pesos(totalPropuesta(p))} · ${horarioCorto(p.horario)}`;
+export const tituloTarjeta = (p: Propuesta) =>
+  `${pesos(totalPropuesta(p))} · ${horarioCorto(p.horario)}`;
 
 /** Separador de día entre mensajes: «Hoy», «Ayer» o «Mié 18/11». */
 export function etiquetaDia(instante: string, ahoraMs: number): string {
@@ -101,11 +108,18 @@ export function haceCuanto(instante: string, ahoraMs: number): string {
   return `hace ${d} ${d === 1 ? 'día' : 'días'}`;
 }
 
-const sinTildes = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const sinTildes = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 /** Busca en una lista de textos por todas las palabras escritas, sin importar tildes ni mayúsculas. */
 export function coincide(texto: string, busqueda: string): boolean {
   const t = sinTildes(texto);
-  return sinTildes(busqueda).split(/\s+/).filter(Boolean).every((w) => t.includes(w));
+  return sinTildes(busqueda)
+    .split(/\s+/)
+    .filter(Boolean)
+    .every((w) => t.includes(w));
 }
 
 // ── Armazón: lo fijo de arriba, lo que se desplaza y un pie que ocupa su propio alto ───────────────────────
@@ -258,7 +272,10 @@ export function TarjetaChat({
 }) {
   const info = TARJETA_INFO[tipo];
   return (
-    <section className={`ds-m-tarjeta${propia ? ' ds-m-tarjeta--propia' : ''}`} aria-label={etiqueta}>
+    <section
+      className={`ds-m-tarjeta${propia ? ' ds-m-tarjeta--propia' : ''}`}
+      aria-label={etiqueta}
+    >
       <div className="ds-m-tarjeta__cuerpo">
         <Chip icono={info.icono}>{propia ? `Tu ${info.texto.toLowerCase()}` : info.texto}</Chip>
         <strong className="ds-m-tarjeta__titulo">{titulo}</strong>
@@ -280,7 +297,13 @@ export function TarjetaChat({
                 {a.texto}
               </Enlace>
             ) : (
-              <button key={a.texto} type="button" className={clase} onClick={a.onClick} aria-label={a.etiqueta}>
+              <button
+                key={a.texto}
+                type="button"
+                className={clase}
+                onClick={a.onClick}
+                aria-label={a.etiqueta}
+              >
                 {a.texto}
               </button>
             );
@@ -359,7 +382,14 @@ export function FilaSeleccion({
   children: ReactNode;
 }) {
   return (
-    <button type="button" role="checkbox" aria-checked={activa} aria-label={etiqueta} className="ds-m-sel" onClick={onAlternar}>
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={activa}
+      aria-label={etiqueta}
+      className="ds-m-sel"
+      onClick={onAlternar}
+    >
       <span className="ds-m-sel__marca" aria-hidden="true">
         {activa ? <Icono nombre="check" /> : null}
       </span>
@@ -380,7 +410,12 @@ export function BarraSeleccion({
   return (
     <div className="ds-m-barra ds-m-barra--seleccion">
       <TituloDocumento texto="Seleccionar mensajes" />
-      <button type="button" className="ds-m-barra__redondo" aria-label="Salir de la selección" onClick={onSalir}>
+      <button
+        type="button"
+        className="ds-m-barra__redondo"
+        aria-label="Salir de la selección"
+        onClick={onSalir}
+      >
         <Icono nombre="cerrar" />
       </button>
       <div className="ds-m-barra__textos">
@@ -400,9 +435,19 @@ export interface AccionSeleccion {
   readonly rojo?: boolean;
   readonly deshabilitada?: boolean;
 }
-export function BarraAcciones({ cantidad, acciones }: { cantidad: number; acciones: readonly AccionSeleccion[] }) {
+export function BarraAcciones({
+  cantidad,
+  acciones,
+}: {
+  cantidad: number;
+  acciones: readonly AccionSeleccion[];
+}) {
   return (
-    <div className="ds-m-acciones" role="toolbar" aria-label={`Acciones sobre ${cantidad} mensajes`}>
+    <div
+      className="ds-m-acciones"
+      role="toolbar"
+      aria-label={`Acciones sobre ${cantidad} mensajes`}
+    >
       {acciones.map((a) => (
         <button
           key={a.texto}
@@ -520,7 +565,13 @@ export function Movimiento({
 }
 
 /** Desglose de un presupuesto: renglones y total grande. */
-export function Renglones({ items, total }: { items: readonly (readonly [string, string])[]; total?: ReactNode }) {
+export function Renglones({
+  items,
+  total,
+}: {
+  items: readonly (readonly [string, string])[];
+  total?: ReactNode;
+}) {
   return (
     <dl className="ds-m-detalle">
       {items.map(([a, b]) => (
@@ -570,7 +621,19 @@ export function CampoBuscar({
   );
 }
 
-export function Tema({ icono, texto, href, onClick, activo }: { icono: NombreIcono; texto: string; href?: string; onClick?: () => void; activo?: boolean }) {
+export function Tema({
+  icono,
+  texto,
+  href,
+  onClick,
+  activo,
+}: {
+  icono: NombreIcono;
+  texto: string;
+  href?: string;
+  onClick?: () => void;
+  activo?: boolean;
+}) {
   const dentro = (
     <>
       <Icono nombre={icono} />
@@ -588,7 +651,15 @@ export function Tema({ icono, texto, href, onClick, activo }: { icono: NombreIco
   );
 }
 
-export function Pregunta({ texto, abierta = false, children }: { texto: string; abierta?: boolean; children: ReactNode }) {
+export function Pregunta({
+  texto,
+  abierta = false,
+  children,
+}: {
+  texto: string;
+  abierta?: boolean;
+  children: ReactNode;
+}) {
   return (
     <details className="ds-m-pregunta" open={abierta || undefined}>
       <summary>
@@ -622,7 +693,13 @@ export function PantallaError({
       <TituloDocumento texto={titulo.replace(/==/g, '')} />
       <div className="ds-m-error__dibujo" aria-hidden="true">
         {handy ? (
-          <Image src={`/img/${handy.img}.webp`} alt="" width={handy.ancho} height={handy.alto} priority />
+          <Image
+            src={`/img/${handy.img}.webp`}
+            alt=""
+            width={handy.ancho}
+            height={handy.alto}
+            priority
+          />
         ) : (
           dibujo
         )}
@@ -645,7 +722,12 @@ const TT = '#0E1D36';
 /** Una persona del equipo con auricular y dos globos de charla, sobre unos edificios de la ciudad. */
 export function EscenaSoporte({ alto = 7 }: { alto?: number }) {
   return (
-    <svg className="ds-escena" viewBox="0 0 240 130" style={{ height: `${alto}rem` }} aria-hidden="true">
+    <svg
+      className="ds-escena"
+      viewBox="0 0 240 130"
+      style={{ height: `${alto}rem` }}
+      aria-hidden="true"
+    >
       <rect x="20" y="70" width="34" height="50" rx="3" fill={TN} />
       <rect x="186" y="56" width="38" height="64" rx="3" fill={TN} />
       <rect x="58" y="86" width="26" height="34" rx="3" fill="#CFDCF2" />
@@ -653,13 +735,40 @@ export function EscenaSoporte({ alto = 7 }: { alto?: number }) {
       <circle cx="120" cy="64" r="44" fill={AZ} />
       <circle cx="120" cy="54" r="15" fill={AM} />
       <path d="M90 100c2-18 14-26 30-26s28 8 30 26a44 44 0 0 1-60 0Z" fill={AM} />
-      <path d="M103 52a17 17 0 0 1 34 0" fill="none" stroke={TT} strokeWidth="4" strokeLinecap="round" />
+      <path
+        d="M103 52a17 17 0 0 1 34 0"
+        fill="none"
+        stroke={TT}
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
       <rect x="98" y="50" width="7" height="12" rx="3" fill={TT} />
       <rect x="135" y="50" width="7" height="12" rx="3" fill={TT} />
-      <path d="M138 62c0 8-6 11-14 11" fill="none" stroke={TT} strokeWidth="3" strokeLinecap="round" />
+      <path
+        d="M138 62c0 8-6 11-14 11"
+        fill="none"
+        stroke={TT}
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
       <g>
-        <rect x="150" y="14" width="52" height="30" rx="12" fill="#fff" stroke={AZ} strokeWidth="3" />
-        <path d="M160 44l-6 10 14-6Z" fill="#fff" stroke={AZ} strokeWidth="3" strokeLinejoin="round" />
+        <rect
+          x="150"
+          y="14"
+          width="52"
+          height="30"
+          rx="12"
+          fill="#fff"
+          stroke={AZ}
+          strokeWidth="3"
+        />
+        <path
+          d="M160 44l-6 10 14-6Z"
+          fill="#fff"
+          stroke={AZ}
+          strokeWidth="3"
+          strokeLinejoin="round"
+        />
         <circle cx="165" cy="29" r="3" fill={AZ} />
         <circle cx="176" cy="29" r="3" fill={AZ} />
         <circle cx="187" cy="29" r="3" fill={AZ} />
@@ -676,11 +785,34 @@ export function EscenaSoporte({ alto = 7 }: { alto?: number }) {
 /** Señal que se cortó: tres arcos, el de abajo con un punto, y una cruz. Para «sin conexión». */
 export function EscenaSinSenal({ alto = 9 }: { alto?: number }) {
   return (
-    <svg className="ds-escena" viewBox="0 0 200 150" style={{ height: `${alto}rem` }} aria-hidden="true">
+    <svg
+      className="ds-escena"
+      viewBox="0 0 200 150"
+      style={{ height: `${alto}rem` }}
+      aria-hidden="true"
+    >
       <circle cx="100" cy="76" r="62" fill={TN} />
-      <path d="M52 66a68 68 0 0 1 96 0" fill="none" stroke={AZ} strokeWidth="9" strokeLinecap="round" />
-      <path d="M69 86a44 44 0 0 1 62 0" fill="none" stroke={AZ} strokeWidth="9" strokeLinecap="round" />
-      <path d="M86 106a20 20 0 0 1 28 0" fill="none" stroke={AZ} strokeWidth="9" strokeLinecap="round" />
+      <path
+        d="M52 66a68 68 0 0 1 96 0"
+        fill="none"
+        stroke={AZ}
+        strokeWidth="9"
+        strokeLinecap="round"
+      />
+      <path
+        d="M69 86a44 44 0 0 1 62 0"
+        fill="none"
+        stroke={AZ}
+        strokeWidth="9"
+        strokeLinecap="round"
+      />
+      <path
+        d="M86 106a20 20 0 0 1 28 0"
+        fill="none"
+        stroke={AZ}
+        strokeWidth="9"
+        strokeLinecap="round"
+      />
       <circle cx="100" cy="122" r="7" fill={AZ} />
       <path d="M44 34l112 100" stroke={TT} strokeWidth="9" strokeLinecap="round" />
       <path d="M44 34l112 100" stroke={AM} strokeWidth="3" strokeLinecap="round" />
@@ -691,13 +823,25 @@ export function EscenaSinSenal({ alto = 9 }: { alto?: number }) {
 /** Un calendario con un tilde: «no hay nada pendiente». */
 export function EscenaVacio({ alto = 7.5 }: { alto?: number }) {
   return (
-    <svg className="ds-escena" viewBox="0 0 160 120" style={{ height: `${alto}rem` }} aria-hidden="true">
+    <svg
+      className="ds-escena"
+      viewBox="0 0 160 120"
+      style={{ height: `${alto}rem` }}
+      aria-hidden="true"
+    >
       <rect x="30" y="22" width="100" height="84" rx="14" fill="#fff" stroke={AZ} strokeWidth="4" />
       <path d="M30 46h100" stroke={AZ} strokeWidth="4" />
       <rect x="30" y="22" width="100" height="24" rx="14" fill={AZ} />
       <path d="M56 12v18M104 12v18" stroke={TT} strokeWidth="5" strokeLinecap="round" />
       <circle cx="80" cy="78" r="17" fill={AM} stroke={TT} strokeWidth="3" />
-      <path d="M71 78l7 7 12-14" fill="none" stroke={TT} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M71 78l7 7 12-14"
+        fill="none"
+        stroke={TT}
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }

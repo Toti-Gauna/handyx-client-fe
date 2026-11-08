@@ -17,7 +17,10 @@ import { useObra } from '../compartido';
 export default function FechaObra() {
   const o = useObra({ exigirObra: false });
   const propuestaId = useSearchParams().get('propuesta');
-  const directa = useConsulta('propuesta', propuestaId ? { parametros: { id: propuestaId } } : null);
+  const directa = useConsulta(
+    'propuesta',
+    propuestaId ? { parametros: { id: propuestaId } } : null,
+  );
   const accion = useEnvio();
   const ir = useIr();
   const { t } = o;
@@ -26,7 +29,10 @@ export default function FechaObra() {
   const volver = { href: ruta('/obras/detalle/', { id: t.id }), etiqueta: 'Volver a la obra' };
   const candidata = directa.datos ?? o.pendientes.find((x) => x.tipo === 'cambio_acuerdo') ?? null;
   const p =
-    candidata && candidata.tipo === 'cambio_acuerdo' && candidata.estado === 'pendiente' && candidata.trabajoId === t.id
+    candidata &&
+    candidata.tipo === 'cambio_acuerdo' &&
+    candidata.estado === 'pendiente' &&
+    candidata.trabajoId === t.id
       ? candidata
       : null;
   const dia = (i: string) => (
@@ -53,19 +59,35 @@ export default function FechaObra() {
 
   return (
     <Pantalla
-      arriba={<Barra titulo="Cambio de fecha" volver={volver} sub={p ? (suyo ? `Lo propone ${esp}` : 'Lo propusiste vos') : undefined} />}
+      arriba={
+        <Barra
+          titulo="Cambio de fecha"
+          volver={volver}
+          sub={p ? (suyo ? `Lo propone ${esp}` : 'Lo propusiste vos') : undefined}
+        />
+      }
       pie={
         <AccionesFijas>
           {p && suyo ? (
             <>
-              <Boton icono="check" ocupado={accion.pendiente} onClick={() => void responder('propuestaAceptar')}>
+              <Boton
+                icono="check"
+                ocupado={accion.pendiente}
+                onClick={() => void responder('propuestaAceptar')}
+              >
                 Aprobar el cambio
               </Boton>
               <div className="ds-grilla">
                 <Boton variante="contorno" chico href={ruta('/trabajos/cambiar/', { id: t.id })}>
                   Proponer otro día
                 </Boton>
-                <Boton variante="peligro" chico icono="cerrar" ocupado={accion.pendiente} onClick={() => void responder('propuestaRechazar')}>
+                <Boton
+                  variante="peligro"
+                  chico
+                  icono="cerrar"
+                  ocupado={accion.pendiente}
+                  onClick={() => void responder('propuestaRechazar')}
+                >
                   No, gracias
                 </Boton>
               </div>
@@ -82,17 +104,25 @@ export default function FechaObra() {
         {p ? (
           <>
             <div className="ds-pila" style={{ ['--ds-gap' as string]: '0.375rem' }}>
-              <Titulo nivel={2} texto={suyo ? '¿Aceptás el ==cambio==?' : 'Tu ==cambio== espera respuesta'} tam={1.75} />
+              <Titulo
+                nivel={2}
+                texto={suyo ? '¿Aceptás el ==cambio==?' : 'Tu ==cambio== espera respuesta'}
+                tam={1.75}
+              />
               <p className="ds-sub">Mientras no se acepte, sigue valiendo el horario actual.</p>
             </div>
             {antes && nuevo ? (
               <div className="dss-cambio" role="group" aria-label="Antes y propuesto">
                 <span>
                   <span className="ds-etiqueta">ANTES</span>
-                  <strong style={{ display: 'block', textDecoration: 'line-through' }}>{dia(antes)}</strong>
+                  <strong style={{ display: 'block', textDecoration: 'line-through' }}>
+                    {dia(antes)}
+                  </strong>
                 </span>
                 <span>
-                  <span className="ds-etiqueta" style={{ color: 'inherit' }}>PROPUESTO</span>
+                  <span className="ds-etiqueta" style={{ color: 'inherit' }}>
+                    PROPUESTO
+                  </span>
                   <strong style={{ display: 'block' }}>{dia(nuevo)}</strong>
                 </span>
               </div>
@@ -105,8 +135,10 @@ export default function FechaObra() {
             </Tarjeta>
             {cambiaPrecio ? (
               <Nota icono="alerta" tono="amarillo">
-                También cambia el precio: de {pesos(t.acuerdo.monto.centavos)} a {pesos(p.monto.centavos)}. Mirá el{' '}
-                <Enlace href={ruta('/propuestas/detalle/', { id: p.id })}>detalle completo</Enlace> antes de aceptar.
+                También cambia el precio: de {pesos(t.acuerdo.monto.centavos)} a{' '}
+                {pesos(p.monto.centavos)}. Mirá el{' '}
+                <Enlace href={ruta('/propuestas/detalle/', { id: p.id })}>detalle completo</Enlace>{' '}
+                antes de aceptar.
               </Nota>
             ) : null}
           </>
@@ -114,8 +146,8 @@ export default function FechaObra() {
           <>
             <Titulo nivel={2} texto="Sin cambios de ==fecha==" tam={1.75} />
             <Nota icono="info" rol="status">
-              No hay ningún cambio de fecha esperando respuesta. Si hace falta mover algo, proponé otro día y
-              {` ${esp}`} lo ve.
+              No hay ningún cambio de fecha esperando respuesta. Si hace falta mover algo, proponé
+              otro día y{` ${esp}`} lo ve.
             </Nota>
           </>
         )}

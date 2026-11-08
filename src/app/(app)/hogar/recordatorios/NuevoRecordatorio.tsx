@@ -92,7 +92,12 @@ export function NuevoRecordatorio({
         </Campo>
         <Campo etiqueta="Cada cuánto" error={errores.cadaMeses}>
           {(p) => (
-            <select {...p} className="entrada" value={cada} onChange={(e) => setCada(e.target.value)}>
+            <select
+              {...p}
+              className="entrada"
+              value={cada}
+              onChange={(e) => setCada(e.target.value)}
+            >
               {CADA.map((c) => (
                 <option key={c.valor} value={c.valor}>
                   {c.texto}

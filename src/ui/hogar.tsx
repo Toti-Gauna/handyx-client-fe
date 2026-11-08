@@ -31,16 +31,15 @@ type TipoAmbiente = (typeof TIPOS_AMBIENTE)[number];
 type TipoEquipo = (typeof TIPOS_EQUIPO)[number];
 
 // ── Diccionarios ────────────────────────────────────────────────────────────────────────────────────────
-export const AMBIENTES: Record<TipoAmbiente, { nombre: string; icono: NombreIcono; el: string }> =
-  {
-    bano: { nombre: 'Baño', icono: 'ducha', el: 'el baño' },
-    cocina: { nombre: 'Cocina', icono: 'cocina', el: 'la cocina' },
-    living: { nombre: 'Living', icono: 'sofa', el: 'el living' },
-    dormitorio: { nombre: 'Dormitorio', icono: 'cama', el: 'el dormitorio' },
-    lavadero: { nombre: 'Lavadero', icono: 'lavarropas', el: 'el lavadero' },
-    patio: { nombre: 'Patio', icono: 'hogar', el: 'el patio' },
-    otro: { nombre: 'Otro lugar', icono: 'casa', el: 'ese lugar' },
-  };
+export const AMBIENTES: Record<TipoAmbiente, { nombre: string; icono: NombreIcono; el: string }> = {
+  bano: { nombre: 'Baño', icono: 'ducha', el: 'el baño' },
+  cocina: { nombre: 'Cocina', icono: 'cocina', el: 'la cocina' },
+  living: { nombre: 'Living', icono: 'sofa', el: 'el living' },
+  dormitorio: { nombre: 'Dormitorio', icono: 'cama', el: 'el dormitorio' },
+  lavadero: { nombre: 'Lavadero', icono: 'lavarropas', el: 'el lavadero' },
+  patio: { nombre: 'Patio', icono: 'hogar', el: 'el patio' },
+  otro: { nombre: 'Otro lugar', icono: 'casa', el: 'ese lugar' },
+};
 
 /** «el baño» si se llama como su tipo; si la persona le puso nombre, ese nombre («Baño de arriba»). */
 export const elAmbiente = (a: Pick<Ambiente, 'tipo' | 'nombre'>) =>
@@ -53,20 +52,22 @@ export const delAmbiente = (a: Pick<Ambiente, 'tipo' | 'nombre'>) => {
 };
 
 /** Cada equipo con su ícono y el rubro con el que se arma el pedido (null: lo elige la persona). */
-export const EQUIPOS: Record<TipoEquipo, { nombre: string; icono: NombreIcono; rubro: Rubro | null }> =
-  {
-    calefon: { nombre: 'Calefón', icono: 'llama', rubro: 'gas' },
-    termotanque: { nombre: 'Termotanque', icono: 'termometro', rubro: 'gas' },
-    anafe: { nombre: 'Anafe', icono: 'llama', rubro: 'gas' },
-    horno: { nombre: 'Horno', icono: 'cocina', rubro: 'gas' },
-    aire_acondicionado: { nombre: 'Aire acondicionado', icono: 'aire', rubro: 'aire_acondicionado' },
-    tablero_electrico: { nombre: 'Tablero eléctrico', icono: 'rayo', rubro: 'electricidad' },
-    canilla: { nombre: 'Canilla', icono: 'canilla', rubro: 'plomeria' },
-    inodoro: { nombre: 'Inodoro', icono: 'caja', rubro: 'plomeria' },
-    ducha: { nombre: 'Ducha', icono: 'ducha', rubro: 'plomeria' },
-    cerradura: { nombre: 'Cerradura', icono: 'llave', rubro: 'cerrajeria' },
-    otro: { nombre: 'Otro equipo', icono: 'caja', rubro: null },
-  };
+export const EQUIPOS: Record<
+  TipoEquipo,
+  { nombre: string; icono: NombreIcono; rubro: Rubro | null }
+> = {
+  calefon: { nombre: 'Calefón', icono: 'llama', rubro: 'gas' },
+  termotanque: { nombre: 'Termotanque', icono: 'termometro', rubro: 'gas' },
+  anafe: { nombre: 'Anafe', icono: 'llama', rubro: 'gas' },
+  horno: { nombre: 'Horno', icono: 'cocina', rubro: 'gas' },
+  aire_acondicionado: { nombre: 'Aire acondicionado', icono: 'aire', rubro: 'aire_acondicionado' },
+  tablero_electrico: { nombre: 'Tablero eléctrico', icono: 'rayo', rubro: 'electricidad' },
+  canilla: { nombre: 'Canilla', icono: 'canilla', rubro: 'plomeria' },
+  inodoro: { nombre: 'Inodoro', icono: 'caja', rubro: 'plomeria' },
+  ducha: { nombre: 'Ducha', icono: 'ducha', rubro: 'plomeria' },
+  cerradura: { nombre: 'Cerradura', icono: 'llave', rubro: 'cerrajeria' },
+  otro: { nombre: 'Otro equipo', icono: 'caja', rubro: null },
+};
 
 export const VIVIENDAS = { casa: 'Casa', departamento: 'Departamento', ph: 'PH' } as const;
 
@@ -120,7 +121,10 @@ const diaNumero = (f: FechaISO) => {
 export function avanceGarantia(desde: FechaISO, hasta: FechaISO, hoy: FechaISO): number {
   const total = diaNumero(hasta) - diaNumero(desde);
   if (total <= 0) return 100;
-  return Math.max(0, Math.min(100, Math.round(((diaNumero(hoy) - diaNumero(desde)) / total) * 100)));
+  return Math.max(
+    0,
+    Math.min(100, Math.round(((diaNumero(hoy) - diaNumero(desde)) / total) * 100)),
+  );
 }
 
 /** Recordatorios activos, del más cercano al más lejano. */
@@ -235,7 +239,8 @@ const TERMINADOS: readonly Trabajo['estado'][] = ['terminado_por_especialista', 
 /** Nombre de algo compartido para la lista de «Lo que compartiste» (si ya no existe, lo dice). */
 export function nombreCompartido(i: ItemCompartido, hogar: Hogar | null): string {
   if (i.tipo === 'informe') return 'Informe de un trabajo';
-  if (i.tipo === 'equipo') return hogar?.equipos.find((e) => e.id === i.refId)?.nombre ?? 'Un equipo';
+  if (i.tipo === 'equipo')
+    return hogar?.equipos.find((e) => e.id === i.refId)?.nombre ?? 'Un equipo';
   const a = hogar?.ambientes.find((x) => x.id === i.refId);
   const de = a ? ` ${delAmbiente(a)}` : '';
   return i.tipo === 'ambiente_fotos' ? `Fotos${de}` : `Medidas${de}`;
@@ -256,14 +261,19 @@ export function BarraHogar({
   titulo: string;
   volver: { href: string; etiqueta: string };
   sub?: ReactNode;
-  accion?: { icono: NombreIcono; etiqueta: string; href?: string; onClick?: () => void } | undefined;
+  accion?:
+    { icono: NombreIcono; etiqueta: string; href?: string; onClick?: () => void } | undefined;
 }) {
   const dentro = accion ? <Icono nombre={accion.icono} /> : null;
   return (
     <div className="dsh-barra">
       <Barra titulo={titulo} volver={volver} sub={sub} />
       {accion?.href ? (
-        <Enlace href={accion.href} className="du-atras dsh-barra__accion" aria-label={accion.etiqueta}>
+        <Enlace
+          href={accion.href}
+          className="du-atras dsh-barra__accion"
+          aria-label={accion.etiqueta}
+        >
           {dentro}
         </Enlace>
       ) : accion ? (
@@ -291,7 +301,13 @@ export function PortadaAmbiente({ ambiente, alto = 96 }: { ambiente: Ambiente; a
   return <IlustracionAmbiente tipo={ambiente.tipo} alto={alto} />;
 }
 
-export function TarjetaAmbiente({ ambiente, equipos }: { ambiente: Ambiente; equipos: readonly Equipo[] }) {
+export function TarjetaAmbiente({
+  ambiente,
+  equipos,
+}: {
+  ambiente: Ambiente;
+  equipos: readonly Equipo[];
+}) {
   return (
     <Enlace href={ruta('/hogar/ambiente/', { id: ambiente.id })} className="dsh-amb">
       <PortadaAmbiente ambiente={ambiente} />

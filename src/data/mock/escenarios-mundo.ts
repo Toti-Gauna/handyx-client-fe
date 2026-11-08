@@ -63,6 +63,8 @@ export function iniciarSesion(
     aceptadaEn: '2026-11-10T13:00:00.000Z',
   }));
   m.estadoCuenta = 'activa';
+  // Toda cuenta de prueba con sesión tiene su casa cargada (Mi hogar no queda vacío en ningún escenario).
+  if (m.d4.hogar.ambientes.length === 0) poblarHogar(m);
   m.feeAceptada =
     opciones.feeAceptada === false
       ? null

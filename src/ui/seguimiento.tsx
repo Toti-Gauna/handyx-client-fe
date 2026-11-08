@@ -142,12 +142,27 @@ export function Indicador({ titulo, valor, sub }: { titulo: string; valor: strin
 }
 
 /** Anillo de avance (etapas confirmadas sobre el total). */
-export function Anillo({ hechas, total, etiqueta }: { hechas: number; total: number; etiqueta: string }) {
+export function Anillo({
+  hechas,
+  total,
+  etiqueta,
+}: {
+  hechas: number;
+  total: number;
+  etiqueta: string;
+}) {
   const r = 26;
   const c = 2 * Math.PI * r;
   const pct = total > 0 ? hechas / total : 0;
   return (
-    <svg className="dss-anillo" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label={etiqueta}>
+    <svg
+      className="dss-anillo"
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      role="img"
+      aria-label={etiqueta}
+    >
       <circle cx="32" cy="32" r={r} fill="none" stroke="var(--ds-mosaico)" strokeWidth="8" />
       <circle
         cx="32"
@@ -215,13 +230,7 @@ export function Comparador({
 }
 
 /** Una foto del antes y una del después, una al lado de la otra. */
-export function LadoALado({
-  antes,
-  despues,
-}: {
-  antes: string | null;
-  despues: string | null;
-}) {
+export function LadoALado({ antes, despues }: { antes: string | null; despues: string | null }) {
   const col = (url: string | null, chip: ReactNode, alt: string) => (
     <figure>
       {url ? (

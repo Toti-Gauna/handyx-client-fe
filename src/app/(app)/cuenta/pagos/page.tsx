@@ -21,7 +21,13 @@ const FUENTE: Record<NonNullable<RegistroPago['fuente']> | 'nadie', string> = {
   operaciones: 'Lo confirmó el equipo de Handy',
   nadie: 'Todavía nadie lo reportó',
 };
-const TONO: Record<string, TonoChip> = { ok: 'exito', alerta: 'tinte', error: 'error', azul: 'tinte', gris: 'gris' };
+const TONO: Record<string, TonoChip> = {
+  ok: 'exito',
+  alerta: 'tinte',
+  error: 'error',
+  azul: 'tinte',
+  gris: 'gris',
+};
 
 /**
  * Pagos registrados (lienzo X-Pagos, sin tarjetas): el historial de los pagos directos al especialista, cada uno con
@@ -57,8 +63,8 @@ export default function PagosRegistrados() {
           <div className="ds-m-vacio">
             <EscenaVacio />
             <Texto>
-              Todavía no hay pagos registrados. Cuando le pagues a un especialista, lo registrás desde
-              el trabajo.
+              Todavía no hay pagos registrados. Cuando le pagues a un especialista, lo registrás
+              desde el trabajo.
             </Texto>
           </div>
         ) : (
@@ -75,11 +81,16 @@ export default function PagosRegistrados() {
                       sub={`${rubro ? RUBROS_INFO[rubro].nombre : 'Trabajo'} · ${pago.metodo === 'efectivo' ? 'Efectivo' : 'Mercado Pago'}${fecha ? ` · ${diaMes(fecha)}` : ''}`}
                       chip={
                         <>
-                          <Chip tono={TONO[e.tono] ?? 'tinte'} {...(e.icono ? { icono: e.icono } : {})}>
+                          <Chip
+                            tono={TONO[e.tono] ?? 'tinte'}
+                            {...(e.icono ? { icono: e.icono } : {})}
+                          >
                             <span className="ds-solo-lector">Estado: </span>
                             {etiquetaPago(pago).texto}
                           </Chip>
-                          <span className="ds-m-movimiento__sub">{FUENTE[pago.fuente ?? 'nadie']}</span>
+                          <span className="ds-m-movimiento__sub">
+                            {FUENTE[pago.fuente ?? 'nadie']}
+                          </span>
                           <Enlace href={ruta('/trabajos/pago/', { id: trabajo.id })}>
                             Ver el pago del trabajo
                           </Enlace>

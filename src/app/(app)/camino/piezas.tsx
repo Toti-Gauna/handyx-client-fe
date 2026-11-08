@@ -112,15 +112,28 @@ export function CaminoHitos({ hitos }: { hitos: readonly Hito[] }) {
           const x = puntos[i]!.x;
           const izq = x >= 50;
           return (
-            <li key={h.id} style={{ bottom: `${i * 6}rem` }} aria-current={h.estado === 'ahora' ? 'step' : undefined}>
-              <span className="dsh-nodo" data-estado={h.estado} style={{ left: `${x}%` }} aria-hidden="true">
+            <li
+              key={h.id}
+              style={{ bottom: `${i * 6}rem` }}
+              aria-current={h.estado === 'ahora' ? 'step' : undefined}
+            >
+              <span
+                className="dsh-nodo"
+                data-estado={h.estado}
+                style={{ left: `${x}%` }}
+                aria-hidden="true"
+              >
                 <Icono nombre={h.estado === 'hecho' ? 'check' : iconoHito(h.id)} />
               </span>
               <Enlace
                 href={HREF_HITO[h.id] ?? '/hogar/'}
                 className="dsh-nodo__texto"
                 data-lado={izq ? 'izq' : 'der'}
-                style={izq ? { right: `calc(${100 - x}% + 2.25rem)`, left: '0.5rem', marginLeft: 'auto' } : { left: `calc(${x}% + 2.25rem)`, right: '0.5rem', marginRight: 'auto' }}
+                style={
+                  izq
+                    ? { right: `calc(${100 - x}% + 2.25rem)`, left: '0.5rem', marginLeft: 'auto' }
+                    : { left: `calc(${x}% + 2.25rem)`, right: '0.5rem', marginRight: 'auto' }
+                }
               >
                 <strong>{h.titulo}</strong>
                 <span className="dsh-suave">

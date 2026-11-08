@@ -5,7 +5,11 @@ import { useState, useSyncExternalStore } from 'react';
 import { FormPerfil } from '@/components/FormPerfil';
 import { useSesion } from '@/components/SesionProvider';
 import type { Ubicacion } from '@/contracts/v1/cuenta';
-import { direccionesGuardadas, direccionesServidor, suscribirDirecciones } from '@/data/direcciones';
+import {
+  direccionesGuardadas,
+  direccionesServidor,
+  suscribirDirecciones,
+} from '@/data/direcciones';
 import { fechaNumerica } from '@/domain/fechas';
 import { GENEROS_ETIQUETA, nombrePais } from '@/domain/formularios';
 import { AccionesFijas, Boton, Chip, DatoFila, Etiqueta, Nota, Tarjeta } from '@/ui';
@@ -22,14 +26,30 @@ export default function Datos() {
   const { sesion } = useSesion();
   const [editando, setEditando] = useState(useSearchParams().get('editar') === '1');
   const [guardado, setGuardado] = useState(false);
-  const otras = useSyncExternalStore(suscribirDirecciones, direccionesGuardadas, direccionesServidor);
+  const otras = useSyncExternalStore(
+    suscribirDirecciones,
+    direccionesGuardadas,
+    direccionesServidor,
+  );
   const p = sesion.perfil;
   const nombre = [p.nombre, p.apellido].filter(Boolean).join(' ');
   const filas = [
     { icono: 'usuario', etiqueta: 'Nombre', valor: nombre || null },
-    { icono: 'calendario', etiqueta: 'Fecha de nacimiento', valor: p.fechaNacimiento ? fechaNumerica(p.fechaNacimiento) : null },
-    { icono: 'pin', etiqueta: 'Nacionalidad', valor: p.nacionalidad ? nombrePais(p.nacionalidad) : null },
-    { icono: 'personas', etiqueta: 'Género', valor: p.genero ? (GENEROS_ETIQUETA[p.genero] ?? null) : null },
+    {
+      icono: 'calendario',
+      etiqueta: 'Fecha de nacimiento',
+      valor: p.fechaNacimiento ? fechaNumerica(p.fechaNacimiento) : null,
+    },
+    {
+      icono: 'pin',
+      etiqueta: 'Nacionalidad',
+      valor: p.nacionalidad ? nombrePais(p.nacionalidad) : null,
+    },
+    {
+      icono: 'personas',
+      etiqueta: 'Género',
+      valor: p.genero ? (GENEROS_ETIQUETA[p.genero] ?? null) : null,
+    },
   ] as const;
 
   return (
@@ -69,10 +89,18 @@ export default function Datos() {
             ) : null}
             <Tarjeta etiqueta="Tus datos">
               {filas.map((f) => (
-                <DatoFila key={f.etiqueta} icono={f.icono} etiqueta={f.etiqueta} valor={f.valor ?? 'Sin completar'} />
+                <DatoFila
+                  key={f.etiqueta}
+                  icono={f.icono}
+                  etiqueta={f.etiqueta}
+                  valor={f.valor ?? 'Sin completar'}
+                />
               ))}
             </Tarjeta>
-            <Tarjeta etiqueta="Direcciones" pie={{ texto: 'Sumar una dirección', href: '/cuenta/direcciones/' }}>
+            <Tarjeta
+              etiqueta="Direcciones"
+              pie={{ texto: 'Sumar una dirección', href: '/cuenta/direcciones/' }}
+            >
               <Etiqueta como="h2">Direcciones</Etiqueta>
               {p.ubicacion ? (
                 <Movimiento
@@ -87,7 +115,12 @@ export default function Datos() {
                 </Nota>
               )}
               {otras.map((d) => (
-                <Movimiento key={d.id} icono={d.tipo === 'trabajo' ? 'maletin' : 'pin'} titulo={d.nombre} sub={texto(d.ubicacion)} />
+                <Movimiento
+                  key={d.id}
+                  icono={d.tipo === 'trabajo' ? 'maletin' : 'pin'}
+                  titulo={d.nombre}
+                  sub={texto(d.ubicacion)}
+                />
               ))}
             </Tarjeta>
             <Nota icono="candado" tono="gris">

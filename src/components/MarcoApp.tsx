@@ -26,6 +26,20 @@ const SIN_BARRA = [
   '/trabajos/cambiar/',
   '/chats/conversacion/',
   '/soporte/',
+  '/hogar/ambiente/',
+  '/hogar/equipo/',
+  '/hogar/rompio/',
+  '/hogar/casa/',
+  '/hogar/sumar/',
+  '/hogar/compartir/',
+  '/hogar/compartidos/',
+  '/hogar/recordatorios/',
+  '/hogar/historial/',
+  '/hogar/garantias/',
+  '/camino/hito/',
+  '/camino/insignias/',
+  '/camino/insignia/',
+  '/camino/beneficios/',
 ];
 
 export function MarcoApp({ children, barra }: { children: React.ReactNode; barra: boolean }) {

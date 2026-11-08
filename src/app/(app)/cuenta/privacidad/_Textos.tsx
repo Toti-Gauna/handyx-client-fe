@@ -16,7 +16,11 @@ export function Textos() {
   const pendientes = sesion.pendientes.documentos;
 
   async function aceptar(documento: 'terminos' | 'privacidad', version: string) {
-    const r = await enviar('aceptacion', { cuerpo: { documento, version } }, `${documento}|${version}`);
+    const r = await enviar(
+      'aceptacion',
+      { cuerpo: { documento, version } },
+      `${documento}|${version}`,
+    );
     if (r?.ok) recargar();
   }
 

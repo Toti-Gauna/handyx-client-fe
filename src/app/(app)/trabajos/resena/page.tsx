@@ -47,7 +47,9 @@ export default function ResenaTrabajo() {
   const [comentario, setComentario] = useState('');
   const [enviada, setEnviada] = useState<Resena | null>(null);
 
-  const carga = estadoDeCarga(id, [trabajo]) ?? (previa.estado === 'cargando' ? estadoDeCarga(id, [previa]) : null);
+  const carga =
+    estadoDeCarga(id, [trabajo]) ??
+    (previa.estado === 'cargando' ? estadoDeCarga(id, [previa]) : null);
   const t = trabajo.datos;
   if (carga || !t) return carga;
 
@@ -116,7 +118,9 @@ export default function ResenaTrabajo() {
                     ))}
                   </div>
                 ) : null}
-                {hecha.comentario ? <blockquote className="dss-cita">{hecha.comentario}</blockquote> : null}
+                {hecha.comentario ? (
+                  <blockquote className="dss-cita">{hecha.comentario}</blockquote>
+                ) : null}
                 <Nota icono="info">
                   Si algo salió mal y necesitás que lo revisemos, abrí un reclamo: la reseña no lo
                   reemplaza.
@@ -150,7 +154,9 @@ export default function ResenaTrabajo() {
                           key={d}
                           elegida={destacados.includes(d)}
                           onElegir={() =>
-                            setDestacados((a) => (a.includes(d) ? a.filter((x) => x !== d) : [...a, d]))
+                            setDestacados((a) =>
+                              a.includes(d) ? a.filter((x) => x !== d) : [...a, d],
+                            )
                           }
                         >
                           {DESTACADOS_TEXTO[d]}
@@ -170,7 +176,8 @@ export default function ResenaTrabajo() {
                   />
                 </label>
                 <p id="resena-privacidad" className="ds-fila-enlace__sub" style={{ margin: 0 }}>
-                  Se publica con tu nombre y la inicial del apellido. Sacamos teléfonos, emails y documentos.
+                  Se publica con tu nombre y la inicial del apellido. Sacamos teléfonos, emails y
+                  documentos.
                 </p>
                 {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
                 <Boton

@@ -44,7 +44,8 @@ export default function Historial() {
             if (items.length === 0)
               return (
                 <Nota tono="gris" icono="reloj">
-                  Todavía no hay trabajos terminados. Cuando termine el primero, queda acá con su informe.
+                  Todavía no hay trabajos terminados. Cuando termine el primero, queda acá con su
+                  informe.
                 </Nota>
               );
             const porAnio = new Map<number, Trabajo[]>();
@@ -60,15 +61,23 @@ export default function Historial() {
                     const { dia, mes } = partes(fechaDeInstante(t.creadoEn));
                     const rubro = RUBROS_INFO[rubroDe(t)];
                     return (
-                      <Enlace key={t.id} href={ruta('/trabajos/detalle/', { id: t.id })} className="dsh-hist">
+                      <Enlace
+                        key={t.id}
+                        href={ruta('/trabajos/detalle/', { id: t.id })}
+                        className="dsh-hist"
+                      >
                         <span className="dsh-hist__fecha">
                           {dia} {MESES[mes - 1]}
                         </span>
                         <MosaicoIcono icono={rubro.icono} tam={2.5} />
-                        <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+                        <span
+                          className="ds-crece ds-pila"
+                          style={{ ['--ds-gap' as string]: '0.125rem' }}
+                        >
                           <strong>{rubro.nombre}</strong>
                           <span className="dsh-suave">
-                            {t.especialista.nombrePublico} · {etiquetaTrabajo(t).texto.toLowerCase()}
+                            {t.especialista.nombrePublico} ·{' '}
+                            {etiquetaTrabajo(t).texto.toLowerCase()}
                           </span>
                         </span>
                         <strong className="ds-monto" style={{ ['--ds-tam' as string]: '0.875rem' }}>

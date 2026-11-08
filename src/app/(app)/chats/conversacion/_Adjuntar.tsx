@@ -27,8 +27,18 @@ export function Adjuntar({
               onFoto();
             }}
           />
-          <OpcionAdjuntar icono="regla" texto="Medida" sub="Con la cámara" href="/herramientas/medir/" />
-          <OpcionAdjuntar icono="hogar" texto="De Mi hogar" sub="Equipo o informe" href="/hogar/compartir/" />
+          <OpcionAdjuntar
+            icono="regla"
+            texto="Medida"
+            sub="Con la cámara"
+            href="/herramientas/medir/"
+          />
+          <OpcionAdjuntar
+            icono="hogar"
+            texto="De Mi hogar"
+            sub="Equipo o informe"
+            href="/hogar/compartir/"
+          />
         </div>
         <Nota icono="escudo" tono="gris">
           Las fotos se mandan sin ubicación ni datos del teléfono.

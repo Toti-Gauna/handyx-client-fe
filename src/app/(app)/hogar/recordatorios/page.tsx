@@ -30,7 +30,11 @@ export default function Recordatorios() {
         <BarraHogar
           titulo="Recordatorios"
           volver={{ href: '/hogar/', etiqueta: 'Volver a Mi hogar' }}
-          accion={{ icono: 'mas', etiqueta: 'Sumar un recordatorio', onClick: () => setSumar(true) }}
+          accion={{
+            icono: 'mas',
+            etiqueta: 'Sumar un recordatorio',
+            onClick: () => setSumar(true),
+          }}
         />
       }
     >
@@ -44,7 +48,10 @@ export default function Recordatorios() {
                 Todavía no tenés recordatorios. Sumá uno con el botón «+» de arriba.
               </Nota>
             ) : (
-              <ul className="ds-pila" style={{ listStyle: 'none', margin: 0, padding: 0, ['--ds-gap' as string]: 0 }}>
+              <ul
+                className="ds-pila"
+                style={{ listStyle: 'none', margin: 0, padding: 0, ['--ds-gap' as string]: 0 }}
+              >
                 {[...items]
                   .sort((a, b) => a.fecha.localeCompare(b.fecha))
                   .map((r) => (
@@ -55,7 +62,8 @@ export default function Recordatorios() {
           }
         </EstadoConsulta>
         <Nota tono="amarillo" icono="medalla">
-          Hacer un mantenimiento a tiempo suma en tu camino del hogar, lo hagas con Handyx o por tu cuenta.
+          Hacer un mantenimiento a tiempo suma en tu camino del hogar, lo hagas con Handyx o por tu
+          cuenta.
         </Nota>
       </div>
       <NuevoRecordatorio

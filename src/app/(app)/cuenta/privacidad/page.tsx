@@ -29,7 +29,10 @@ export default function Privacidad() {
     setError(null);
     try {
       for (const r of items.filter((x) => x.activo !== activo))
-        await cliente.llamar('recordatorioEditar', { parametros: { id: r.id }, cuerpo: { activo } });
+        await cliente.llamar('recordatorioEditar', {
+          parametros: { id: r.id },
+          cuerpo: { activo },
+        });
     } catch (e) {
       if (e instanceof ErrorCliente) avisarSiSesion(e);
       setError('No pudimos cambiarlos. Probá de nuevo.');
@@ -60,8 +63,8 @@ export default function Privacidad() {
             <div className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
               <strong style={{ fontSize: '1.0625rem' }}>HandIA y tus datos</strong>
               <Texto>
-                Funciona en tu celular, sin IA externa. Saca teléfonos, emails y documentos antes de procesar, y
-                nunca recibe fotos ni los datos de tu cuenta. Usarla es opcional.
+                Funciona en tu celular, sin IA externa. Saca teléfonos, emails y documentos antes de
+                procesar, y nunca recibe fotos ni los datos de tu cuenta. Usarla es opcional.
               </Texto>
             </div>
           </div>

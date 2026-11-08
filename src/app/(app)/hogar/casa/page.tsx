@@ -39,7 +39,7 @@ export default function MiCasa() {
         />
       }
     >
-      <div className="ds ds-cuerpo">
+      <div className="ds ds-cuerpo ds-cuerpo--raiz">
         <Segmentos
           etiqueta="Ver la casa por"
           actual={verEquipos ? 'Equipos' : 'Ambientes'}
@@ -69,7 +69,11 @@ function Vivienda({ hogar, onCambio }: { hogar: Hogar; onCambio: () => void }) {
   const { enviar, pendiente, error } = useEnvio();
   const elegir = async (vivienda: keyof typeof VIVIENDAS) => {
     if (vivienda === hogar.vivienda || pendiente) return;
-    const r = await enviar('hogarEditar', { cuerpo: { vivienda, version: hogar.version } }, vivienda);
+    const r = await enviar(
+      'hogarEditar',
+      { cuerpo: { vivienda, version: hogar.version } },
+      vivienda,
+    );
     if (r?.ok) onCambio();
   };
   return (
@@ -77,7 +81,12 @@ function Vivienda({ hogar, onCambio }: { hogar: Hogar; onCambio: () => void }) {
       <Etiqueta>Tu vivienda</Etiqueta>
       <div className="ds-fila" style={{ ['--ds-gap' as string]: '0.5rem', flexWrap: 'wrap' }}>
         {(Object.keys(VIVIENDAS) as (keyof typeof VIVIENDAS)[]).map((v) => (
-          <Pastilla key={v} rol="radio" elegida={hogar.vivienda === v} onElegir={() => void elegir(v)}>
+          <Pastilla
+            key={v}
+            rol="radio"
+            elegida={hogar.vivienda === v}
+            onElegir={() => void elegir(v)}
+          >
             {VIVIENDAS[v]}
           </Pastilla>
         ))}

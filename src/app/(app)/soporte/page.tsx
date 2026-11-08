@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Enlace } from '@/components/nav';
 import { ErrorCliente } from '@/data/cliente';
 import { escribirASoporte, soporteDisponible } from '@/data/soporte';
-import { Avatar, Burbuja, Nota, Pastilla, Titulo } from '@/ui';
+import { Avatar, Burbuja, Nota, Pastilla, Texto, Titulo } from '@/ui';
 import { BarraCentro, Escribir, EscenaSoporte, PantallaM } from '@/ui/mensajes';
 
 interface Mensaje {
@@ -52,7 +52,11 @@ export default function Soporte() {
       arriba={
         <BarraCentro
           titulo="Soporte de Handyx"
-          sub={soporteDisponible ? 'Vista de prueba · respuestas simuladas' : 'Te responde una persona del equipo'}
+          sub={
+            soporteDisponible
+              ? 'Vista de prueba · respuestas simuladas'
+              : 'Te responde una persona del equipo'
+          }
           volver={{ href: '/chats/', etiqueta: 'Volver a mensajes' }}
           tituloPestana="Soporte"
         />
@@ -80,15 +84,21 @@ export default function Soporte() {
         <div className="ds-pila" style={{ alignItems: 'center', textAlign: 'center' }}>
           <EscenaSoporte />
           <Titulo nivel={2} tam={1.375} texto="¿En qué te ==ayudamos==?" />
+          <Texto>Escribinos lo que necesites: te responde una persona del equipo.</Texto>
         </div>
         {!soporteDisponible ? (
           <Nota icono="info" tono="amarillo" rol="status">
             El chat con el equipo todavía no está disponible. Mirá la{' '}
-            <Enlace href="/ayuda/">ayuda</Enlace> o <Enlace href="/reclamos/nuevo/">abrí un reclamo</Enlace>:
-            queda todo registrado.
+            <Enlace href="/ayuda/">ayuda</Enlace> o{' '}
+            <Enlace href="/reclamos/nuevo/">abrí un reclamo</Enlace>: queda todo registrado.
           </Nota>
         ) : mensajes.length === 0 ? (
-          <div className="ds-m-rapidas" style={{ flexWrap: 'wrap', justifyContent: 'center' }} role="group" aria-label="Temas">
+          <div
+            className="ds-m-rapidas"
+            style={{ flexWrap: 'wrap', justifyContent: 'center' }}
+            role="group"
+            aria-label="Temas"
+          >
             {TEMAS.map((t) => (
               <Pastilla key={t} elegida={false} onElegir={() => setTexto(`${t}: `)}>
                 {t}

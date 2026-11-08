@@ -29,7 +29,11 @@ export function PedidosPendientes({ c }: { c: ContextoTrabajo }) {
       {p ? (
         <PedidoAmarillo
           icono="calendario"
-          titulo={p.autorRol === 'especialista' ? `${c.esp} propone un cambio` : 'Tu cambio espera respuesta'}
+          titulo={
+            p.autorRol === 'especialista'
+              ? `${c.esp} propone un cambio`
+              : 'Tu cambio espera respuesta'
+          }
           sub="Hasta que se acepte, vale el acuerdo actual"
           href={ruta('/propuestas/detalle/', { id: p.id })}
         />
@@ -37,4 +41,3 @@ export function PedidosPendientes({ c }: { c: ContextoTrabajo }) {
     </>
   );
 }
-

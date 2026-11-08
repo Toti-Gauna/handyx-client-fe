@@ -49,16 +49,33 @@ export default function Seguridad() {
       arriba={<BarraCentro titulo="Seguridad" volver={VOLVER} />}
       pie={
         <AccionesFijas nota={otras ? undefined : 'No hay otras sesiones abiertas.'}>
-          <Boton variante="peligro" icono="salir" deshabilitado={!otras} onClick={() => setHoja('cerrar')}>
+          <Boton
+            variante="peligro"
+            icono="salir"
+            deshabilitado={!otras}
+            onClick={() => setHoja('cerrar')}
+          >
             Cerrar las otras sesiones
           </Boton>
         </AccionesFijas>
       }
     >
       <div className="ds-cuerpo">
-        {error ? <ErrorEstado error={error} onReintentar={() => { segunda.recargar(); sesiones.recargar(); }} /> : null}
+        {error ? (
+          <ErrorEstado
+            error={error}
+            onReintentar={() => {
+              segunda.recargar();
+              sesiones.recargar();
+            }}
+          />
+        ) : null}
         {!error && (!s || !sesiones.datos) ? <Cargando /> : null}
-        {aviso ? <Nota icono="check" tono="exito" rol="status">{aviso}</Nota> : null}
+        {aviso ? (
+          <Nota icono="check" tono="exito" rol="status">
+            {aviso}
+          </Nota>
+        ) : null}
         {s ? (
           <Tarjeta etiqueta="Segunda verificación">
             <div className="ds-fila">
@@ -69,7 +86,13 @@ export default function Seguridad() {
                   {s.activa && s.metodo ? `${METODO[s.metodo]} · activa` : 'Apagada'}
                 </span>
               </span>
-              {s.activa ? <Chip tono="exito" icono="check">Activa</Chip> : <Chip tono="gris">Apagada</Chip>}
+              {s.activa ? (
+                <Chip tono="exito" icono="check">
+                  Activa
+                </Chip>
+              ) : (
+                <Chip tono="gris">Apagada</Chip>
+              )}
             </div>
             {s.activa ? (
               <>
@@ -80,8 +103,8 @@ export default function Seguridad() {
               </>
             ) : (
               <Texto>
-                Con ella, además del código que te llega por email, te pedimos un segundo código para entrar.
-                Activarla desde acá todavía no está disponible.
+                Con ella, además del código que te llega por email, te pedimos un segundo código
+                para entrar. Activarla desde acá todavía no está disponible.
               </Texto>
             )}
           </Tarjeta>
@@ -97,7 +120,13 @@ export default function Seguridad() {
                   icono={d.icono}
                   titulo={x.actual ? `Este ${d.texto.toLowerCase()}` : d.texto}
                   sub={`Último uso ${haceCuanto(x.ultimoUso, ahora)}`}
-                  derecha={x.actual ? <Chip tono="exito" icono="check">Este</Chip> : undefined}
+                  derecha={
+                    x.actual ? (
+                      <Chip tono="exito" icono="check">
+                        Este
+                      </Chip>
+                    ) : undefined
+                  }
                 />
               );
             })}
@@ -108,24 +137,47 @@ export default function Seguridad() {
         </Nota>
       </div>
 
-      <Hoja abierta={hoja === 'apagar'} onCerrar={() => setHoja(null)} titulo="¿Apagar la segunda verificación?">
+      <Hoja
+        abierta={hoja === 'apagar'}
+        onCerrar={() => setHoja(null)}
+        titulo="¿Apagar la segunda verificación?"
+      >
         <div className="ds ds-pila">
-          <Texto>Vas a entrar solo con el código que te mandamos por email. Podés volver a activarla cuando quieras.</Texto>
-          {apagar.error ? <Nota icono="alerta" tono="error" rol="alert">{apagar.error.mensaje}</Nota> : null}
+          <Texto>
+            Vas a entrar solo con el código que te mandamos por email. Podés volver a activarla
+            cuando quieras.
+          </Texto>
+          {apagar.error ? (
+            <Nota icono="alerta" tono="error" rol="alert">
+              {apagar.error.mensaje}
+            </Nota>
+          ) : null}
           <Boton variante="peligro" ocupado={apagar.pendiente} onClick={() => void apagarSegunda()}>
             Sí, apagarla
           </Boton>
-          <Boton variante="contorno" onClick={() => setHoja(null)}>Mejor no</Boton>
+          <Boton variante="contorno" onClick={() => setHoja(null)}>
+            Mejor no
+          </Boton>
         </div>
       </Hoja>
-      <Hoja abierta={hoja === 'cerrar'} onCerrar={() => setHoja(null)} titulo="¿Cerrar las otras sesiones?">
+      <Hoja
+        abierta={hoja === 'cerrar'}
+        onCerrar={() => setHoja(null)}
+        titulo="¿Cerrar las otras sesiones?"
+      >
         <div className="ds ds-pila">
           <Texto>Se cierra Handyx en los demás aparatos. En este seguís adentro.</Texto>
-          {cerrar.error ? <Nota icono="alerta" tono="error" rol="alert">{cerrar.error.mensaje}</Nota> : null}
+          {cerrar.error ? (
+            <Nota icono="alerta" tono="error" rol="alert">
+              {cerrar.error.mensaje}
+            </Nota>
+          ) : null}
           <Boton variante="peligro" ocupado={cerrar.pendiente} onClick={() => void cerrarOtras()}>
             Sí, cerrarlas
           </Boton>
-          <Boton variante="contorno" onClick={() => setHoja(null)}>Mejor no</Boton>
+          <Boton variante="contorno" onClick={() => setHoja(null)}>
+            Mejor no
+          </Boton>
         </div>
       </Hoja>
     </PantallaM>

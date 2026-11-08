@@ -2,7 +2,7 @@
 
 import { Barra, Pantalla } from '@/components/hx';
 import { ruta } from '@/components/nav';
-import { adicionalesAprobados, pagoVigente, totalesObra } from '@/components/Trabajo';
+import { adicionalesAprobados, pagoVigente, totalesObra, textoPago } from '@/components/Trabajo';
 import { Enlace } from '@/components/nav';
 import { Icono } from '@/components/Icono';
 import { pesos } from '@/domain/dinero';
@@ -30,9 +30,14 @@ export default function PagosObra() {
         />
       }
       pie={
-        <AccionesFijas nota={siguiente ? undefined : 'Cada etapa se paga cuando la confirmás terminada.'}>
+        <AccionesFijas
+          nota={siguiente ? undefined : 'Cada etapa se paga cuando la confirmás terminada.'}
+        >
           {siguiente ? (
-            <Boton icono="billete" href={ruta('/trabajos/pago/', { id: t.id, etapa: siguiente.id })}>
+            <Boton
+              icono="billete"
+              href={ruta('/trabajos/pago/', { id: t.id, etapa: siguiente.id })}
+            >
               Pagar la etapa {siguiente.orden}
             </Boton>
           ) : (
@@ -46,8 +51,8 @@ export default function PagosObra() {
       <div className="ds ds-cuerpo">
         <PestanasObra id={t.id} activa="pagos" />
         <p className="ds-texto" style={{ margin: 0 }}>
-          Informaste <strong>{pesos(tot.informado)}</strong> · verificado <strong>{pesos(tot.verificado)}</strong> ·
-          faltan <strong>{pesos(tot.falta)}</strong>
+          Informaste <strong>{pesos(tot.informado)}</strong> · verificado{' '}
+          <strong>{pesos(tot.verificado)}</strong> · faltan <strong>{pesos(tot.falta)}</strong>
         </p>
         <Tarjeta etiqueta="Pagos por etapa">
           <ul className="ds-pila" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
@@ -72,7 +77,7 @@ export default function PagosObra() {
                             tono={p?.estado === 'verificado' ? 'exito' : 'amarillo'}
                             {...(ep.icono ? { icono: ep.icono } : {})}
                           >
-                            {ep.texto}
+                            {textoPago(p!)}
                           </Chip>
                         ) : (
                           <Chip tono="gris" icono={e.estado === 'confirmada' ? 'billete' : 'reloj'}>
@@ -97,7 +102,8 @@ export default function PagosObra() {
           ) : null}
         </Tarjeta>
         <Nota icono="billete" tono="gris">
-          Le pagás directo a {esp}, por Mercado Pago o en efectivo. Handyx no recibe ni reparte la plata.
+          Le pagás directo a {esp}, por Mercado Pago o en efectivo. Handyx no recibe ni reparte la
+          plata.
         </Nota>
       </div>
     </Pantalla>

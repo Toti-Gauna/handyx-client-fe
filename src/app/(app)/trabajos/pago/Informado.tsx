@@ -1,5 +1,6 @@
 'use client';
 
+import { textoPago } from '@/components/Trabajo';
 import { Barra, Pantalla } from '@/components/hx';
 import { ruta } from '@/components/nav';
 import type { Trabajo } from '@/contracts/v1/propuestas';
@@ -14,7 +15,15 @@ import type { Objetivo } from './objetivos';
  * Pago informado: lo que dijiste que pagaste. Informado no es verificado: queda verificado cuando otra fuente lo
  * confirma. Si es de Mercado Pago y no se confirmó, se consulta el estado real (volver del checkout no confirma).
  */
-export function Informado({ t, objetivo, pago }: { t: Trabajo; objetivo: Objetivo; pago: RegistroPago }) {
+export function Informado({
+  t,
+  objetivo,
+  pago,
+}: {
+  t: Trabajo;
+  objetivo: Objetivo;
+  pago: RegistroPago;
+}) {
   const esp = t.especialista.nombrePublico;
   const mp = pago.metodo === 'mercado_pago_directo';
   const verificado = pago.estado === 'verificado';
@@ -24,7 +33,11 @@ export function Informado({ t, objetivo, pago }: { t: Trabajo; objetivo: Objetiv
     etiqueta: t.etapas.length ? 'Volver a los pagos de la obra' : 'Volver al trabajo',
   };
   const monto = pesos(pago.monto.centavos);
-  const titulo = verificado ? 'Pago ==verificado==' : pendiente ? 'Esperando ==Mercado Pago==' : 'Pago ==informado==';
+  const titulo = verificado
+    ? 'Pago ==verificado=='
+    : pendiente
+      ? 'Esperando ==Mercado Pago=='
+      : 'Pago ==informado==';
   const sub = verificado
     ? `${esp} confirmó que recibió ${monto}.`
     : pendiente
@@ -68,17 +81,24 @@ export function Informado({ t, objetivo, pago }: { t: Trabajo; objetivo: Objetiv
             etiqueta="Cómo sigue el pago"
             hechas={hechas}
             pasos={[
-              { titulo: 'Vos informaste el pago', sub: pago.reportadoEn ? cuando(pago.reportadoEn) : '' },
+              {
+                titulo: 'Vos informaste el pago',
+                sub: pago.reportadoEn ? cuando(pago.reportadoEn) : '',
+              },
               { titulo: `${esp} confirma que lo recibió`, sub: 'Le avisamos' },
-              { titulo: 'Pago verificado', sub: pago.verificadoEn ? cuando(pago.verificadoEn) : 'Queda en tu historial' },
+              {
+                titulo: 'Pago verificado',
+                sub: pago.verificadoEn ? cuando(pago.verificadoEn) : 'Queda en tu historial',
+              },
             ]}
           />
         </Tarjeta>
         <Nota icono="info" tono="gris">
-          Informado no es verificado: el pago queda verificado cuando {esp} o el equipo de Handyx lo confirman.
+          Informado no es verificado: el pago queda verificado cuando {esp} o el equipo de Handyx lo
+          confirman.
         </Nota>
         <Tarjeta etiqueta="Comprobante">
-          <DatoFila icono="etiqueta" etiqueta="Estado" valor={e.texto} />
+          <DatoFila icono="etiqueta" etiqueta="Estado" valor={textoPago(pago)} />
           <DatoFila icono="billete" etiqueta="Método" valor={mp ? 'Mercado Pago' : 'Efectivo'} />
           <DatoFila icono="etiqueta" etiqueta="Código" valor={pago.id.slice(-8).toUpperCase()} />
           <p className="ds-fila-enlace__sub" style={{ margin: 0 }}>

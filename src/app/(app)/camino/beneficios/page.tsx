@@ -14,7 +14,12 @@ export default function Beneficios() {
   const camino = useConsulta('camino', {});
   return (
     <Pantalla
-      arriba={<BarraHogar titulo="Beneficios" volver={{ href: '/camino/', etiqueta: 'Volver al camino' }} />}
+      arriba={
+        <BarraHogar
+          titulo="Beneficios"
+          volver={{ href: '/camino/', etiqueta: 'Volver al camino' }}
+        />
+      }
     >
       <div className="ds ds-cuerpo ds-cuerpo--raiz">
         <Titulo texto="Lo que ==ganás== cuidando tu casa" nivel={2} />
@@ -28,12 +33,18 @@ export default function Beneficios() {
                 <Tarjeta key={b.id} como="article">
                   <div className="ds-fila">
                     <MosaicoIcono icono="regalo" tono="amarillo" />
-                    <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+                    <span
+                      className="ds-crece ds-pila"
+                      style={{ ['--ds-gap' as string]: '0.125rem' }}
+                    >
                       <strong>{sinMontos(b.titulo)}</strong>
                       <span className="dsh-suave">{sinMontos(b.descripcion)}</span>
                     </span>
                   </div>
-                  <span className="ds-fila" style={{ flexWrap: 'wrap', ['--ds-gap' as string]: '0.375rem' }}>
+                  <span
+                    className="ds-fila"
+                    style={{ flexWrap: 'wrap', ['--ds-gap' as string]: '0.375rem' }}
+                  >
                     <Chip icono="medalla">{b.requisito}</Chip>
                     <Chip tono="gris" icono="documento">
                       Borrador · Legal
@@ -45,8 +56,8 @@ export default function Beneficios() {
           }
         </EstadoConsulta>
         <Nota tono="amarillo">
-          Montos, premios y condiciones están en borrador hasta que los apruebe Legal. Nada se comparte con tus
-          contactos.
+          Montos, premios y condiciones están en borrador hasta que los apruebe Legal. Nada se
+          comparte con tus contactos.
         </Nota>
       </div>
     </Pantalla>

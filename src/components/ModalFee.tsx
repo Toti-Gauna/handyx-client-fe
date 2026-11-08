@@ -40,7 +40,8 @@ export function ModalFee() {
     >
       <div className="ds ds-pila">
         <Nota icono="calendario">
-          <strong>Demo cerrada.</strong> Del 10/11 al 10/12/2026, solo con invitación y en Mar del Plata.
+          <strong>Demo cerrada.</strong> Del 10/11 al 10/12/2026, solo con invitación y en Mar del
+          Plata.
         </Nota>
         <Nota icono="etiqueta" tono="exito">
           <strong>
@@ -49,12 +50,12 @@ export function ModalFee() {
           No es un descuento sobre el precio del especialista: su servicio se paga entero.
         </Nota>
         <Nota icono="billetera" tono="gris">
-          <strong>Pagás directo al especialista</strong>, por Mercado Pago o en efectivo. Handy no recibe ni
-          reparte ese dinero.
+          <strong>Pagás directo al especialista</strong>, por Mercado Pago o en efectivo. Handy no
+          recibe ni reparte ese dinero.
         </Nota>
         <Nota icono="info" tono="gris">
-          <strong>Después del {resumen.hasta}</strong> no se aplica ninguna tarifa sin que esté aprobada y te la
-          avisemos antes.
+          <strong>Después del {resumen.hasta}</strong> no se aplica ninguna tarifa sin que esté
+          aprobada y te la avisemos antes.
         </Nota>
         {error ? (
           <Nota icono="alerta" tono="error" rol="alert">

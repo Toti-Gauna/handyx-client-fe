@@ -7,7 +7,12 @@ import type { NombreIcono } from '@/components/trazos';
 import { AccionesFijas, Boton, CabeceraAzul, FilaEnlace, Nota, Texto } from '@/ui';
 import { CampoBuscar, PantallaM, Pregunta, Tema, coincide } from '@/ui/mensajes';
 
-const TEMAS: readonly { id: string; texto: string; icono: NombreIcono; preguntas: readonly string[] }[] = [
+const TEMAS: readonly {
+  id: string;
+  texto: string;
+  icono: NombreIcono;
+  preguntas: readonly string[];
+}[] = [
   { id: 'pedir', texto: 'Pedir', icono: 'caja', preguntas: ['elegir', 'sin-respuesta'] },
   { id: 'propuestas', texto: 'Propuestas', icono: 'billete', preguntas: ['elegir', 'confianza'] },
   { id: 'pagos', texto: 'Pagos', icono: 'efectivo', preguntas: ['pagar', 'tarifa'] },
@@ -27,8 +32,7 @@ export default function Ayuda() {
   const lista = useMemo(
     () =>
       PREGUNTAS.filter(
-        (q) =>
-          (!elegido || elegido.preguntas.includes(q.id)) && coincide(`${q.p} ${q.r}`, buscar),
+        (q) => (!elegido || elegido.preguntas.includes(q.id)) && coincide(`${q.p} ${q.r}`, buscar),
       ),
     [elegido, buscar],
   );
@@ -36,7 +40,10 @@ export default function Ayuda() {
   return (
     <PantallaM
       arriba={
-        <CabeceraAzul titulo="¿En qué te ==ayudamos==?" volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}>
+        <CabeceraAzul
+          titulo="¿En qué te ==ayudamos==?"
+          volver={{ href: '/cuenta/', etiqueta: 'Volver a tu cuenta' }}
+        >
           <CampoBuscar
             blanco
             valor={buscar}
@@ -70,7 +77,12 @@ export default function Ayuda() {
           {lista.map((q, i) => (
             <Pregunta key={q.id} texto={q.p} abierta={i === 0 && !buscar && !tema}>
               <p>{q.r}</p>
-              <Boton variante="suave" chico ancho={false} href={ruta('/ayuda/respuesta/', { p: q.id })}>
+              <Boton
+                variante="suave"
+                chico
+                ancho={false}
+                href={ruta('/ayuda/respuesta/', { p: q.id })}
+              >
                 Ver la respuesta completa
               </Boton>
             </Pregunta>
@@ -79,7 +91,8 @@ export default function Ayuda() {
             <Texto>
               {elegido?.id === 'hogar' ? (
                 <>
-                  Mi hogar tiene su propia guía adentro. <Enlace href="/hogar/">Ir a Mi hogar</Enlace>.
+                  Mi hogar tiene su propia guía adentro.{' '}
+                  <Enlace href="/hogar/">Ir a Mi hogar</Enlace>.
                 </>
               ) : (
                 'No encontramos esa pregunta. Probá con otra palabra o escribile a Soporte.'
@@ -87,10 +100,21 @@ export default function Ayuda() {
             </Texto>
           ) : null}
         </section>
-        <FilaEnlace icono="alerta" titulo="Mis reclamos" sub="Si algo salió mal con un trabajo" href="/reclamos/" />
-        <FilaEnlace icono="chispas" titulo="Armar un pedido con HandIA" sub="Te ayuda a contar el problema" href="/handia/" />
+        <FilaEnlace
+          icono="alerta"
+          titulo="Mis reclamos"
+          sub="Si algo salió mal con un trabajo"
+          href="/reclamos/"
+        />
+        <FilaEnlace
+          icono="chispas"
+          titulo="Armar un pedido con HandIA"
+          sub="Te ayuda a contar el problema"
+          href="/handia/"
+        />
         <Nota icono="info" tono="gris">
-          Lo atiende una persona del equipo. No prometemos plazos: si es urgente, abrí un reclamo desde el trabajo.
+          Lo atiende una persona del equipo. No prometemos plazos: si es urgente, abrí un reclamo
+          desde el trabajo.
         </Nota>
       </div>
     </PantallaM>

@@ -58,7 +58,10 @@ export function Elegir({
   async function pagar() {
     const r = await accion.enviar(
       'pagoReportar',
-      { parametros: { id: t.id }, cuerpo: { metodo, montoCentavos: objetivo.centavos, etapaId: objetivo.etapaId } },
+      {
+        parametros: { id: t.id },
+        cuerpo: { metodo, montoCentavos: objetivo.centavos, etapaId: objetivo.etapaId },
+      },
       `${objetivo.etapaId}|${metodo}|${objetivo.centavos}`,
     );
     if (!r?.ok) return;
@@ -112,9 +115,15 @@ export function Elegir({
           {d ? (
             <>
               <FilaTotal texto="Acuerdo" centavos={d.acuerdo} suave />
-              {d.adicional ? <FilaTotal texto="Adicional aprobado" centavos={d.adicional} suave /> : null}
+              {d.adicional ? (
+                <FilaTotal texto="Adicional aprobado" centavos={d.adicional} suave />
+              ) : null}
               {d.tarifa ? (
-                <FilaTotal texto={`Tarifa de Handyx (${porcentaje(bp)})`} centavos={d.tarifa} suave />
+                <FilaTotal
+                  texto={`Tarifa de Handyx (${porcentaje(bp)})`}
+                  centavos={d.tarifa}
+                  suave
+                />
               ) : null}
             </>
           ) : (
@@ -182,7 +191,9 @@ export function Elegir({
         )}
         <p className="ds-fila-enlace__sub" style={{ margin: 0 }}>
           Handyx no recibe ni reparte la plata.{' '}
-          {bp === 0 ? 'Tarifa de servicio: 0 % hasta el 10/12/2026.' : `Tarifa de Handyx: ${porcentaje(bp)}.`}
+          {bp === 0
+            ? 'Tarifa de servicio: 0 % hasta el 10/12/2026.'
+            : `Tarifa de Handyx: ${porcentaje(bp)}.`}
         </p>
       </div>
     </Pantalla>

@@ -43,7 +43,12 @@ export default function EquipoDetalle() {
       <Cargando forma="detalle" />
     ) : !e ? (
       <ErrorEstado
-        error={new ErrorCliente({ codigo: 'no_encontrado', mensaje: 'Este equipo ya no está en tu casa.' })}
+        error={
+          new ErrorCliente({
+            codigo: 'no_encontrado',
+            mensaje: 'Este equipo ya no está en tu casa.',
+          })
+        }
       />
     ) : editando ? (
       <EditarEquipo
@@ -69,7 +74,11 @@ export default function EquipoDetalle() {
           sub={amb?.nombre}
           accion={
             e && !editando
-              ? { icono: 'editar', etiqueta: `Editar ${e.nombre}`, onClick: () => setEditando(true) }
+              ? {
+                  icono: 'editar',
+                  etiqueta: `Editar ${e.nombre}`,
+                  onClick: () => setEditando(true),
+                }
               : undefined
           }
         />
@@ -124,7 +133,12 @@ function Ficha({ equipo: e, ambiente }: { equipo: Equipo; ambiente: Ambiente | n
         <div className="ds-fila">
           {e.etiqueta ? (
             // eslint-disable-next-line @next/next/no-img-element -- export estático: sin optimizador.
-            <img className="dsh-foto" src={e.etiqueta.url} alt="Foto de la etiqueta" style={{ width: '6rem', height: '4.5rem', borderRadius: '0.75rem' }} />
+            <img
+              className="dsh-foto"
+              src={e.etiqueta.url}
+              alt="Foto de la etiqueta"
+              style={{ width: '6rem', height: '4.5rem', borderRadius: '0.75rem' }}
+            />
           ) : (
             <MosaicoIcono icono="etiqueta" tam={4.5} tono="gris" />
           )}
@@ -136,7 +150,11 @@ function Ficha({ equipo: e, ambiente }: { equipo: Equipo; ambiente: Ambiente | n
         </div>
       </Tarjeta>
       <Tarjeta>
-        <DatoFila icono="calendario" etiqueta="Instalado" valor={e.instaladoEn ? mesAnio(e.instaladoEn) : 'Sin datos'} />
+        <DatoFila
+          icono="calendario"
+          etiqueta="Instalado"
+          valor={e.instaladoEn ? mesAnio(e.instaladoEn) : 'Sin datos'}
+        />
         <DatoFila
           icono="engranaje"
           etiqueta="Último mantenimiento"
@@ -152,7 +170,13 @@ function Ficha({ equipo: e, ambiente }: { equipo: Equipo; ambiente: Ambiente | n
                 ? `Hasta el ${fechaDMA(e.garantiaHasta)}`
                 : 'Vencida'
           }
-          derecha={vigente ? <Chip tono="exito" icono="check">Vigente</Chip> : undefined}
+          derecha={
+            vigente ? (
+              <Chip tono="exito" icono="check">
+                Vigente
+              </Chip>
+            ) : undefined
+          }
         />
         <DatoFila icono="pin" etiqueta="Dónde está" valor={ambiente?.nombre ?? 'Sin ambiente'} />
       </Tarjeta>
@@ -172,7 +196,9 @@ function Ficha({ equipo: e, ambiente }: { equipo: Equipo; ambiente: Ambiente | n
       ) : null}
       {delRubro.length && info.rubro ? (
         <Tarjeta pie={{ texto: 'Ver informes y garantías', href: '/hogar/garantias/' }}>
-          <Etiqueta como="h2">Trabajos de {RUBROS_INFO[info.rubro].nombre.toLowerCase()} en tu casa</Etiqueta>
+          <Etiqueta como="h2">
+            Trabajos de {RUBROS_INFO[info.rubro].nombre.toLowerCase()} en tu casa
+          </Etiqueta>
           {delRubro.map((t) => (
             <FilaEnlace
               key={t.id}
@@ -184,7 +210,9 @@ function Ficha({ equipo: e, ambiente }: { equipo: Equipo; ambiente: Ambiente | n
           ))}
         </Tarjeta>
       ) : null}
-      <Nota tono="gris">El recordatorio es solo eso: vos decidís si pedís la revisión y a quién.</Nota>
+      <Nota tono="gris">
+        El recordatorio es solo eso: vos decidís si pedís la revisión y a quién.
+      </Nota>
     </>
   );
 }

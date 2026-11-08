@@ -51,7 +51,11 @@ export default function Respuesta() {
           <strong style={{ fontSize: '1.0625rem' }}>¿Te sirvió la respuesta?</strong>
           {sirvio === null ? (
             <div className="ds-grilla">
-              <Boton variante="suave" icono="pulgar" onClick={() => setVoto({ pregunta: q.id, sirvio: true })}>
+              <Boton
+                variante="suave"
+                icono="pulgar"
+                onClick={() => setVoto({ pregunta: q.id, sirvio: true })}
+              >
                 Sí
               </Boton>
               <Boton variante="suave" onClick={() => setVoto({ pregunta: q.id, sirvio: false })}>
@@ -74,12 +78,21 @@ export default function Respuesta() {
           )}
         </Tarjeta>
 
-        <section className="ds-pila" aria-labelledby="otras-t" style={{ ['--ds-gap' as string]: 0 }}>
+        <section
+          className="ds-pila"
+          aria-labelledby="otras-t"
+          style={{ ['--ds-gap' as string]: 0 }}
+        >
           <Etiqueta como="h2">
             <span id="otras-t">Otras preguntas</span>
           </Etiqueta>
           {PREGUNTAS.filter((x) => x.id !== q.id).map((x) => (
-            <FilaEnlace key={x.id} icono="pregunta" titulo={x.p} href={ruta('/ayuda/respuesta/', { p: x.id })} />
+            <FilaEnlace
+              key={x.id}
+              icono="pregunta"
+              titulo={x.p}
+              href={ruta('/ayuda/respuesta/', { p: x.id })}
+            />
           ))}
         </section>
         <Texto>Lo atiende una persona del equipo. No prometemos plazos.</Texto>

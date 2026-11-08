@@ -28,7 +28,7 @@ export default function Sumar() {
         />
       }
     >
-      <div className="ds ds-cuerpo">
+      <div className="ds ds-cuerpo ds-cuerpo--raiz">
         <Segmentos
           etiqueta="Qué sumás"
           actual={esEquipo ? 'Equipo' : 'Ambiente'}
@@ -39,11 +39,7 @@ export default function Sumar() {
         />
         <EstadoConsulta consulta={hogar}>
           {(h) =>
-            esEquipo ? (
-              <FormEquipo hogar={h} inicial={params.get('ambiente')} />
-            ) : (
-              <FormAmbiente />
-            )
+            esEquipo ? <FormEquipo hogar={h} inicial={params.get('ambiente')} /> : <FormAmbiente />
           }
         </EstadoConsulta>
       </div>
@@ -75,7 +71,12 @@ function FormAmbiente() {
       }}
     >
       <Etiqueta como="h2">¿Qué ambiente es?</Etiqueta>
-      <div role="radiogroup" aria-label="Tipo de ambiente" className="ds-pila" style={{ ['--ds-gap' as string]: '0.5rem' }}>
+      <div
+        role="radiogroup"
+        aria-label="Tipo de ambiente"
+        className="ds-pila"
+        style={{ ['--ds-gap' as string]: '0.5rem' }}
+      >
         {TIPOS_AMBIENTE.map((t) => (
           <Opcion
             key={t}
@@ -86,10 +87,25 @@ function FormAmbiente() {
           />
         ))}
       </div>
-      {errores.tipo ? <Nota tono="error" icono="alerta" rol="alert">{errores.tipo}</Nota> : null}
-      <Campo etiqueta="Nombre" ayuda="Por ejemplo «Baño de arriba». Si lo dejás vacío, usamos el tipo." opcional error={errores.nombre}>
+      {errores.tipo ? (
+        <Nota tono="error" icono="alerta" rol="alert">
+          {errores.tipo}
+        </Nota>
+      ) : null}
+      <Campo
+        etiqueta="Nombre"
+        ayuda="Por ejemplo «Baño de arriba». Si lo dejás vacío, usamos el tipo."
+        opcional
+        error={errores.nombre}
+      >
         {(p) => (
-          <input {...p} className="entrada" value={nombre} maxLength={60} onChange={(e) => setNombre(e.target.value)} />
+          <input
+            {...p}
+            className="entrada"
+            value={nombre}
+            maxLength={60}
+            onChange={(e) => setNombre(e.target.value)}
+          />
         )}
       </Campo>
       <AvisoEnvio error={error?.codigo === 'validacion' ? null : error} />
@@ -133,9 +149,23 @@ function FormEquipo({ hogar, inicial }: { hogar: Hogar; inicial: string | null }
     const r = await enviar('equipoCrear', { cuerpo }, JSON.stringify(cuerpo));
     if (r?.ok) ir(ruta('/hogar/equipo/', { id: r.datos.id }), { reemplazar: true });
   };
-  const texto = (etiqueta: string, valor: string, set: (v: string) => void, campo: string, ayuda?: string) => (
+  const texto = (
+    etiqueta: string,
+    valor: string,
+    set: (v: string) => void,
+    campo: string,
+    ayuda?: string,
+  ) => (
     <Campo etiqueta={etiqueta} opcional error={errores[campo]} {...(ayuda ? { ayuda } : {})}>
-      {(p) => <input {...p} className="entrada" value={valor} maxLength={60} onChange={(e) => set(e.target.value)} />}
+      {(p) => (
+        <input
+          {...p}
+          className="entrada"
+          value={valor}
+          maxLength={60}
+          onChange={(e) => set(e.target.value)}
+        />
+      )}
     </Campo>
   );
   return (
@@ -149,7 +179,12 @@ function FormEquipo({ hogar, inicial }: { hogar: Hogar; inicial: string | null }
     >
       <Campo etiqueta="Qué es" error={errores.tipo}>
         {(p) => (
-          <select {...p} className="entrada" value={tipo} onChange={(e) => setTipo(e.target.value as TipoEquipo)}>
+          <select
+            {...p}
+            className="entrada"
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value as TipoEquipo)}
+          >
             {TIPOS_EQUIPO.map((t) => (
               <option key={t} value={t}>
                 {EQUIPOS[t].nombre}
@@ -158,12 +193,23 @@ function FormEquipo({ hogar, inicial }: { hogar: Hogar; inicial: string | null }
           </select>
         )}
       </Campo>
-      {texto('Nombre', nombre, setNombre, 'nombre', `Si lo dejás vacío, queda «${EQUIPOS[tipo].nombre}».`)}
+      {texto(
+        'Nombre',
+        nombre,
+        setNombre,
+        'nombre',
+        `Si lo dejás vacío, queda «${EQUIPOS[tipo].nombre}».`,
+      )}
       {texto('Marca', marca, setMarca, 'marca', 'Está en la etiqueta del equipo.')}
       {texto('Modelo', modelo, setModelo, 'modelo')}
       <Campo etiqueta="Dónde está" error={errores.ambienteId}>
         {(p) => (
-          <select {...p} className="entrada" value={ambienteId} onChange={(e) => setAmbienteId(e.target.value)}>
+          <select
+            {...p}
+            className="entrada"
+            value={ambienteId}
+            onChange={(e) => setAmbienteId(e.target.value)}
+          >
             {hogar.ambientes.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.nombre}
@@ -173,9 +219,19 @@ function FormEquipo({ hogar, inicial }: { hogar: Hogar; inicial: string | null }
         )}
       </Campo>
       <Campo etiqueta="Instalado (aproximado)" opcional error={errores.instaladoEn}>
-        {(p) => <input {...p} type="date" className="entrada" value={instalado} onChange={(e) => setInstalado(e.target.value)} />}
+        {(p) => (
+          <input
+            {...p}
+            type="date"
+            className="entrada"
+            value={instalado}
+            onChange={(e) => setInstalado(e.target.value)}
+          />
+        )}
       </Campo>
-      <Nota tono="gris">Lo que no sepas lo dejás vacío: lo podés completar cuando venga un especialista.</Nota>
+      <Nota tono="gris">
+        Lo que no sepas lo dejás vacío: lo podés completar cuando venga un especialista.
+      </Nota>
       <AvisoEnvio error={error?.codigo === 'validacion' ? null : error} />
       <Boton type="submit" icono="check" ocupado={pendiente}>
         Guardar en Mi casa

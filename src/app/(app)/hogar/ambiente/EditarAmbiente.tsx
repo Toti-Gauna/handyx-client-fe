@@ -144,7 +144,10 @@ export function EditarAmbiente({
       <Nota tono="gris" icono="camara">
         Por ahora las fotos no se pueden sumar desde acá.
       </Nota>
-      <AvisoEnvio error={error?.codigo === 'validacion' ? null : error} onActualizar={onActualizar} />
+      <AvisoEnvio
+        error={error?.codigo === 'validacion' ? null : error}
+        onActualizar={onActualizar}
+      />
       <Boton type="submit" icono="check" ocupado={pendiente}>
         Guardar los cambios
       </Boton>

@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Barra, Pantalla } from '@/components/hx';
 import { ruta } from '@/components/nav';
-import { TEXTO_ETAPA, pagoVigente } from '@/components/Trabajo';
+import { TEXTO_ETAPA, pagoVigente, textoPago } from '@/components/Trabajo';
 import { Aviso } from '@/components/ui';
 import { useEnvio } from '@/data/hooks';
 import { pesos } from '@/domain/dinero';
@@ -90,7 +90,7 @@ export default function EtapaObra() {
             <DatoFila
               icono="etiqueta"
               etiqueta="Pago"
-              valor={ep.texto}
+              valor={textoPago(pago)}
               sub={pago.reportadoEn ? `Informado ${cuando(pago.reportadoEn)}` : undefined}
             />
           ) : null}

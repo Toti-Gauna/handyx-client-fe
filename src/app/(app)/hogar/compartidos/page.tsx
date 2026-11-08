@@ -10,7 +10,10 @@ import { fechaDeInstante } from '@/domain/fechas';
 import { Boton, Chip, MosaicoIcono, Nota, Sub, Tarjeta, Titulo } from '@/ui';
 import { BarraHogar, Confirmar, claveItem, fechaDMA, nombreCompartido } from '@/ui/hogar';
 
-const ESTADO: Record<Compartido['estado'], { texto: string; tono: 'exito' | 'gris'; icono: 'check' | 'reloj' | 'cerrar' }> = {
+const ESTADO: Record<
+  Compartido['estado'],
+  { texto: string; tono: 'exito' | 'gris'; icono: 'check' | 'reloj' | 'cerrar' }
+> = {
   activo: { texto: 'Activo', tono: 'exito', icono: 'check' },
   vencido: { texto: 'Terminado', tono: 'gris', icono: 'reloj' },
   revocado: { texto: 'Cortado', tono: 'gris', icono: 'cerrar' },
@@ -24,7 +27,12 @@ export default function Compartidos() {
   const [cortados, setCortados] = useState<ReadonlySet<string>>(new Set());
   return (
     <Pantalla
-      arriba={<BarraHogar titulo="Lo que compartiste" volver={{ href: '/hogar/', etiqueta: 'Volver a Mi hogar' }} />}
+      arriba={
+        <BarraHogar
+          titulo="Lo que compartiste"
+          volver={{ href: '/hogar/', etiqueta: 'Volver a Mi hogar' }}
+        />
+      }
     >
       <div className="ds ds-cuerpo ds-cuerpo--raiz">
         <Titulo texto="Lo que ==compartiste==" nivel={2} />
@@ -33,8 +41,8 @@ export default function Compartidos() {
           {({ items }) =>
             items.length === 0 ? (
               <Nota tono="gris" icono="compartir">
-                Todavía no compartiste nada. Cuando hagas un pedido, vas a poder sumarle fotos, medidas o
-                equipos de tu casa.
+                Todavía no compartiste nada. Cuando hagas un pedido, vas a poder sumarle fotos,
+                medidas o equipos de tu casa.
               </Nota>
             ) : (
               items.map((c) => (

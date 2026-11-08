@@ -56,9 +56,7 @@ export function AlgoSeRompio({ onReintentar }: { onReintentar: () => void }) {
         </>
       }
     >
-      <p>
-        No pudimos cargar esto. No se perdió nada de lo que hiciste. Probá de nuevo en un rato.
-      </p>
+      <p>No pudimos cargar esto. No se perdió nada de lo que hiciste. Probá de nuevo en un rato.</p>
     </EstadoSistema>
   );
 }

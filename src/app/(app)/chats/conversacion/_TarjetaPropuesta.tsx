@@ -66,7 +66,10 @@ export function TarjetaPropuestaChat({
   const e = etiquetaPropuesta(p);
   const lineas: [string, string][] = [
     ['Precio de ' + nombre.split(' ')[0], pesos(p.monto.centavos)],
-    [`Tarifa de Handyx (${porcentaje(p.comisionHandy.bp)})`, pesos(p.comisionHandy.importe.centavos)],
+    [
+      `Tarifa de Handyx (${porcentaje(p.comisionHandy.bp)})`,
+      pesos(p.comisionHandy.importe.centavos),
+    ],
   ];
 
   async function aceptar() {
@@ -87,7 +90,11 @@ export function TarjetaPropuestaChat({
       <TarjetaChat
         tipo={tipo}
         etiqueta={`${propia ? 'Tu' : 'Propuesta de'} ${propia ? 'contrapropuesta' : nombre}`}
-        titulo={tipoTarjeta(p, anterior) === 'presupuesto' ? `Total ${pesos(totalPropuesta(p))}` : tituloTarjeta(p)}
+        titulo={
+          tipoTarjeta(p, anterior) === 'presupuesto'
+            ? `Total ${pesos(totalPropuesta(p))}`
+            : tituloTarjeta(p)
+        }
         sub={p.alcance}
         propia={propia}
         acciones={acciones}
@@ -111,17 +118,18 @@ export function TarjetaPropuestaChat({
       >
         <div className="ds-pila">
           <Renglones
-            items={[
-              ['Cuándo', horarioCorto(p.horario)],
-              ...lineas,
-            ]}
+            items={[['Cuándo', horarioCorto(p.horario)], ...lineas]}
             total={<Monto centavos={totalPropuesta(p)} tam={1.375} />}
           />
           <Texto>
             {PIE[tipo]} Vale hasta el {cuando(p.venceEn)}. Se paga directo al especialista, al
             terminar.
           </Texto>
-          {accion.error ? <Nota tono="error" icono="alerta" rol="alert">{accion.error.mensaje}</Nota> : null}
+          {accion.error ? (
+            <Nota tono="error" icono="alerta" rol="alert">
+              {accion.error.mensaje}
+            </Nota>
+          ) : null}
           <Boton icono="check" ocupado={accion.pendiente} onClick={() => void aceptar()}>
             {`Sí, aceptar a ${nombre.split(' ')[0]}`}
           </Boton>

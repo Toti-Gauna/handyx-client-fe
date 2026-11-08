@@ -14,7 +14,9 @@ export function Exportacion() {
   const estado = useConsulta('exportacion', {}, { cada: 6_000 });
   const pedir = useEnvio();
   const e = estado.datos;
-  const vencida = e ? e.estado === 'vencida' || (e.venceEn !== null && Date.parse(e.venceEn) < ahora) : false;
+  const vencida = e
+    ? e.estado === 'vencida' || (e.venceEn !== null && Date.parse(e.venceEn) < ahora)
+    : false;
 
   async function pedirDatos() {
     const r = await pedir.enviar('exportacionPedir', {}, 'exportacion');
@@ -31,21 +33,35 @@ export function Exportacion() {
         </span>
         {e && !vencida ? (
           e.estado === 'preparando' ? (
-            <Chip tono="amarillo" icono="reloj">Preparando</Chip>
+            <Chip tono="amarillo" icono="reloj">
+              Preparando
+            </Chip>
           ) : (
-            <Chip tono="exito" icono="check">Lista</Chip>
+            <Chip tono="exito" icono="check">
+              Lista
+            </Chip>
           )
         ) : null}
       </div>
       {e && !vencida && e.estado === 'preparando' ? (
-        <Texto>Lo estamos preparando. Podés salir de acá: cuando esté lista, el botón aparece en esta pantalla.</Texto>
+        <Texto>
+          Lo estamos preparando. Podés salir de acá: cuando esté lista, el botón aparece en esta
+          pantalla.
+        </Texto>
       ) : null}
       {e && !vencida && e.estado === 'lista' && e.url ? (
         <>
-          <a className="ds-boton ds-boton--primario ds-boton--ancho" href={e.url} target="_blank" rel="noopener noreferrer">
+          <a
+            className="ds-boton ds-boton--primario ds-boton--ancho"
+            href={e.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Descargar el archivo
           </a>
-          {e.venceEn ? <Texto>El enlace sirve una sola vez y vence el {cuando(e.venceEn)}.</Texto> : null}
+          {e.venceEn ? (
+            <Texto>El enlace sirve una sola vez y vence el {cuando(e.venceEn)}.</Texto>
+          ) : null}
         </>
       ) : null}
       {!e || vencida ? (

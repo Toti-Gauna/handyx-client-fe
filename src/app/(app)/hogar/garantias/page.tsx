@@ -28,7 +28,10 @@ export default function Garantias() {
   return (
     <Pantalla
       arriba={
-        <BarraHogar titulo="Informes y garantías" volver={{ href: '/hogar/historial/', etiqueta: 'Volver al historial' }} />
+        <BarraHogar
+          titulo="Informes y garantías"
+          volver={{ href: '/hogar/historial/', etiqueta: 'Volver al historial' }}
+        />
       }
     >
       <div className="ds ds-cuerpo ds-cuerpo--raiz">
@@ -41,7 +44,9 @@ export default function Garantias() {
           ]}
         />
         <Titulo texto="Tus ==garantías==" nivel={2} />
-        <Sub>Cada informe guarda qué se hizo, con qué materiales y hasta cuándo lo cubre la garantía.</Sub>
+        <Sub>
+          Cada informe guarda qué se hizo, con qué materiales y hasta cuándo lo cubre la garantía.
+        </Sub>
         <EstadoConsulta consulta={trabajos} cargando="Cargando tus informes…">
           {({ items }) => {
             const terminados = items.filter((t) =>
@@ -67,17 +72,21 @@ export default function Garantias() {
                   <span className="dsh-suave">Hasta el {fechaDMA(e.garantiaHasta!)}</span>
                 </span>
                 {garantiaVigente(e.garantiaHasta, hoy) ? (
-                  <Chip tono="exito" icono="check">Vigente</Chip>
+                  <Chip tono="exito" icono="check">
+                    Vigente
+                  </Chip>
                 ) : (
-                  <Chip tono="gris" icono="reloj">Vencida</Chip>
+                  <Chip tono="gris" icono="reloj">
+                    Vencida
+                  </Chip>
                 )}
               </div>
             ))}
           </Tarjeta>
         ) : null}
         <Nota tono="gris">
-          Si algo falla dentro de la garantía, escribile al especialista desde el trabajo o pedile ayuda a
-          Soporte.
+          Si algo falla dentro de la garantía, escribile al especialista desde el trabajo o pedile
+          ayuda a Soporte.
         </Nota>
       </div>
     </Pantalla>
@@ -90,7 +99,10 @@ function TarjetaInforme({ trabajo: t, hoy }: { trabajo: Trabajo; hoy: string }) 
   const i = informe.datos;
   const vigente = i?.garantiaHasta ? garantiaVigente(i.garantiaHasta, hoy) : false;
   return (
-    <Tarjeta como="article" pie={{ texto: 'Ver el trabajo', href: ruta('/trabajos/detalle/', { id: t.id }) }}>
+    <Tarjeta
+      como="article"
+      pie={{ texto: 'Ver el trabajo', href: ruta('/trabajos/detalle/', { id: t.id }) }}
+    >
       <div className="ds-fila">
         <MosaicoIcono icono="escudo" tono={vigente ? 'tinte' : 'gris'} />
         <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
@@ -115,7 +127,10 @@ function TarjetaInforme({ trabajo: t, hoy }: { trabajo: Trabajo; hoy: string }) 
           ) : null}
           {i.garantiaHasta ? (
             <>
-              <span className="ds-fila" style={{ justifyContent: 'space-between', fontSize: '0.8125rem' }}>
+              <span
+                className="ds-fila"
+                style={{ justifyContent: 'space-between', fontSize: '0.8125rem' }}
+              >
                 <span>Garantía hasta</span>
                 <strong>{fechaDMA(i.garantiaHasta)}</strong>
               </span>

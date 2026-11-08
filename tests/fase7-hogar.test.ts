@@ -3,12 +3,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import {
-  hastaDonde,
-  puntosCamino,
-  trazoCamino,
-  type Hito,
-} from '../src/app/(app)/camino/piezas';
+import { hastaDonde, puntosCamino, trazoCamino, type Hito } from '../src/app/(app)/camino/piezas';
 import type { Ambiente, Equipo, Hogar, Recordatorio } from '../src/contracts/v1/hogar';
 import type { Trabajo } from '../src/contracts/v1/propuestas';
 import { HOGAR7 } from '../src/mapa/fase7/hogar';
@@ -144,8 +139,12 @@ describe('Mi hogar · reglas', () => {
       actualizadoEn: '2026-11-07T00:00:00.000Z',
     });
     expect(trabajoDeGarantia(canilla, [viejo, gas, nuevo], '2026-11-08')?.id).toBe(nuevo.id);
-    expect(trabajoDeGarantia({ ...canilla, garantiaHasta: '2026-01-01' }, [nuevo], '2026-11-08')).toBeNull();
-    expect(trabajoDeGarantia(canilla, [trabajo(13, { estado: 'agendado' })], '2026-11-08')).toBeNull();
+    expect(
+      trabajoDeGarantia({ ...canilla, garantiaHasta: '2026-01-01' }, [nuevo], '2026-11-08'),
+    ).toBeNull();
+    expect(
+      trabajoDeGarantia(canilla, [trabajo(13, { estado: 'agendado' })], '2026-11-08'),
+    ).toBeNull();
   });
 
   it('recordatorios: activos en orden, los de esta semana y su texto', () => {
@@ -189,7 +188,9 @@ describe('Mi hogar · reglas', () => {
       'equipo',
       'informe',
     ]);
-    expect(compartibles(hogar, [], vacio.id).map((c) => claveItem(c.item))).toEqual([`equipo:${ID(4)}`]);
+    expect(compartibles(hogar, [], vacio.id).map((c) => claveItem(c.item))).toEqual([
+      `equipo:${ID(4)}`,
+    ]);
     expect(JSON.stringify(todo)).not.toMatch(/direcci/i);
     expect(nombreCompartido({ tipo: 'ambiente_medidas', refId: conTodo.id }, hogar)).toBe(
       'Medidas del baño',

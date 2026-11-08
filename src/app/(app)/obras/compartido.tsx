@@ -33,7 +33,9 @@ export function useObra(extra: { cadaPagos?: number; exigirObra?: boolean } = {}
     pagos: pagos.datos?.items ?? [],
     pedido: pedido.datos,
     propuestas: lista,
-    pendientes: lista.filter((p) => p.estado === 'pendiente' && p.trabajoId === id && p.tipo !== 'cotizacion'),
+    pendientes: lista.filter(
+      (p) => p.estado === 'pendiente' && p.trabajoId === id && p.tipo !== 'cotizacion',
+    ),
     recargar: () => {
       trabajo.recargar();
       pagos.recargar();
@@ -42,7 +44,13 @@ export function useObra(extra: { cadaPagos?: number; exigirObra?: boolean } = {}
   };
 }
 
-export function PestanasObra({ id, activa }: { id: string; activa: 'etapas' | 'pagos' | 'gastado' }) {
+export function PestanasObra({
+  id,
+  activa,
+}: {
+  id: string;
+  activa: 'etapas' | 'pagos' | 'gastado';
+}) {
   return (
     <SelectorVistas
       etiqueta="Secciones de la obra"

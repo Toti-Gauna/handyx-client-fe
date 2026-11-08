@@ -49,10 +49,12 @@ export default function AmbienteDetalle() {
     return (
       <Pantalla arriba={<BarraHogar titulo="Ambiente" volver={volver} />}>
         <ErrorEstado
-          error={new ErrorCliente({
-            codigo: 'no_encontrado',
-            mensaje: 'Este ambiente ya no está en tu casa.',
-          })}
+          error={
+            new ErrorCliente({
+              codigo: 'no_encontrado',
+              mensaje: 'Este ambiente ya no está en tu casa.',
+            })
+          }
         />
       </Pantalla>
     );
@@ -68,7 +70,11 @@ export default function AmbienteDetalle() {
           accion={
             editando
               ? undefined
-              : { icono: 'editar', etiqueta: `Editar ${a.nombre}`, onClick: () => setEditando(true) }
+              : {
+                  icono: 'editar',
+                  etiqueta: `Editar ${a.nombre}`,
+                  onClick: () => setEditando(true),
+                }
           }
         />
       }
@@ -127,7 +133,13 @@ function Ficha({ ambiente: a, equipos }: { ambiente: Ambiente; equipos: readonly
         <div className="dsh-fotos">
           {a.fotos.slice(1, 4).map((f) => (
             // eslint-disable-next-line @next/next/no-img-element -- export estático: sin optimizador.
-            <img key={f.id} className="dsh-foto" src={f.url} alt="" style={{ height: '4.375rem' }} />
+            <img
+              key={f.id}
+              className="dsh-foto"
+              src={f.url}
+              alt=""
+              style={{ height: '4.375rem' }}
+            />
           ))}
         </div>
       ) : null}
@@ -142,11 +154,7 @@ function Ficha({ ambiente: a, equipos }: { ambiente: Ambiente; equipos: readonly
           valor={medidasTexto(a.medidas) ?? 'Sin medir'}
           sub={a.medidas ? 'Aproximadas' : 'Las podés cargar tocando el lápiz'}
         />
-        <DatoFila
-          icono="ladrillos"
-          etiqueta="Materiales"
-          valor={a.materiales ?? 'Sin datos'}
-        />
+        <DatoFila icono="ladrillos" etiqueta="Materiales" valor={a.materiales ?? 'Sin datos'} />
       </Tarjeta>
       <Tarjeta>
         <Etiqueta como="h2">Equipos · {equipos.length}</Etiqueta>

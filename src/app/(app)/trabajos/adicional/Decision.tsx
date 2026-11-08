@@ -47,7 +47,8 @@ export function Decision({ variante }: { variante: 'adicional' | 'repuesto' }) {
     href: ruta(rep ? '/obras/detalle/' : '/trabajos/detalle/', { id: t.id }),
     etiqueta: rep ? 'Volver a la obra' : 'Volver al trabajo',
   };
-  const decidible = p.estado === 'pendiente' && p.tipo === 'adicional' && p.autorRol === 'especialista';
+  const decidible =
+    p.estado === 'pendiente' && p.tipo === 'adicional' && p.autorRol === 'especialista';
   const sumar = p.monto.centavos;
   const total = totalSiAprueba(t, sumar);
 
@@ -66,16 +67,18 @@ export function Decision({ variante }: { variante: 'adicional' | 'repuesto' }) {
   return (
     <Pantalla
       arriba={
-        <Barra
-          titulo={rep ? 'Repuesto' : 'Adicional'}
-          volver={volver}
-          sub={`Pedido por ${esp}`}
-        />
+        <Barra titulo={rep ? 'Repuesto' : 'Adicional'} volver={volver} sub={`Pedido por ${esp}`} />
       }
       pie={
         decidible ? (
           <AccionesFijas nota="Nada se suma al acuerdo hasta que lo apruebes.">
-            <Boton icono="check" onClick={() => { accion.limpiar(); setConfirmar(true); }}>
+            <Boton
+              icono="check"
+              onClick={() => {
+                accion.limpiar();
+                setConfirmar(true);
+              }}
+            >
               Aprobar {pesos(sumar)}
             </Boton>
             <div className="ds-grilla">
@@ -129,7 +132,9 @@ export function Decision({ variante }: { variante: 'adicional' | 'repuesto' }) {
           </div>
           <blockquote className="dss-cita">{p.alcance}</blockquote>
           {decidible ? (
-            <span className="ds-fila-enlace__sub">Podés responder hasta el {cuando(p.venceEn)}.</span>
+            <span className="ds-fila-enlace__sub">
+              Podés responder hasta el {cuando(p.venceEn)}.
+            </span>
           ) : null}
         </Tarjeta>
         {decidible ? (
@@ -149,16 +154,28 @@ export function Decision({ variante }: { variante: 'adicional' | 'repuesto' }) {
           </Nota>
         ) : null}
         {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
-        {p.estado === 'aceptada' ? <Chip tono="exito" icono="check">Aprobado</Chip> : null}
+        {p.estado === 'aceptada' ? (
+          <Chip tono="exito" icono="check">
+            Aprobado
+          </Chip>
+        ) : null}
       </div>
-      <Hoja abierta={confirmar} onCerrar={() => setConfirmar(false)} titulo={`¿Aprobás ${pesos(sumar)}?`}>
+      <Hoja
+        abierta={confirmar}
+        onCerrar={() => setConfirmar(false)}
+        titulo={`¿Aprobás ${pesos(sumar)}?`}
+      >
         <p>
           El total pasa de {pesos(totalAcordado(t))} a <strong>{pesos(total)}</strong>. Se lo pagás
           directo a {esp}.
         </p>
         {accion.error ? <Aviso tipo="error">{accion.error.mensaje}</Aviso> : null}
         <div className="ds-pila">
-          <Boton icono="check" ocupado={accion.pendiente} onClick={() => void responder('propuestaAceptar')}>
+          <Boton
+            icono="check"
+            ocupado={accion.pendiente}
+            onClick={() => void responder('propuestaAceptar')}
+          >
             Sí, aprobar
           </Boton>
           <Boton variante="contorno" onClick={() => setConfirmar(false)}>

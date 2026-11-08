@@ -17,7 +17,10 @@ export const MENSAJES7: readonly Pantalla[] = [
     estados: ['cargando', 'vacio', 'lista', 'sin_resultados', 'error_reintentable'],
     endpoints: ['conversaciones'],
     entidades: ['conversations'],
-    pruebas: ['solo hilos propios', 'la lista no inventa el último mensaje (el contrato no lo trae)'],
+    pruebas: [
+      'solo hilos propios',
+      'la lista no inventa el último mensaje (el contrato no lo trae)',
+    ],
     demo: ['M-Mensajes'],
   }),
   p({
@@ -179,7 +182,11 @@ export const MENSAJES7: readonly Pantalla[] = [
     lote: '7',
     acceso: 'sesion',
     consulta: ['editar'],
-    acciones: ['Ver el perfil operativo y las direcciones', 'Editar mis datos', 'Sumar una dirección'],
+    acciones: [
+      'Ver el perfil operativo y las direcciones',
+      'Editar mis datos',
+      'Sumar una dirección',
+    ],
     estados: ['lectura', 'editando', 'guardando', 'validacion', 'conflicto_version', 'guardado'],
     endpoints: ['sesion', 'perfil'],
     entidades: ['user_profiles'],

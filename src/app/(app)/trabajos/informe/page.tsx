@@ -105,7 +105,9 @@ export default function InformeTrabajo() {
                       {i.recomendaciones.map((r) => (
                         <span key={r.texto} style={{ display: 'block' }}>
                           {r.texto}
-                          {r.enMeses ? ` · en ${r.enMeses} ${r.enMeses === 1 ? 'mes' : 'meses'}` : ''}
+                          {r.enMeses
+                            ? ` · en ${r.enMeses} ${r.enMeses === 1 ? 'mes' : 'meses'}`
+                            : ''}
                         </span>
                       ))}
                     </>

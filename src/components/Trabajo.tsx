@@ -5,7 +5,7 @@
 import type { EventoTrabajo as EsquemaEvento, Propuesta, Trabajo } from '@/contracts/v1/propuestas';
 import type { RegistroPago } from '@/contracts/v1/servicio';
 import { pesos, porcentaje } from '@/domain/dinero';
-import { ACTOR_TEXTO, etiquetaTrabajo } from '@/domain/etiquetas';
+import { ACTOR_TEXTO, etiquetaPago, etiquetaTrabajo } from '@/domain/etiquetas';
 import { cuando, fechaDeInstante, fechaLarga, horaDeInstante } from '@/domain/fechas';
 import { Cargando, ErrorEstado, Vacio } from '@/components/ui';
 import type { Consulta } from '@/data/hooks';
@@ -74,12 +74,24 @@ export function desglose(t: Trabajo, propuestas: readonly Propuesta[]): Desglose
   const adicional = Math.min(adicionalesAprobados(propuestas, t.id), t.acuerdo.monto.centavos);
   const especialista = t.acuerdo.monto.centavos;
   const tarifa = t.acuerdo.comisionHandy.importe.centavos;
-  return { acuerdo: especialista - adicional, adicional, especialista, tarifa, total: especialista + tarifa };
+  return {
+    acuerdo: especialista - adicional,
+    adicional,
+    especialista,
+    tarifa,
+    total: especialista + tarifa,
+  };
 }
 
 /** Lo que pasaría con el total si se aprueba un adicional. */
 export const totalSiAprueba = (t: Trabajo, adicionalCentavos: number) =>
-  totalAcordado(t) + adicionalCentavos + Math.round((adicionalCentavos * t.acuerdo.comisionHandy.bp) / 10_000);
+  totalAcordado(t) +
+  adicionalCentavos +
+  Math.round((adicionalCentavos * t.acuerdo.comisionHandy.bp) / 10_000);
+
+/** Texto del estado de un pago: lo que informó la persona se dice «informado», nunca «pagado» ni «verificado». */
+export const textoPago = (p: Pick<RegistroPago, 'estado'>) =>
+  p.estado === 'reportado' ? 'Informado (sin verificar)' : etiquetaPago(p).texto;
 
 const VIGENTES: readonly RegistroPago['estado'][] = ['pendiente', 'reportado', 'verificado'];
 
@@ -111,14 +123,24 @@ export function totalesObra(t: Trabajo, pagos: readonly RegistroPago[]): Totales
     if (p.estado === 'verificado' || p.estado === 'reportado') etapasPagas += 1;
   }
   const total = totalAcordado(t);
-  return { total, verificado, informado, falta: Math.max(0, total - verificado - informado), etapasPagas };
+  return {
+    total,
+    verificado,
+    informado,
+    falta: Math.max(0, total - verificado - informado),
+    etapasPagas,
+  };
 }
 
-export const etapasConfirmadas = (t: Trabajo) => t.etapas.filter((e) => e.estado === 'confirmada').length;
+export const etapasConfirmadas = (t: Trabajo) =>
+  t.etapas.filter((e) => e.estado === 'confirmada').length;
 export const etapaActual = (t: Trabajo) => t.etapas.find((e) => e.estado !== 'confirmada') ?? null;
 export const esObra = (t: Trabajo) => t.etapas.length > 0;
 
-export const TEXTO_ETAPA: Record<string, { texto: string; tono: 'exito' | 'amarillo' | 'azul' | 'gris' }> = {
+export const TEXTO_ETAPA: Record<
+  string,
+  { texto: string; tono: 'exito' | 'amarillo' | 'azul' | 'gris' }
+> = {
   pendiente: { texto: 'Pendiente', tono: 'gris' },
   en_curso: { texto: 'En curso', tono: 'azul' },
   terminada_por_especialista: { texto: 'Falta tu confirmación', tono: 'amarillo' },

@@ -51,7 +51,11 @@ function Agendado(c: ContextoTrabajo) {
       arriba={<Barra titulo="Tu turno" volver={VOLVER} sub={`${rubro} · ${esp}`} />}
       pie={
         <AccionesFijas>
-          <Boton variante="contorno" icono="calendario" href={ruta('/trabajos/cambiar/', { id: t.id })}>
+          <Boton
+            variante="contorno"
+            icono="calendario"
+            href={ruta('/trabajos/cambiar/', { id: t.id })}
+          >
             Cambiar el turno
           </Boton>
           <Boton variante="peligro" icono="cerrar" onClick={c.abrirCancelar}>
@@ -96,7 +100,11 @@ function Agendado(c: ContextoTrabajo) {
           }
         />
         <Tarjeta etiqueta="Etapas del turno">
-          <Etapas pasos={pasosTurno(t)} hechas={HECHAS_POR_ESTADO[t.estado]} etiqueta="Etapas del turno" />
+          <Etapas
+            pasos={pasosTurno(t)}
+            hechas={HECHAS_POR_ESTADO[t.estado]}
+            etiqueta="Etapas del turno"
+          />
         </Tarjeta>
         <PedidosPendientes c={c} />
         <AvisoError c={c} />
@@ -138,7 +146,11 @@ function Llego(c: ContextoTrabajo) {
           </span>
         </div>
         <Tarjeta etiqueta="Etapas del turno">
-          <Etapas pasos={pasosTurno(t)} hechas={HECHAS_POR_ESTADO[t.estado]} etiqueta="Etapas del turno" />
+          <Etapas
+            pasos={pasosTurno(t)}
+            hechas={HECHAS_POR_ESTADO[t.estado]}
+            etiqueta="Etapas del turno"
+          />
         </Tarjeta>
         <PedidosPendientes c={c} />
         <Nota icono="escudo" tono="amarillo">
@@ -185,7 +197,11 @@ function Trabajando(c: ContextoTrabajo) {
           </span>
         </div>
         <Tarjeta etiqueta="Etapas del turno">
-          <Etapas pasos={pasosTurno(t)} hechas={HECHAS_POR_ESTADO[t.estado]} etiqueta="Etapas del turno" />
+          <Etapas
+            pasos={pasosTurno(t)}
+            hechas={HECHAS_POR_ESTADO[t.estado]}
+            etiqueta="Etapas del turno"
+          />
         </Tarjeta>
         <PedidosPendientes c={c} />
         {obra ? (
@@ -208,7 +224,10 @@ function Trabajando(c: ContextoTrabajo) {
         ) : null}
         <AvisoError c={c} />
         <AtajosTrabajo c={c} />
-        <Enlace className="dss-enlace-texto" href={ruta('/reclamos/nuevo/', { pedido: t.pedidoId, trabajo: t.id })}>
+        <Enlace
+          className="dss-enlace-texto"
+          href={ruta('/reclamos/nuevo/', { pedido: t.pedidoId, trabajo: t.id })}
+        >
           Abrir un reclamo
         </Enlace>
       </div>

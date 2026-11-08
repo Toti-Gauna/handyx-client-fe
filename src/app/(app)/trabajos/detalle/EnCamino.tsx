@@ -56,7 +56,11 @@ export function EnCamino(c: ContextoTrabajo) {
           <div className="ds-fila">
             <Avatar nombre={esp} tam={3.25} />
             <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
-              <h1 className="ds-titulo" style={{ ['--ds-tam' as string]: '1.1875rem' }} aria-live="polite">
+              <h1
+                className="ds-titulo"
+                style={{ ['--ds-tam' as string]: '1.1875rem' }}
+                aria-live="polite"
+              >
                 {titulo}
               </h1>
               <span className="ds-fila-enlace__sub">{enViaje.chip ?? horarioAcordado(t)}</span>
@@ -77,13 +81,17 @@ export function EnCamino(c: ContextoTrabajo) {
             </Nota>
           ) : null}
           <Tarjeta etiqueta="Etapas del turno">
-            <Etapas pasos={pasosTurno(t)} hechas={HECHAS_POR_ESTADO[t.estado]} etiqueta="Etapas del turno" />
+            <Etapas
+              pasos={pasosTurno(t)}
+              hechas={HECHAS_POR_ESTADO[t.estado]}
+              etiqueta="Etapas del turno"
+            />
           </Tarjeta>
           <PedidosPendientes c={c} />
           <AvisoError c={c} />
           <Nota icono="escudo" tono="gris">
-            Nosotros no seguimos tu ubicación. La del especialista se ve solo mientras viene en camino
-            y la comparte.
+            Nosotros no seguimos tu ubicación. La del especialista se ve solo mientras viene en
+            camino y la comparte.
           </Nota>
           <AtajosTrabajo c={c} />
           <button type="button" className="dss-enlace-texto" onClick={c.abrirCancelar}>
@@ -94,4 +102,3 @@ export function EnCamino(c: ContextoTrabajo) {
     </div>
   );
 }
-

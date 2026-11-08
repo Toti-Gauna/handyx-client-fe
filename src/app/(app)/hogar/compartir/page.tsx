@@ -27,7 +27,7 @@ export default function Compartir() {
       : { href: '/hogar/', etiqueta: 'Volver a Mi hogar' };
   return (
     <Pantalla arriba={<BarraHogar titulo="Compartir de Mi hogar" volver={volver} />}>
-      <div className="ds ds-cuerpo">
+      <div className="ds ds-cuerpo ds-cuerpo--raiz">
         {pedidoId ? (
           <ConPedido pedidoId={pedidoId} ambienteId={ambienteId} />
         ) : (
@@ -38,7 +38,12 @@ export default function Compartir() {
   );
 }
 
-const COMPARTIBLE: readonly Pedido['estado'][] = ['buscando', 'con_propuestas', 'sin_respuesta', 'busqueda_manual'];
+const COMPARTIBLE: readonly Pedido['estado'][] = [
+  'buscando',
+  'con_propuestas',
+  'sin_respuesta',
+  'busqueda_manual',
+];
 
 function ElegirPedido({ ambienteId }: { ambienteId: string | null }) {
   const pedidos = useConsulta('pedidos', { consulta: { vista: 'activos', limite: 20 } });
@@ -53,8 +58,8 @@ function ElegirPedido({ ambienteId }: { ambienteId: string | null }) {
             {abiertos.length === 0 ? (
               <>
                 <Nota tono="gris">
-                  Ahora no tenés pedidos buscando especialista. Cuando hagas uno, podés sumarle datos de tu
-                  casa.
+                  Ahora no tenés pedidos buscando especialista. Cuando hagas uno, podés sumarle
+                  datos de tu casa.
                 </Nota>
                 <Boton href="/pedir/" icono="mas">
                   Hacer un pedido
@@ -92,7 +97,10 @@ function ConPedido({ pedidoId, ambienteId }: { pedidoId: string; ambienteId: str
       {(p) => (
         <>
           <Tarjeta tono="azul">
-            <span className="ds-titulo" style={{ ['--ds-tam' as string]: '1.375rem', color: 'inherit' }}>
+            <span
+              className="ds-titulo"
+              style={{ ['--ds-tam' as string]: '1.375rem', color: 'inherit' }}
+            >
               {RUBROS_INFO[p.rubro].nombre}
             </span>
             <span>{p.descripcion}</span>
@@ -134,8 +142,8 @@ function Elegir({
     return (
       <>
         <Nota tono="exito" icono="check" rol="status">
-          Listo: los especialistas de este pedido ven lo que elegiste. Cuando el pedido termina, se deja de
-          compartir solo.
+          Listo: los especialistas de este pedido ven lo que elegiste. Cuando el pedido termina, se
+          deja de compartir solo.
         </Nota>
         <Boton href="/hogar/compartidos/" icono="compartir">
           Ver lo que compartiste
@@ -147,12 +155,18 @@ function Elegir({
     );
 
   if (!COMPARTIBLE.includes(pedido.estado))
-    return <Nota tono="gris">Este pedido ya no está buscando especialista: no hace falta compartir nada.</Nota>;
+    return (
+      <Nota tono="gris">
+        Este pedido ya no está buscando especialista: no hace falta compartir nada.
+      </Nota>
+    );
 
   return (
     <>
       <Titulo texto="¿Qué ==compartís==?" nivel={2} />
-      <Sub>Lo ven solo los especialistas de este pedido. Cuando termina, se deja de compartir solo.</Sub>
+      <Sub>
+        Lo ven solo los especialistas de este pedido. Cuando termina, se deja de compartir solo.
+      </Sub>
       {opciones.length === 0 ? (
         <Nota tono="gris">
           Todavía no hay datos de tu casa para compartir. Sumá medidas o equipos en Mi casa.

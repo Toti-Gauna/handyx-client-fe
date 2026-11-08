@@ -8,6 +8,7 @@ import {
   esObra,
   etapasConfirmadas,
   pagoVigente,
+  textoPago,
 } from '@/components/Trabajo';
 import { RUBROS_INFO, etiquetaPago, etiquetaTrabajo } from '@/domain/etiquetas';
 import { pesos } from '@/domain/dinero';
@@ -105,7 +106,8 @@ export function Cierre(c: ContextoTrabajo) {
           )}
           {t.estado === 'terminado_por_especialista' ? (
             <Nota icono="alerta" tono="amarillo" rol="status">
-              Falta tu confirmación. Revisá que esté todo como se acordó. Si hay un problema, avisanos.
+              Falta tu confirmación. Revisá que esté todo como se acordó. Si hay un problema,
+              avisanos.
             </Nota>
           ) : null}
           {finalizado ? (
@@ -160,7 +162,11 @@ function PagoResumen({
   return (
     <Tarjeta etiqueta="Pago" tono="azul">
       <span className="ds-etiqueta" style={{ color: 'inherit' }}>
-        {pago?.estado === 'verificado' ? 'PAGO VERIFICADO' : pago ? 'PAGO INFORMADO' : 'TOTAL A PAGAR'}
+        {pago?.estado === 'verificado'
+          ? 'PAGO VERIFICADO'
+          : pago
+            ? 'PAGO INFORMADO'
+            : 'TOTAL A PAGAR'}
       </span>
       <strong className="ds-monto" style={{ ['--ds-tam' as string]: '2.125rem' }}>
         {pesos(total)}
@@ -171,15 +177,14 @@ function PagoResumen({
             tono={pago?.estado === 'verificado' ? 'exito' : 'amarillo'}
             {...(e.icono ? { icono: e.icono } : {})}
           >
-            {e.texto}
+            {textoPago(pago!)}
           </Chip>
         </span>
       ) : null}
       <p className="ds-sub" style={{ margin: 0 }}>
-        Directo a {c.esp}, por Mercado Pago o en efectivo. Un pago que informás vos queda “informado”
-        hasta que se verifique.
+        Directo a {c.esp}, por Mercado Pago o en efectivo. Un pago que informás vos queda
+        “informado” hasta que se verifique.
       </p>
     </Tarjeta>
   );
 }
-

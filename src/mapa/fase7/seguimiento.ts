@@ -3,7 +3,11 @@
 // Se arman como objetos (sin importar `p` de pantallas.ts): ese módulo importa éste y el ciclo dejaría `p` sin inicializar.
 import type { Pantalla } from '../pantallas.ts';
 
-const pan = (x: Omit<Pantalla, 'tipo' | 'lote'>): Pantalla => ({ tipo: 'pantalla', lote: '7', ...x });
+const pan = (x: Omit<Pantalla, 'tipo' | 'lote'>): Pantalla => ({
+  tipo: 'pantalla',
+  lote: '7',
+  ...x,
+});
 
 export const SEGUIMIENTO7: readonly Pantalla[] = [
   pan({
@@ -60,10 +64,18 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     acceso: 'sesion',
     consulta: ['id'],
     acciones: ['Aprobar (con confirmación)', 'Preguntar por el chat', 'No, gracias'],
-    estados: ['cargando', 'pendiente', 'ya_resuelto (aprobado, rechazado, vencido)', 'error_reintentable'],
+    estados: [
+      'cargando',
+      'pendiente',
+      'ya_resuelto (aprobado, rechazado, vencido)',
+      'error_reintentable',
+    ],
     endpoints: ['propuesta', 'propuestaAceptar', 'propuestaRechazar', 'trabajo'],
     entidades: ['proposals', 'jobs'],
-    pruebas: ['nada se suma al acuerdo hasta aprobar', 'el total si aprobás suma el adicional al acuerdo actual'],
+    pruebas: [
+      'nada se suma al acuerdo hasta aprobar',
+      'el total si aprobás suma el adicional al acuerdo actual',
+    ],
     demo: ['S-Adicional'],
     nota: 'La propuesta adicional no trae foto ni renglones: se muestra el motivo (alcance) y el importe.',
   }),
@@ -74,7 +86,11 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     grupo: 'trabajo',
     acceso: 'sesion',
     consulta: ['id'],
-    acciones: ['Leer qué encontró, pruebas, materiales y garantía', 'Ver antes y después', 'Dar la conformidad'],
+    acciones: [
+      'Leer qué encontró, pruebas, materiales y garantía',
+      'Ver antes y después',
+      'Dar la conformidad',
+    ],
     estados: ['cargando', 'sin_informe (todavía no hay)', 'con_informe', 'error_reintentable'],
     endpoints: ['trabajo', 'informe', 'pedido'],
     entidades: ['jobs'],
@@ -103,7 +119,13 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     acceso: 'sesion',
     consulta: ['id'],
     acciones: ['Confirmar que quedó bien', 'Avisar un problema (reclamo)'],
-    estados: ['cargando', 'terminado_por_especialista', 'etapas_sin_confirmar', 'ya_finalizado', 'error_reintentable'],
+    estados: [
+      'cargando',
+      'terminado_por_especialista',
+      'etapas_sin_confirmar',
+      'ya_finalizado',
+      'error_reintentable',
+    ],
     endpoints: ['trabajo', 'propuestas', 'trabajoConfirmarFin'],
     entidades: ['jobs', 'job_events'],
     pruebas: ['una obra no se cierra con etapas sin confirmar'],
@@ -116,7 +138,12 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     grupo: 'trabajo',
     acceso: 'sesion',
     consulta: ['id'],
-    acciones: ['Elegir de 1 a 5 estrellas', 'Elegir qué estuvo bien o mal', 'Comentario opcional', 'Ahora no'],
+    acciones: [
+      'Elegir de 1 a 5 estrellas',
+      'Elegir qué estuvo bien o mal',
+      'Comentario opcional',
+      'Ahora no',
+    ],
     estados: [
       'cargando',
       'todavía no se puede (trabajo sin finalizar)',
@@ -141,7 +168,11 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     grupo: 'pagos',
     acceso: 'sesion',
     consulta: ['id', 'etapa'],
-    acciones: ['Elegir Mercado Pago o efectivo', 'Pagar o informar el pago', 'Ver el estado del pago'],
+    acciones: [
+      'Elegir Mercado Pago o efectivo',
+      'Pagar o informar el pago',
+      'Ver el estado del pago',
+    ],
     estados: [
       'cargando',
       'elegir',
@@ -170,7 +201,11 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     grupo: 'obras',
     acceso: 'sesion',
     consulta: ['id'],
-    acciones: ['Ver el avance y las etapas', 'Abrir un repuesto o un cambio pendiente', 'Ir al chat de la obra'],
+    acciones: [
+      'Ver el avance y las etapas',
+      'Abrir un repuesto o un cambio pendiente',
+      'Ir al chat de la obra',
+    ],
     estados: ['cargando', 'en_curso', 'todas_confirmadas', 'no_es_obra', 'error_reintentable'],
     endpoints: ['trabajo', 'pagos', 'pedido', 'propuestas'],
     entidades: ['jobs', 'job_stages', 'payment_records'],
@@ -186,7 +221,14 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     acceso: 'sesion',
     consulta: ['id', 'etapa'],
     acciones: ['Confirmar que terminó la etapa', 'Pagar la etapa', 'Escribirle al especialista'],
-    estados: ['cargando', 'pendiente', 'en_curso', 'terminada_por_especialista', 'confirmada', 'etapa_inexistente'],
+    estados: [
+      'cargando',
+      'pendiente',
+      'en_curso',
+      'terminada_por_especialista',
+      'confirmada',
+      'etapa_inexistente',
+    ],
     endpoints: ['trabajo', 'pagos', 'pedido', 'propuestas', 'etapaConfirmar'],
     entidades: ['job_stages', 'payment_records'],
     pruebas: ['la etapa se paga recién confirmada'],
@@ -214,8 +256,21 @@ export const SEGUIMIENTO7: readonly Pantalla[] = [
     acceso: 'sesion',
     consulta: ['id'],
     acciones: ['Aprobar el cambio', 'No, gracias', 'Proponer otro día'],
-    estados: ['cargando', 'cambio_pendiente', 'propuesto_por_vos', 'sin_cambios', 'error_reintentable'],
-    endpoints: ['trabajo', 'pagos', 'pedido', 'propuestas', 'propuestaAceptar', 'propuestaRechazar'],
+    estados: [
+      'cargando',
+      'cambio_pendiente',
+      'propuesto_por_vos',
+      'sin_cambios',
+      'error_reintentable',
+    ],
+    endpoints: [
+      'trabajo',
+      'pagos',
+      'pedido',
+      'propuestas',
+      'propuestaAceptar',
+      'propuestaRechazar',
+    ],
     entidades: ['proposals', 'jobs'],
     pruebas: ['mientras no se acepte, vale el horario actual'],
     demo: ['O-Fecha'],

@@ -3,7 +3,9 @@
 // Sin `p()` de pantallas.ts: ese archivo importa este antes de definir `p` (orden de inicialización).
 import type { Pantalla } from '../pantallas.ts';
 
-const h = (x: Omit<Pantalla, 'tipo' | 'lote' | 'acceso' | 'grupo'> & { grupo?: 'hogar' | 'camino' }): Pantalla => ({
+const h = (
+  x: Omit<Pantalla, 'tipo' | 'lote' | 'acceso' | 'grupo'> & { grupo?: 'hogar' | 'camino' },
+): Pantalla => ({
   tipo: 'pantalla',
   grupo: 'hogar',
   lote: '7',
@@ -31,7 +33,11 @@ export const HOGAR7: readonly Pantalla[] = [
     estados: ['cargando', 'casa_vacia', 'con_ficha', 'error_reintentable'],
     endpoints: ['hogar', 'recordatorios', 'compartidos', 'trabajos', 'camino'],
     entidades: ['homes', 'home_rooms', 'home_equipment', 'maintenance_reminders', 'home_shares'],
-    pruebas: ['tests/fase7-hogar.test.ts', 'cabecera azul con ficha %, ambientes y equipos', PRIVADA],
+    pruebas: [
+      'tests/fase7-hogar.test.ts',
+      'cabecera azul con ficha %, ambientes y equipos',
+      PRIVADA,
+    ],
     nota: 'Lienzo H-Hogar. Piezas en src/ui/hogar.tsx (estilos src/styles/ds-hogar.css).',
   }),
   h({
@@ -45,7 +51,13 @@ export const HOGAR7: readonly Pantalla[] = [
       'Abrir un ambiente o un equipo',
       'Sumar un ambiente o un equipo → /hogar/sumar/',
     ],
-    estados: ['cargando', 'sin_ambientes', 'sin_equipos', 'conflicto_version', 'error_reintentable'],
+    estados: [
+      'cargando',
+      'sin_ambientes',
+      'sin_equipos',
+      'conflicto_version',
+      'error_reintentable',
+    ],
     endpoints: ['hogar', 'hogarEditar'],
     entidades: ['homes', 'home_rooms', 'home_equipment'],
     pruebas: ['tests/fase7-hogar.test.ts', PRIVADA],
@@ -91,7 +103,10 @@ export const HOGAR7: readonly Pantalla[] = [
     ruta: '/hogar/sumar/',
     titulo: 'Sumar a tu casa',
     consulta: ['que=equipo', 'ambiente'],
-    acciones: ['Sumar un ambiente (tipo y nombre)', 'Sumar un equipo (tipo, marca, modelo, dónde, instalado)'],
+    acciones: [
+      'Sumar un ambiente (tipo y nombre)',
+      'Sumar un equipo (tipo, marca, modelo, dónde, instalado)',
+    ],
     estados: ['cargando', 'formulario', 'sin_ambientes_para_equipo', 'error_validacion'],
     endpoints: ['hogar', 'ambienteCrear', 'equipoCrear'],
     entidades: ['home_rooms', 'home_equipment'],
@@ -111,7 +126,10 @@ export const HOGAR7: readonly Pantalla[] = [
     estados: ['cargando', 'sin_ambientes', 'sin_elegir', 'con_garantia', 'error_reintentable'],
     endpoints: ['hogar', 'trabajos'],
     entidades: ['home_rooms', 'home_equipment', 'jobs'],
-    pruebas: ['tests/fase7-hogar.test.ts', 'nunca manda texto libre ni datos de la casa por la URL'],
+    pruebas: [
+      'tests/fase7-hogar.test.ts',
+      'nunca manda texto libre ni datos de la casa por la URL',
+    ],
     nota: 'Lienzo H-Rompio.',
   }),
   h({
@@ -175,7 +193,11 @@ export const HOGAR7: readonly Pantalla[] = [
     id: 'hogar-garantias',
     ruta: '/hogar/garantias/',
     titulo: 'Informes y garantías',
-    acciones: ['Ver cada informe con su garantía y cuánto pasó', 'Ver equipos con garantía', 'Abrir el trabajo'],
+    acciones: [
+      'Ver cada informe con su garantía y cuánto pasó',
+      'Ver equipos con garantía',
+      'Abrir el trabajo',
+    ],
     estados: ['cargando', 'sin_informes', 'con_informes', 'error'],
     endpoints: ['trabajos', 'informe', 'hogar'],
     entidades: ['job_reports', 'home_equipment'],
@@ -187,7 +209,12 @@ export const HOGAR7: readonly Pantalla[] = [
     id: 'camino',
     ruta: '/camino/',
     titulo: 'Camino del hogar',
-    acciones: ['Ver los 5 hitos (hecho, ahora, falta)', 'Ir a lo que pide cada hito', 'Insignias', 'Beneficios'],
+    acciones: [
+      'Ver los 5 hitos (hecho, ahora, falta)',
+      'Ir a lo que pide cada hito',
+      'Insignias',
+      'Beneficios',
+    ],
     estados: ['cargando', 'con_hitos', 'insignia_nueva', 'error'],
     endpoints: ['camino'],
     entidades: ['home_path'],

@@ -83,8 +83,8 @@ function Elegir({ hogar, inicial }: { hogar: Hogar; inicial: string | null }) {
         <div className="ds-pila" style={{ ['--ds-gap' as string]: '0.375rem' }}>
           <Titulo texto="¿Dónde ==pasa==?" nivel={2} />
           <Sub>
-            Elegís el lugar y qué falla, y el pedido arranca con eso. Después podés compartir los datos
-            de tu casa con ese pedido.
+            Elegís el lugar y qué falla, y el pedido arranca con eso. Después podés compartir los
+            datos de tu casa con ese pedido.
           </Sub>
         </div>
         {hogar.ambientes.length === 0 ? (
@@ -114,7 +114,12 @@ function Elegir({ hogar, inicial }: { hogar: Hogar; inicial: string | null }) {
         {amb ? (
           <>
             <Etiqueta como="h2">¿Qué falla en {elAmbiente(amb)}?</Etiqueta>
-            <div role="radiogroup" aria-label="Qué falla" className="ds-pila" style={{ ['--ds-gap' as string]: '0.5rem' }}>
+            <div
+              role="radiogroup"
+              aria-label="Qué falla"
+              className="ds-pila"
+              style={{ ['--ds-gap' as string]: '0.5rem' }}
+            >
               {equipos.map((e) => (
                 <Opcion
                   key={e.id}

@@ -53,12 +53,24 @@ export default function AntesDespues() {
             <SelectorVistas
               etiqueta="Cómo ver las fotos"
               opciones={[
-                { texto: 'Deslizar', activa: vista === 'deslizar' && completo, onElegir: () => setVista('deslizar') },
-                { texto: 'Lado a lado', activa: vista === 'lado' || !completo, onElegir: () => setVista('lado') },
+                {
+                  texto: 'Deslizar',
+                  activa: vista === 'deslizar' && completo,
+                  onElegir: () => setVista('deslizar'),
+                },
+                {
+                  texto: 'Lado a lado',
+                  activa: vista === 'lado' || !completo,
+                  onElegir: () => setVista('lado'),
+                },
               ]}
             />
             {pares > 1 ? (
-              <div className="dss-resena__pastillas" role="group" aria-label="Elegí el par de fotos">
+              <div
+                className="dss-resena__pastillas"
+                role="group"
+                aria-label="Elegí el par de fotos"
+              >
                 {Array.from({ length: pares }, (_, n) => (
                   <Pastilla key={n} elegida={par === n} onElegir={() => setPar(n)}>
                     Foto {n + 1}

@@ -3,12 +3,7 @@
 import { Barra, Pantalla } from '@/components/hx';
 import { Icono } from '@/components/Icono';
 import { ruta } from '@/components/nav';
-import {
-  TEXTO_ETAPA,
-  etapaActual,
-  etapasConfirmadas,
-  totalesObra,
-} from '@/components/Trabajo';
+import { TEXTO_ETAPA, etapaActual, etapasConfirmadas, totalesObra } from '@/components/Trabajo';
 import { RUBROS_INFO } from '@/domain/etiquetas';
 import { pesos } from '@/domain/dinero';
 import { AccionesFijas, Avatar, Boton, Chip, FilaEnlace } from '@/ui';
@@ -26,7 +21,9 @@ export default function Obra() {
   const actual = etapaActual(t);
   const tot = totalesObra(t, o.pagos);
   const rubro = o.pedido ? RUBROS_INFO[o.pedido.rubro].nombre : 'Obra';
-  const adicional = o.pendientes.find((p) => p.tipo === 'adicional' && p.autorRol === 'especialista');
+  const adicional = o.pendientes.find(
+    (p) => p.tipo === 'adicional' && p.autorRol === 'especialista',
+  );
   const cambio = o.pendientes.find((p) => p.tipo === 'cambio_acuerdo');
 
   return (
@@ -48,7 +45,11 @@ export default function Obra() {
     >
       <div className="ds ds-cuerpo">
         <div className="ds-fila" style={{ ['--ds-gap' as string]: '0.875rem' }}>
-          <Anillo hechas={hechas} total={t.etapas.length} etiqueta={`${hechas} de ${t.etapas.length} etapas confirmadas`} />
+          <Anillo
+            hechas={hechas}
+            total={t.etapas.length}
+            etiqueta={`${hechas} de ${t.etapas.length} etapas confirmadas`}
+          />
           <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.25rem' }}>
             <h2 className="ds-titulo" style={{ ['--ds-tam' as string]: '1.0625rem' }}>
               {actual ? `Etapa ${actual.orden} · ${actual.titulo}` : 'Todas las etapas confirmadas'}
@@ -75,13 +76,21 @@ export default function Obra() {
         {cambio ? (
           <PedidoAmarillo
             icono="calendario"
-            titulo={cambio.autorRol === 'especialista' ? `${esp} propone un cambio` : 'Tu cambio espera respuesta'}
+            titulo={
+              cambio.autorRol === 'especialista'
+                ? `${esp} propone un cambio`
+                : 'Tu cambio espera respuesta'
+            }
             sub="Ver el cambio de fecha"
             href={ruta('/obras/fecha/', { id: t.id, propuesta: cambio.id })}
           />
         ) : null}
         <PestanasObra id={t.id} activa="etapas" />
-        <ol className="ds-pila" style={{ listStyle: 'none', margin: 0, padding: 0 }} aria-label="Etapas de la obra">
+        <ol
+          className="ds-pila"
+          style={{ listStyle: 'none', margin: 0, padding: 0 }}
+          aria-label="Etapas de la obra"
+        >
           {t.etapas.map((e) => {
             const est = TEXTO_ETAPA[e.estado] ?? TEXTO_ETAPA.pendiente!;
             const esActual = e.id === actual?.id;

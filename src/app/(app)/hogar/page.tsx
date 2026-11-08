@@ -59,7 +59,11 @@ export default function MiHogar() {
           titulo="Mi hogar"
           sub={lugar || 'Tu casa'}
           accion={
-            <CuadroCabecera icono="editar" etiqueta="Editar la ficha de la casa" href="/hogar/casa/" />
+            <CuadroCabecera
+              icono="editar"
+              etiqueta="Editar la ficha de la casa"
+              href="/hogar/casa/"
+            />
           }
         >
           {h ? (
@@ -129,12 +133,13 @@ export default function MiHogar() {
                 />
               </nav>
               {proximo ? (
-                <Tarjeta
-                  pie={{ texto: 'Ver recordatorios', href: '/hogar/recordatorios/' }}
-                >
+                <Tarjeta pie={{ texto: 'Ver recordatorios', href: '/hogar/recordatorios/' }}>
                   <div className="ds-fila">
                     <MosaicoIcono icono="campana" tono="amarillo" />
-                    <span className="ds-crece ds-pila" style={{ ['--ds-gap' as string]: '0.125rem' }}>
+                    <span
+                      className="ds-crece ds-pila"
+                      style={{ ['--ds-gap' as string]: '0.125rem' }}
+                    >
                       <Etiqueta como="h2">Próximo mantenimiento</Etiqueta>
                       <strong>{proximo.titulo}</strong>
                       <span className="dsh-suave">
