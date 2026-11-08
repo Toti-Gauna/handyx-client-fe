@@ -88,7 +88,7 @@ export default function ResenaTrabajo() {
         <div className="ds dss-resena">
           <div className="dss-resena__escena" aria-hidden="true">
             <div className="ds-escena-cabecera">
-              <EscenaArreglado alto={300} />
+              <EscenaArreglado alto={330} />
             </div>
             <p className="dss-resena__titulo">¡Quedó arreglado!</p>
           </div>

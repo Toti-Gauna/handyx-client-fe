@@ -413,7 +413,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 5.5rem;
+  bottom: 4.5rem;
   margin: 0;
   text-align: center;
   font-family: var(--ds-titulo);
@@ -425,7 +425,7 @@
   position: relative;
   z-index: 1;
   flex: 1;
-  margin-top: -4rem;
+  margin-top: -1.75rem;
   padding: 3rem 1rem 1.5rem;
   border-radius: 1.75rem 1.75rem 0 0;
   background: var(--ds-c-fff);

@@ -6,7 +6,6 @@ import { ruta } from '@/components/nav';
 import type { Trabajo } from '@/contracts/v1/propuestas';
 import type { RegistroPago } from '@/contracts/v1/servicio';
 import { pesos } from '@/domain/dinero';
-import { etiquetaPago } from '@/domain/etiquetas';
 import { cuando } from '@/domain/fechas';
 import { AccionesFijas, Boton, DatoFila, Etapas, MosaicoIcono, Nota, Tarjeta, Titulo } from '@/ui';
 import type { Objetivo } from './objetivos';
@@ -44,7 +43,6 @@ export function Informado({
       ? 'Todavía no recibimos la confirmación. Volver de Mercado Pago no alcanza para darlo por pagado.'
       : `Avisaste que le pagaste ${monto} ${mp ? 'por Mercado Pago' : 'en efectivo'} a ${esp}.`;
   const hechas = verificado ? 3 : pendiente ? 0 : 1;
-  const e = etiquetaPago(pago);
 
   return (
     <Pantalla
